@@ -22,6 +22,7 @@ from app.usl.model import (
     PG_SOURCE,
     REPORTS_CSV,
     REST_DB,
+    ROOT,
     RULES_CSV,
     USL_FQN,
     USL_NAME,
@@ -147,8 +148,9 @@ async def setup() -> None:
     await _step("cache brca_cases_raw", "022_cache_brca_cases.sql", cache_step)
     await _step("namespace", "001_namespace.sql", _ensure_namespace)
     usl_created = await _step("compile usl stage_audit", "030_compile_stage_audit.sql", _ensure_usl)
-    if usl_created:
+    if usl_created or descriptions_changed():
         await _step("descriptions", "040_descriptions.sql", _apply_descriptions)
+        record_descriptions()
     else:
         _log("descriptions skipped (usl exists)")
     await _step("activate usl tables", "050_activate_tumour_case.sql", _activate_tables)
@@ -445,6 +447,27 @@ async def _ensure_usl() -> bool:
     _log("compile usl stage_audit")
     await _exec("compile usl stage_audit", "030_compile_stage_audit.sql")
     return True
+
+
+DESCRIPTIONS_STAMP = ROOT / "data" / "state" / "usl_descriptions.sha256"
+
+
+def _descriptions_digest() -> str:
+    import hashlib
+
+    return hashlib.sha256(load_sql("040_descriptions.sql").encode("utf-8")).hexdigest()
+
+
+def descriptions_changed() -> bool:
+    """True when 040_descriptions.sql differs from what was last applied (so they never drift)."""
+    if not DESCRIPTIONS_STAMP.exists():
+        return True
+    return DESCRIPTIONS_STAMP.read_text(encoding="utf-8").strip() != _descriptions_digest()
+
+
+def record_descriptions() -> None:
+    DESCRIPTIONS_STAMP.parent.mkdir(parents=True, exist_ok=True)
+    DESCRIPTIONS_STAMP.write_text(_descriptions_digest() + "\n", encoding="utf-8")
 
 
 async def _apply_descriptions() -> None:

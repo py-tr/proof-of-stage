@@ -1,7 +1,8 @@
 """Where the case page gets its data: the live Zetaris USL, or bundled sample data.
 
-Live mode reads stage_check, path_report, derived_stage and oa_pg.flag_log through the
-guarded SELECT client, and writes reviewer decisions append-only to oa_pg.flag_log.
+Live mode reads only USL tables (stage_check, path_report, derived_stage, flag) through
+the guarded SELECT client, and appends reviewer decisions to the Postgres source behind the
+USL `flag` table (oa_pg.flag_log), which the USL serves on the next read.
 SAMPLE_MODE reads app/web/sample/cases.json: registry facts and report text only, with
 no model outputs (the reader's answers are never replayed).
 """
@@ -140,7 +141,8 @@ class LiveData:
                 limit=500,
             ),
             select(
-                "SELECT case_id, MAX(created_at) AS decided_at FROM oa_pg.flag_log "
+                "SELECT case_id, MAX(created_at) AS decided_at "
+                f"FROM {table_fqn('flag')} "
                 f"WHERE rule_id = {sql_string(DECISION_RULE)} GROUP BY case_id",
                 limit=2000,
             ),
@@ -150,7 +152,7 @@ class LiveData:
                 limit=5000,
             ),
             select(
-                "SELECT DISTINCT case_id FROM oa_pg.flag_log "
+                f"SELECT DISTINCT case_id FROM {table_fqn('flag')} "
                 f"WHERE rule_id = {sql_string(READER_REVIEW_RULE)}",
                 limit=5000,
             ),
@@ -197,7 +199,7 @@ class LiveData:
             ),
             select(
                 "SELECT flag_id, rule_id, field, recorded_value, derived_value, quote, reason, "
-                "severity, model, receipt_id, created_at FROM oa_pg.flag_log "
+                f"severity, model, receipt_id, created_at FROM {table_fqn('flag')} "
                 f"WHERE case_id = {cid}",
                 limit=200,
             ),

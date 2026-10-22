@@ -42,3 +42,9 @@ def job_attempt() -> dict[str, Any]:
 @pytest.fixture
 def job_poll_states() -> list[dict[str, Any]]:
     return load_fixture("nightshift_job_poll_states.json")
+
+
+@pytest.fixture(autouse=True)
+def _isolated_description_stamp(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:  # type: ignore[no-untyped-def]
+    # setup() records which descriptions were applied; tests must never touch the real stamp.
+    monkeypatch.setattr("app.usl.setup.DESCRIPTIONS_STAMP", tmp_path / "usl_descriptions.sha256")
