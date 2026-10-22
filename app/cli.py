@@ -233,7 +233,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "run":
             from app.engine.run_case import run_case, summary
 
-            ladder, outcome = asyncio.run(run_case(args.case.upper(), store=args.store))
+            ladder, outcome = asyncio.run(run_case(args.case.strip().upper(), store=args.store))
             sys.stdout.write(summary(ladder, outcome))
             return 0
         if args.command == "scans":

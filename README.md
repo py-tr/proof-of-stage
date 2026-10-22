@@ -16,13 +16,13 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 
 | Layer | What it does | Where |
 |---|---|---|
-| Zetaris USL `stage_audit` | 8 tables over 3 live sources: the NCI GDC REST API (cases, recorded stage, node counts), a file store (paraphrased staging rules, report text, Parse blocks) and Postgres (append-only reader output and review log); 7 data-quality rules | `app/usl/`, `app/usl/sql/` |
-| Nemotron Super (VL 120B) | Reads the report; returns T, N and the positive-node count, each with ONE verbatim quote; 4k thinking budget | `app/reader/reader.py` |
+| Zetaris USL `stage_audit` | 8 tables over 3 live sources: the NCI GDC REST API (cases, recorded stage, node counts), a file store (paraphrased staging rules, report text, Parse blocks) and Postgres (append-only reader output and review log); 8 custom data-quality rules (incl. one basic source-level rule) + the 13 key rules Zetaris generates from the DDL; the app reads only USL tables; lineage from `LOAD USL` | `app/usl/`, `app/usl/sql/`, `docs/zetaris-demo.md` |
+| Nemotron Super (VL 120B) | Reads the report; returns T, N and the positive-node count, each with ONE verbatim quote; thinking OFF on the first rung, a 4k budget when the guard needs it | `app/reader/reader.py` |
 | The guard (code) | Accepts a value only if its quote is in the report; for a count, the number must be the positive count inside the quote (a fraction's first number) | `app/reader/` |
 | Nemotron Parse | Reads the original scanned PDF from the GDC; every text block with its box; stored as the USL table `parse_block` | `app/scans/` |
 | `stage_check.fault_field` (USL) | node_count / pathologic_n / review, from the registry, the count rule and the quote-verified reading | `app/usl/sql/055_activate_stage_check.sql` |
-| Meterless Markovian engine | TODO (M1): drives the review-queue reading as bounded chunks with carryover | TODO |
-| Meterless Nightshift | TODO (M1): every read through Nightshift with a signed receipt | `app/providers/nightshift.py` |
+| Meterless Markovian engine | The official reference, vendored unmodified (`vendor/meterless-markovian`, conformance 8/8), runs one chain per case: each chunk is a rung of an evidence ladder (R1 thinking off → R2 4k → R3 the scan); our code writes the carryover `{need, consulted, ledger}`, which ends the chain when no field is open. No token savings are claimed for these 1–3-step chains (the engine's own docs: savings start around step 5) | `app/engine/` |
+| Meterless Nightshift | The default provider: Super VL pinned, every Ed25519 receipt signature verified, cached answers refused. Budgeted reads go to NVIDIA directly because Nightshift does not forward a thinking budget (reported to Meterless) | `app/providers/nightshift.py`, `app/providers/receipts.py` |
 | Case page | One case at a time: the headline, the USL steps, the highlighted quote, the guard checks, rejected answers, decisions written back to Zetaris, "Try to fool it" | `app/web/` |
 
 ## Run it
@@ -30,11 +30,21 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 157 tests, no network
+pytest -q                                          # 185 tests, no network
 set SAMPLE_MODE=true && python -m app.cli serve    # offline: 4 bundled cases, no model output replayed
 ```
 
-Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`): `python -m app.cli usl setup`, `usl dq`, `read --rule nodes_consistent --store`, `scans --case TCGA-A2-A0CV`, `serve`. TODO: `run --case` (M1).
+Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`):
+
+| Command | What it does |
+|---|---|
+| `python -m app.cli usl setup` / `usl dq` | build the USL (idempotent) / run every data-quality rule |
+| `python -m app.cli usl demo --write` | the timed, reproducible query pack → `docs/zetaris-demo.md` |
+| `python -m app.cli scans --case TCGA-A2-A0CV` | Nemotron Parse on the original scanned report |
+| `python -m app.cli run --case TCGA-A1-A0SN [--store]` | one case through the Markovian evidence ladder; trace in `logs/` |
+| `python -m app.cli serve` | the case page |
+
+Nightshift settings we used (Preferences): Adaptive compute, Self-refine, Answer fusion, Reasoning scaffold, Optimistic streaming and Tier-split **off** (so an answer is one model's own text); the cloud Lightning lane moved from Race to Judge (so a pinned Super is never substituted).
 
 ## Results (live, 2026-10-22; every number has its file)
 
@@ -55,7 +65,7 @@ Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`): `pyt
 
 ## Data and licences
 
-See `data/README.md`. Code: Apache-2.0 (`LICENSE`). TODO: NOTICE for the vendored Meterless reference.
+See `data/README.md`. Code: Apache-2.0 (`LICENSE`); the vendored Meterless Markovian reference is credited in `NOTICE` (Apache-2.0, unmodified).
 
 ## How this was built (AI-usage disclosure)
 
