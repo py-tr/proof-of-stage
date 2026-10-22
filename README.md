@@ -1,6 +1,6 @@
 # Proof of Stage
 
-> The database proves the record is impossible; Nemotron may only say which field is wrong, and only by quoting the scanned report; a person decides.
+> The database proves the record is impossible; Nemotron may only quote the report; the semantic layer names which field the quote contradicts; a person decides.
 
 Proof of Stage audits cancer-stage fields in NCI's public cancer data (TCGA-BRCA, 1,097 cases). A Zetaris Unified Semantic Layer finds records that cannot be true as written (for example, a recorded N category that contradicts the record's own positive-node count). NVIDIA Nemotron reads the original pathology report and may accept a value only with a verbatim quote that code finds in the report. The semantic layer then names which registry field the evidence points to: the node count, the N category, or "a person decides". It never edits a record.
 
@@ -10,19 +10,19 @@ Proof of Stage audits cancer-stage fields in NCI's public cancer data (TCGA-BRCA
 
 ## What a judge sees in one case
 
-TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, so both cannot be true. Nemotron reads the report and quotes "(2/18) POSITIVE EXAMINED LYMPH NODES"; the guard confirms the quote and that 2 is the positive count inside it; the semantic layer names **the node-count field**. On the original scan, Nemotron Parse boxes the line "METASTASIS IN TWO OF EIGHTEEN (2/18)". TODO: screenshot / GIF.
+TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, so both cannot be true. Nemotron reads the report and quotes "(2/18) POSITIVE EXAMINED LYMPH NODES"; the guard confirms the quote and that 2 is the positive count inside it; the semantic layer names **the node-count field**. On the original scan, Nemotron Parse boxes the line "METASTASIS IN TWO OF EIGHTEEN (2/18)". This is the live result; in offline sample mode the same case shows the contradiction and lets you play the reader (no model output is bundled or replayed). TODO: screenshot / GIF.
 
 ## How it works
 
 | Layer | What it does | Where |
 |---|---|---|
-| Zetaris USL `stage_audit` | 8 tables over 3 live sources: the NCI GDC REST API (cases, recorded stage, node counts), a file store (paraphrased staging rules, report text, Parse blocks) and Postgres (append-only reader output and review log); 8 custom data-quality rules (incl. one basic source-level rule) + the 13 key rules Zetaris generates from the DDL; the app reads only USL tables; lineage from `LOAD USL` | `app/usl/`, `app/usl/sql/`, `docs/zetaris-demo.md` |
-| Nemotron Super (VL 120B) | Reads the report; returns T, N and the positive-node count, each with ONE verbatim quote; thinking OFF on the first rung, a 4k budget when the guard needs it | `app/reader/reader.py` |
-| The guard (code) | Accepts a value only if its quote is in the report; for a count, the number must be the positive count inside the quote (a fraction's first number) | `app/reader/` |
+| Zetaris USL `stage_audit` | 8 tables over 3 live sources: the NCI GDC REST API (cases, recorded stage, node counts), a file store (paraphrased staging rules, report text, Parse blocks) and Postgres (append-only reader output and review log); 8 custom data-quality rules (one basic source-level rule; `fault_named` / `fault_unresolved` are review queues expressed as rules) + the 13 key rules Zetaris generates from the DDL (10 addressable by name; the two composite primary keys run via their first column); the case page reads only USL tables; its lineage panel comes from `LOAD USL` | `app/usl/`, `app/usl/sql/`, `docs/zetaris-demo.md` |
+| Nemotron Super (VL 120B) | Reads the report; returns T, N and the positive-node count, each with ONE verbatim quote; thinking OFF on the first rung, a 4k budget when the cheap read cannot settle a field | `app/reader/reader.py` |
+| The guard (code) | Accepts a value only if its quote is in the report; for a count, the number must appear inside the quote, and when the quote holds a fraction ("2/18", "two of eighteen") it must be the first number (known limit: without a fraction, a stray number such as a size can still match) | `app/reader/` |
 | Nemotron Parse | Reads the original scanned PDF from the GDC; every text block with its box; stored as the USL table `parse_block` | `app/scans/` |
 | `stage_check.fault_field` (USL) | node_count / pathologic_n / review, from the registry, the count rule and the quote-verified reading | `app/usl/sql/055_activate_stage_check.sql` |
-| Meterless Markovian engine | The official reference, vendored unmodified (`vendor/meterless-markovian`, conformance 8/8), runs one chain per case: each chunk is a rung of an evidence ladder (R1 thinking off → R2 4k → R3 the scan); our code writes the carryover `{need, consulted, ledger}`, which ends the chain when no field is open. No token savings are claimed for these 1–3-step chains (the engine's own docs: savings start around step 5) | `app/engine/` |
-| Meterless Nightshift | The default provider: Super VL pinned, every Ed25519 receipt signature verified, cached answers refused. Budgeted reads go to NVIDIA directly because Nightshift does not forward a thinking budget (reported to Meterless) | `app/providers/nightshift.py`, `app/providers/receipts.py` |
+| Meterless Markovian engine | The official reference, vendored unmodified (`vendor/meterless-markovian`, conformance 8/8), runs one chain per case: each chunk is a rung of an evidence ladder (R1 thinking off → R2 4k → R3 the scan); our code writes the carryover `{need, consulted, ledger}`, which picks the next rung and ends the chain when no field is open. The engine runs the control flow; the model reads the document beside it and never sees the carryover (so no reading can anchor the next). The engine's own savings estimate is therefore 0 by construction (every run in `logs/markovian-runs.jsonl`); we claim no savings for this chain. Planned: a second chain where the model is the generator (the red-team lane) | `app/engine/` |
+| Meterless Nightshift | Integrated as a provider: Super VL pinned, each receipt's Ed25519 signature verified, cached answers refused (`python -m app.cli doctor` shows a signed call). **Today the ladder's reads go to NVIDIA directly**, because Nightshift cannot take a thinking switch, a budget or an image (next section, reported to Meterless); every logged rung shows `receipt_id: null`. Planned: the red-team lane and the case note through Nightshift | `app/providers/nightshift.py`, `app/providers/receipts.py` |
 | Case page | One case at a time: the headline, the USL steps, the highlighted quote, the guard checks, rejected answers, decisions written back to Zetaris, "Try to fool it" | `app/web/` |
 
 ## Run it
@@ -50,17 +50,17 @@ Nightshift settings we used (Preferences): Adaptive compute, Self-refine, Answer
 
 | Result | Value | Source |
 |---|---|---|
-| Records that cannot be true as written (N vs count, 6th/7th edition) | 24 of 1,097 | `usl dq` |
+| Records that cannot be true as written (N vs count, 6th/7th edition) | 24 of 1,097 (+1 missing N the count could fill = the 25-case review queue) | `docs/zetaris-demo.md` (`usl dq`) |
 | Fields named by the evidence (after the ladder batch, 2026-10-23) | **20 of 25** queue cases: 8 node-count field, 12 N field (incl. 1 missing N); 5 for a person (micrometastasis, no count stated) | `stage_check`, `logs/batch-2026-10-23.txt` |
 | The thinking-off rung on contradiction cases | cleared 0 fields in 15 cases: a self-consistent reading cannot agree with both contradicting fields, so every case escalated to the 4k rung (the rung catches a wrong fast read: TCGA-A1-A0SN) | `logs/markovian-chunks.jsonl` |
 | Data-quality pack | 8 custom rules + 13 Zetaris key rules, all keys valid; reproducible query pack in 21 s | `docs/zetaris-demo.md` |
-| Thinking budget (Super, 42 fields) | off 26/42 · 1k 28 · 4k 30 · unlimited 30 | TODO: declare the reused pre-window arm or re-measure |
-| Scan boxes (Parse → Super → guard, pre-registered) | v1 failed 0/3; v2 passed 4/6 | TODO: link the spike report |
+| Thinking budget (Super, 42 fields of a spike set; a measurement, not the ladder) | off 26/42 · 1k 28 · 4k 30 · unlimited 30; the "unlimited" arm was reused from a run on 2026-10-21, before the build window | research spike (knowledge base), TODO: copy into `docs/evidence/` |
+| Scan boxes (Parse → Super → guard, pre-registered) | v1: 0 of 3 passed (the kill line failed); v2: 4 of 6 passed | research spike (knowledge base), TODO: copy into `docs/evidence/` |
 | Earlier flagging pipeline, held-out (pre-registered) | 2/4 flags right (50%, 95% CI 15–85), 12× the 4.2% base rate, recall 2/13 | TODO: link |
 
 ## Why some calls bypass Nightshift (we tried first)
 
-Nightshift is our default provider: every text call goes through it with Super VL pinned, the receipt's Ed25519 signature verified and cached answers refused. Three kinds of call go to NVIDIA directly, each after we tried Nightshift and measured why it could not do the job (build journal M19–M25; reported to Meterless):
+Nightshift is integrated (Super VL pinned, the receipt's Ed25519 signature verified, cached answers refused), but the three kinds of call the ladder makes go to NVIDIA directly, each after we tried Nightshift and measured why it could not do the job (build journal M19–M25; reported to Meterless; the evidence files are being copied into `docs/evidence/`):
 
 | Call | What happened through Nightshift (Windows edition) | Evidence |
 |---|---|---|
@@ -75,7 +75,11 @@ What we changed so Nightshift's answers are one model's own text: Adaptive compu
 - Hosted Nemotron Parse 2.0 returned an empty document on our key (even on NVIDIA's own example); we use Parse v1.
 - Two of six scan boxes missed on a sparse one-page form; the page then shows no box and a person decides.
 - The checks cover N vs the node count in the 6th/7th editions; T, M and stage groups are not audited yet.
-- Research data, not for clinical use. TODO: more from the test ledger.
+- The ladder reads the report text from the local corpus copy and the scan from the local Parse cache (the same text the USL serves); moving those reads onto the USL tables is planned.
+- Append-only storage: the first value written for (case, method, field) stays, even if a later read is better; later reads are logged as `kept-earlier`.
+- "Impossible" means impossible under our paraphrased count rules (data/README.md), not the AJCC manual itself; edition windows overlap (6th 2002–2010, 7th 2009–2018).
+- The GDC REST table is cached (refreshed by `usl setup`); report text and scans are not committed (licences and size).
+- Research data, not for clinical use.
 
 ## Data and licences
 
