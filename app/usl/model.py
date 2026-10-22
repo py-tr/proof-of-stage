@@ -38,7 +38,13 @@ DQ_RULES = (
     "edition_matches_year",
 )
 
-ALLOWED_ROOTS = ("lightning.metastore", "REG_FILES", "GDC_REST", "oa_pg")
+ALLOWED_ROOTS = (
+    "lightning.metastore.registry_audit",
+    "REG_FILES",
+    "GDC_REST",
+    "oa_pg.flag_log",
+    "oa_pg.derived_extraction",
+)
 
 EXTRACTION_COLUMNS = (
     "case_id",

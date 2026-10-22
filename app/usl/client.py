@@ -45,6 +45,18 @@ _DQ_RULE = re.compile(
     re.IGNORECASE,
 )
 
+_DQ_TARGET = re.compile(
+    r"^(?:RUN\s+DQ|SHOW\s+DQ\s+(?:INVALID|VALID)\s+RECORD)\s+([A-Za-z_][\w]*)"
+    r"\s+TABLE\s+([A-Za-z_][\w.]*)$",
+    re.IGNORECASE,
+)
+# Spark/Hive functions that can reach the JVM, the environment or the file system.
+_DENY_FUNCTIONS = re.compile(
+    r"\b(?:reflect|java_method|try_reflect|getenv|input_file_name|input_file_block_start|"
+    r"current_user|session_user|user|assert_true|raise_error|udf|transform)\s*\(",
+    re.IGNORECASE,
+)
+
 
 class SqlGuardError(Exception):
     """A query is not a read against the registry audit sources."""
@@ -64,6 +76,9 @@ def guard_select(sql: str) -> str:
     if len(parts) != 1:
         raise SqlGuardError("only one statement is allowed")
     statement = parts[0]
+    if _has_quoted_identifier(statement):
+        # Double-quoted or backticked identifiers could smuggle any name past the name check.
+        raise SqlGuardError("quoted identifiers are not allowed")
     masked = _mask_strings(statement)
     compact = " ".join(masked.split())
     upper = compact.upper()
@@ -71,9 +86,16 @@ def guard_select(sql: str) -> str:
         raise SqlGuardError("statement is not a read of the registry audit sources")
     if _DENY.search(masked):
         raise SqlGuardError("statement is not a read of the registry audit sources")
-    named = _DQ_RULE.search(compact)
-    if named is not None and named.group(1).lower() not in DQ_RULES:
-        raise SqlGuardError("unknown data-quality rule")
+    if _DENY_FUNCTIONS.search(masked):
+        raise SqlGuardError("function is not allowed")
+    if upper.startswith(("RUN DQ", "SHOW DQ")):
+        target = _DQ_TARGET.match(compact)
+        if target is None:
+            raise SqlGuardError("a data-quality command must name a rule and the stage_check table")
+        if target.group(1).lower() not in DQ_RULES:
+            raise SqlGuardError("unknown data-quality rule")
+        if target.group(2).lower() != STAGE_CHECK.lower():
+            raise SqlGuardError("data-quality commands may only target stage_check")
     for name in _referenced_names(masked):
         if not allowed_name(name):
             raise SqlGuardError("name is outside the registry audit sources")
@@ -293,6 +315,29 @@ def _referenced_names(masked_sql: str) -> list[str]:
             names.append(extra.group(1))
             tail = tail[extra.end() :]
     return names
+
+
+def _has_quoted_identifier(sql: str) -> bool:
+    """True when a double quote or backtick appears outside a single-quoted string."""
+    in_single = False
+    index = 0
+    while index < len(sql):
+        char = sql[index]
+        if in_single:
+            if char == "\\" and index + 1 < len(sql):
+                index += 2
+                continue
+            if char == "'" and index + 1 < len(sql) and sql[index + 1] == "'":
+                index += 2
+                continue
+            if char == "'":
+                in_single = False
+        elif char == "'":
+            in_single = True
+        elif char in '"`':
+            return True
+        index += 1
+    return False
 
 
 def _mask_strings(sql: str) -> str:

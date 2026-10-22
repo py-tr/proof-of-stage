@@ -176,3 +176,27 @@ def test_format_invalid_records_is_a_table() -> None:
     assert "recorded N" in text.splitlines()[0]
     assert "TCGA-AN-A0XO" in text
     assert "pN0" in text
+
+
+@pytest.mark.parametrize(
+    "sql",
+    [
+        'SELECT * FROM "crm_pg"."customers"',
+        "SELECT * FROM `crm_pg`.`customers`",
+        'SELECT c.* FROM REG_FILES.staging_rules s JOIN "secrets" c ON 1 = 1',
+        "SELECT reflect('java.lang.System', 'getenv', 'ZETARIS_API_KEY')",
+        "SELECT java_method('java.lang.System', 'getenv', 'X') FROM REG_FILES.staging_rules",
+        "SELECT * FROM lightning.metastore.other_ns.other_usl.t",
+        "SELECT * FROM oa_pg.some_other_table",
+        "RUN DQ nodes_consistent",
+        "RUN DQ other_rule",
+        "RUN DQ nodes_consistent TABLE lightning.metastore.registry_audit.stage_audit.flag",
+    ],
+)
+def test_guard_blocks_review_bypasses(sql: str) -> None:
+    with pytest.raises(SqlGuardError):
+        guard_select(sql)
+
+
+def test_guard_allows_quotes_inside_string_literals() -> None:
+    guard_select("SELECT quote FROM oa_pg.flag_log WHERE quote = 'the \"chest wall\" is clear'")
