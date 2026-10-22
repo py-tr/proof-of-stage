@@ -131,6 +131,14 @@ async def _usl(args: argparse.Namespace) -> int:
     if args.usl_command == "dq":
         sys.stdout.write(await dq_report(invalid_rule=args.invalid, limit=args.limit))
         return 0
+    if args.usl_command == "demo":
+        from app.usl.demo import run_demo, summary, write_doc
+
+        results, meta = await run_demo()
+        sys.stdout.write(summary(results, meta))
+        if args.write:
+            sys.stdout.write(f"wrote {write_doc(results, meta).name}\n")
+        return 0
     if args.usl_command == "teardown":
         if not args.yes:
             sys.stdout.write(
@@ -174,6 +182,8 @@ def main(argv: list[str] | None = None) -> int:
         default=50,
         help="Maximum invalid records to print with --invalid",
     )
+    demo_parser = usl_sub.add_parser("demo", help="Timed, reproducible USL query pack")
+    demo_parser.add_argument("--write", action="store_true", help="Save docs/zetaris-demo.md")
     teardown_parser = usl_sub.add_parser(
         "teardown",
         help="Remove only registry_audit, REG_FILES, GDC_REST, and the two Postgres tables",
