@@ -196,6 +196,9 @@ def main(argv: list[str] | None = None) -> int:
     read.add_argument("--store", action="store_true", help="Write results to Zetaris")
     scans = sub.add_parser("scans", help="Original report scans (GDC PDFs) read by Nemotron Parse")
     scans.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
+    run = sub.add_parser("run", help="One case through the Markovian evidence ladder (RUNGS)")
+    run.add_argument("--case", required=True, help="Case id, e.g. TCGA-A2-A0CV")
+    run.add_argument("--store", action="store_true", help="Append closed fields to Zetaris")
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
     serve.add_argument("--port", type=int, default=8000, help="Port on 127.0.0.1")
     sample = sub.add_parser("sample", help="Bundled sample cases for SAMPLE_MODE")
@@ -216,6 +219,12 @@ def main(argv: list[str] | None = None) -> int:
             from app.web.api import create_app
 
             uvicorn.run(create_app(), host="127.0.0.1", port=args.port)
+            return 0
+        if args.command == "run":
+            from app.engine.run_case import run_case, summary
+
+            ladder = asyncio.run(run_case(args.case.upper(), store=args.store))
+            sys.stdout.write(summary(ladder))
             return 0
         if args.command == "scans":
             from app.scans.scans import parse_scan, write_parse_blocks_csv

@@ -1,7 +1,9 @@
 """RUNGS: one Markovian run per case climbs a ladder of independent evidence, one rung per chunk.
 
 R1  Super, thinking OFF, on the report text. It may only CLEAR a field (an accepted value
-    that agrees with the registry); it never accuses one.
+    that agrees with the registry), never accuse one, and only when its own N and count are
+    consistent under the count rule (live 10-23: thinking OFF read "4 positive nodes" yet
+    answered N1A, matching a wrong registry N; the rule check sends that case up the ladder).
 R2  Super, 4k thinking budget, on the report text, for the fields still open.
 R3  Super, 4k thinking budget, on Nemotron Parse's reading of the original scan.
 
@@ -49,6 +51,7 @@ class CaseEvidence:
     recorded_n: str | None  # e.g. "N1A"
     registry_count: float | None  # positive nodes recorded
     scan_text: str | None = None  # Nemotron Parse's text of the original PDF, if available
+    edition: str | None = None  # staging edition code, for the count rule
 
 
 @dataclass
@@ -63,6 +66,24 @@ class Ladder:
 def main_n(value: str | None) -> str | None:
     match = _MAIN_N.search((value or "").upper())
     return match.group(0) if match else None
+
+
+def rule_main_n(count: str | None, edition: str | None) -> str | None:
+    """The main N category the paraphrased count rule gives for a positive-node count."""
+    from app.web.evidence import count_rules
+
+    outputs = {main_n(rule["output"]) for rule in count_rules(count, True, edition or "7")}
+    outputs.discard(None)
+    return outputs.pop() if len(outputs) == 1 else None
+
+
+def self_consistent(result: ReadResult, edition: str | None) -> bool:
+    """The reading's own N and its own verified count agree under the count rule."""
+    n, count = result.fields["N"], result.fields[NODES_POSITIVE]
+    if n.status != "accepted" or count.status != "accepted":
+        return False
+    expected = rule_main_n(count.value, edition)
+    return expected is not None and expected == main_n(n.value)
 
 
 def agrees_with_registry(name: str, fr: FieldResult, case: CaseEvidence) -> bool:
@@ -148,13 +169,14 @@ class RungsGenerator:
         result = await self._read(rung)
         seconds = round(time.monotonic() - started, 2)
         still_open = []
+        consistent = self_consistent(result, self.case.edition)
         for name in state["need"]:
             fr = result.fields[name]
             state["ledger"].setdefault(name, []).append(_ledger_entry(rung, fr))
             closes = (
-                agrees_with_registry(name, fr, self.case)
+                agrees_with_registry(name, fr, self.case) and consistent
                 if rung == R1
-                else (fr.status == "accepted")
+                else fr.status == "accepted"
             )
             if closes:
                 self.closed[name] = {"rung": rung, "value": fr.value}
@@ -176,6 +198,7 @@ class RungsGenerator:
             "from_cache": result.from_cache,
             "usage": result.usage,
             "seconds": seconds,
+            "self_consistent": consistent,
             "fields": {
                 name: {"status": fr.status, "value": fr.value, "reason": fr.reason[:80]}
                 for name, fr in result.fields.items()

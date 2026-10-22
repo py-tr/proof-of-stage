@@ -123,4 +123,25 @@ async def test_on_close_is_called_once_per_closed_field() -> None:
         R2: (("accepted", "N1A"), ("accepted", "2")),
     }
     await climb(CASE, run_id="t5", reader=_reader(script, []), on_close=on_close)
-    assert closed == [("N", R1), (NODES_POSITIVE, R2)]
+    # R1's count was rejected, so its N is not self-consistent: it cannot clear N either.
+    assert closed == [("N", R2), (NODES_POSITIVE, R2)]
+
+
+@pytest.mark.asyncio
+async def test_a_self_contradictory_cheap_read_cannot_clear_a_contradictory_record() -> None:
+    # Live 10-23 (TCGA-A1-A0SN shape): the registry says N1 and 4 positive nodes; thinking
+    # OFF read "4 positive nodes" yet answered N1A, agreeing with BOTH registry fields.
+    # 4 nodes is N2 under the count rule, so R1 is not self-consistent and both fields climb.
+    seen: list[dict[str, object]] = []
+    case = CaseEvidence("TCGA-AA-0006", "TEXT", recorded_n="N1", registry_count=4.0, edition="6")
+    script = {
+        R1: (("accepted", "N1A"), ("accepted", "4")),
+        R2: (("accepted", "N2A"), ("accepted", "4")),
+    }
+    ladder = await climb(case, run_id="t6", reader=_reader(script, seen))
+    assert [s["rung"] for s in seen] == [R1, R2]
+    assert ladder.chunks[0]["self_consistent"] is False
+    assert ladder.closed == {
+        "N": {"rung": R2, "value": "N2A"},
+        NODES_POSITIVE: {"rung": R2, "value": "4"},
+    }
