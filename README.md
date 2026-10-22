@@ -16,7 +16,7 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 
 | Layer | What it does | Where |
 |---|---|---|
-| Zetaris USL `stage_audit` | 9 tables over 3 live sources: the NCI GDC REST API (cases, recorded stage, node counts), a file store (paraphrased staging rules, report text, Parse blocks) and Postgres (append-only reader output and review log); 7 data-quality rules | `app/usl/`, `app/usl/sql/` |
+| Zetaris USL `stage_audit` | 8 tables over 3 live sources: the NCI GDC REST API (cases, recorded stage, node counts), a file store (paraphrased staging rules, report text, Parse blocks) and Postgres (append-only reader output and review log); 7 data-quality rules | `app/usl/`, `app/usl/sql/` |
 | Nemotron Super (VL 120B) | Reads the report; returns T, N and the positive-node count, each with ONE verbatim quote; 4k thinking budget | `app/reader/reader.py` |
 | The guard (code) | Accepts a value only if its quote is in the report; for a count, the number must be the positive count inside the quote (a fraction's first number) | `app/reader/` |
 | Nemotron Parse | Reads the original scanned PDF from the GDC; every text block with its box; stored as the USL table `parse_block` | `app/scans/` |
