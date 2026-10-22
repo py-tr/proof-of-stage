@@ -15,6 +15,9 @@ LOCAL_RUNTIME_PREFIX = "local-runtime/"
 LOCAL_RUNTIME_NEMOTRON_PREFIX = "local-runtime/nemotron"
 NV_SUPER = "nvidia/nemotron-3.5-super-vl-120b-a12b"
 NV_CONTENT_SAFETY = "nvidia/nemotron-3.5-content-safety"
+# Hosted nemotron-parse-2.0 returns empty output (the image is dropped; measured 10-22),
+# so the scan reader uses the v1 model with the markdown_bbox tool.
+NV_PARSE = "nvidia/nemotron-parse"
 NV_MODEL_ALIASES: dict[str, set[str]] = {
     NV_SUPER: {"private/nvidia/nemotron-3.5-super-120b-a12b"},
 }

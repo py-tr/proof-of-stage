@@ -81,7 +81,7 @@ def _catalog(sql: str) -> SqlResult:
     if text.startswith("SHOW LIGHTNING DATABASES"):
         return SqlResult([["REG_FILES"], ["GDC_REST"]], ["name"])
     if text.startswith("SHOW LIGHTNING TABLES REG_FILES"):
-        return SqlResult([["staging_rules"], ["path_reports"]], ["name"])
+        return SqlResult([["staging_rules"], ["path_reports"], ["parse_blocks"]], ["name"])
     if text.startswith("SHOW LIGHTNING TABLES GDC_REST"):
         return SqlResult([["brca_cases_raw"]], ["name"])
     if text.startswith("SHOW DATASOURCE TABLES"):
@@ -192,7 +192,7 @@ async def test_setup_is_idempotent(
     assert created.call_count == 2
     body = json.loads(created.calls[0].request.content)
     assert body == {"path": "file-store/stage_audit"}
-    assert saved.call_count == 4
+    assert saved.call_count == 6  # 3 CSVs (rules, reports, parse blocks) x 2 runs
     saved_body = saved.calls[0].request.content
     assert b"file-store/stage_audit" in saved_body
     assert b"staging_rules.csv" in saved_body
@@ -272,7 +272,7 @@ async def test_status_reports_activation(monkeypatch: pytest.MonkeyPatch) -> Non
         if text.startswith("SHOW LIGHTNING DATABASES"):
             return SqlResult([["REG_FILES"], ["GDC_REST"]], ["name"])
         if text.startswith("SHOW LIGHTNING TABLES REG_FILES"):
-            return SqlResult([["staging_rules"], ["path_reports"]], ["name"])
+            return SqlResult([["staging_rules"], ["path_reports"], ["parse_blocks"]], ["name"])
         if text.startswith("SHOW LIGHTNING TABLES GDC_REST"):
             return SqlResult([["brca_cases_raw"]], ["name"])
         if text.startswith("SHOW CACHE TABLES"):

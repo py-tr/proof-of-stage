@@ -117,7 +117,7 @@ LEFT JOIN (
       END
     ) AS value
   FROM lightning.metastore.registry_audit.stage_audit.derived_stage
-  WHERE method <> 'sql_node_count' AND field = 'T'
+  WHERE method = 'nemotron_reader' AND field = 'T'
   GROUP BY case_id
 ) rep_t
   ON rep_t.case_id = rec.case_id
@@ -135,14 +135,14 @@ LEFT JOIN (
       END
     ) AS value
   FROM lightning.metastore.registry_audit.stage_audit.derived_stage
-  WHERE method <> 'sql_node_count' AND field = 'N'
+  WHERE method = 'nemotron_reader' AND field = 'N'
   GROUP BY case_id
 ) rep_n
   ON rep_n.case_id = rec.case_id
 LEFT JOIN (
   SELECT case_id, CAST(MAX(CAST(value AS INT)) AS STRING) AS value
   FROM lightning.metastore.registry_audit.stage_audit.derived_stage
-  WHERE method <> 'sql_node_count' AND field = 'NPOS'
+  WHERE method = 'nemotron_reader' AND field = 'NPOS'
   GROUP BY case_id
 ) rep_npos
   ON rep_npos.case_id = rec.case_id

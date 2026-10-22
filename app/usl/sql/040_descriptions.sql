@@ -60,6 +60,18 @@ UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.reason_cla
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.report_n_main SET COLUMN DESCRIPTION Main N category the pathology report supports, from a quote-verified model extraction;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.report_nodes_positive SET COLUMN DESCRIPTION Positive regional nodes stated in the report, accepted only when the number lies inside its verified quote;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.fault_field SET COLUMN DESCRIPTION For a node-count contradiction or a missing N, the registry field the quote-verified report evidence points to: node_count (needs a verified report count that differs from the registry count), pathologic_n, or review when the evidence does not settle it;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block SET TABLE DESCRIPTION One text block that Nemotron Parse read on a page of the original scanned pathology report, with its box;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.case_id SET COLUMN DESCRIPTION Tumour case the scanned report belongs to;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.page_no SET COLUMN DESCRIPTION Page of the report PDF, counting from 0;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.block_index SET COLUMN DESCRIPTION Position of the block in Nemotron Parse reading order on that page;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.block_text SET COLUMN DESCRIPTION Text Nemotron Parse read inside the box;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.block_kind SET COLUMN DESCRIPTION Layout class Nemotron Parse gave the block, such as Text, Table or Caption;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.xmin SET COLUMN DESCRIPTION Left edge of the box as a fraction of the 1024 by 1280 page canvas;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.ymin SET COLUMN DESCRIPTION Top edge of the box as a fraction of the page canvas;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.xmax SET COLUMN DESCRIPTION Right edge of the box as a fraction of the page canvas;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.ymax SET COLUMN DESCRIPTION Bottom edge of the box as a fraction of the page canvas;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.model SET COLUMN DESCRIPTION Model that read the page, as served;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.parse_block.gdc_file_id SET COLUMN DESCRIPTION Open-access GDC file id of the scanned report;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.flag SET TABLE DESCRIPTION One review-queue flag raised for a case;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.flag.flag_id SET COLUMN DESCRIPTION Unique identifier of the flag;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.flag.case_id SET COLUMN DESCRIPTION Tumour case this flag belongs to;

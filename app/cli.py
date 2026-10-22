@@ -194,6 +194,8 @@ def main(argv: list[str] | None = None) -> int:
         "--provider", choices=("nvidia", "nightshift"), default="nvidia", help="Model provider"
     )
     read.add_argument("--store", action="store_true", help="Write results to Zetaris")
+    scans = sub.add_parser("scans", help="Original report scans (GDC PDFs) read by Nemotron Parse")
+    scans.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
     serve.add_argument("--port", type=int, default=8000, help="Port on 127.0.0.1")
     sample = sub.add_parser("sample", help="Bundled sample cases for SAMPLE_MODE")
@@ -214,6 +216,18 @@ def main(argv: list[str] | None = None) -> int:
             from app.web.api import create_app
 
             uvicorn.run(create_app(), host="127.0.0.1", port=args.port)
+            return 0
+        if args.command == "scans":
+            from app.scans.scans import parse_scan, write_parse_blocks_csv
+
+            for case_id in args.case:
+                found = asyncio.run(parse_scan(case_id.upper()))
+                blocks = sum(len(page) for page in found["pages"])
+                sys.stdout.write(
+                    f"{case_id}: {len(found['pages'])} pages, {blocks} blocks, {found['model']}\n"
+                )
+            out, rows = write_parse_blocks_csv()
+            sys.stdout.write(f"{out.name}: {rows} blocks (run `usl setup` to load them)\n")
             return 0
         if args.command == "sample":
             from app.web.sample import build_sample

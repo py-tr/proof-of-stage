@@ -694,6 +694,13 @@ def require_columns(path: Path, columns: tuple[str, ...] | list[str]) -> None:
         raise SetupError(f"{path.name} is missing columns: {', '.join(missing)}")
 
 
+def ensure_csv(path: Path, columns: tuple[str, ...]) -> None:
+    """Create a header-only CSV if it does not exist yet (a filestore table needs the file)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.exists():
+        path.write_text(",".join(columns) + "\n", encoding="utf-8")
+
+
 def ensure_path_reports_file(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():

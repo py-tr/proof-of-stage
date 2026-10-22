@@ -71,6 +71,21 @@ CREATE TABLE stage_check (
   report_nodes_positive varchar(32),
   fault_field varchar(32)
 );
+CREATE TABLE parse_block (
+  case_id varchar(64) NOT NULL,
+  page_no int NOT NULL,
+  block_index int NOT NULL,
+  block_text varchar(8000),
+  block_kind varchar(32),
+  xmin decimal(9,6),
+  ymin decimal(9,6),
+  xmax decimal(9,6),
+  ymax decimal(9,6),
+  model varchar(128),
+  gdc_file_id varchar(64),
+  PRIMARY KEY (case_id, page_no, block_index),
+  FOREIGN KEY (case_id) REFERENCES tumour_case(case_id)
+);
 CREATE TABLE flag (
   flag_id varchar(64) NOT NULL PRIMARY KEY,
   case_id varchar(64) NOT NULL,

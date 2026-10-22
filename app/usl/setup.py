@@ -15,6 +15,8 @@ from app.usl.model import (
     FILE_DB,
     FILE_STORE_DIR,
     NAMESPACE,
+    PARSE_BLOCK_COLUMNS,
+    PARSE_BLOCKS_CSV,
     PG_SOURCE,
     REPORTS_CSV,
     REST_DB,
@@ -25,7 +27,13 @@ from app.usl.model import (
     table_fqn,
 )
 from app.usl.postgres import apply_ddl, discover_user
-from app.usl.rules import FIELDNAMES, ensure_path_reports_file, require_columns, write_staging_rules
+from app.usl.rules import (
+    FIELDNAMES,
+    ensure_csv,
+    ensure_path_reports_file,
+    require_columns,
+    write_staging_rules,
+)
 from app.usl.sqltext import (
     extract_fingerprint,
     load_sql,
@@ -47,6 +55,7 @@ _ACTIVATE = (
     "054_activate_derived_stage.sql",
     "055_activate_stage_check.sql",
     "056_activate_flag.sql",
+    "057_activate_parse_block.sql",
 )
 _DQ_FILES = (
     "060_dq_nodes_consistent.sql",
@@ -64,6 +73,7 @@ _REGISTER = (
 _FILE_TABLES = (
     ("staging_rules", "011_filestore_staging_rules.sql", "013_uncache_staging_rules.sql"),
     ("path_reports", "012_filestore_path_reports.sql", "014_uncache_path_reports.sql"),
+    ("parse_blocks", "015_filestore_parse_blocks.sql", "016_uncache_parse_blocks.sql"),
 )
 _YES_VALUES = {"true", "yes", "1", "y", "activated"}
 _REST_TABLE = "brca_cases_raw"
@@ -177,7 +187,7 @@ async def status_report() -> str:
 
     databases, db_error = await _try_sql("SHOW LIGHTNING DATABASES")
     for database, table_names in (
-        (FILE_DB, ("staging_rules", "path_reports")),
+        (FILE_DB, ("staging_rules", "path_reports", "parse_blocks")),
         (REST_DB, (_REST_TABLE,)),
     ):
         db_on = db_error is None and present(databases, database)
@@ -309,6 +319,7 @@ def _postgres_create_sql() -> str:
 def _prepare_files() -> None:
     write_staging_rules(RULES_CSV)
     ensure_path_reports_file(REPORTS_CSV)
+    ensure_csv(PARSE_BLOCKS_CSV, PARSE_BLOCK_COLUMNS)
     require_columns(RULES_CSV, FIELDNAMES)
 
 
@@ -318,6 +329,7 @@ async def _upload_files() -> None:
         [
             ("staging_rules.csv", RULES_CSV.read_bytes()),
             ("path_reports.csv", REPORTS_CSV.read_bytes()),
+            ("parse_blocks.csv", PARSE_BLOCKS_CSV.read_bytes()),
         ]
     )
 
@@ -603,6 +615,8 @@ async def _stage_check_is_current() -> bool:
     if error or not result.rows:
         return False
     contract = _contract_from_result(result)
+    if not _has_all_tables(contract):
+        return False
     names = _usl_table_column_names(contract, "stage_check")
     if SCHEMA_MARKER in names:
         return True
@@ -619,6 +633,19 @@ async def _stage_check_is_current() -> bool:
             continue
         return SCHEMA_MARKER in json.dumps(item).lower()
     return False
+
+
+def _has_all_tables(contract: Any) -> bool:
+    """False when the deployed USL lacks a table this code defines (a new table was added)."""
+    tables = contract.get("tables") if isinstance(contract, dict) else None
+    if not isinstance(tables, list):
+        return True  # unknown contract shape: fall back to the column check
+    listed = {
+        str(item.get("name") or item.get("table") or item.get("tableName"))
+        for item in tables
+        if isinstance(item, dict)
+    }
+    return all(table in listed for table in USL_TABLES)
 
 
 def _usl_table_column_names(contract: Any, table: str) -> set[str]:

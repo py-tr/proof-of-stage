@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SQL_DIR = Path(__file__).resolve().parent / "sql"
 RULES_CSV = ROOT / "data" / "reference" / "staging_rules.csv"
 REPORTS_CSV = ROOT / "data" / "reports" / "path_reports.csv"
+PARSE_BLOCKS_CSV = ROOT / "data" / "scans" / "parse_blocks.csv"
 
 NAMESPACE = "lightning.metastore.registry_audit"
 USL_NAME = "stage_audit"
@@ -27,6 +28,7 @@ USL_TABLES = (
     "staging_rule",
     "derived_stage",
     "stage_check",
+    "parse_block",
     "flag",
 )
 
@@ -77,6 +79,19 @@ FLAG_COLUMNS = (
 )
 
 REPORT_COLUMNS = ("report_id", "case_id", "report_text")
+PARSE_BLOCK_COLUMNS = (
+    "case_id",
+    "page_no",
+    "block_index",
+    "block_text",
+    "block_kind",
+    "xmin",
+    "ymin",
+    "xmax",
+    "ymax",
+    "model",
+    "gdc_file_id",
+)
 
 
 def table_fqn(table: str) -> str:

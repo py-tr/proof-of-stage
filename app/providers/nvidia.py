@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import base64
+import json
 import threading
 import time
 from collections import deque
@@ -133,8 +135,25 @@ async def chat(
         "max_tokens": max_tokens,
         **extra,
     }
-    retries_left = _MAX_RETRIES
     empty_retries_left = 1
+    while True:
+        payload = await _post(headers, body)
+        served = payload.get("model")
+        served_name = served if isinstance(served, str) else ""
+        if served_name not in config.allowed_served_models(model):
+            raise ModelMismatch(f"response model {served_name!r} != requested {model!r}")
+        text = strip_think(_extract_text(payload))
+        if not text.strip():
+            if empty_retries_left > 0:
+                empty_retries_left -= 1
+                continue
+            raise EmptyAnswer("NVIDIA chat returned an empty answer")
+        return text, served_name
+
+
+async def _post(headers: dict[str, str], body: dict[str, Any]) -> dict[str, Any]:
+    """POST one chat completion via the shared limiter; retry 429/5xx and transport errors."""
+    retries_left = _MAX_RETRIES
     async with httpx.AsyncClient(timeout=_TIMEOUT_S) as client:
         while True:
             await limiter.acquire()
@@ -155,15 +174,47 @@ async def chat(
                 raise NvidiaError(_error_message(response))
             if not (200 <= response.status_code < 300):
                 raise NvidiaError(_error_message(response))
-            payload = response.json()
-            served = payload.get("model")
-            served_name = served if isinstance(served, str) else ""
-            if served_name not in config.allowed_served_models(model):
-                raise ModelMismatch(f"response model {served_name!r} != requested {model!r}")
-            text = strip_think(_extract_text(payload))
-            if not text.strip():
-                if empty_retries_left > 0:
-                    empty_retries_left -= 1
-                    continue
-                raise EmptyAnswer("NVIDIA chat returned an empty answer")
-            return text, served_name
+            return response.json()
+
+
+async def parse_page(jpeg: bytes) -> tuple[list[dict[str, Any]], str]:
+    """Nemotron Parse on one page image: every block's text, class and 0-1 box (top-left origin).
+
+    Returns (blocks, served model). The v1 API takes the image as an <img> data URI and
+    answers through the markdown_bbox tool.
+    """
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    api_key = config.getenv("NVIDIA_API_KEY")
+    if api_key is not None:
+        headers["Authorization"] = f"Bearer {api_key}"
+    image = base64.b64encode(jpeg).decode()
+    tool = {"type": "function", "function": {"name": "markdown_bbox"}}
+    body = {
+        "model": config.NV_PARSE,
+        "messages": [{"role": "user", "content": f'<img src="data:image/jpeg;base64,{image}" />'}],
+        "tools": [tool],
+        "tool_choice": tool,
+        "max_tokens": 3500,
+    }
+    payload = await _post(headers, body)
+    served = payload.get("model")
+    served_name = served if isinstance(served, str) else ""
+    if served_name not in config.allowed_served_models(config.NV_PARSE):
+        raise ModelMismatch(f"response model {served_name!r} != requested {config.NV_PARSE!r}")
+    calls = payload["choices"][0]["message"].get("tool_calls") or []
+    if not calls:
+        return [], served_name
+    parsed = json.loads(calls[0]["function"]["arguments"])
+    items = parsed[0] if parsed and isinstance(parsed[0], list) else parsed
+    blocks = [
+        {
+            "x0": float(item["bbox"]["xmin"]),
+            "y0": float(item["bbox"]["ymin"]),
+            "x1": float(item["bbox"]["xmax"]),
+            "y1": float(item["bbox"]["ymax"]),
+            "text": str(item.get("text", "")),
+            "kind": str(item.get("type", "")),
+        }
+        for item in items
+    ]
+    return blocks, served_name
