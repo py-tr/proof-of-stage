@@ -314,12 +314,24 @@ async def test_dq_report_prints_counts(monkeypatch: pytest.MonkeyPatch) -> None:
     async def fake(rule: str) -> DqCounts:
         return DqCounts(rule, 4, 3, 1)
 
+    async def fake_key(name: str, table: str) -> list[dict[str, str]]:
+        return [
+            {
+                "type": "Primary Key Constraint",
+                "total_record": "9",
+                "valid_record": "9",
+                "invalid_record": "0",
+            }
+        ]
+
     monkeypatch.setattr("app.usl.setup.run_dq", fake)
+    monkeypatch.setattr("app.usl.setup.run_key_dq", fake_key)
     text = await dq_report()
-    assert "nodes_consistent total=4 valid=3 invalid=1" in text
-    assert "stage_derivable_but_missing total=4 valid=3 invalid=1" in text
-    assert "report_agrees total=4 valid=3 invalid=1" in text
-    assert "edition_supported total=4 valid=3 invalid=1" in text
+    assert "nodes_consistent [stage_check] total=4 valid=3 invalid=1" in text
+    assert "stage_derivable_but_missing [stage_check] total=4 valid=3 invalid=1" in text
+    assert "nodes_within_tested [recorded_stage] total=4 valid=3 invalid=1" in text
+    assert "case_id [parse_block] Primary Key Constraint: total=9 valid=9 invalid=0" in text
+    assert "composite keys run via their first column" in text
 
 
 @pytest.mark.asyncio

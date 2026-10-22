@@ -40,6 +40,26 @@ DQ_RULES = (
     "edition_matches_year",
     "fault_named",
     "fault_unresolved",
+    "nodes_within_tested",
+)
+# The table each custom rule is registered on. The basic source-level rule checks the
+# recorded values themselves; the others check the derived comparison table.
+DQ_RULE_TABLES = {rule: "stage_check" for rule in DQ_RULES} | {
+    "nodes_within_tested": "recorded_stage"
+}
+# Rules Zetaris generates from the DDL's keys (LIST DQ USL). A composite key runs via its first
+# column ("case_id"); its listed name ("case_id,page_no,block_index") does not parse in RUN DQ.
+KEY_RULES = (
+    ("case_id", "tumour_case"),
+    ("report_id", "path_report"),
+    ("case_id", "path_report"),
+    ("case_id", "recorded_stage"),
+    ("rule_id", "staging_rule"),
+    ("case_id", "derived_stage"),
+    ("case_id", "stage_check"),
+    ("flag_id", "flag"),
+    ("case_id", "flag"),
+    ("case_id", "parse_block"),
 )
 
 ALLOWED_ROOTS = (

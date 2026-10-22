@@ -147,3 +147,10 @@ def fault_named_valid(row: dict[str, Any]) -> bool:
 def fault_unresolved_valid(row: dict[str, Any]) -> bool:
     """Invalid when a contradiction still needs a human (no settling evidence)."""
     return fault_field(row) != FAULT_REVIEW
+
+
+def nodes_within_tested_valid(row: dict[str, Any]) -> bool:
+    """The basic source-level rule: positive nodes cannot exceed the nodes examined."""
+    positive = _number(_text(row, "lymph_nodes_positive"))
+    tested = _number(_text(row, "lymph_nodes_tested"))
+    return positive is None or tested is None or positive <= tested

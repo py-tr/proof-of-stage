@@ -4,4 +4,5 @@ REMOVE DQ report_agrees TABLE lightning.metastore.registry_audit.stage_audit.sta
 REMOVE DQ edition_supported TABLE lightning.metastore.registry_audit.stage_audit.stage_check;
 REMOVE DQ edition_matches_year TABLE lightning.metastore.registry_audit.stage_audit.stage_check;
 REMOVE DQ fault_named TABLE lightning.metastore.registry_audit.stage_audit.stage_check;
-REMOVE DQ fault_unresolved TABLE lightning.metastore.registry_audit.stage_audit.stage_check
+REMOVE DQ fault_unresolved TABLE lightning.metastore.registry_audit.stage_audit.stage_check;
+REMOVE DQ nodes_within_tested TABLE lightning.metastore.registry_audit.stage_audit.recorded_stage

@@ -9,9 +9,11 @@ from typing import Any
 
 from app.usl.errors import public_error
 from app.usl.model import (
+    DQ_RULE_TABLES,
     DQ_RULES,
     EXTRACTION_COLUMNS,
     FLAG_COLUMNS,
+    KEY_RULES,
     NAMESPACE,
     PG_SOURCE,
     SQL_NODE_COUNT,
@@ -91,11 +93,14 @@ def guard_select(sql: str) -> str:
     if upper.startswith(("RUN DQ", "SHOW DQ")):
         target = _DQ_TARGET.match(compact)
         if target is None:
-            raise SqlGuardError("a data-quality command must name a rule and the stage_check table")
-        if target.group(1).lower() not in DQ_RULES:
+            raise SqlGuardError("a data-quality command must name a rule and its USL table")
+        rule, table = target.group(1).lower(), target.group(2).lower()
+        allowed = {(r, table_fqn(t).lower()) for r, t in DQ_RULE_TABLES.items()}
+        allowed |= {(r, table_fqn(t).lower()) for r, t in KEY_RULES}
+        if not any(r == rule for r, _ in allowed):
             raise SqlGuardError("unknown data-quality rule")
-        if target.group(2).lower() != STAGE_CHECK.lower():
-            raise SqlGuardError("data-quality commands may only target stage_check")
+        if (rule, table) not in allowed:
+            raise SqlGuardError("data-quality commands may only target the rule's own USL table")
     for name in _referenced_names(masked):
         if not allowed_name(name):
             raise SqlGuardError("name is outside the registry audit sources")
@@ -115,13 +120,23 @@ async def load_contract() -> Any:
 
 async def run_dq(rule: str) -> DqCounts:
     name = _check_rule(rule)
-    result = await select(f"RUN DQ {name} TABLE {STAGE_CHECK}", limit=100)
+    result = await select(f"RUN DQ {name} TABLE {table_fqn(DQ_RULE_TABLES[name])}", limit=100)
     return parse_dq_counts(name, result)
+
+
+async def run_key_dq(name: str, table: str) -> list[dict[str, Any]]:
+    """Run a key rule Zetaris generated from the DDL; one row per constraint type."""
+    if (name, table) not in KEY_RULES:
+        raise SqlGuardError("unknown key rule")
+    result = await select(f"RUN DQ {name} TABLE {table_fqn(table)}", limit=100)
+    return _count_rows(result)
 
 
 async def invalid_records(rule: str, limit: int = 5000) -> SqlResult:
     name = _check_rule(rule)
-    return await select(f"SHOW DQ INVALID RECORD {name} TABLE {STAGE_CHECK}", limit=limit)
+    return await select(
+        f"SHOW DQ INVALID RECORD {name} TABLE {table_fqn(DQ_RULE_TABLES[name])}", limit=limit
+    )
 
 
 async def insert_flag(

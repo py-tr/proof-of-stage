@@ -200,3 +200,25 @@ def test_guard_blocks_review_bypasses(sql: str) -> None:
 
 def test_guard_allows_quotes_inside_string_literals() -> None:
     guard_select("SELECT quote FROM oa_pg.flag_log WHERE quote = 'the \"chest wall\" is clear'")
+
+
+def test_dq_guard_allows_each_rule_only_on_its_own_table() -> None:
+    from app.usl.client import SqlGuardError, guard_select
+
+    base = "lightning.metastore.registry_audit.stage_audit"
+    guard_select(f"RUN DQ nodes_within_tested TABLE {base}.recorded_stage")
+    guard_select(f"RUN DQ case_id TABLE {base}.parse_block")  # a generated key rule
+    with pytest.raises(SqlGuardError):
+        guard_select(f"RUN DQ nodes_within_tested TABLE {base}.stage_check")
+    with pytest.raises(SqlGuardError):
+        guard_select(f"RUN DQ nodes_consistent TABLE {base}.recorded_stage")
+    with pytest.raises(SqlGuardError):
+        guard_select(f"RUN DQ rule_id TABLE {base}.flag")
+
+
+def test_basic_rule_mirror() -> None:
+    from app.usl.dq import nodes_within_tested_valid
+
+    assert nodes_within_tested_valid({"lymph_nodes_positive": "4.0", "lymph_nodes_tested": "18.0"})
+    assert not nodes_within_tested_valid({"lymph_nodes_positive": "26", "lymph_nodes_tested": "3"})
+    assert nodes_within_tested_valid({"lymph_nodes_positive": "26", "lymph_nodes_tested": None})
