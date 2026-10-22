@@ -28,6 +28,7 @@ _MIRROR = {
     "fault_named": dq.fault_named_valid,
     "fault_unresolved": dq.fault_unresolved_valid,
 }
+# Sample mode has no Zetaris; live mode reads the same lineage from the USL contract.
 SOURCES = (
     ("tumour_case", "GDC_REST.brca_cases_raw", "REST API (NCI GDC), cached"),
     ("recorded_stage", "GDC_REST.brca_cases_raw", "REST API (NCI GDC), cached"),
@@ -35,7 +36,37 @@ SOURCES = (
     ("path_report", "REG_FILES path_reports.csv", "file store, report text"),
     ("derived_stage", "oa_pg.derived_extraction", "Postgres, append-only reader output"),
     ("flag", "oa_pg.flag_log", "Postgres, append-only review log"),
+    ("parse_block", "REG_FILES parse_blocks.csv", "file store, Nemotron Parse blocks"),
 )
+_SOURCE = re.compile(r"\b(?:FROM|JOIN)\s+([A-Za-z_][\w.]*)", re.IGNORECASE)
+_KINDS = (
+    ("GDC_REST.", "REST API (NCI GDC), cached"),
+    ("REG_FILES.", "file store"),
+    ("oa_pg.", "Postgres, append-only"),
+    ("lightning.metastore.", "USL table"),
+)
+
+
+def _kind(source: str) -> str:
+    return next((kind for prefix, kind in _KINDS if source.startswith(prefix)), "source")
+
+
+def contract_lineage(contract: Any) -> list[dict[str, str]]:
+    """Each USL table's inputs, read from its activation query in the LOAD USL contract."""
+    rows = []
+    tables = contract.get("tables") if isinstance(contract, dict) else None
+    for table in tables or []:
+        if not isinstance(table, dict):
+            continue
+        query = str(table.get("activateQuery") or "")
+        for source in sorted(set(_SOURCE.findall(query))):
+            short = source.rsplit(".", 1)[-1] if source.startswith("lightning.") else source
+            rows.append(
+                {"usl_table": str(table.get("name")), "source": short, "kind": _kind(source)}
+            )
+    return rows
+
+
 _CACHE_S = 300.0
 _MIN_REFRESH_S = 30.0  # a lasting SQL/mirror difference must not refetch every load
 
@@ -47,10 +78,19 @@ def rule_expression(rule: str) -> str:
 
 class LiveLineage:
     source = "Zetaris RUN DQ (SHOW DQ INVALID RECORD)"
+    sources_from = "LOAD USL contract (activation queries)"
 
     def __init__(self) -> None:
         self._hits: dict[str, set[str]] = {}
         self._at = 0.0
+        self._lineage: list[dict[str, str]] | None = None
+
+    async def sources(self) -> list[dict[str, str]]:
+        if self._lineage is None:
+            from app.usl.client import load_contract
+
+            self._lineage = contract_lineage(await load_contract()) or None
+        return self._lineage or _static_sources()
 
     async def _refresh(self) -> None:
         if self._hits and time.monotonic() - self._at < _CACHE_S:
@@ -87,8 +127,16 @@ def _mirror(check: dict[str, Any]) -> list[str]:
     return [rule for rule, valid in _MIRROR.items() if not valid(check)]
 
 
+def _static_sources() -> list[dict[str, str]]:
+    return [{"usl_table": t, "source": origin, "kind": kind} for t, origin, kind in SOURCES]
+
+
 class MirrorLineage:
     source = "Python mirror of the USL rules (sample mode: no Zetaris)"
+    sources_from = "static list (sample mode: no Zetaris)"
+
+    async def sources(self) -> list[dict[str, str]]:
+        return _static_sources()
 
     def forget(self) -> None:
         return None
@@ -110,7 +158,6 @@ async def lineage(source: LiveLineage | MirrorLineage, check: dict[str, Any]) ->
         "mirror_disagrees": failed != mirror,
         "table": table_fqn("stage_check"),
         "failed": [{"rule": rule, "expression": rule_expression(rule)} for rule in failed],
-        "sources": [
-            {"usl_table": table, "source": origin, "kind": kind} for table, origin, kind in SOURCES
-        ],
+        "sources": await source.sources(),
+        "sources_from": source.sources_from,
     }

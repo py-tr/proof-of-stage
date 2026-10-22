@@ -164,7 +164,7 @@ function renderStrip(data) {
     failed.length ? failed.map((r, i) => el("span", {}, i ? ", " : "", el("code", {}, r))) : "none",
     ` · evaluated by ${data.lineage.evaluated_by}`,
     data.lineage.mirror_disagrees ? " · note: the Python mirror disagrees with Zetaris on this case" : "");
-  const details = el("details", {}, el("summary", {}, "rule text and where each USL table comes from"));
+  const details = el("details", {}, el("summary", {}, `rule text and where each USL table comes from (${data.lineage.sources_from})`));
   for (const f of data.lineage.failed) details.append(el("div", {}, el("code", {}, `${f.rule}: ${f.expression}`)));
   const list = el("ul");
   for (const s of data.lineage.sources) list.append(el("li", {}, el("code", {}, s.usl_table), ` ← ${s.source} (${s.kind})`));

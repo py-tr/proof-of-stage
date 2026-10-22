@@ -239,3 +239,27 @@ def test_unread_cases_are_not_shown_as_unresolved() -> None:
     assert headline({**unread, "read": True}).startswith("Needs a person.")
     # sample mode cannot know (read is None): never claims "not read"
     assert order_queue([{"case_id": "A", "fault_field": None}], {})[0]["read"] is None
+
+
+def test_lineage_is_read_from_the_usl_contract() -> None:
+    from app.web.lineage import contract_lineage
+
+    contract = {
+        "tables": [
+            {"name": "flag", "activateQuery": "SELECT a FROM oa_pg.flag_log"},
+            {
+                "name": "stage_check",
+                "activateQuery": "SELECT * FROM lightning.metastore.registry_audit.stage_audit"
+                ".recorded_stage rec LEFT JOIN lightning.metastore.registry_audit.stage_audit"
+                ".tumour_case tc ON tc.case_id = rec.case_id",
+            },
+        ]
+    }
+    rows = contract_lineage(contract)
+    assert {
+        "usl_table": "flag",
+        "source": "oa_pg.flag_log",
+        "kind": "Postgres, append-only",
+    } in rows
+    assert {"usl_table": "stage_check", "source": "tumour_case", "kind": "USL table"} in rows
+    assert contract_lineage({}) == []
