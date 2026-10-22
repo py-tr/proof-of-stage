@@ -1,0 +1,8 @@
+Proof of Stage
+Copyright 2026 the Proof of Stage authors. Licensed under the Apache License, Version 2.0.
+
+This product includes the Meterless Markovian reference implementation and its
+conformance runner (https://github.com/Meterless/Meterless, engines/markovian,
+commit 4eb96f27723ed54c837cc41a94d1e90f54db3324), Copyright 2026 Meterless,
+licensed under the Apache License, Version 2.0. The files are included
+unmodified in vendor/meterless-markovian/.
