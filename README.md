@@ -46,12 +46,14 @@ Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`):
 
 Nightshift settings we used (Preferences): Adaptive compute, Self-refine, Answer fusion, Reasoning scaffold, Optimistic streaming and Tier-split **off** (so an answer is one model's own text); the cloud Lightning lane moved from Race to Judge (so a pinned Super is never substituted).
 
-## Results (live, 2026-10-22; every number has its file)
+## Results (live, 2026-10-22/23; every number has its file)
 
 | Result | Value | Source |
 |---|---|---|
 | Records that cannot be true as written (N vs count, 6th/7th edition) | 24 of 1,097 | `usl dq` |
-| Fields named by the evidence | 7 (3 count field, 4 N field incl. 1 missing N); 18 "review", of which 15 not read yet | `stage_check` |
+| Fields named by the evidence (after the ladder batch, 2026-10-23) | **20 of 25** queue cases: 8 node-count field, 12 N field (incl. 1 missing N); 5 for a person (micrometastasis, no count stated) | `stage_check`, `logs/batch-2026-10-23.txt` |
+| The thinking-off rung on contradiction cases | cleared 0 fields in 15 cases: a self-consistent reading cannot agree with both contradicting fields, so every case escalated to the 4k rung (the rung catches a wrong fast read: TCGA-A1-A0SN) | `logs/markovian-chunks.jsonl` |
+| Data-quality pack | 8 custom rules + 13 Zetaris key rules, all keys valid; reproducible query pack in 21 s | `docs/zetaris-demo.md` |
 | Thinking budget (Super, 42 fields) | off 26/42 · 1k 28 · 4k 30 · unlimited 30 | TODO: declare the reused pre-window arm or re-measure |
 | Scan boxes (Parse → Super → guard, pre-registered) | v1 failed 0/3; v2 passed 4/6 | TODO: link the spike report |
 | Earlier flagging pipeline, held-out (pre-registered) | 2/4 flags right (50%, 95% CI 15–85), 12× the 4.2% base rate, recall 2/13 | TODO: link |
