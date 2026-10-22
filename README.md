@@ -56,6 +56,18 @@ Nightshift settings we used (Preferences): Adaptive compute, Self-refine, Answer
 | Scan boxes (Parse → Super → guard, pre-registered) | v1 failed 0/3; v2 passed 4/6 | TODO: link the spike report |
 | Earlier flagging pipeline, held-out (pre-registered) | 2/4 flags right (50%, 95% CI 15–85), 12× the 4.2% base rate, recall 2/13 | TODO: link |
 
+## Why some calls bypass Nightshift (we tried first)
+
+Nightshift is our default provider: every text call goes through it with Super VL pinned, the receipt's Ed25519 signature verified and cached answers refused. Three kinds of call go to NVIDIA directly, each after we tried Nightshift and measured why it could not do the job (build journal M19–M25; reported to Meterless):
+
+| Call | What happened through Nightshift (Windows edition) | Evidence |
+|---|---|---|
+| **Thinking OFF** (the cheap first rung) | Nightshift replaces the client's `chat_template_kwargs` with the model's default (thinking on); no request field or header changes it | its `providers.js` (`nvidiaThinkingBody`); 6/6 test calls answered with thinking |
+| **A 4k thinking budget** (the deep rung) | no `reasoning_budget` is forwarded, so thinking is unbounded, and cloud calls are cut at 45 s (`provider_deadline`), also when streaming; a real report needs ~40 s at 4k | `CLOUD_FETCH_DEADLINE_MS = 45_000`; 3 runs cut at 45.2 s; the same body via NVIDIA: 4.0 s (off), 40.7 s (4k) |
+| **Images** (Nemotron Parse on scans, the scan witness) | this edition has no Vision duty, so no lane can take an image request | the Lanes panel; another team saw `class_no_route` |
+
+What we changed so Nightshift's answers are one model's own text: Adaptive compute, Self-refine, Answer fusion, Reasoning scaffold, Optimistic streaming and Tier-split off; cloud Lightning moved from Race to Judge, after which a pinned Super won 10/10 races. If Meterless adds a per-request thinking switch, the two text rungs move back through Nightshift with a one-line change (`provider=` in `app/engine/rungs.py`).
+
 ## Limits (honest)
 
 - Hosted Nemotron Parse 2.0 returned an empty document on our key (even on NVIDIA's own example); we use Parse v1.
