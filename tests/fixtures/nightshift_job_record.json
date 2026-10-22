@@ -1,0 +1,227 @@
+{
+ "id": "job_mvjdos7n20",
+ "status": "completed",
+ "kind": "best_of_n",
+ "generated": 1,
+ "progress": "generated 1 of a planned 1 attempts, 1 clusters formed",
+ "created_at": "2026-10-22T10:08:31.187Z",
+ "started_at": "2026-10-22T10:08:31.200Z",
+ "finished_at": "2026-10-22T10:08:42.864Z",
+ "estimated_start": "2026-10-22T10:08:31.187Z",
+ "estimated_completion": "2026-10-22T10:08:42.651Z",
+ "estimate_revised": false,
+ "partial_available": true,
+ "partial": false,
+ "clusters": [
+  {
+   "id": 0,
+   "size": 1,
+   "centroid_seq": 1,
+   "verdict": null,
+   "mean_verifier_score": null,
+   "name": "ready",
+   "synths": [],
+   "best_synth_seq": null
+  }
+ ],
+ "app": "default",
+ "n": 1,
+ "window": "now",
+ "privacy": "local-only",
+ "judge_mode": null,
+ "winner_seq": 1,
+ "runner_up_seq": null,
+ "outcome_contract_id": "oc_51d7c56c99b257ec",
+ "outcome_contract_hash": "51d7c56c99b257ec6185603d46d8896c06732ae6e01f8a5fe76297fd974d04d2",
+ "outcome_contract": {
+  "schema": "meterless.outcome_contract/v1",
+  "primary": "supported_answer",
+  "floors": [
+   {
+    "id": "policy",
+    "required": true
+   },
+   {
+    "id": "verdict",
+    "required": true
+   }
+  ],
+  "measurement_policy": {
+   "hide_efficiency_unless_floors": true
+  },
+  "source": "preset"
+ },
+ "policy": {
+  "violations": [],
+  "denied_actions": 0,
+  "permissions_honored": true,
+  "egress_honored": true
+ },
+ "method_candidate": {
+  "eligible": false,
+  "reason": "1 attempts \u2014 a Method needs \u226524 for its stop condition to mean anything"
+ },
+ "trace_fp": "tfp_c965807d219d93d7c52a561e",
+ "trace_fps": {
+  "1": "tfp_c965807d219d93d7c52a561e"
+ },
+ "trace_fp_basis": "winner",
+ "lanes_resolved": [
+  "nemotron-3-5-lightning-3-2"
+ ],
+ "manifest_hash": "678c26ef0400991047c58e451784853feffa1926bc2e63d84ba00a7df3f943e2",
+ "resume_seam": null,
+ "paused_at": null,
+ "fleet_active": "imported-v2",
+ "execution_plan": {
+  "version": 1,
+  "mode": "serial",
+  "plan_version": 1,
+  "capacity_mb": 55300,
+  "packed_against_mb": 15069,
+  "peak_resident_mb": 20997,
+  "total_lanes": 4,
+  "active_at_once": 3,
+  "batches": [
+   {
+    "est_resident_mb": 20997,
+    "index": 0,
+    "lane_ids": [
+     "nemotron-3-5-lightning-3-2",
+     "nemotron-3-5-lightning-3",
+     "nemotron-3-5-super-vl-12-2"
+    ],
+    "stage": "generate"
+   },
+   {
+    "est_resident_mb": 0,
+    "index": 1,
+    "lane_ids": [
+     "nemotron-3-5-super-vl-12"
+    ],
+    "stage": "judge"
+   }
+  ],
+  "infeasible": [],
+  "missing_roles": [],
+  "attempts_per_lane": 1,
+  "attempts_per_residency": 1,
+  "passes": 1,
+  "switches_planned": 1,
+  "switches": 0,
+  "stage": "generated",
+  "current": null,
+  "completed": [
+   {
+    "pass": 0,
+    "batch": 0,
+    "lanes": [
+     "nemotron-3-5-lightning-3-2"
+    ],
+    "attempts": 1
+   }
+  ],
+  "capability": {
+   "version": 1,
+   "os": "windows",
+   "os_version": "Windows 11 23H2",
+   "chip": "NVIDIA GeForce RTX 4060 Ti",
+   "backend": "cuda",
+   "backend_verified": true,
+   "total_mb": 65366,
+   "safe_capacity_mb": 15069,
+   "gpu_working_set_mb": 15069,
+   "gpu_working_set_source": "vram",
+   "pressure": "warn",
+   "thermal": "nominal",
+   "power_source": "ac",
+   "confidence": "estimated",
+   "sampled_at": 1792663715
+  },
+  "residency_max_sec": null,
+  "residency_cap_auto_sec": 900,
+  "extra_passes": 0,
+  "cut_short": [],
+  "yields": [],
+  "ctx_reduced": [],
+  "priority": "batch",
+  "min_ctx": 1542
+ },
+ "prompt": "Reply with one word: ready",
+ "title": "Reply with one word: ready",
+ "title_source": "auto",
+ "schedule_id": null,
+ "rerun_of": null,
+ "artifact_kinds": [
+  "raw"
+ ],
+ "watcher_id": null,
+ "prompt_full": "Reply with one word: ready",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Reply with one word: ready"
+  }
+ ],
+ "judge_options": null,
+ "mode": "meterless/deep",
+ "selector": "verifier_panel",
+ "deadline": null,
+ "auto_plan": null,
+ "contract_text": null,
+ "rubric_text": null,
+ "rubric_hash": null,
+ "rubric_ref": null,
+ "rubric_bar": null,
+ "rubric_source": null,
+ "rubric_edited": false,
+ "stop_when_met": 0,
+ "capability_plan": {
+  "requires": [],
+  "prefers": [],
+  "stages": [
+   {
+    "id": "use",
+    "needs": [],
+    "optional": [
+     "coding"
+    ],
+    "input": "native"
+   }
+  ],
+  "from": "derived"
+ },
+ "auto_synthesize": {
+  "mode": "off",
+  "floor": 2,
+  "max_clusters": 12,
+  "night": true,
+  "source": "job",
+  "ran_at": "2026-10-22T10:08:42.913Z",
+  "queued": 0,
+  "night_make_id": null,
+  "strategy": "off",
+  "skipped": []
+ },
+ "lane_stats": {
+  "nemotron-3-5-lightning-3-2": {
+   "attempts": 1,
+   "tokens": 2,
+   "errors": 0,
+   "last_seq": 1,
+   "last_landed_at": "2026-10-22T10:08:42.644Z"
+  }
+ },
+ "diversity": {
+  "level": "off",
+  "axes": {
+   "briefs": false,
+   "temperature": false,
+   "postures": false,
+   "synthesis": false
+  }
+ },
+ "attempt_budget": null,
+ "compiled": null,
+ "rescored": null
+}

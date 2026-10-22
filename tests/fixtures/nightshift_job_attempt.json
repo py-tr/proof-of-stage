@@ -1,0 +1,68 @@
+{
+ "seq": 1,
+ "lane": "nemotron-3-5-lightning-3-2",
+ "text": "ready",
+ "tokens": 2,
+ "slot": 1,
+ "dispatched_at": "2026-10-22T10:08:31.306Z",
+ "elapsed_ms": 11328,
+ "prompt_sha256": "8dab799c154e2ebfdf33a5aa91528df1df74f75b6930810b401df329b01a4581",
+ "prompt_basis": 2,
+ "tokens_source": "estimated",
+ "finish_reason": "stop",
+ "receipt_id": "rcpt_req_7jk0est5",
+ "cluster": 0,
+ "coherence": 1,
+ "model": {
+  "lane": "nemotron-3-5-lightning-3-2",
+  "requested": "local-runtime/nemotron-3.5-lightning-30b-a3b",
+  "resolved": "local-runtime/nemotron-3.5-lightning-30b-a3b",
+  "family": "nvidia",
+  "honored": true
+ },
+ "ctx_fold": null,
+ "landed_at": "2026-10-22T10:08:42.634Z",
+ "enrichment": {
+  "v": 1,
+  "seq": 1,
+  "at": "2026-10-22T10:08:42.886Z",
+  "ms": 37,
+  "lane": "nemotron-3-5-lightning-3-2",
+  "cluster": 0,
+  "workers": [
+   "tags-lex",
+   "entities",
+   "actions",
+   "summary-extract",
+   "reading",
+   "uniq"
+  ],
+  "tags": [
+   "ready"
+  ],
+  "entities": [],
+  "actions": [],
+  "nouns": [
+   "ready"
+  ],
+  "verbs": [],
+  "summary": "ready",
+  "summary_kind": "extractive",
+  "reading": {
+   "words": 1,
+   "code_ratio": 0,
+   "lang": null
+  },
+  "uniq": null
+ },
+ "rating": {
+  "seq": 1,
+  "human": null,
+  "human_at": null,
+  "judge": null,
+  "judge_at": null,
+  "judge_score": null,
+  "judge_source": null
+ },
+ "trace_fp": "tfp_c965807d219d93d7c52a561e"
+}
