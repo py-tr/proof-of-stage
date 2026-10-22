@@ -17,7 +17,7 @@ from app.providers.text import strip_think
 
 NVIDIA_CHAT_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 _MAX_PER_MINUTE = 20
-_TIMEOUT_S = 180.0
+_TIMEOUT_S = 300.0  # Super with a thinking budget can take minutes
 _MAX_RETRIES = 2
 _WINDOW_S = 60.0
 _MAX_RETRY_AFTER_S = 60.0
@@ -136,6 +136,10 @@ async def chat(
             try:
                 response = await client.post(NVIDIA_CHAT_URL, headers=headers, json=body)
             except httpx.HTTPError as exc:
+                if retries_left > 0:
+                    retries_left -= 1
+                    await asyncio.sleep(2.0)
+                    continue
                 raise NvidiaError(f"NVIDIA transport error: {type(exc).__name__}") from exc
             if response.status_code == 429 or response.status_code >= 500:
                 if retries_left > 0:

@@ -71,7 +71,12 @@ async def read_cases(
     for case_id in targets:
         if case_id not in reports:
             continue
-        result = await read_report(case_id, reports[case_id].report_text, provider=provider)
+        try:
+            result = await read_report(case_id, reports[case_id].report_text, provider=provider)
+        except Exception as exc:  # one failed case must not stop the batch
+            totals["errors"] = totals.get("errors", 0) + 1
+            sys.stdout.write(f"{case_id}  ERROR {type(exc).__name__}: {str(exc)[:160]}\n")
+            continue
         totals["read"] += 1
         for fr in result.fields.values():
             totals[fr.status] += 1

@@ -114,3 +114,37 @@ def test_case_id_and_corpus_selection(tmp_path) -> None:  # type: ignore[no-unty
     assert [r.case_id for r in chosen] == ["TCGA-A2-A0CV"]
     assert chosen[0].report_text == "report one"
     assert io  # keep the import used for clarity of intent
+
+
+@pytest.mark.asyncio
+async def test_one_failed_case_does_not_stop_the_batch(monkeypatch, capsys) -> None:  # type: ignore[no-untyped-def]
+    from app.reader import commands
+    from app.reports.ingest import Report
+
+    reports = {
+        "TCGA-AA-0001": Report("r1", "TCGA-AA-0001", REPORT),
+        "TCGA-AA-0002": Report("r2", "TCGA-AA-0002", REPORT),
+    }
+    monkeypatch.setattr(commands, "read_reports_csv", lambda: reports)
+    calls: list[str] = []
+
+    async def flaky(case_id, report, provider="nvidia"):  # type: ignore[no-untyped-def]
+        calls.append(case_id)
+        if case_id == "TCGA-AA-0001":
+            raise RuntimeError("timeout")
+        return await read_report_stub(case_id)
+
+    async def read_report_stub(case_id):  # type: ignore[no-untyped-def]
+        from app.reader.reader import FieldResult, ReadResult
+
+        r = ReadResult(case_id=case_id, model="m", receipt_id=None, provider="nvidia")
+        r.fields["T"] = FieldResult("T", "abstained", reason="model_abstained")
+        return r
+
+    monkeypatch.setattr(commands, "read_report", flaky)
+    code = await commands.read_cases(
+        case_ids=list(reports), rule=None, limit=5, provider="nvidia", store=False
+    )
+    out = capsys.readouterr().out
+    assert code == 0 and calls == ["TCGA-AA-0001", "TCGA-AA-0002"]
+    assert "ERROR RuntimeError" in out and "errors=1" in out and "read=1" in out
