@@ -62,7 +62,7 @@ Nightshift is our default provider: every text call goes through it with Super V
 
 | Call | What happened through Nightshift (Windows edition) | Evidence |
 |---|---|---|
-| **Thinking OFF** (the cheap first rung) | Nightshift replaces the client's `chat_template_kwargs` with the model's default (thinking on); no request field or header changes it | its `providers.js` (`nvidiaThinkingBody`); 6/6 test calls answered with thinking |
+| **Thinking OFF** (the cheap first rung) | Nightshift replaces the client's `chat_template_kwargs` with the model's default (thinking on); no request field or header changes it | its `providers.js` (`nvidiaThinkingBody`); with thinking-off requested, the same report took 4.0 s via NVIDIA and still ran past 45 s via Nightshift |
 | **A 4k thinking budget** (the deep rung) | no `reasoning_budget` is forwarded, so thinking is unbounded, and cloud calls are cut at 45 s (`provider_deadline`), also when streaming; a real report needs ~40 s at 4k | `CLOUD_FETCH_DEADLINE_MS = 45_000`; 3 runs cut at 45.2 s; the same body via NVIDIA: 4.0 s (off), 40.7 s (4k) |
 | **Images** (Nemotron Parse on scans, the scan witness) | this edition has no Vision duty, so no lane can take an image request | the Lanes panel; another team saw `class_no_route` |
 
