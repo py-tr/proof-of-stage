@@ -138,6 +138,11 @@ def headline(check: dict[str, Any]) -> str:
             else "The evidence names the N field."
         )
         return f"{lead} {rec}. {reg}. {rep}."
+    if fault == FAULT_REVIEW and check.get("read") is False:
+        return (
+            f"Not read yet. {rec}. {reg}. They cannot both be true; "
+            "Nemotron has not read this report yet."
+        )
     if fault == FAULT_REVIEW:
         settle = (
             f" {rep}, which does not settle it." if report_n else " No verified reading settles it."

@@ -53,6 +53,7 @@ async function loadCohort() {
   try {
     const c = await api("/api/cohort");
     const sum = (pred) => c.groups.filter(pred).reduce((a, g) => a + g.n, 0);
+    const unread = state.queue.filter((q) => q.read === false).length;
     const total = sum(() => true);
     const contra = sum((g) => g.reason_class === "n_count_contradiction");
     const named = sum((g) => g.reason_class === "n_count_contradiction" && NAMED(g.fault_field));
@@ -63,6 +64,7 @@ async function loadCohort() {
       el("b", {}, `${contra}`), " where the recorded N and the node count cannot both be true",
       c.sample ? "" : el("span", {}, " · the report names the field in ", el("b", {}, `${named}`)),
       missing ? ` · ${missing} missing N the count could fill` : "",
+      unread ? ` · ${unread} not read yet` : "",
       " · research data, not for clinical use");
   } catch (error) {
     $("cohort").textContent = `Cohort counts unavailable: ${error.message}`;
@@ -74,16 +76,17 @@ function rowLabel(item) {
   const vs = `${show(item.recorded_n)} vs ${show(num(item.lymph_nodes_positive))}`;
   if (item.fault_field === "node_count") return `Count field · ${vs}`;
   if (item.fault_field === "pathologic_n") return item.reason_class === "n_missing_derivable" ? `N missing · ${vs}` : `N field · ${vs}`;
+  if (item.read === false) return `Not read yet · ${vs}`;
   if (item.fault_field === "review") return `Needs a person · ${vs}`;
   return `Contradiction · ${vs}`;
 }
 
 function renderQueue() {
-  const lanes = { named: $("queue-named"), review: $("queue-review"), done: $("queue-done") };
+  const lanes = { named: $("queue-named"), review: $("queue-review"), unread: $("queue-unread"), done: $("queue-done") };
   Object.values(lanes).forEach((lane) => lane.replaceChildren());
   state.queue.forEach((item, position) => {
-    const lane = item.decided_at ? "done" : NAMED(item.fault_field) ? "named" : "review";
-    const classes = ["row", lane === "review" ? "review" : "", lane === "done" ? "done" : "", position === state.index ? "active" : ""].join(" ");
+    const lane = item.decided_at ? "done" : NAMED(item.fault_field) ? "named" : item.read === false ? "unread" : "review";
+    const classes = ["row", lane === "review" || lane === "unread" ? "review" : "", lane === "done" ? "done" : "", position === state.index ? "active" : ""].join(" ");
     const row = el("div", { class: classes },
       el("div", { class: "id" }, item.case_id),
       el("div", { class: "what" }, rowLabel(item)),
@@ -93,6 +96,7 @@ function renderQueue() {
   });
   if (!lanes.named.children.length) lanes.named.append(el("p", { class: "small" }, state.mode === "sample" ? "Sample mode has no reader output: open a case and play the reader." : "No field named yet."));
   if (!lanes.done.children.length) lanes.done.append(el("p", { class: "small" }, "None yet."));
+  if (!lanes.unread.children.length) lanes.unread.append(el("p", { class: "small" }, "None."));
 }
 
 // ---------- report with highlighted spans ----------
@@ -397,10 +401,10 @@ async function start() {
     const badge = $("mode");
     badge.textContent = state.mode === "sample" ? "SAMPLE MODE · rules live · model reads off" : "LIVE · Zetaris USL stage_audit";
     badge.classList.toggle("live", state.mode === "live");
-    loadCohort();
     status(state.mode === "sample" ? "Loading the bundled sample…" : "Waiting for Zetaris stage_check…");
     state.queue = await api("/api/queue");
     renderQueue();
+    loadCohort();
     if (!state.queue.length) { status("The queue is empty: no case has a node-count contradiction or a missing N."); return; }
     const wanted = new URLSearchParams(location.search).get("case");
     let position = state.queue.findIndex((q) => q.case_id === wanted);

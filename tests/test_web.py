@@ -215,3 +215,27 @@ def test_recheck_and_challenge_what_if() -> None:
     assert only_n["fault_field_if_accepted"] == "review"  # no count yet: not enough
     both = challenge(check, report, "NPOS", "2", "Two of fourteen (2/14)", {"report_n_main": "N1"})
     assert both["fault_field_if_accepted"] == "node_count"
+
+
+def test_unread_cases_are_not_shown_as_unresolved() -> None:
+    rows = [
+        {"case_id": "A", "fault_field": "review"},
+        {"case_id": "B", "fault_field": "review"},
+        {"case_id": "C", "fault_field": "node_count"},
+    ]
+    ordered = order_queue(rows, {}, read={"A", "C"})
+    assert [row["case_id"] for row in ordered] == ["C", "A", "B"]  # unread last
+    assert [row["read"] for row in ordered] == [True, True, False]
+    unread = {
+        "edition_code": "7",
+        "recorded_n": "N2",
+        "lymph_nodes_positive": "1.0",
+        "derived_n": "pN1a",
+        "fault_field": "review",
+        "reason_class": "n_count_contradiction",
+        "read": False,
+    }
+    assert headline(unread).startswith("Not read yet.")
+    assert headline({**unread, "read": True}).startswith("Needs a person.")
+    # sample mode cannot know (read is None): never claims "not read"
+    assert order_queue([{"case_id": "A", "fault_field": None}], {})[0]["read"] is None

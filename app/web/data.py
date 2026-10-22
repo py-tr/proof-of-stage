@@ -24,6 +24,8 @@ from app.zetaris import SqlResult
 
 SAMPLE_FILE = Path(__file__).parent / "sample" / "cases.json"
 DECISION_RULE = "human_review"
+READER_METHOD = "nemotron_reader"
+READER_REVIEW_RULE = "reader_review"
 # What a reviewer can claim, and the registry field each claim is about.
 CLAIMS = {
     "node_count": "NODES_POSITIVE",
@@ -76,16 +78,23 @@ def _rows(result: SqlResult) -> list[dict[str, Any]]:
     return out
 
 
-def order_queue(rows: list[dict[str, Any]], decided: dict[str, str]) -> list[dict[str, Any]]:
-    """Undecided first; within that, a named field before 'needs a person'; then case id."""
+def order_queue(
+    rows: list[dict[str, Any]], decided: dict[str, str], read: set[str] | None = None
+) -> list[dict[str, Any]]:
+    """Undecided first; a named field, then 'needs a person', then 'not read yet'; then case id.
+
+    read=None means the mode cannot know (sample mode has no reader output at all).
+    """
     rank = {"node_count": 0, "pathologic_n": 0, "review": 1}
     for row in rows:
-        row["decided_at"] = decided.get(str(row.get("case_id")))
+        case_id = str(row.get("case_id"))
+        row["decided_at"] = decided.get(case_id)
+        row["read"] = None if read is None else case_id in read
     return sorted(
         rows,
         key=lambda row: (
             row["decided_at"] is not None,
-            rank.get(str(row.get("fault_field")), 2),
+            3 if row["read"] is False else rank.get(str(row.get("fault_field")), 2),
             str(row.get("case_id")),
         ),
     )
@@ -124,7 +133,7 @@ class LiveData:
 
     async def queue(self) -> list[dict[str, Any]]:
         reasons = ", ".join(sql_string(reason) for reason in _QUEUE_REASONS)
-        checks, decisions = await asyncio.gather(
+        checks, decisions, extracted, reviewed = await asyncio.gather(
             select(
                 f"SELECT {', '.join(CHECK_COLUMNS)} FROM {table_fqn('stage_check')} "
                 f"WHERE reason_class IN ({reasons})",
@@ -135,9 +144,20 @@ class LiveData:
                 f"WHERE rule_id = {sql_string(DECISION_RULE)} GROUP BY case_id",
                 limit=2000,
             ),
+            select(
+                f"SELECT DISTINCT case_id FROM {table_fqn('derived_stage')} "
+                f"WHERE method = {sql_string(READER_METHOD)}",
+                limit=5000,
+            ),
+            select(
+                "SELECT DISTINCT case_id FROM oa_pg.flag_log "
+                f"WHERE rule_id = {sql_string(READER_REVIEW_RULE)}",
+                limit=5000,
+            ),
         )
         decided = {str(r["case_id"]): str(r["decided_at"]) for r in _rows(decisions)}
-        return order_queue(_rows(checks), decided)
+        read = {str(r["case_id"]) for r in _rows(extracted) + _rows(reviewed)}
+        return order_queue(_rows(checks), decided, read)
 
     async def cohort(self) -> dict[str, Any]:
         classes, reports = await asyncio.gather(
@@ -185,12 +205,16 @@ class LiveData:
         check_rows = _rows(check)
         if not check_rows:
             return None
+        extraction_rows, flag_rows = _rows(extractions), _rows(flags)
+        check_rows[0]["read"] = any(
+            x.get("method") == READER_METHOD for x in extraction_rows
+        ) or any(f.get("rule_id") == READER_REVIEW_RULE for f in flag_rows)
         report_rows = _rows(report)
         found = {
             "check": check_rows[0],
             "report_text": report_rows[0]["report_text"] if report_rows else None,
-            "extractions": _rows(extractions),
-            "flags": sorted(_rows(flags), key=lambda f: str(f.get("created_at"))),
+            "extractions": extraction_rows,
+            "flags": sorted(flag_rows, key=lambda f: str(f.get("created_at"))),
         }
         self._cases[cid_text] = (time.monotonic(), found)
         return found
