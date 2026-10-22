@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Source-grounded Nemotron extraction with a review queue and Zetaris storage."
 requires-python = ">=3.12"
 dependencies = [
+    "cryptography",
     "fastapi",
     "uvicorn",
     "httpx",

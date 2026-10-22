@@ -1,7 +1,15 @@
-"""Parse and verify Meterless Nightshift receipts."""
+"""Parse and verify Meterless Nightshift receipts.
+
+Nightshift signs each receipt: `meterless.receipt_envelope` = {body, pubkey_b64, sig_b64},
+Ed25519 over the body serialised as sorted, compact, UTF-8 JSON (measured 2026-10-22).
+When the signature verifies, every field we enforce is read from the SIGNED copy, and a
+disagreement with the unsigned copy makes the signature "invalid".
+"""
 
 from __future__ import annotations
 
+import base64
+import json
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -9,6 +17,7 @@ from pydantic import BaseModel, Field
 from app.config import is_local_nemotron_lane
 
 Kind = Literal["local", "cloud"]
+SignatureState = Literal["verified", "invalid", "absent"]
 
 
 class ReceiptMismatch(Exception):
@@ -22,6 +31,11 @@ class Receipt(BaseModel):
     egress_destination: str | None = None
     context_sources: list[str] = Field(default_factory=list)
     latency_ms: int | None = None
+    usage: dict[str, Any] = Field(default_factory=dict)  # tokens, from the response
+    from_cache: bool | None = None
+    cache_status: str | None = None
+    signature: SignatureState = "absent"
+    signer_key: str | None = None
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
@@ -55,10 +69,70 @@ def _latency_ms(meterless: dict[str, Any], raw_receipt: dict[str, Any]) -> int |
     return None
 
 
+def canonical_body(body: Any) -> bytes:
+    return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
+
+
+def _signed_receipt(envelope: dict[str, Any]) -> tuple[SignatureState, dict[str, Any], str | None]:
+    """(state, the signed receipt dict, the signer's public key)."""
+    body, key_b64, sig_b64 = (
+        envelope.get("body"),
+        envelope.get("pubkey_b64"),
+        envelope.get("sig_b64"),
+    )
+    if not (isinstance(body, dict) and isinstance(key_b64, str) and isinstance(sig_b64, str)):
+        return "absent", {}, None
+    try:
+        from cryptography.exceptions import InvalidSignature
+        from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+
+        key = Ed25519PublicKey.from_public_bytes(base64.b64decode(key_b64))
+        key.verify(base64.b64decode(sig_b64), canonical_body(body))
+    except (InvalidSignature, ValueError, TypeError):
+        return "invalid", {}, key_b64
+    return "verified", _as_dict(body.get("receipt")), key_b64
+
+
 def parse_receipt(payload: dict[str, Any]) -> Receipt:
     """Build a Receipt. Prefer meterless top-level fields, then meterless.receipt."""
     meterless = _as_dict(payload.get("meterless"))
     raw_receipt = _as_dict(meterless.get("receipt"))
+    signature, signed, signer_key = _signed_receipt(_as_dict(meterless.get("receipt_envelope")))
+    if signature == "verified":
+        unsigned = _receipt_fields(meterless, raw_receipt)
+        trusted = _receipt_fields({}, signed)
+        if any(unsigned[k] is not None and unsigned[k] != trusted[k] for k in trusted):
+            signature = "invalid"  # the unsigned fields were altered
+        else:
+            meterless, raw_receipt = {}, signed
+    receipt = _build(meterless, raw_receipt)
+    cache = _as_dict(_as_dict(payload.get("meterless")).get("cache"))
+    from_cache = _as_dict(payload.get("meterless")).get("from_cache")
+    return receipt.model_copy(
+        update={
+            "usage": _as_dict(payload.get("usage")),
+            "from_cache": from_cache if isinstance(from_cache, bool) else None,
+            "cache_status": cache.get("status") if isinstance(cache.get("status"), str) else None,
+            "signature": signature,
+            "signer_key": signer_key,
+        }
+    )
+
+
+def _receipt_fields(meterless: dict[str, Any], raw_receipt: dict[str, Any]) -> dict[str, Any]:
+    built = _build(meterless, raw_receipt)
+    return {
+        "receipt_id": built.receipt_id,
+        "winning_model": built.winning_model,
+        "winning_kind": built.winning_kind,
+        "egress_destination": built.egress_destination,
+        "context_sources": built.context_sources,
+    }
+
+
+def _build(meterless: dict[str, Any], raw_receipt: dict[str, Any]) -> Receipt:
     winning_route = _as_dict(
         meterless.get("winning_route")
         if isinstance(meterless.get("winning_route"), dict)
@@ -92,10 +166,19 @@ def verify(
     require_model: str | None = None,
     require_kind: Kind | None = None,
     require_family: str | None = "nvidia/nemotron",
+    require_signature: bool = False,
+    pinned_key: str | None = None,
+    allow_cache: bool = True,
 ) -> Receipt:
     """Reject a receipt whose route or context sources do not match policy."""
     if not (receipt.receipt_id and str(receipt.receipt_id).strip()):
         raise ReceiptMismatch("missing receipt_id")
+    if require_signature and receipt.signature != "verified":
+        raise ReceiptMismatch(f"receipt signature {receipt.signature}")
+    if pinned_key is not None and receipt.signer_key != pinned_key:
+        raise ReceiptMismatch("receipt signed by an unexpected key")
+    if not allow_cache and receipt.from_cache:
+        raise ReceiptMismatch("answer served from the response cache, not a fresh read")
     if require_model is not None and receipt.winning_model != require_model:
         raise ReceiptMismatch(
             f"winning model {receipt.winning_model!r} != required {require_model!r}"

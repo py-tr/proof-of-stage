@@ -262,3 +262,45 @@ def test_reason_row_requires_the_value_row_of_the_same_read() -> None:
     assert "WHERE NOT EXISTS" in sql
     assert "AND EXISTS" in sql and "sibling.field = 'N'" in sql
     assert "sibling.created_at = '2026-10-22 00:00:00'" in sql
+
+
+def test_thinking_args_off_and_budget() -> None:
+    off, off_max = reader_mod.thinking_args(0)
+    assert off == {"chat_template_kwargs": {"enable_thinking": False}} and off_max == 1500
+    on, on_max = reader_mod.thinking_args(4000)
+    assert on["chat_template_kwargs"] == {"enable_thinking": True, "reasoning_budget": 4000}
+    assert on_max == 7000
+
+
+@pytest.mark.asyncio
+async def test_nightshift_read_is_pinned_signed_fresh_and_run_scoped(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.providers.receipts import Receipt
+
+    calls: list[dict[str, object]] = []
+
+    async def fake_chat(messages, model, **kwargs):  # type: ignore[no-untyped-def]
+        calls.append({"model": model, **kwargs})
+        receipt = Receipt(
+            receipt_id="rcpt_1",
+            winning_model=model,
+            winning_kind="cloud",
+            usage={"prompt_tokens": 900, "completion_tokens": 19},
+            from_cache=False,
+            signature="verified",
+        )
+        return '{"T": "UNKNOWN", "N": "UNKNOWN", "N_positive": null}', receipt
+
+    monkeypatch.setattr(reader_mod.nightshift, "chat", fake_chat)
+    first = await read_report("C1", REPORT, provider="nightshift", budget=0, run_id="runA")
+    await read_report("C1", REPORT, provider="nightshift", budget=4000, run_id="runA")
+    await read_report("C1", REPORT, provider="nightshift", budget=0, run_id="runB")
+    item_ids = [call["item_id"] for call in calls]
+    assert len(set(item_ids)) == 3  # never reused across runs or rungs
+    assert all(call["require_model"] == call["model"] for call in calls)
+    assert all(call["retry_on_mismatch"] and call["require_signature"] for call in calls)
+    assert all(call["allow_cache"] is False for call in calls)
+    assert calls[0]["chat_template_kwargs"] == {"enable_thinking": False}
+    assert first.budget == 0 and first.usage["completion_tokens"] == 19
+    assert first.signature == "verified" and first.from_cache is False

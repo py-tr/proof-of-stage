@@ -114,3 +114,45 @@ def test_local_lane_helper_never_treats_cloud_ids_as_local() -> None:
     assert is_local_nemotron_lane(NS_LOCAL_LANE)
     assert not is_local_nemotron_lane("nvidia/nemotron-3.5-super-vl-120b-a12b")
     assert not is_local_nemotron_lane("nvidia/nemotron-3.5-lightning-30b-a3b")
+
+
+# --- signed receipts (Ed25519 over the sorted compact UTF-8 JSON body) ---
+
+
+def test_the_captured_receipt_signature_verifies(chat_response: dict[str, Any]) -> None:
+    receipt = parse_receipt(copy.deepcopy(chat_response))
+    assert receipt.signature == "verified" and receipt.signer_key
+    verify(receipt, require_signature=True, pinned_key=receipt.signer_key)
+
+
+def test_a_changed_signed_body_fails_the_signature(chat_response: dict[str, Any]) -> None:
+    payload = copy.deepcopy(chat_response)
+    payload["meterless"]["receipt_envelope"]["body"]["ts_ms"] = 1
+    receipt = parse_receipt(payload)
+    assert receipt.signature == "invalid"
+    with pytest.raises(ReceiptMismatch, match="signature"):
+        verify(receipt, require_signature=True)
+
+
+def test_an_unsigned_field_that_disagrees_with_the_signed_one_is_invalid(
+    chat_response: dict[str, Any],
+) -> None:
+    payload = copy.deepcopy(chat_response)
+    payload["meterless"]["winning_route"]["model"] = "nvidia/some-other-model"
+    assert parse_receipt(payload).signature == "invalid"
+
+
+def test_missing_envelope_and_pinned_key_and_cache(chat_response: dict[str, Any]) -> None:
+    payload = copy.deepcopy(chat_response)
+    payload["meterless"].pop("receipt_envelope")
+    unsigned = parse_receipt(payload)
+    assert unsigned.signature == "absent"
+    with pytest.raises(ReceiptMismatch, match="signature absent"):
+        verify(unsigned, require_signature=True)
+    signed = parse_receipt(copy.deepcopy(chat_response))
+    with pytest.raises(ReceiptMismatch, match="unexpected key"):
+        verify(signed, pinned_key="AAAA")
+    cached = signed.model_copy(update={"from_cache": True})
+    with pytest.raises(ReceiptMismatch, match="cache"):
+        verify(cached, allow_cache=False)
+    verify(cached)  # allowed unless the caller forbids it

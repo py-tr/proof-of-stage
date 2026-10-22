@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import re
+import uuid
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -27,6 +28,8 @@ NODES_POSITIVE = "NPOS"  # field name of the positive-node count
 
 METHOD = "nemotron_reader"
 THINKING_BUDGET = 4000  # measured: same answers as unlimited thinking, bounded cost
+THINKING_OFF = 0  # the fast rung: ~19 completion tokens per answer (measured)
+REPORT_CHARS = 32000  # only 3 of 1,034 reports exceed 24,000 chars (max 26,162)
 
 SYSTEM_PROMPT = (
     "You read one breast cancer pathology report and report the PATHOLOGIC T and N "
@@ -84,6 +87,10 @@ class ReadResult:
     provider: Provider
     fields: dict[str, FieldResult] = field(default_factory=dict)
     raw_text: str = ""
+    budget: int = THINKING_BUDGET
+    usage: dict[str, Any] = field(default_factory=dict)
+    from_cache: bool | None = None
+    signature: str = "absent"
 
 
 def normalise_category(field_name: Field, value: Any) -> str | None:
@@ -207,31 +214,63 @@ def judge_count(answer: dict[str, Any] | None, report: str) -> FieldResult:
     return FieldResult(name, "accepted", value=value, quote=span.text(report), span=span)
 
 
-async def read_report(case_id: str, report: str, *, provider: Provider = "nvidia") -> ReadResult:
+def thinking_args(budget: int) -> tuple[dict[str, Any], int]:
+    """(extra request args, max_tokens) for a thinking budget; 0 turns thinking off."""
+    if budget <= THINKING_OFF:
+        return {"chat_template_kwargs": {"enable_thinking": False}}, 1500
+    kwargs = {"enable_thinking": True, "reasoning_budget": budget}
+    return {"chat_template_kwargs": kwargs}, budget + 3000
+
+
+async def read_report(
+    case_id: str,
+    report: str,
+    *,
+    provider: Provider = "nvidia",
+    budget: int = THINKING_BUDGET,
+    run_id: str | None = None,
+) -> ReadResult:
+    """One read. Through Nightshift the model is pinned to Super VL (a substituted model is
+    retried, then refused), the receipt signature must verify, and a cached answer is refused.
+    `run_id` makes the item id unique per run (never reuse an item id across runs)."""
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": "Pathology report:\n\n" + report[:24000]},
+        {"role": "user", "content": "Pathology report:\n\n" + report[:REPORT_CHARS]},
     ]
-    thinking = {
-        "chat_template_kwargs": {"enable_thinking": True, "reasoning_budget": THINKING_BUDGET}
-    }
+    extra, max_tokens = thinking_args(budget)
+    usage: dict[str, Any] = {}
+    from_cache: bool | None = None
+    signature = "absent"
     if provider == "nightshift":
+        run = run_id or uuid.uuid4().hex[:8]
         text, receipt = await nightshift.chat(
             messages,
             config.NS_SUPER_VL,
-            item_id=f"read-{case_id}",
-            max_tokens=THINKING_BUDGET + 3000,
-            **thinking,
+            item_id=f"read-{case_id}-{run}-b{budget}",
+            require_model=config.NS_SUPER_VL,
+            retry_on_mismatch=True,
+            require_signature=True,
+            pinned_key=config.getenv("NS_RECEIPT_PUBKEY"),
+            allow_cache=False,
+            max_tokens=max_tokens,
+            **extra,
         )
         model, receipt_id = receipt.winning_model or "", receipt.receipt_id
+        usage, from_cache, signature = receipt.usage, receipt.from_cache, receipt.signature
     else:
-        text, model = await nvidia.chat(
-            messages, config.NV_SUPER, max_tokens=THINKING_BUDGET + 3000, **thinking
-        )
+        text, model = await nvidia.chat(messages, config.NV_SUPER, max_tokens=max_tokens, **extra)
         receipt_id = None
     answer = parse_answer(text)
     result = ReadResult(
-        case_id=case_id, model=model, receipt_id=receipt_id, provider=provider, raw_text=text
+        case_id=case_id,
+        model=model,
+        receipt_id=receipt_id,
+        provider=provider,
+        raw_text=text,
+        budget=budget,
+        usage=usage,
+        from_cache=from_cache,
+        signature=signature,
     )
     for name in FIELDS:
         result.fields[name] = judge_field(name, answer, report)

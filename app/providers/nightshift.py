@@ -179,6 +179,9 @@ async def chat(
     require_family: str | None = "nvidia/nemotron",
     max_tokens: int = 2000,
     retry_on_mismatch: bool = False,
+    require_signature: bool = False,
+    pinned_key: str | None = None,
+    allow_cache: bool = True,
     **extra: Any,
 ) -> tuple[str, Receipt]:
     """Chat completion with per-item scope and verified receipt."""
@@ -225,6 +228,9 @@ async def chat(
                     require_model=require_model,
                     require_kind=require_kind,
                     require_family=require_family,
+                    require_signature=require_signature,
+                    pinned_key=pinned_key,
+                    allow_cache=allow_cache,
                 )
             except ReceiptMismatch as exc:
                 mismatch = exc
