@@ -10,3 +10,4 @@ data/private/
 .ruff_cache/
 .ref/
 .tutor/
+data/reports/path_reports.csv

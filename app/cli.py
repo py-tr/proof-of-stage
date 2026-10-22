@@ -11,6 +11,7 @@ from uuid import uuid4
 from app import config, zetaris
 from app.providers import nightshift, nvidia
 from app.providers.errors import EmptyAnswer
+from app.reader.commands import fetch_reports, read_cases
 from app.usl.setup import dq_report, setup, status_report, teardown
 
 _PING_MAX_TOKENS = 800
@@ -172,12 +173,36 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Confirm removal of those objects",
     )
+    reports = sub.add_parser("reports", help="Pathology report text for the audited cases")
+    reports_sub = reports.add_subparsers(dest="reports_command", required=True)
+    reports_sub.add_parser("fetch", help="Download TCGA-Reports and keep the audited cases")
+    read = sub.add_parser("read", help="Nemotron reads reports; verified answers go to Zetaris")
+    read.add_argument("--case", action="append", default=None, help="Case id (repeatable)")
+    read.add_argument("--rule", default=None, help="Read the cases a DQ rule marks invalid")
+    read.add_argument("--limit", type=int, default=5, help="Maximum cases to read")
+    read.add_argument(
+        "--provider", choices=("nvidia", "nightshift"), default="nvidia", help="Model provider"
+    )
+    read.add_argument("--store", action="store_true", help="Write results to Zetaris")
     args = parser.parse_args(argv)
     try:
         if args.command == "doctor":
             return asyncio.run(_doctor())
         if args.command == "usl":
             return asyncio.run(_usl(args))
+        if args.command == "reports":
+            sys.stdout.write(asyncio.run(fetch_reports()))
+            return 0
+        if args.command == "read":
+            return asyncio.run(
+                read_cases(
+                    case_ids=args.case,
+                    rule=args.rule,
+                    limit=args.limit,
+                    provider=args.provider,
+                    store=args.store,
+                )
+            )
     except Exception as exc:
         sys.stderr.write(_sanitize(f"{type(exc).__name__}: {exc}") + "\n")
         return 1
