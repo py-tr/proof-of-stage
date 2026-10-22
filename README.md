@@ -18,7 +18,7 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 |---|---|---|
 | Zetaris USL `stage_audit` | 8 tables over 3 live sources: the NCI GDC REST API (cases, recorded stage, node counts), a file store (paraphrased staging rules, report text, Parse blocks) and Postgres (append-only reader output and review log); 8 custom data-quality rules (one basic source-level rule; `fault_named` / `fault_unresolved` are review queues expressed as rules) + the 13 key rules Zetaris generates from the DDL (10 addressable by name; the two composite primary keys run via their first column); the case page reads only USL tables; its lineage panel comes from `LOAD USL` | `app/usl/`, `app/usl/sql/`, `docs/zetaris-demo.md` |
 | Nemotron Super (VL 120B) | Reads the report; returns T, N and the positive-node count, each with ONE verbatim quote; thinking OFF on the first rung, a 4k budget when the cheap read cannot settle a field | `app/reader/reader.py` |
-| The guard (code) | Accepts a value only if its quote is in the report; for a count, the number must appear inside the quote, and when the quote holds a fraction ("2/18", "two of eighteen") it must be the first number (known limit: without a fraction, a stray number such as a size can still match) | `app/reader/` |
+| The guard (code) | Accepts a value only if its quote is in the report; for a count, the number must appear inside the quote (the first number of a fraction such as "2/18") and may not be below any node fraction the report states, so one specimen's count cannot pass as the total (a hole our red-team probe found; `docs/evidence/guard-floor.md`). Known limit: a stray larger number inside the quote can still match | `app/reader/` |
 | Nemotron Parse | Reads the original scanned PDF from the GDC; every text block with its box; stored as the USL table `parse_block` | `app/scans/` |
 | `stage_check.fault_field` (USL) | node_count / pathologic_n / review, from the registry, the count rule and the quote-verified reading | `app/usl/sql/055_activate_stage_check.sql` |
 | Meterless Markovian engine | The official reference, vendored unmodified (`vendor/meterless-markovian`, conformance 8/8), runs one chain per case: each chunk is a rung of an evidence ladder (R1 thinking off → R2 4k → R3 the scan); our code writes the carryover `{need, consulted, ledger}`, which picks the next rung and ends the chain when no field is open. The engine runs the control flow; the model reads the document beside it and never sees the carryover (so no reading can anchor the next). The engine's own savings estimate is therefore 0 by construction (every run in `logs/markovian-runs.jsonl`); we claim no savings for this chain. Planned: a second chain where the model is the generator (the red-team lane) | `app/engine/` |
@@ -30,7 +30,7 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 185 tests, no network
+pytest -q                                          # 189 tests, no network
 set SAMPLE_MODE=true && python -m app.cli serve    # offline: 4 bundled cases, no model output replayed
 ```
 

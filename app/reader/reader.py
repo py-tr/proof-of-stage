@@ -3,7 +3,9 @@
 Super answers T and N directly, each with ONE verbatim quote and the reason it
 applied, plus the number of positive regional nodes with its own quote. Code then
 (1) parses the JSON, (2) normalises the category, (3) locates the quote in the report;
-for the node count, (4) the number itself must appear inside the located span. A field
+for the node count, (4) the number itself must appear inside the located span and (5) it
+may not be below any node fraction the report states (one specimen's count is not the
+total). A field
 is ACCEPTED only when every check succeeds; otherwise it is REJECTED with a reason and
 goes to the human review queue. The model never writes a value the report does not
 visibly support.
@@ -65,6 +67,23 @@ REASON_CHARS = 250  # fits derived_stage.value
 _NUMBER = r"(\d+|[a-z]+)"
 # "2/14", "2 of 14", "two of fourteen", "2 out of 14": the first number is the positive count.
 _FRACTION = re.compile(rf"(?<![\d.]){_NUMBER}\s*(?:/|\bof\b|\bout of\b)\s*{_NUMBER}", re.I)
+# A fraction is about lymph nodes when the word "node(s)" is written this close to it
+# (not "lymph": "lymphovascular" and "lymphoplasmacytic" sit beside grade scores like 8/9).
+_NODE_WORD = re.compile(r"\bnodes?\b", re.I)
+_NODE_WINDOW = 60
+# "Eight of eight sentinel lymph nodes, free of metastatic carcinoma" counts examined nodes,
+# not positive ones: a negative word this soon after a fraction drops it from the floor.
+_NEGATIVE_AFTER = re.compile(
+    r"\b(?:free|negative|benign|without|no\s+(?:evidence|tumou?r|metasta|carcinoma))", re.I
+)
+_NEGATIVE_WINDOW = 50
+# Grades and scores ("Grade 2/3", "Nottingham score 8/9") are not node fractions.
+_SCORE_BEFORE = re.compile(
+    r"\b(?:grade|score|nottingham|tubules?|tubule formation|mitos[ei]s|mitotic|nuclear|"
+    r"pleomorphism|her-?2|allred)\W*(?:\w+\W+){0,2}$",
+    re.I,
+)
+_SCORE_WINDOW = 30
 # "no"/"none" mean zero only when they are about nodes or metastasis.
 _ZERO = re.compile(r"\b(?:no|none)\b(?:\W+\w+){0,3}?\W+(?:nodes?|lymph|metasta\w*)", re.I)
 
@@ -189,6 +208,32 @@ def count_in_span(count: int, span_text: str) -> bool:
     return count == 0 and _ZERO.search(span_text) is not None
 
 
+def report_floor(report: str) -> int | None:
+    """The fewest positive nodes the report's own node fractions allow; None if it states none.
+
+    Every node fraction ("2/18 lymph nodes", "one of two nodes") counts positive nodes in all
+    or part of the dissection, so the total is at least its first number. A quote about one
+    specimen ("ONE (1) SENTINEL LYMPH NODE: POSITIVE" in a 2/18 report) then cannot pass as
+    the total. Only a floor: a positive node stated without a fraction ("one of which
+    contains carcinoma") can make the true total higher than every fraction.
+    """
+    tops = []
+    for match in _FRACTION.finditer(report):
+        top, bottom = _as_number(match.group(1)), _as_number(match.group(2))
+        if top is None or bottom is None or not 0 <= top <= bottom <= _MAX_NODES:
+            continue
+        window = report[max(0, match.start() - _NODE_WINDOW) : match.end() + _NODE_WINDOW]
+        after = report[match.end() : match.end() + _NEGATIVE_WINDOW]
+        before = report[max(0, match.start() - _SCORE_WINDOW) : match.start()]
+        if (
+            _NODE_WORD.search(window)
+            and not _NEGATIVE_AFTER.search(after)
+            and not _SCORE_BEFORE.search(before)
+        ):
+            tops.append(top)
+    return max(tops) if tops else None
+
+
 def judge_count(answer: dict[str, Any] | None, report: str) -> FieldResult:
     name = NODES_POSITIVE
     if answer is None:
@@ -210,6 +255,11 @@ def judge_count(answer: dict[str, Any] | None, report: str) -> FieldResult:
     if not count_in_span(count, span.text(report)):
         return FieldResult(
             name, "rejected", value=value, quote=span.text(report), reason="count_not_in_quote"
+        )
+    floor = report_floor(report)
+    if floor is not None and count < floor:
+        return FieldResult(
+            name, "rejected", value=value, quote=span.text(report), reason="count_below_report"
         )
     return FieldResult(name, "accepted", value=value, quote=span.text(report), span=span)
 

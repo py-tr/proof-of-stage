@@ -306,3 +306,52 @@ async def test_nightshift_read_is_pinned_signed_fresh_and_run_scoped(
     assert calls[0]["chat_template_kwargs"] == {"enable_thinking": False}
     assert first.budget == 0 and first.usage["completion_tokens"] == 19
     assert first.signature == "verified" and first.from_cache is False
+
+
+SPECIMEN_REPORT = (
+    "LYMPH NODES: METASTASIS IN TWO OF EIGHTEEN (2/18) EXAMINED LYMPH NODES. "
+    "ONE (1) SENTINEL LYMPH NODE (SPECIMEN A): POSITIVE. EXTRANODAL EXTENSION: PRESENT, 4 MM. "
+    "ONE (1) LYMPH NODE (SPECIMEN C, LOW): POSITIVE."
+)
+
+
+def test_count_of_one_specimen_is_not_the_total() -> None:
+    # The red-team attack: a real quote and its number, but one specimen of a 2/18 report.
+    fr = reader_mod.judge_count(
+        {"N_positive": 1, "N_positive_quote": "ONE (1) SENTINEL LYMPH NODE (SPECIMEN A): POSITIVE"},
+        SPECIMEN_REPORT,
+    )
+    assert fr.status == "rejected" and fr.reason == "count_below_report"
+    total = reader_mod.judge_count(
+        {"N_positive": 2, "N_positive_quote": "TWO OF EIGHTEEN (2/18) EXAMINED LYMPH NODES"},
+        SPECIMEN_REPORT,
+    )
+    assert total.status == "accepted"
+
+
+def test_a_negative_specimen_fraction_is_not_the_total() -> None:
+    report = "Sentinel node: no tumor seen (0/1). Axillary lymph nodes: carcinoma in 2/10 nodes."
+    fr = reader_mod.judge_count(
+        {"N_positive": 0, "N_positive_quote": "Sentinel node: no tumor seen (0/1)"}, report
+    )
+    assert fr.reason == "count_below_report"
+
+
+def test_the_floor_allows_positives_stated_without_a_fraction() -> None:
+    # One positive node has no fraction; the total may exceed every fraction.
+    report = (
+        "A. Two lymph nodes, one of which contains metastatic carcinoma. "
+        "E. Thirteen lymph nodes all negative for metastatic disease, 0/13. "
+        "Total number with metastasis: 1."
+    )
+    fr = reader_mod.judge_count(
+        {"N_positive": 1, "N_positive_quote": "Total number with metastasis: 1"}, report
+    )
+    assert fr.status == "accepted"
+
+
+def test_the_floor_ignores_fractions_of_negative_nodes() -> None:
+    report = "Eight of eight sentinel lymph nodes, free of metastatic carcinoma."
+    assert reader_mod.report_floor(report) is None
+    assert reader_mod.report_floor("Grade 2/3. No lymph nodes received.") is None
+    assert reader_mod.report_floor("(2/18) POSITIVE EXAMINED LYMPH NODES") == 2
