@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Proof of Stage: a quote-verified audit of cancer-stage fields with NVIDIA Nemotron and a Zetaris semantic layer"
+type: software
+license: Apache-2.0
+repository-code: "https://github.com/py-tr/proof-of-stage"
+authors:
+  - alias: "py-tr"
+date-released: 2026-10-27
+keywords:
+  - nemotron
+  - semantic layer
+  - data quality
+  - cancer registry
+  - verbatim evidence
