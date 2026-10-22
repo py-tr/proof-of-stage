@@ -36,6 +36,8 @@ DQ_RULES = (
     "report_agrees",
     "edition_supported",
     "edition_matches_year",
+    "fault_named",
+    "fault_unresolved",
 )
 
 ALLOWED_ROOTS = (

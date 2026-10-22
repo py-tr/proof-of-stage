@@ -168,6 +168,7 @@ async def insert_extraction(
     model: str | None = None,
     receipt_id: str | None = None,
     created_at: str,
+    requires: tuple[str, str] | None = None,
 ) -> SqlResult:
     statement = insert_extraction_sql(
         case_id=case_id,
@@ -180,6 +181,7 @@ async def insert_extraction(
         model=model,
         receipt_id=receipt_id,
         created_at=created_at,
+        requires=requires,
     )
     return await run_sql(statement)
 
@@ -237,7 +239,13 @@ def insert_extraction_sql(
     model: str | None = None,
     receipt_id: str | None = None,
     created_at: str,
+    requires: tuple[str, str] | None = None,
 ) -> str:
+    """Append one extraction row unless (case_id, method, field) already exists.
+
+    requires=(field, created_at): write only if that sibling row exists with exactly this
+    created_at, i.e. it was written by the same read (ties a reason row to its value).
+    """
     _require_text(case_id, "case_id")
     _require_text(method, "method")
     _require_text(field, "field")
@@ -261,12 +269,20 @@ def insert_extraction_sql(
         f"AND existing.method = {sql_string(method)} "
         f"AND existing.field = {sql_string(field)}"
     )
-    return _insert_where_missing(
-        f"{PG_SOURCE}.derived_extraction",
-        EXTRACTION_COLUMNS,
-        values,
-        predicate,
-    )
+    table = f"{PG_SOURCE}.derived_extraction"
+    also = None
+    if requires is not None:
+        sibling, stamp = requires
+        _require_text(sibling, "requires field")
+        _require_text(stamp, "requires created_at")
+        also = (
+            f"EXISTS (\n  SELECT 1 FROM {table} AS sibling\n"
+            f"  WHERE sibling.case_id = {sql_string(case_id)} "
+            f"AND sibling.method = {sql_string(method)} "
+            f"AND sibling.field = {sql_string(sibling)} "
+            f"AND sibling.created_at = {sql_string(stamp)}\n)"
+        )
+    return _insert_where_missing(table, EXTRACTION_COLUMNS, values, predicate, also)
 
 
 def _insert_where_missing(
@@ -274,6 +290,7 @@ def _insert_where_missing(
     columns: tuple[str, ...],
     values: dict[str, str],
     predicate: str,
+    also: str | None = None,
 ) -> str:
     column_list = ", ".join(columns)
     value_list = ", ".join(values[column] for column in columns)
@@ -284,7 +301,7 @@ def _insert_where_missing(
         "WHERE NOT EXISTS (\n"
         f"  SELECT 1 FROM {table} AS existing\n"
         f"  WHERE {predicate}\n"
-        ")"
+        ")" + (f"\nAND {also}" if also else "")
     )
 
 
@@ -431,13 +448,16 @@ def parse_dq_counts(rule: str, result: SqlResult) -> DqCounts:
 
 
 def format_invalid_records(result: SqlResult, limit: int | None = None) -> str:
-    """Print invalid stage_check rows as case_id, edition, recorded N, count, derived N."""
+    """Print invalid stage_check rows: the recorded N, the count and what the report says."""
     mapping = (
         ("case_id", "case_id"),
         ("edition", "edition_code"),
         ("recorded N", "recorded_n"),
         ("lymph_nodes_positive", "lymph_nodes_positive"),
         ("derived N", "derived_n"),
+        ("report N", "report_n"),
+        ("report count", "report_nodes_positive"),
+        ("fault_field", "fault_field"),
     )
     rows = _row_maps(result)
     if limit is not None:

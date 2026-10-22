@@ -35,6 +35,10 @@ from app.usl.sqltext import (
 )
 from app.zetaris import SqlResult, ZetarisError, run_sql
 
+# Newest stage_check column: if the deployed USL lacks it, the schema changed and the
+# USL is recompiled (the Postgres tables and the cached sources are kept).
+SCHEMA_MARKER = "fault_field"
+
 _ACTIVATE = (
     "050_activate_tumour_case.sql",
     "051_activate_path_report.sql",
@@ -50,6 +54,8 @@ _DQ_FILES = (
     "062_dq_report_agrees.sql",
     "063_dq_edition_supported.sql",
     "064_dq_edition_matches_year.sql",
+    "065_dq_fault_named.sql",
+    "066_dq_fault_unresolved.sql",
 )
 _REGISTER = (
     ("derived_extraction", "004_register_derived_extraction.sql"),
@@ -404,7 +410,7 @@ async def _ensure_namespace() -> None:
 async def _ensure_usl() -> bool:
     listed = await run_sql(f"SHOW NAMESPACES OR TABLES IN {NAMESPACE}")
     if usl_listed(listed):
-        if await _stage_check_has_reason_class():
+        if await _stage_check_is_current():
             _log("usl stage_audit exists")
             return False
         _log("replace usl stage_audit (schema changed)")
@@ -592,13 +598,13 @@ def _is_name(value: str, name: str) -> bool:
     return text == target or text.endswith("." + target)
 
 
-async def _stage_check_has_reason_class() -> bool:
+async def _stage_check_is_current() -> bool:
     result, error = await _try_sql(f"LOAD USL {USL_NAME} NAMESPACE {NAMESPACE}")
     if error or not result.rows:
         return False
     contract = _contract_from_result(result)
     names = _usl_table_column_names(contract, "stage_check")
-    if "reason_class" in names:
+    if SCHEMA_MARKER in names:
         return True
     if not isinstance(contract, dict):
         return False
@@ -611,7 +617,7 @@ async def _stage_check_has_reason_class() -> bool:
         label = item.get("name") or item.get("table") or item.get("tableName")
         if str(label) != "stage_check":
             continue
-        return "reason_class" in json.dumps(item).lower()
+        return SCHEMA_MARKER in json.dumps(item).lower()
     return False
 
 

@@ -18,7 +18,11 @@ from app.providers.text import strip_think
 NVIDIA_CHAT_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 _MAX_PER_MINUTE = 20
 _TIMEOUT_S = 300.0  # Super with a thinking budget can take minutes
-_MAX_RETRIES = 2
+_MAX_RETRIES = 3
+# Waits before each retry of a 429/5xx without a Retry-After header. The free tier
+# answers overload with "Failed to generate completions" (HTTP 5xx); instant retries
+# land in the same overload, so back off.
+_BACKOFF_S = (5.0, 20.0, 60.0)
 _WINDOW_S = 60.0
 _MAX_RETRY_AFTER_S = 60.0
 
@@ -101,14 +105,15 @@ def _error_message(response: httpx.Response) -> str:
     return f"HTTP {response.status_code}"
 
 
-def _retry_after_seconds(response: httpx.Response) -> float:
+def _retry_after_seconds(response: httpx.Response, attempt: int = 0) -> float:
+    fallback = _BACKOFF_S[min(attempt, len(_BACKOFF_S) - 1)]
     raw = response.headers.get("Retry-After")
     if raw is None or raw.strip() == "":
-        return 0.25
+        return fallback
     try:
         return min(_MAX_RETRY_AFTER_S, max(0.0, float(raw)))
     except ValueError:
-        return 0.25
+        return fallback
 
 
 async def chat(
@@ -143,8 +148,9 @@ async def chat(
                 raise NvidiaError(f"NVIDIA transport error: {type(exc).__name__}") from exc
             if response.status_code == 429 or response.status_code >= 500:
                 if retries_left > 0:
+                    attempt = _MAX_RETRIES - retries_left
                     retries_left -= 1
-                    await asyncio.sleep(_retry_after_seconds(response))
+                    await asyncio.sleep(_retry_after_seconds(response, attempt))
                     continue
                 raise NvidiaError(_error_message(response))
             if not (200 <= response.status_code < 300):

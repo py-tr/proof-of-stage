@@ -89,3 +89,61 @@ def reason_class(row: dict[str, Any]) -> str:
     ):
         return REASON_CONTRADICTION
     return REASON_CONSISTENT
+
+
+FAULT_NODE_COUNT = "node_count"
+FAULT_PATHOLOGIC_N = "pathologic_n"
+FAULT_REVIEW = "review"
+_FAULT_REASONS = frozenset({REASON_CONTRADICTION, REASON_MISSING_DERIVABLE})
+
+
+def _number(text: str | None) -> float | None:
+    try:
+        return float(text) if text is not None else None
+    except ValueError:
+        return None
+
+
+def fault_field(row: dict[str, Any]) -> str | None:
+    """Which registry field the report contradicts (mirror of stage_check.fault_field).
+
+    node_count: the report agrees with the recorded N and its verified count differs from
+    the registry's positive-node count, so the count field is wrong.
+    pathologic_n: the report agrees with the N the count implies, so the recorded N is wrong
+    (or missing). review: no verified report N, or the report's own count contradicts it.
+    None: the case has no node-count contradiction or derivable missing N.
+    """
+    reason = _text(row, "reason_class") or reason_class(row)
+    if reason not in _FAULT_REASONS:
+        return None
+    report_main = _text(row, "report_n_main")
+    if report_main is None:
+        return FAULT_REVIEW
+    report_count = _number(_text(row, "report_nodes_positive"))
+    gdc_count = _number(_text(row, "lymph_nodes_positive"))
+    if gdc_count is None:
+        return FAULT_REVIEW
+    # Accusing the count needs evidence about the count itself: the recorded N was
+    # abstracted from this same report, so N agreement alone is not enough.
+    if (
+        reason == REASON_CONTRADICTION
+        and report_main == _text(row, "recorded_n_main")
+        and report_count is not None
+        and report_count != gdc_count
+    ):
+        return FAULT_NODE_COUNT
+    if report_main == _text(row, "derived_n_main") and (
+        report_count is None or report_count == gdc_count
+    ):
+        return FAULT_PATHOLOGIC_N
+    return FAULT_REVIEW
+
+
+def fault_named_valid(row: dict[str, Any]) -> bool:
+    """Invalid when the report names a faulty registry field."""
+    return fault_field(row) not in (FAULT_NODE_COUNT, FAULT_PATHOLOGIC_N)
+
+
+def fault_unresolved_valid(row: dict[str, Any]) -> bool:
+    """Invalid when a contradiction still needs a human (no settling evidence)."""
+    return fault_field(row) != FAULT_REVIEW

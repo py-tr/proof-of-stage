@@ -71,7 +71,7 @@ def _load_usl_contract(digest_for: dict[str, str] | None = None) -> SqlResult:
         digest = (digest_for or {}).get(name, sql_fingerprint(statement))
         entry = {"name": name, "activateQuery": f"SELECT /* uslfp:{digest} */ 1"}
         if name == "stage_check":
-            entry["columns"] = [{"name": "reason_class"}]
+            entry["columns"] = [{"name": "fault_field"}]
         tables.append(entry)
     return SqlResult([[json.dumps({"name": "stage_audit", "tables": tables})]], ["contract"])
 

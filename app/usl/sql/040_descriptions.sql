@@ -57,6 +57,9 @@ UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.report_n S
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.year_of_diagnosis SET COLUMN DESCRIPTION Year the tumour was diagnosed, from the case record;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.edition_year_class SET COLUMN DESCRIPTION Whether the staging edition was in use in the diagnosis year (with one year of transition slack): in_window, out_of_window or unknown;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.reason_class SET COLUMN DESCRIPTION How the recorded N and the node count relate: n_count_contradiction, n_missing_derivable, n_ambiguous_micromet, count_missing, or consistent;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.report_n_main SET COLUMN DESCRIPTION Main N category the pathology report supports, from a quote-verified model extraction;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.report_nodes_positive SET COLUMN DESCRIPTION Positive regional nodes stated in the report, accepted only when the number lies inside its verified quote;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.fault_field SET COLUMN DESCRIPTION For a node-count contradiction or a missing N, the registry field the quote-verified report evidence points to: node_count (needs a verified report count that differs from the registry count), pathologic_n, or review when the evidence does not settle it;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.flag SET TABLE DESCRIPTION One review-queue flag raised for a case;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.flag.flag_id SET COLUMN DESCRIPTION Unique identifier of the flag;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.flag.case_id SET COLUMN DESCRIPTION Tumour case this flag belongs to;

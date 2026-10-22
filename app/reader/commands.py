@@ -80,9 +80,9 @@ async def read_cases(
         totals["read"] += 1
         for fr in result.fields.values():
             totals[fr.status] += 1
-        sys.stdout.write(_format(result) + "\n")
-        if store:
+        if store:  # store first: a display failure must not lose a finished read
             await store_result(result)
+        sys.stdout.write(_format(result) + "\n")
     summary = "  ".join(f"{k}={v}" for k, v in totals.items())
     sys.stdout.write(
         f"summary: {summary}" + ("" if store else "  (dry run: nothing written)") + "\n"

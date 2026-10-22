@@ -1,5 +1,37 @@
 ACTIVATE USL TABLE lightning.metastore.registry_audit.stage_audit.stage_check AS
 SELECT
+  classified.case_id AS case_id,
+  classified.site_key AS site_key,
+  classified.edition_code AS edition_code,
+  classified.recorded_t AS recorded_t,
+  classified.recorded_n AS recorded_n,
+  classified.recorded_stage AS recorded_stage,
+  classified.recorded_n_main AS recorded_n_main,
+  classified.lymph_nodes_positive AS lymph_nodes_positive,
+  classified.lymph_nodes_tested AS lymph_nodes_tested,
+  classified.derived_n AS derived_n,
+  classified.derived_n_main AS derived_n_main,
+  classified.report_t AS report_t,
+  classified.report_n AS report_n,
+  classified.year_of_diagnosis AS year_of_diagnosis,
+  classified.edition_year_class AS edition_year_class,
+  classified.reason_class AS reason_class,
+  classified.report_n_main AS report_n_main,
+  classified.report_nodes_positive AS report_nodes_positive,
+  CASE
+    WHEN classified.reason_class NOT IN ('n_count_contradiction', 'n_missing_derivable') THEN NULL
+    WHEN classified.report_n_main IS NULL THEN 'review'
+    WHEN classified.reason_class = 'n_count_contradiction'
+     AND classified.report_n_main = classified.recorded_n_main
+     AND classified.report_nodes_positive IS NOT NULL
+     AND CAST(classified.report_nodes_positive AS DOUBLE) <> CAST(classified.lymph_nodes_positive AS DOUBLE) THEN 'node_count'
+    WHEN classified.report_n_main = classified.derived_n_main
+     AND (classified.report_nodes_positive IS NULL
+       OR CAST(classified.report_nodes_positive AS DOUBLE) = CAST(classified.lymph_nodes_positive AS DOUBLE)) THEN 'pathologic_n'
+    ELSE 'review'
+  END AS fault_field
+FROM (
+SELECT
   scored.case_id AS case_id,
   scored.site_key AS site_key,
   scored.edition_code AS edition_code,
@@ -14,6 +46,8 @@ SELECT
   scored.report_t AS report_t,
   scored.report_n AS report_n,
   scored.year_of_diagnosis AS year_of_diagnosis,
+  scored.report_n_main AS report_n_main,
+  scored.report_nodes_positive AS report_nodes_positive,
   CASE
     WHEN scored.edition_code IS NULL OR trim(scored.edition_code) = ''
       OR scored.year_of_diagnosis IS NULL OR trim(scored.year_of_diagnosis) = '' THEN 'unknown'
@@ -56,6 +90,11 @@ SELECT
   END AS derived_n_main,
   rep_t.value AS report_t,
   rep_n.value AS report_n,
+  CASE
+    WHEN rep_n.value IS NULL OR regexp_extract(upper(rep_n.value), 'N[0-9X]', 0) = '' THEN NULL
+    ELSE regexp_extract(upper(rep_n.value), 'N[0-9X]', 0)
+  END AS report_n_main,
+  rep_npos.value AS report_nodes_positive,
   tc.year_of_diagnosis AS year_of_diagnosis
 FROM lightning.metastore.registry_audit.stage_audit.recorded_stage rec
 LEFT JOIN lightning.metastore.registry_audit.stage_audit.tumour_case tc
@@ -100,4 +139,12 @@ LEFT JOIN (
   GROUP BY case_id
 ) rep_n
   ON rep_n.case_id = rec.case_id
+LEFT JOIN (
+  SELECT case_id, CAST(MAX(CAST(value AS INT)) AS STRING) AS value
+  FROM lightning.metastore.registry_audit.stage_audit.derived_stage
+  WHERE method <> 'sql_node_count' AND field = 'NPOS'
+  GROUP BY case_id
+) rep_npos
+  ON rep_npos.case_id = rec.case_id
 ) scored
+) classified

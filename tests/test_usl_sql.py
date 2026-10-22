@@ -68,6 +68,9 @@ EXPECTED_COLUMNS = {
         "year_of_diagnosis",
         "edition_year_class",
         "reason_class",
+        "report_n_main",
+        "report_nodes_positive",
+        "fault_field",
     ],
     "flag": [
         "flag_id",
@@ -169,12 +172,16 @@ def test_activation_and_dq_files_are_single_statements() -> None:
     assert "report_t" in check
     assert "reason_class" in check
     assert "n_count_contradiction" in check
+    assert "fault_field" in check
+    assert "field = 'NPOS'" in check
     for name in (
         "060_dq_nodes_consistent.sql",
         "061_dq_stage_derivable_but_missing.sql",
         "062_dq_report_agrees.sql",
         "063_dq_edition_supported.sql",
         "064_dq_edition_matches_year.sql",
+        "065_dq_fault_named.sql",
+        "066_dq_fault_unresolved.sql",
     ):
         parts = load_statements(name)
         assert len(parts) == 1

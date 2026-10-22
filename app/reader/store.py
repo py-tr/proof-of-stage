@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from app.reader.reader import METHOD, ReadResult
+from app.reader.reader import FIELDS, METHOD, REASON_CHARS, ReadResult
 from app.usl.client import insert_extraction, insert_flag
 
 REVIEW_RULE = "reader_review"
+REASON_SUFFIX = "_REASON"
 
 
 def _now() -> str:
@@ -33,6 +34,21 @@ async def store_result(result: ReadResult, created_at: str | None = None) -> dic
                 created_at=stamp,
             )
             counts["extractions"] += 1
+            if fr.reason and name in FIELDS:
+                # derived_extraction has no reason column (the datasource is append-only),
+                # so the model's reason is kept as its own row: field T_REASON / N_REASON,
+                # written only if the value row above came from this same read.
+                await insert_extraction(
+                    case_id=result.case_id,
+                    method=METHOD,
+                    field=f"{name}{REASON_SUFFIX}",
+                    value=fr.reason[:REASON_CHARS],
+                    model=result.model,
+                    receipt_id=result.receipt_id,
+                    created_at=stamp,
+                    requires=(name, stamp),
+                )
+                counts["extractions"] += 1
         else:
             await insert_flag(
                 flag_id=f"{result.case_id}:{name}:{REVIEW_RULE}:{fr.reason}",

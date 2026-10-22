@@ -146,3 +146,28 @@ def test_limiter_on_fresh_loop(monkeypatch: pytest.MonkeyPatch) -> None:
     asyncio.run(burst(1))
     assert sleeps, "21st acquire across event loops must block"
     assert sleeps[0] == pytest.approx(60.0)
+
+
+@pytest.mark.usefixtures("env")
+@pytest.mark.asyncio
+async def test_5xx_without_retry_after_backs_off(monkeypatch: pytest.MonkeyPatch) -> None:
+    slept: list[float] = []
+
+    async def _sleep(delay: float, *_args: Any, **_kwargs: Any) -> None:
+        slept.append(delay)
+
+    monkeypatch.setattr(nvidia.asyncio, "sleep", _sleep)
+    busy = {"error": {"message": "Failed to generate completions"}}
+    ok = {"model": NV_SUPER, "choices": [{"message": {"content": "ready"}}]}
+    with respx.mock:
+        respx.post(nvidia.NVIDIA_CHAT_URL).mock(
+            side_effect=[
+                httpx.Response(500, json=busy),
+                httpx.Response(500, json=busy),
+                httpx.Response(500, json=busy),
+                httpx.Response(200, json=ok),
+            ]
+        )
+        text, _served = await nvidia.chat([{"role": "user", "content": "ping"}], NV_SUPER)
+    assert text == "ready"
+    assert slept == list(nvidia._BACKOFF_S)

@@ -148,3 +148,117 @@ async def test_one_failed_case_does_not_stop_the_batch(monkeypatch, capsys) -> N
     out = capsys.readouterr().out
     assert code == 0 and calls == ["TCGA-AA-0001", "TCGA-AA-0002"]
     assert "ERROR RuntimeError" in out and "errors=1" in out and "read=1" in out
+
+
+COUNT_REPORT = (
+    "LYMPH NODES: Two of fourteen (2/14) axillary lymph nodes positive for metastatic "
+    "carcinoma. Sentinel node: no tumor seen (0/1)."
+)
+
+
+def test_count_accepted_when_its_digits_are_in_the_quote() -> None:
+    fr = reader_mod.judge_count(
+        {"N_positive": 2, "N_positive_quote": "Two of fourteen (2/14) axillary lymph nodes"},
+        COUNT_REPORT,
+    )
+    assert fr.status == "accepted" and fr.value == "2"
+    assert fr.span is not None and "2/14" in fr.quote
+
+
+def test_count_accepted_as_a_number_word() -> None:
+    fr = reader_mod.judge_count(
+        {"N_positive": "2", "N_positive_quote": "Two of fourteen"}, COUNT_REPORT
+    )
+    assert fr.status == "accepted"
+
+
+def test_count_rejected_when_the_quote_does_not_contain_it() -> None:
+    # A real quote, but it states 2 positive nodes, not 4.
+    fr = reader_mod.judge_count(
+        {"N_positive": 4, "N_positive_quote": "Two of fourteen (2/14) axillary lymph nodes"},
+        COUNT_REPORT,
+    )
+    assert fr.status == "rejected" and fr.reason == "count_not_in_quote"
+
+
+def test_count_digit_match_is_not_a_substring_match() -> None:
+    # "1" must not match inside "14".
+    fr = reader_mod.judge_count(
+        {"N_positive": 1, "N_positive_quote": "Two of fourteen (2/14) axillary"}, COUNT_REPORT
+    )
+    assert fr.status == "rejected" and fr.reason == "count_not_in_quote"
+
+
+def test_count_invented_quote_and_bad_values() -> None:
+    invented = reader_mod.judge_count(
+        {"N_positive": 2, "N_positive_quote": "two nodes were involved"}, COUNT_REPORT
+    )
+    assert invented.reason == "quote_not_in_report"
+    assert reader_mod.judge_count({"N_positive": -1}, COUNT_REPORT).reason == "invalid_count"
+    assert reader_mod.judge_count({"N_positive": True}, COUNT_REPORT).reason == "invalid_count"
+    assert reader_mod.judge_count({"N_positive": None}, COUNT_REPORT).status == "abstained"
+    assert reader_mod.judge_count(None, COUNT_REPORT).reason == "answer_not_json"
+
+
+@pytest.mark.asyncio
+async def test_store_keeps_reason_rows_and_the_count(monkeypatch: pytest.MonkeyPatch) -> None:
+    from app.reader import store as store_mod
+    from app.reader.quotes import Span
+
+    rows: list[dict[str, object]] = []
+    flags: list[dict[str, object]] = []
+
+    async def fake_insert(**kwargs):  # type: ignore[no-untyped-def]
+        rows.append(kwargs)
+
+    async def fake_flag(**kwargs):  # type: ignore[no-untyped-def]
+        flags.append(kwargs)
+
+    monkeypatch.setattr(store_mod, "insert_extraction", fake_insert)
+    monkeypatch.setattr(store_mod, "insert_flag", fake_flag)
+    result = reader_mod.ReadResult(case_id="C1", model="m", receipt_id=None, provider="nvidia")
+    span = Span(0, 10)
+    result.fields["N"] = reader_mod.FieldResult("N", "accepted", "N1A", "q", span, "2 of 14 -> N1a")
+    result.fields["NPOS"] = reader_mod.FieldResult("NPOS", "accepted", "2", "q", span)
+    result.fields["T"] = reader_mod.FieldResult(
+        "T", "rejected", "T2", "x", reason="quote_too_short"
+    )
+    counts = await store_mod.store_result(result, created_at="2026-10-22 00:00:00")
+    assert [r["field"] for r in rows] == ["N", "N_REASON", "NPOS"]
+    assert rows[1]["value"] == "2 of 14 -> N1a"
+    assert counts == {"extractions": 3, "review_flags": 1}
+    assert flags[0]["reason"] == "quote_too_short"
+
+
+@pytest.mark.parametrize(
+    ("count", "span", "expected"),
+    [
+        (14, "Two of fourteen (2/14) axillary lymph nodes positive", False),  # tested count
+        (2, "Two of fourteen (2/14) axillary lymph nodes positive", True),
+        (2, "focus 2.4 cm, 0/14 nodes", False),
+        (0, "focus 2.4 cm, 0/14 nodes", True),
+        (0, "3 of 5 nodes positive, no extranodal extension", False),
+        (0, "no metastatic carcinoma in lymph nodes", True),
+        (0, "None of the lymph nodes", True),
+        (3, "three lymph nodes with metastatic carcinoma", True),
+        (1, "16 nodes, one of which contains metastatic carcinoma", True),
+    ],
+)
+def test_count_in_span_reads_the_positive_number(count: int, span: str, expected: bool) -> None:
+    assert reader_mod.count_in_span(count, span) is expected
+
+
+def test_reason_row_requires_the_value_row_of_the_same_read() -> None:
+    from app.usl.client import insert_extraction_sql
+
+    sql = insert_extraction_sql(
+        case_id="C1",
+        method="nemotron_reader",
+        field="N_REASON",
+        value="r",
+        created_at="2026-10-22 00:00:00",
+        requires=("N", "2026-10-22 00:00:00"),
+    )
+    assert "WHERE NOT EXISTS" in sql
+    assert "AND EXISTS" in sql and "sibling.field = 'N'" in sql
+    assert "sibling.created_at = '2026-10-22 00:00:00'" in sql

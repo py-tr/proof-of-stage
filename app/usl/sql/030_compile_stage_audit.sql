@@ -66,7 +66,10 @@ CREATE TABLE stage_check (
   report_n varchar(64),
   year_of_diagnosis varchar(8),
   edition_year_class varchar(16),
-  reason_class varchar(32)
+  reason_class varchar(32),
+  report_n_main varchar(8),
+  report_nodes_positive varchar(32),
+  fault_field varchar(32)
 );
 CREATE TABLE flag (
   flag_id varchar(64) NOT NULL PRIMARY KEY,
