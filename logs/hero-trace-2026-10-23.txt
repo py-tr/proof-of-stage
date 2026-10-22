@@ -1,0 +1,6 @@
+TCGA-A2-A0CV: engine status completed, 2 rung(s)
+  R1: budget 0, 4.69 s, 203 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 61.5 s, 4192 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '2'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 2'}
