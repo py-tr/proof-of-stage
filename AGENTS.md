@@ -40,6 +40,7 @@ A Python service with a small one-page web UI. It reads source documents with NV
 - Evaluation scripts read fixed, committed item lists and seeds; they report the failures too.
 
 ## Working style for agents
+- Never write absolute local paths (for example C:/Users/...) or the contents/paths of `.ref/` into any committed file; `.ref/` is local reference material only.
 - Make the smallest change that completes the task; don't refactor unrelated code.
 - If something is ambiguous, write the question in your reply instead of guessing.
 - After each task, give: files changed, the commands run, and the test summary.

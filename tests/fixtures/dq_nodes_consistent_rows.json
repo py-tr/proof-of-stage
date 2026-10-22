@@ -1,0 +1,100 @@
+{
+  "expected_invalid_case_ids": [
+    "TCGA-AN-A0XO",
+    "TCGA-AN-A0XW",
+    "TCGA-AN-A0XS",
+    "TCGA-E9-A3X8"
+  ],
+  "rows": [
+    {
+      "case_id": "TCGA-AN-A0XO",
+      "edition_code": "7",
+      "recorded_n": "N1A",
+      "recorded_n_main": "N1",
+      "lymph_nodes_positive": "0",
+      "derived_n": "pN0",
+      "derived_n_main": "N0"
+    },
+    {
+      "case_id": "TCGA-AN-A0XW",
+      "edition_code": "7",
+      "recorded_n": "N2A",
+      "recorded_n_main": "N2",
+      "lymph_nodes_positive": "2",
+      "derived_n": "pN1A",
+      "derived_n_main": "N1"
+    },
+    {
+      "case_id": "TCGA-AN-A0XS",
+      "edition_code": "6",
+      "recorded_n": "N1A",
+      "recorded_n_main": "N1",
+      "lymph_nodes_positive": "0",
+      "derived_n": "pN0",
+      "derived_n_main": "N0"
+    },
+    {
+      "case_id": "TCGA-E9-A3X8",
+      "edition_code": "6",
+      "recorded_n": "N3A",
+      "recorded_n_main": "N3",
+      "lymph_nodes_positive": "4",
+      "derived_n": "pN2A",
+      "derived_n_main": "N2"
+    },
+    {
+      "case_id": "NULL-COUNT-N1",
+      "edition_code": "7",
+      "recorded_n": "N1A",
+      "recorded_n_main": "N1",
+      "lymph_nodes_positive": null,
+      "derived_n": "pNX",
+      "derived_n_main": "NX"
+    },
+    {
+      "case_id": "MICROMET-N1MI",
+      "edition_code": "7",
+      "recorded_n": "N1MI",
+      "recorded_n_main": "N1",
+      "lymph_nodes_positive": "0",
+      "derived_n": "pN0",
+      "derived_n_main": "N0"
+    },
+    {
+      "case_id": "ITC-N0-I+",
+      "edition_code": "7",
+      "recorded_n": "N0 (I+)",
+      "recorded_n_main": "N0",
+      "lymph_nodes_positive": "0",
+      "derived_n": "pN0",
+      "derived_n_main": "N0"
+    },
+    {
+      "case_id": "NX-WITH-COUNT",
+      "edition_code": "7",
+      "recorded_n": "NX",
+      "recorded_n_main": "NX",
+      "lymph_nodes_positive": "3",
+      "derived_n": "pN1A",
+      "derived_n_main": "N1"
+    },
+    {
+      "case_id": "MATCHING-N1",
+      "edition_code": "7",
+      "recorded_n": "N1A",
+      "recorded_n_main": "N1",
+      "lymph_nodes_positive": "2",
+      "derived_n": "pN1A",
+      "derived_n_main": "N1"
+    },
+    {
+      "case_id": "EDITION-8-MISMATCH",
+      "edition_code": "8",
+      "recorded_n": "N1A",
+      "recorded_n_main": "N1",
+      "lymph_nodes_positive": "0",
+      "derived_n": "pN0",
+      "derived_n_main": "N0"
+    }
+  ]
+}

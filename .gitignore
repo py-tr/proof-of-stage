@@ -8,3 +8,5 @@ AGENTS.local.md
 data/private/
 .pytest_cache/
 .ruff_cache/
+.ref/
+.tutor/

@@ -1,0 +1,1 @@
+REGISTER DATASOURCE TABLE "flag_log" FROM oa_pg

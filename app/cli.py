@@ -1,4 +1,4 @@
-"""Operator CLI. `python -m app.cli doctor` checks each dependency."""
+"""Operator CLI for dependency checks and the stage_audit semantic layer."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from uuid import uuid4
 from app import config, zetaris
 from app.providers import nightshift, nvidia
 from app.providers.errors import EmptyAnswer
+from app.usl.setup import dq_report, setup, status_report, teardown
 
 _PING_MAX_TOKENS = 800
 _URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
@@ -119,13 +120,67 @@ async def _doctor() -> int:
     return 1 if failed else 0
 
 
+async def _usl(args: argparse.Namespace) -> int:
+    if args.usl_command == "setup":
+        await setup()
+        return 0
+    if args.usl_command == "status":
+        sys.stdout.write(await status_report())
+        return 0
+    if args.usl_command == "dq":
+        sys.stdout.write(await dq_report(invalid_rule=args.invalid, limit=args.limit))
+        return 0
+    if args.usl_command == "teardown":
+        if not args.yes:
+            sys.stdout.write(
+                "teardown refused: pass --yes to remove lightning.metastore.registry_audit, "
+                "REG_FILES, GDC_REST, derived_extraction, and flag_log\n"
+            )
+            return 2
+        await teardown()
+        return 0
+    return 2
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="app.cli")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("doctor", help="Check config and each external dependency")
+    usl = sub.add_parser("usl", help="Build and query the stage audit semantic layer")
+    usl_sub = usl.add_subparsers(dest="usl_command", required=True)
+    usl_sub.add_parser("setup", help="Idempotently create the semantic layer")
+    usl_sub.add_parser("status", help="Show each object and whether it is activated")
+    dq_parser = usl_sub.add_parser("dq", help="Run the stage_check data-quality rules")
+    dq_parser.add_argument(
+        "--invalid",
+        metavar="RULE",
+        default=None,
+        help="Print invalid records for one rule instead of the count summary",
+    )
+    dq_parser.add_argument(
+        "--limit",
+        type=int,
+        default=50,
+        help="Maximum invalid records to print with --invalid",
+    )
+    teardown_parser = usl_sub.add_parser(
+        "teardown",
+        help="Remove only registry_audit, REG_FILES, GDC_REST, and the two Postgres tables",
+    )
+    teardown_parser.add_argument(
+        "--yes",
+        action="store_true",
+        help="Confirm removal of those objects",
+    )
     args = parser.parse_args(argv)
-    if args.command == "doctor":
-        return asyncio.run(_doctor())
+    try:
+        if args.command == "doctor":
+            return asyncio.run(_doctor())
+        if args.command == "usl":
+            return asyncio.run(_usl(args))
+    except Exception as exc:
+        sys.stderr.write(_sanitize(f"{type(exc).__name__}: {exc}") + "\n")
+        return 1
     parser.error(f"unknown command {args.command}")
     return 2
 

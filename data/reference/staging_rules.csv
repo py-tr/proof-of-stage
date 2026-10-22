@@ -1,0 +1,60 @@
+rule_id,site,element,edition,condition_text,min_value,max_value,output,cite
+BT1,breast,T,"6,7,8",No tumour can be assessed,,,TX,PDQ-B; NCIt C48972
+BT2,breast,T,"6,7,8",No residual or primary tumour was found,,,T0,PDQ-B; NCIt C48973
+BT3,breast,T,"6,7,8","In situ disease only, ductal carcinoma in situ",,,Tis(DCIS),PDQ-B; NCIt C48975/C139414
+BT4,breast,T,"6,7","In situ disease only, lobular carcinoma in situ",,,Tis(LCIS),"NCIt C48976, C139414"
+BT4-8,breast,T,8,Lobular carcinoma in situ alone is not staged as malignant,,,not staged,"NCIt C48976, C139414"
+BT5,breast,T,"6,7,8",Paget disease of the nipple without underlying invasive carcinoma or DCIS,,,Tis(Paget),PDQ-B; NCIt C48977/C139415
+BT6,breast,T,"6,7,8",Clinically diagnosed inflammatory carcinoma,,,T4d,PDQ-B; NCIt C48989/C139427; SEER-T
+BT7,breast,T,"6,7,8","Chest-wall invasion (not pectoralis alone) together with ulceration, satellite skin nodules, or skin oedema",,,T4c,NCIt C48988/C139426
+BT8,breast,T,"6,7,8","Chest-wall invasion (not pectoralis alone) without ulceration, satellite skin nodules, or skin oedema",,,T4a,PDQ-B; NCIt C48986/C139424; SEER-T
+BT9,breast,T,"6,7,8","Ulceration, satellite skin nodules, or skin oedema without chest-wall invasion and not inflammatory. In the 8th edition the nodules must be macroscopic",,,T4b,NCIt C48987/C139425
+BT10,breast,T,"6,7,8",Largest invasive focus is greater than 50 mm,50.01,,T3,PDQ-B
+BT11,breast,T,"6,7,8",Largest invasive focus is greater than 20 mm and at most 50 mm,20.01,50,T2,PDQ-B
+BT12,breast,T,"6,7,8",Largest invasive focus is greater than 10 mm and at most 20 mm,10.01,20,T1c,PDQ-B
+BT13,breast,T,"6,7,8",Largest invasive focus is greater than 5 mm and at most 10 mm,5.01,10,T1b,PDQ-B
+BT14,breast,T,"6,7,8",Largest invasive focus is greater than 1 mm and at most 5 mm. A size above 1 mm and below 2 mm is taken as 2 mm,1.01,5,T1a,PDQ-B; SEER-M breast rounding
+BT15-67,breast,T,"6,7",Largest invasive focus is 1 mm or smaller (microinvasion),,1,T1mic,NCIt C139417/C48979
+BT15-8,breast,T,8,Largest invasive focus is 1 mm or smaller (microinvasion),,1,T1mi,NCIt C139417/C48979
+BT-NOT,breast,T,"6,7,8","Dermal invasion, nipple involvement, Paget disease with underlying invasion, pectoralis invasion, or dermal lymphatic invasion does not by itself change T",,,,"PDQ-B; NCIt C139423, C139415, C48985"
+BN1,breast,N,"6,7,8",No regional nodes were removed or examined,,,pNX,PDQ-B; NCIt C48990
+BN2,breast,N,"6,7,8",An ipsilateral supraclavicular node is positive,,,pN3c,PDQ-B; NCIt C49007
+BN3,breast,N,"6,7,8","Ten or more positive axillary nodes with a macrometastasis, or a positive infraclavicular node",10,,pN3a,PDQ-B; NCIt C49005
+BN4,breast,N,"6,7,8","Internal mammary nodes are clinically positive and at least one axillary node is positive, or four or more axillary nodes are positive and an internal mammary sentinel node is positive",,,pN3b,"NCIt C49006, C88362, C139443"
+BN5,breast,N,"6,7,8",Four to nine positive axillary nodes with a macrometastasis,4,9,pN2a,PDQ-B; NCIt C49002
+BN6,breast,N,"6,7,8",Internal mammary nodes are clinically positive and no axillary node is positive,,,pN2b,"NCIt C49003, C88360, C139440"
+BN7,breast,N,"6,7,8","One to three positive axillary nodes with a macrometastasis and an internal mammary sentinel node is positive, excluding isolated tumour cells",,,pN1c,"PDQ-B; NCIt C49000, C139437"
+BN8,breast,N,"6,7,8",An internal mammary sentinel node is positive and no axillary node is positive,,,pN1b,"PDQ-B; NCIt C48999, C139436"
+BN9,breast,N,"6,7,8",One to three positive axillary nodes with a macrometastasis,1,3,pN1a,PDQ-B; NCIt C48998
+BN10,breast,N,"6,7,8",Every positive deposit is larger than 0.2 mm and at most 2.0 mm,,,pN1mi,"PDQ-B; NCIt C48997, C88353, C139434"
+BN11,breast,N,"6,7,8",Only isolated tumour cells 0.2 mm or smaller,,,pN0(i+),"PDQ-B; NCIt C48993, C88351"
+BN12,breast,N,"6,7,8",Positive by RT-PCR only,,,pN0(mol+),PDQ-B; NCIt C48995
+BN13,breast,N,"6,7,8",Nodes were examined and all are negative,0,0,pN0,PDQ-B
+BN-REVIEW,breast,N,,"Four or more positive nodes without a deposit over 2 mm, a count stated only as at least, or an unknown internal mammary detection method",,,UNRESOLVED,gap in public sources
+BN-suffix,breast,N,8,"Sentinel-biopsy-only nodes add the (sn) suffix, FNA or core sampling adds (f), and neoadjuvant therapy adds the yp prefix",,,suffix/prefix,"PDQ-B Table 3 note b, Table 8 note"
+CT1-TX,colon,T,"6,7,8",The tumour cannot be assessed,,,TX,PDQ-C
+CT1-T0,colon,T,"6,7,8",No tumour was found,,,T0,PDQ-C
+CT2,colon,T,"6,7,8",Confined to the epithelium or lamina propria and not through the muscularis mucosae,,,Tis,"PDQ-C; NCIt C60841, C89944"
+CT3-78,colon,T,"7,8",Directly invades or adheres to another organ or structure. An adhesion counts only when microscopy shows tumour in it,,,T4b,"PDQ-C; NCIt C60849, C89947"
+CT3-6,colon,T,6,Directly invades or adheres to another organ or structure. An adhesion counts only when microscopy shows tumour in it,,,T4,PDQ-C; NCIt C60849
+CT4-78,colon,T,"7,8","Through the visceral peritoneum, including perforation or tumour on the serosal surface",,,T4a,"NCIt C134164, C89946; PMC-6"
+CT4-6,colon,T,6,"Through the visceral peritoneum, including perforation or tumour on the serosal surface",,,T4,NCIt C134164; PMC-6
+CT5,colon,T,"6,7,8",Through the muscularis propria into pericolorectal fat or subserosa,,,T3,PDQ-C; NCIt C89945
+CT6,colon,T,"6,7,8",Into the muscularis propria,,,T2,PDQ-C
+CT7,colon,T,"6,7,8",Into the submucosa but not into the muscularis propria,,,T1,PDQ-C
+CT-NOTE,colon,T,6,A T4a or T4b letter in a 6th-edition report is ignored and T is derived from the invaded structure,,,,NCIt C78695/C78696 vs C89946/C89947
+CN1,colon,N,"6,7,8",No nodes were examined,,,NX,PDQ-C
+CN2-78,colon,N,"7,8",Seven or more positive nodes,7,,N2b,"PDQ-C; NCIt C89955, C60853"
+CN2-6,colon,N,6,Seven or more positive nodes,7,,N2,PDQ-C; NCIt C60853
+CN3-78,colon,N,"7,8",Four to six positive nodes,4,6,N2a,PDQ-C; NCIt C89954
+CN3-6,colon,N,6,Four to six positive nodes,4,6,N2,PDQ-C
+CN4-78,colon,N,"7,8",Two or three positive nodes,2,3,N1b,"PDQ-C; NCIt C89951, C60852"
+CN4-6,colon,N,6,Two or three positive nodes,2,3,N1,PDQ-C; NCIt C60852
+CN5-78,colon,N,"7,8",Exactly one positive node,1,1,N1a,PDQ-C; NCIt C89950
+CN5-6,colon,N,6,Exactly one positive node,1,1,N1,PDQ-C
+CN6-78,colon,N,"7,8",No positive nodes and tumour deposits are present,,,N1c,PDQ-C; NCIt C89952; UENO
+CN6-6,colon,N,6,A smooth node-shaped deposit counts as a positive node. An irregular deposit changes T,,,,PDQ-C; UENO
+CN6-5,colon,N,5,A deposit larger than 3 mm counts as a positive node,,,,UENO
+CN7,colon,N,"6,7,8",No positive nodes and no tumour deposits,0,0,N0,PDQ-C
+CN-FLAG,colon,N,"6,7,8",N0 with fewer than 12 nodes examined is a quality flag and does not change the category,,,flag,PDQ-C
+CN-REVIEW,colon,N,,"A count stated only as at least, while more than one category is still possible",,,UNRESOLVED,SEER-M code 97
