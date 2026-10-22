@@ -86,10 +86,12 @@ async def test_read_report_uses_super_with_thinking_budget(monkeypatch: pytest.M
                 }
             ),
             "private/nvidia/nemotron-3.5-super-120b-a12b",
+            {"completion_tokens": 900, "completion_tokens_details": {"reasoning_tokens": 700}},
         )
 
-    monkeypatch.setattr(reader_mod.nvidia, "chat", fake_chat)
+    monkeypatch.setattr(reader_mod.nvidia, "chat_with_usage", fake_chat)
     result = await read_report("TCGA-XX-0001", REPORT)
+    assert result.usage["completion_tokens_details"]["reasoning_tokens"] == 700
     assert seen["extra"] == {
         "chat_template_kwargs": {"enable_thinking": True, "reasoning_budget": 4000}
     }

@@ -125,6 +125,17 @@ async def chat(
     **extra: Any,
 ) -> tuple[str, str]:
     """Chat completion against NVIDIA Integrate; verify the served model."""
+    text, served, _usage = await chat_with_usage(messages, model, max_tokens, **extra)
+    return text, served
+
+
+async def chat_with_usage(
+    messages: list[dict[str, Any]],
+    model: str,
+    max_tokens: int = 2000,
+    **extra: Any,
+) -> tuple[str, str, dict[str, Any]]:
+    """As chat(), plus the response's token usage (incl. reasoning tokens when reported)."""
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     api_key = config.getenv("NVIDIA_API_KEY")
     if api_key is not None:
@@ -148,7 +159,8 @@ async def chat(
                 empty_retries_left -= 1
                 continue
             raise EmptyAnswer("NVIDIA chat returned an empty answer")
-        return text, served_name
+        usage = payload.get("usage")
+        return text, served_name, usage if isinstance(usage, dict) else {}
 
 
 async def _post(headers: dict[str, str], body: dict[str, Any]) -> dict[str, Any]:

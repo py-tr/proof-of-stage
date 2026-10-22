@@ -258,7 +258,9 @@ async def read_report(
         model, receipt_id = receipt.winning_model or "", receipt.receipt_id
         usage, from_cache, signature = receipt.usage, receipt.from_cache, receipt.signature
     else:
-        text, model = await nvidia.chat(messages, config.NV_SUPER, max_tokens=max_tokens, **extra)
+        text, model, usage = await nvidia.chat_with_usage(
+            messages, config.NV_SUPER, max_tokens=max_tokens, **extra
+        )
         receipt_id = None
     answer = parse_answer(text)
     result = ReadResult(
