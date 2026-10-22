@@ -75,6 +75,42 @@ def canonical_body(body: Any) -> bytes:
     )
 
 
+def _js_number(value: float) -> str:
+    """A float as JavaScript prints it (1.0 -> 1, 5e-05 -> 0.00005, 1e+21 stays exponent)."""
+    from decimal import Decimal
+
+    if value.is_integer() and abs(value) < 1e21:
+        return str(int(value))
+    text = repr(value)
+    if "e" not in text:
+        return text
+    mantissa, exponent = text.split("e")
+    power = int(exponent)
+    if -7 < power < 21:
+        return format(Decimal(text), "f")
+    return f"{mantissa}e{'+' if power > 0 else '-'}{abs(power)}"
+
+
+def _js_json(value: Any) -> str:
+    if isinstance(value, dict):
+        items = sorted(value.items())
+        return "{" + ",".join(f"{_js_json(str(k))}:{_js_json(v)}" for k, v in items) + "}"
+    if isinstance(value, list):
+        return "[" + ",".join(_js_json(v) for v in value) + "]"
+    if isinstance(value, float):
+        return _js_number(value)
+    return json.dumps(value, ensure_ascii=False)
+
+
+def canonical_bodies(body: Any) -> list[bytes]:
+    """Candidate serialisations of a signed body. The first verified every real receipt we
+    saw; the second prints numbers as JavaScript does, in case a body carries one of the
+    floats the two disagree on (5e-05, 1.0). Both are sorted, compact, UTF-8."""
+    first = canonical_body(body)
+    second = _js_json(body).encode("utf-8")
+    return [first] if second == first else [first, second]
+
+
 def _signed_receipt(envelope: dict[str, Any]) -> tuple[SignatureState, dict[str, Any], str | None]:
     """(state, the signed receipt dict, the signer's public key)."""
     body, key_b64, sig_b64 = (
@@ -89,10 +125,16 @@ def _signed_receipt(envelope: dict[str, Any]) -> tuple[SignatureState, dict[str,
         from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
         key = Ed25519PublicKey.from_public_bytes(base64.b64decode(key_b64))
-        key.verify(base64.b64decode(sig_b64), canonical_body(body))
-    except (InvalidSignature, ValueError, TypeError):
+        signature = base64.b64decode(sig_b64)
+    except (ValueError, TypeError):
         return "invalid", {}, key_b64
-    return "verified", _as_dict(body.get("receipt")), key_b64
+    for candidate in canonical_bodies(body):
+        try:
+            key.verify(signature, candidate)
+        except InvalidSignature:
+            continue
+        return "verified", _as_dict(body.get("receipt")), key_b64
+    return "invalid", {}, key_b64
 
 
 def parse_receipt(payload: dict[str, Any]) -> Receipt:
@@ -102,14 +144,21 @@ def parse_receipt(payload: dict[str, Any]) -> Receipt:
     signature, signed, signer_key = _signed_receipt(_as_dict(meterless.get("receipt_envelope")))
     if signature == "verified":
         unsigned = _receipt_fields(meterless, raw_receipt)
+        if not _has_sent_block(meterless, raw_receipt):
+            unsigned["context_sources"] = None  # absent unsigned block: nothing to compare
         trusted = _receipt_fields({}, signed)
         if any(unsigned[k] is not None and unsigned[k] != trusted[k] for k in trusted):
             signature = "invalid"  # the unsigned fields were altered
         else:
             meterless, raw_receipt = {}, signed
     receipt = _build(meterless, raw_receipt)
-    cache = _as_dict(_as_dict(payload.get("meterless")).get("cache"))
-    from_cache = _as_dict(payload.get("meterless")).get("from_cache")
+    top = _as_dict(payload.get("meterless"))
+    # prefer the SIGNED cache status when the signature verified
+    cache = _as_dict(signed.get("cache")) if signature == "verified" else {}
+    cache = cache or _as_dict(top.get("cache"))
+    from_cache = top.get("from_cache")
+    if signature == "verified" and isinstance(cache.get("status"), str):
+        from_cache = cache["status"] == "hit"
     return receipt.model_copy(
         update={
             "usage": _as_dict(payload.get("usage")),
@@ -119,6 +168,13 @@ def parse_receipt(payload: dict[str, Any]) -> Receipt:
             "signer_key": signer_key,
         }
     )
+
+
+def _has_sent_block(meterless: dict[str, Any], raw_receipt: dict[str, Any]) -> bool:
+    for source in (meterless, raw_receipt):
+        if isinstance(_as_dict(source.get("egress")).get("sent"), dict):
+            return True
+    return False
 
 
 def _receipt_fields(meterless: dict[str, Any], raw_receipt: dict[str, Any]) -> dict[str, Any]:

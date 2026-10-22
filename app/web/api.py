@@ -40,7 +40,8 @@ def _rechecked(found: dict[str, Any]) -> list[dict[str, Any]]:
     report = found.get("report_text") or ""
     out = []
     for row in found["extractions"]:
-        if row.get("method") == "sql_node_count" or row.get("field") not in (
+        # only text-reader rows: their offsets point into the report text the page shows
+        if row.get("method") != "nemotron_reader" or row.get("field") not in (
             *FIELDS,
             NODES_POSITIVE,
         ):

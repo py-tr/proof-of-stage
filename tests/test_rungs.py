@@ -112,19 +112,19 @@ async def test_without_a_scan_the_ladder_ends_after_r2() -> None:
 
 
 @pytest.mark.asyncio
-async def test_on_close_is_called_once_per_closed_field() -> None:
-    closed: list[tuple[str, str]] = []
-
-    async def on_close(name, rung, fr, result):  # type: ignore[no-untyped-def]
-        closed.append((name, rung))
-
+async def test_two_rungs_disagreeing_is_a_conflict_for_a_person() -> None:
+    # R1 is self-consistent and clears N (agrees with the registry); R2 then reads a
+    # different main N while settling the count: the field is demoted, not stored.
+    case = CaseEvidence("TCGA-AA-0005", "TEXT", recorded_n="N1", registry_count=4.0, edition="7")
     script = {
-        R1: (("accepted", "N1A"), ("rejected", "9")),
-        R2: (("accepted", "N1A"), ("accepted", "2")),
+        R1: (("accepted", "N1A"), ("accepted", "2")),
+        R2: (("accepted", "N2A"), ("accepted", "4")),
     }
-    await climb(CASE, run_id="t5", reader=_reader(script, []), on_close=on_close)
-    # R1's count was rejected, so its N is not self-consistent: it cannot clear N either.
-    assert closed == [("N", R2), (NODES_POSITIVE, R2)]
+    ladder = await climb(case, run_id="t5", reader=_reader(script, []))
+    # R1 (self-consistent) read 2 nodes, R2 read 4: the count is disputed too.
+    assert ladder.conflicts == {"N": ["N1", "N2"], NODES_POSITIVE: ["2", "4"]}
+    assert ladder.closed == {} and ladder.open_fields == ["N", NODES_POSITIVE]
+    assert "conflict" in ladder.last_reasons["N"]
 
 
 @pytest.mark.asyncio

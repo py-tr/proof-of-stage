@@ -156,3 +156,33 @@ def test_missing_envelope_and_pinned_key_and_cache(chat_response: dict[str, Any]
     with pytest.raises(ReceiptMismatch, match="cache"):
         verify(cached, allow_cache=False)
     verify(cached)  # allowed unless the caller forbids it
+
+
+def test_js_number_format() -> None:
+    from app.providers.receipts import _js_json, _js_number
+
+    assert _js_number(1.0) == "1" and _js_number(5e-05) == "0.00005"
+    assert (
+        _js_number(45.3) == "45.3"
+        and _js_number(1e21) == "1e+21"
+        and _js_number(1.5e-7) == "1.5e-7"
+    )
+    assert _js_json({"b": 1.0, "a": [0.1, "x"]}) == '{"a":[0.1,"x"],"b":1}'
+
+
+def test_cache_status_is_read_from_the_signed_copy(chat_response: dict[str, Any]) -> None:
+    payload = copy.deepcopy(chat_response)
+    payload["meterless"]["from_cache"] = True  # an unsigned claim
+    receipt = parse_receipt(payload)
+    if receipt.signature == "verified" and receipt.cache_status is not None:
+        assert receipt.from_cache == (receipt.cache_status == "hit")
+
+
+def test_an_absent_unsigned_sent_block_is_not_tampering(chat_response: dict[str, Any]) -> None:
+    payload = copy.deepcopy(chat_response)
+    payload["meterless"]["egress"].pop("sent", None)
+    raw = payload["meterless"].get("receipt") or {}
+    (raw.get("egress") or {}).pop("sent", None)
+    receipt = parse_receipt(payload)
+    assert receipt.signature == "verified"
+    assert receipt.context_sources == ["messages"]  # read from the signed copy

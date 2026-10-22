@@ -223,8 +223,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "run":
             from app.engine.run_case import run_case, summary
 
-            ladder = asyncio.run(run_case(args.case.upper(), store=args.store))
-            sys.stdout.write(summary(ladder))
+            ladder, outcome = asyncio.run(run_case(args.case.upper(), store=args.store))
+            sys.stdout.write(summary(ladder, outcome))
             return 0
         if args.command == "scans":
             from app.scans.scans import parse_scan, write_parse_blocks_csv

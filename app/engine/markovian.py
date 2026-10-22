@@ -71,6 +71,15 @@ async def run_engine(
         limit=_LINE_LIMIT,
     )
     assert process.stdin is not None and process.stdout is not None
+    stderr_lines: list[str] = []
+
+    async def drain_stderr() -> None:  # never let a chatty sidecar block on a full pipe
+        assert process.stderr is not None
+        async for raw in process.stderr:
+            stderr_lines.append(raw.decode("utf-8", "replace").rstrip())
+            del stderr_lines[:-50]
+
+    drainer = asyncio.create_task(drain_stderr())
 
     async def send(message: dict[str, Any]) -> None:
         process.stdin.write((json.dumps(message) + "\n").encode("utf-8"))
@@ -79,7 +88,8 @@ async def run_engine(
     async def receive() -> dict[str, Any]:
         line = await process.stdout.readline()
         if not line:
-            error = (await process.stderr.read()).decode("utf-8", "replace").strip()
+            await asyncio.sleep(0.05)  # let the drainer collect the last stderr lines
+            error = " | ".join(stderr_lines[-5:]).strip()
             raise EngineError(f"Markovian sidecar exited: {error[:300] or 'no output'}")
         return json.loads(line.decode("utf-8"))
 
@@ -121,6 +131,8 @@ async def run_engine(
                 await asyncio.wait_for(process.wait(), timeout=10)
             except TimeoutError:
                 process.kill()
+                await process.wait()
+        drainer.cancel()
 
 
 async def run_conformance() -> tuple[int, str]:

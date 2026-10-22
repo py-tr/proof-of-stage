@@ -41,7 +41,6 @@ _MAIN_N = re.compile(r"N[0-9X]")
 CHUNK_CONFIG = {"chunkSize": 8000, "maxChunks": 6, "carryoverTokens": 256, "overlapTokens": 0}
 
 Reader = Callable[..., Awaitable[ReadResult]]
-OnClose = Callable[[str, str, FieldResult, ReadResult], Awaitable[None]]
 
 
 @dataclass
@@ -61,6 +60,10 @@ class Ladder:
     closed: dict[str, dict[str, Any]] = field(default_factory=dict)  # field -> {rung, value}
     open_fields: list[str] = field(default_factory=list)
     chunks: list[dict[str, Any]] = field(default_factory=list)  # one log row per rung
+    conflicts: dict[str, list[str]] = field(default_factory=dict)  # field -> accepted values
+    last_reasons: dict[str, str] = field(default_factory=dict)  # open field -> last reason
+    # not serialised: the FieldResult/ReadResult behind each closed field, for storing
+    closings: dict[str, tuple[FieldResult, ReadResult]] = field(default_factory=dict, repr=False)
 
 
 def main_n(value: str | None) -> str | None:
@@ -111,6 +114,16 @@ def _initial_state(case: CaseEvidence) -> dict[str, Any]:
     return {"case": case.case_id, "need": list(OPEN_FIELDS), "consulted": [], "ledger": {}}
 
 
+def _comparable(name: str, value: str) -> str:
+    """N by its main category, a count as an integer: what decides the verdict."""
+    if name == "N":
+        return main_n(value) or value
+    try:
+        return str(int(float(value)))
+    except ValueError:
+        return value
+
+
 def _ledger_entry(rung: str, fr: FieldResult) -> str:
     mark = "ok" if fr.status == "accepted" else fr.reason or fr.status
     return f"{rung}:{fr.value or '-'}:{mark}"[:40]
@@ -126,13 +139,14 @@ class RungsGenerator:
         reader: Reader = read_report,
         run_id: str,
         provider: str = "nvidia",
-        on_close: OnClose | None = None,
     ) -> None:
         self.case = case
         self.reader = reader
         self.run_id = run_id
         self.provider = provider
-        self.on_close = on_close
+        self.closings: dict[str, tuple[FieldResult, ReadResult]] = {}
+        self.accepted: dict[str, set[str]] = {}  # every accepted value per field, all rungs
+        self.last_reasons: dict[str, str] = {}
         self.closed: dict[str, dict[str, Any]] = {}
         self.chunks: list[dict[str, Any]] = []
 
@@ -170,6 +184,13 @@ class RungsGenerator:
         seconds = round(time.monotonic() - started, 2)
         still_open = []
         consistent = self_consistent(result, self.case.edition)
+        # remember accepted values (closed fields included) for the conflict check; a fast read
+        # that failed the rule check is not evidence, so it cannot create a conflict
+        trusted = rung != R1 or consistent
+        for name in OPEN_FIELDS if trusted else ():
+            fr = result.fields[name]
+            if fr.status == "accepted" and fr.value is not None:
+                self.accepted.setdefault(name, set()).add(_comparable(name, fr.value))
         for name in state["need"]:
             fr = result.fields[name]
             state["ledger"].setdefault(name, []).append(_ledger_entry(rung, fr))
@@ -180,10 +201,10 @@ class RungsGenerator:
             )
             if closes:
                 self.closed[name] = {"rung": rung, "value": fr.value}
-                if self.on_close is not None:
-                    await self.on_close(name, rung, fr, result)
+                self.closings[name] = (fr, result)
             else:
                 still_open.append(name)
+                self.last_reasons[name] = f"{rung}:{fr.reason or fr.status}"[:120]
         state["need"] = still_open
         state["consulted"].append(rung)
         log = {
@@ -247,22 +268,38 @@ async def climb(
     run_id: str,
     reader: Reader = read_report,
     provider: str = "nvidia",
-    on_close: OnClose | None = None,
     abort_after: int | None = None,
 ) -> Ladder:
-    """One Markovian run for one case: the engine drives the ladder until no field is open."""
-    generator = RungsGenerator(
-        case, reader=reader, run_id=run_id, provider=provider, on_close=on_close
-    )
+    """One Markovian run for one case: the engine drives the ladder until no field is open.
+
+    Nothing is stored here. A field two rungs accepted with different values is a conflict:
+    it is demoted to open, so the caller flags it for a person instead of storing either.
+    """
+    generator = RungsGenerator(case, reader=reader, run_id=run_id, provider=provider)
     goal = (
         f"Settle the N category and the positive-node count of case {case.case_id} "
         "with verbatim evidence, cheapest rung first."
     )
     run = await run_engine(goal, generator, chunk_config=CHUNK_CONFIG, abort_after=abort_after)
+    closed = dict(generator.closed)
+    conflicts = {
+        name: sorted(values)
+        for name, values in generator.accepted.items()
+        if name in closed and len(values) > 1
+    }
+    last_reasons = dict(generator.last_reasons)
+    for name, values in conflicts.items():
+        closed.pop(name)
+        last_reasons[name] = f"conflict: rungs accepted {', '.join(values)}"
     return Ladder(
         case_id=case.case_id,
         run=run,
-        closed=generator.closed,
-        open_fields=[name for name in OPEN_FIELDS if name not in generator.closed],
+        closed=closed,
+        open_fields=[name for name in OPEN_FIELDS if name not in closed],
         chunks=generator.chunks,
+        conflicts=conflicts,
+        last_reasons={
+            name: last_reasons.get(name, "") for name in OPEN_FIELDS if name not in closed
+        },
+        closings={name: generator.closings[name] for name in closed},
     )
