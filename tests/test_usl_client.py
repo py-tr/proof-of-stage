@@ -84,7 +84,7 @@ def test_insert_flag_escapes_quotes_and_stays_one_statement() -> None:
     parts = split_statements(sql)
     assert len(parts) == 1
     assert parts[0].startswith("INSERT INTO oa_pg.flag_log")
-    assert "N1''); DROP TABLE oa_pg.flag_log; --" in sql
+    assert "N1\\'); DROP TABLE oa_pg.flag_log; --" in sql
     assert "N1'); DROP TABLE" not in sql
     assert "WHERE NOT EXISTS" in sql
     for column in FLAG_COLUMNS:
@@ -130,7 +130,7 @@ def test_insert_extraction_rejects_non_integers_and_lists_every_column() -> None
         created_at="2026-01-01T00:00:00Z",
     )
     assert len(split_statements(sql)) == 1
-    assert "O''Brien" in sql
+    assert "O\\'Brien" in sql
     assert "WHERE existing.case_id = " in sql
     assert "existing.method = " in sql
     assert "existing.field = " in sql

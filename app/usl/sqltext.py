@@ -54,12 +54,16 @@ def load_statements(name: str) -> list[str]:
 
 
 def sql_string(value: str | None) -> str:
-    """Spark single-quoted literal. None is NULL. Quotes and backslashes are escaped."""
+    """Spark single-quoted literal. None is NULL. Quotes and backslashes are escaped.
+
+    Backslash escapes, not doubled quotes: on Lightning 'O''Brien' parses as two adjacent
+    literals and returns "OBrien" (measured live), silently dropping every apostrophe.
+    """
     if value is None:
         return "NULL"
     if not isinstance(value, str):
         raise TypeError("SQL string value must be a str or None")
-    escaped = value.replace("\\", "\\\\").replace("'", "''")
+    escaped = value.replace("\\", "\\\\").replace("'", "\\'")
     return "'" + escaped + "'"
 
 

@@ -263,3 +263,15 @@ def columns_by_table(sql: str) -> dict[str, list[str]]:
         if name and name != ")":
             tables[current].append(name)
     return tables
+
+
+def test_sql_string_uses_backslash_escapes() -> None:
+    from app.usl.client import guard_select
+    from app.usl.sqltext import sql_string
+
+    assert sql_string("O'Brien") == "'O\\'Brien'"
+    assert sql_string("a\\b") == "'a\\\\b'"
+    # An escaped quote cannot end the literal, so this stays one SELECT.
+    literal = sql_string("x'; DROP TABLE t; --")
+    assert split_statements(f"SELECT {literal} AS v") == [f"SELECT {literal} AS v"]
+    guard_select(f"SELECT {sql_string("it's")} AS v")

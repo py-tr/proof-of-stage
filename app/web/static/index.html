@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proof of Stage</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">Proof of Stage <span class="tag">checks registry stage fields against the pathology report</span></div>
+    <div id="cohort" class="cohort"></div>
+    <div id="mode" class="mode">…</div>
+  </header>
+
+  <main class="grid">
+    <aside class="queue">
+      <h2>Queue <small>named field first</small></h2>
+      <div id="queue-named"></div>
+      <h3 class="lane">Needs a person</h3>
+      <div id="queue-review"></div>
+      <h3 class="lane">Decided</h3>
+      <div id="queue-done"></div>
+      <p class="small legend">
+        <span class="sw red"></span> evidence names a field ·
+        <span class="sw grey"></span> machine won't decide ·
+        <span class="sw green"></span> you decided
+      </p>
+    </aside>
+
+    <section class="report">
+      <div class="report-head">
+        <h2 id="report-title">Pathology report</h2>
+        <div class="keys">
+          <span class="k n">N quote</span><span class="k c">count quote</span><span class="k t">T quote</span><span class="k x">your quote</span>
+        </div>
+      </div>
+      <pre id="report-text" class="report-text">Pick a case.</pre>
+      <div id="rejected" class="rejected"></div>
+    </section>
+
+    <section class="panel">
+      <p id="headline" class="headline"></p>
+      <div id="strip" class="strip"></div>
+      <table class="compare">
+        <thead><tr><th></th><th>Registry<br><small>recorded_stage</small></th><th>From the count<br><small>staging_rule</small></th><th>Report<br><small>Nemotron, quote-checked</small></th></tr></thead>
+        <tbody>
+          <tr><th>N</th><td id="c-rec-n"></td><td id="c-der-n"></td><td id="c-rep-n" data-mark="n"></td></tr>
+          <tr><th>Positive nodes</th><td id="c-rec-c"></td><td>—</td><td id="c-rep-c" data-mark="c"></td></tr>
+        </tbody>
+      </table>
+      <div class="block">
+        <h3>Rule <small>paraphrased; the AJCC manual has the exact text</small></h3>
+        <ul id="rules" class="rules"></ul>
+      </div>
+      <div class="block">
+        <h3>What Nemotron did <small>and the guard it had to pass</small></h3>
+        <div id="nemotron" class="nemotron"></div>
+      </div>
+      <div class="block">
+        <h3>Your call</h3>
+        <div id="decide" class="decide"></div>
+        <div id="reject-reasons" class="reasons hidden">
+          <button data-r="addendum">1 another source / addendum</button>
+          <button data-r="misread">2 quote misread</button>
+          <button data-r="rule">3 rule or edition wrong here</button>
+          <button data-r="other">4 other</button>
+        </div>
+        <div id="decided" class="small"></div>
+        <p class="small">Proof of Stage never edits a record. Each decision is a new row in Zetaris (oa_pg.flag_log); earlier rows stay.</p>
+      </div>
+      <details class="block fool" open>
+        <summary>Try to fool it <small>you play the reader; the same guards decide</small></summary>
+        <div class="fool-form">
+          <select id="f-field"><option value="NPOS">positive nodes</option><option value="N">N category</option><option value="T">T category</option></select>
+          <input id="f-value" placeholder="value, e.g. 4 or N2a">
+          <textarea id="f-quote" rows="3" placeholder="a quote: type one, or select text in the report"></textarea>
+          <button id="f-run">Check</button>
+        </div>
+        <div id="f-out" class="fool-out"></div>
+      </details>
+      <p id="source-note" class="small"></p>
+    </section>
+  </main>
+
+  <footer id="status" class="status">Starting…</footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
