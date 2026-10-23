@@ -1,0 +1,45 @@
+{
+  "frozen_at": "2026-10-23",
+  "models": {
+    "lightning": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "super": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "ultra": "nvidia/nemotron-3-ultra-550b-a55b"
+  },
+  "budgets": {
+    "lightning": 4000,
+    "super": 4000,
+    "ultra": "thinking on, no budget (hosted Ultra rejects one)"
+  },
+  "cases": [
+    "TCGA-3C-AAAU",
+    "TCGA-A1-A0SN",
+    "TCGA-A2-A0CV",
+    "TCGA-A2-A0EW",
+    "TCGA-A7-A26E",
+    "TCGA-A7-A26H",
+    "TCGA-AC-A2FK",
+    "TCGA-AN-A0XN",
+    "TCGA-AN-A0XO",
+    "TCGA-AN-A0XP",
+    "TCGA-AN-A0XS",
+    "TCGA-AN-A0XT",
+    "TCGA-AN-A0XW",
+    "TCGA-AO-A03P",
+    "TCGA-AO-A1KP",
+    "TCGA-AQ-A1H2",
+    "TCGA-AR-A1AT",
+    "TCGA-BH-A0BS",
+    "TCGA-BH-A0DD",
+    "TCGA-D8-A27L",
+    "TCGA-E2-A1B4",
+    "TCGA-E2-A1LI",
+    "TCGA-E2-A572",
+    "TCGA-E9-A3X8",
+    "TCGA-EW-A424"
+  ],
+  "code_sha256_16": {
+    "app/engine/reader_bench.py": "553dbaf778641355",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  }
+}

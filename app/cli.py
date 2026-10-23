@@ -216,6 +216,26 @@ async def _usl(args: argparse.Namespace) -> int:
     return 2
 
 
+async def _reader_bench(step: str) -> int:
+    from app.engine import baseline, reader_bench
+
+    if step == "run":
+        sys.stdout.write(json.dumps(await reader_bench.run_bench(), indent=2) + "\n")
+        return 0
+    reader_bench.frozen_case_ids()
+    if not baseline.LABELS.exists():
+        sys.stderr.write("no frozen labels yet\n")
+        return 1
+    text = baseline.LABELS.read_text(encoding="utf-8")
+    if baseline.sha16(text) != baseline.LABELS.with_suffix(".sha16").read_text().strip():
+        sys.stderr.write("the labels changed since they were frozen\n")
+        return 1
+    rows = [json.loads(line) for line in reader_bench.LOG.read_text(encoding="utf-8").splitlines()]
+    result = reader_bench.score(rows, json.loads(text)["labels"])
+    sys.stdout.write(json.dumps(result, indent=2) + "\n")
+    return 0
+
+
 async def _baseline(step: str) -> int:
     from app.engine import baseline
 
@@ -382,6 +402,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
     )
+    bench = sub.add_parser(
+        "reader-bench", help="Pre-registered: which Nemotron reads the queue best (run, then score)"
+    )
+    bench.add_argument("step", choices=("run", "score"))
     sub.add_parser(
         "r1-timing", help="Pre-registered: Lightning vs Super at R1, same hour, 3 trials"
     )
@@ -444,6 +468,8 @@ def main(argv: list[str] | None = None) -> int:
 
             sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
             return 0
+        if args.command == "reader-bench":
+            return asyncio.run(_reader_bench(args.step))
         if args.command == "r1-timing":
             from app.engine.timing import run_timing
 
