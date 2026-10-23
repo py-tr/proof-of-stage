@@ -383,6 +383,9 @@ def main(argv: list[str] | None = None) -> int:
         "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
     )
     sub.add_parser(
+        "agent-probe-2", help="Pre-registered follow-up: does an agent use the checked column"
+    )
+    sub.add_parser(
         "agent-probe",
         help="Pre-registered: does an agent reading the USL descriptions use the verdict",
     )
@@ -437,6 +440,11 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.dial import run_sample
 
             sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
+            return 0
+        if args.command == "agent-probe-2":
+            from app.engine.agent_probe2 import run_probe2
+
+            sys.stdout.write(json.dumps(asyncio.run(run_probe2()), indent=2, default=str))
             return 0
         if args.command == "agent-probe":
             from app.engine.agent_probe import run_probe

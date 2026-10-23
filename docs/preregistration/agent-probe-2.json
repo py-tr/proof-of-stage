@@ -1,0 +1,14 @@
+{
+  "frozen_at": "2026-10-23",
+  "follows": "docs/preregistration/agent-probe.md",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b (Nightshift, pinned, signed), 4k budget, prompt and question of the first probe",
+  "calls_per_arm": 5,
+  "expected_result": 479,
+  "expected_result_how": "computed before freezing with one read-only SELECT on the live layer: count of stage_check records with positive_nodes_checked > 0 (the raw count gives 476)",
+  "schema_control_sha256_16": "abf83db8976a3390",
+  "schema_treatment_sha256_16": "c734ff87997a3a35",
+  "code_sha256_16": {
+    "app/engine/agent_probe2.py": "bd5740c4122c15d1",
+    "app/engine/agent_probe.py": "4cf7f41df8c1e778"
+  }
+}
