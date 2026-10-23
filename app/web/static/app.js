@@ -53,10 +53,17 @@ function show(value) { return value === null || value === undefined || value ===
 
 // ---------- cohort ----------
 // One question, three answers, live from the semantic layer (usl demo step 11).
+// Once a person has decided cases, the layer's answer includes their decisions (flag rows).
+function decided(np) {
+  const n = Number(np.decided_by_a_person || 0);
+  if (!n) return "";
+  return ` With ${n} decision${n === 1 ? "" : "s"} by a person: ${np.node_positive_after_decisions} node-positive, ${np.left_after_decisions} left.`;
+}
+
 function nodePositiveLine(np, snapshotOf) {
   if (!np) return null;
   const copy = snapshotOf ? `Copy of the live layer (${snapshotOf}): ` : "";
-  return `${copy}How many patients are node-positive? ${np.node_positive_by_n_column} by the N column, ${np.node_positive_by_count_column} by the count column, ${np.node_positive_by_verdict} by the verdict (${np.left_to_a_person} left to a person): the two columns disagree on ${np.columns_disagree} of ${np.records} records.`;
+  return `${copy}How many patients are node-positive? ${np.node_positive_by_n_column} by the N column, ${np.node_positive_by_count_column} by the count column, ${np.node_positive_by_verdict} by the verdict (${np.left_to_a_person} left to a person): the two columns disagree on ${np.columns_disagree} of ${np.records} records.${decided(np)}`;
 }
 async function loadCohort() {
   try {
@@ -320,6 +327,7 @@ async function decide(claim, reasonCode) {
       const item = state.queue[state.index];
       item.decided_at = saved.created_at;
       await refreshQueueKeep(caseId);
+      loadCohort();  // the layer's answer now includes this decision
     } else {
       status("Sample mode does not write to Zetaris: nothing was saved.");
     }

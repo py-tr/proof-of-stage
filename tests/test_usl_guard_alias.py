@@ -21,3 +21,11 @@ def test_an_alias_cannot_smuggle_another_source() -> None:
         guard_select(f"SELECT q.case_id FROM {T} r")  # q was never declared
     with pytest.raises(SqlGuardError):
         guard_select(f"SELECT r.a.b FROM {T} r")  # alias.column only, not a deeper name
+
+
+def test_the_three_answers_query_with_decisions_passes_the_read_guard() -> None:
+    from app.usl.demo import node_positive_sql
+
+    sql = node_positive_sql()
+    guard_select(sql)  # one read, our tables only, with the latest-decision subquery
+    assert "human_review" in sql and "node_positive_after_decisions" in sql

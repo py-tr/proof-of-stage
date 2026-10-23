@@ -298,8 +298,34 @@ def node_positive_sql(check: str | None = None) -> str:
         f"sum(CASE WHEN {_DISAGREE} AND fault_field = 'review' THEN 1 ELSE 0 END) "
         "AS left_to_a_person, "
         "sum(CASE WHEN reason_class = 'n_count_contradiction' AND NOT "
-        f"({_DISAGREE}) THEN 1 ELSE 0 END) AS same_answer_other_category "
-        f"FROM {check} WHERE {_BOTH_APPLY}"
+        f"({_DISAGREE}) THEN 1 ELSE 0 END) AS same_answer_other_category, "
+        # the fourth answer: a person's latest decision (flag, rule human_review) wins over the
+        # verdict; "neither" or "unsure" keeps the case with a person
+        f"sum(CASE WHEN NOT ({_DISAGREE}) AND {_BY_N} THEN 1 "
+        f"WHEN {_DISAGREE} AND {_DECIDED_FIELD} = 'node_count' AND {_BY_N} THEN 1 "
+        f"WHEN {_DISAGREE} AND {_DECIDED_FIELD} = 'pathologic_n' AND {_BY_COUNT} THEN 1 "
+        "ELSE 0 END) AS node_positive_after_decisions, "
+        f"sum(CASE WHEN {_DISAGREE} AND {_DECIDED_FIELD} NOT IN ('node_count', 'pathologic_n') "
+        "THEN 1 ELSE 0 END) AS left_after_decisions, "
+        f"sum(CASE WHEN {_DISAGREE} AND d.claim IS NOT NULL THEN 1 ELSE 0 END) "
+        "AS decided_by_a_person "
+        f"FROM {check} s LEFT JOIN {_latest_decisions()} ON s.case_id = d.case_id "
+        f"WHERE {_BOTH_APPLY}"
+    )
+
+
+_DECIDED_FIELD = "coalesce(d.claim, fault_field)"
+
+
+def _latest_decisions() -> str:
+    """Each case's latest reviewer decision, as a subquery aliased d (append-only rows)."""
+    flag = table_fqn("flag")
+    return (
+        f"(SELECT f.case_id AS case_id, f.severity AS claim FROM {flag} f JOIN "
+        f"(SELECT case_id, max(created_at) AS latest FROM {flag} "
+        "WHERE rule_id = 'human_review' GROUP BY case_id) m "
+        "ON f.case_id = m.case_id AND f.created_at = m.latest "
+        "WHERE f.rule_id = 'human_review') d"
     )
 
 

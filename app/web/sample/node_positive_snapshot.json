@@ -1,5 +1,5 @@
 {
-  "snapshot_of": "usl demo 2026-10-23 21:27 UTC (docs/zetaris-demo.md steps 11-12)",
+  "snapshot_of": "usl demo 2026-10-23 21:48 UTC (docs/zetaris-demo.md steps 11-12)",
   "node_positive": {
     "records": 663,
     "node_positive_by_n_column": 336,
@@ -8,7 +8,10 @@
     "node_positive_by_verdict": 333,
     "node_positive_by_checked_count": 331,
     "left_to_a_person": 2,
-    "same_answer_other_category": 14
+    "same_answer_other_category": 14,
+    "node_positive_after_decisions": 333,
+    "left_after_decisions": 2,
+    "decided_by_a_person": 0
   },
   "disagreeing_records": [
     {

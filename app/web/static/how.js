@@ -186,7 +186,7 @@ async function loadScoreboard(sample) {
     const copy = sample && c.node_positive_snapshot_of ? `Copy of the live layer (${c.node_positive_snapshot_of}). ` : "";
     if (sample && !copy) return;
     $("scoreboard").replaceChildren(el("b", {}, `${copy}How many patients are node-positive? `),
-      `${np.node_positive_by_n_column} by the N column, ${np.node_positive_by_count_column} by the count column, ${np.node_positive_by_verdict} by the verdict (${np.left_to_a_person} left to a person). The two columns disagree on ${np.columns_disagree} of ${np.records} records; the steps below show how one record is settled.`);
+      `${np.node_positive_by_n_column} by the N column, ${np.node_positive_by_count_column} by the count column, ${np.node_positive_by_verdict} by the verdict (${np.left_to_a_person} left to a person). The two columns disagree on ${np.columns_disagree} of ${np.records} records; the steps below show how one record is settled.${Number(np.decided_by_a_person || 0) ? ` With ${np.decided_by_a_person} decided by a person: ${np.node_positive_after_decisions} node-positive, ${np.left_after_decisions} left.` : ""}`);
     $("scoreboard").classList.remove("hidden");
   } catch (error) { /* the steps still load */ }
 }
