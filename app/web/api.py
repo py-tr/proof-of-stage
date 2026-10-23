@@ -137,6 +137,26 @@ def create_app(
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
+    @app.get("/api/case/{case_id}/scanbox")
+    async def case_scanbox(case_id: str) -> dict[str, Any]:
+        """The Parse box on the original scan that holds the scan rung's accepted quote."""
+        from app.web.data import valid_case_id
+        from app.web.scanbox import scan_box
+
+        if source.mode == "sample":
+            return {"scanbox": None}  # scans are local files, not part of the sample
+        return {"scanbox": scan_box(valid_case_id(case_id))}
+
+    @app.get("/api/case/{case_id}/scan/{page}.png")
+    async def case_scan_page(case_id: str, page: int) -> FileResponse:
+        from app.web.data import valid_case_id
+        from app.web.scanbox import page_image
+
+        found = None if source.mode == "sample" else page_image(valid_case_id(case_id), page)
+        if found is None:
+            raise HTTPException(status_code=404, detail="no scan page for this case")
+        return FileResponse(found, media_type="image/png")
+
     @app.get("/api/case/{case_id}/scratchpad")
     async def case_scratchpad(case_id: str) -> dict[str, Any]:
         """Excerpts of Nemotron's reasoning text from one recorded call, if one was recorded."""

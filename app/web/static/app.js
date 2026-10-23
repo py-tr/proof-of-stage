@@ -360,6 +360,28 @@ function renderTrace(trace) {
     el("p", { class: "small" }, `Run ${trace.run_id}. Stored values are the first ones written (append-only), so they can come from an earlier run. Hover a receipt for its id, a token count for the budget check.`));
 }
 
+async function loadScanBox(caseId) {
+  const box = $("scan");
+  box.replaceChildren();
+  box.classList.add("hidden");
+  if (state.mode !== "live") return;
+  try {
+    const found = await api(`/api/case/${caseId}/scanbox`);
+    const s = found.scanbox;
+    if (!s || !state.current || state.current.check.case_id !== caseId) return;
+    const page = el("div", { class: "page" }, el("img", { src: `/api/case/${caseId}/scan/${s.page}.png`, alt: `original scan, page ${s.page + 1}` }));
+    for (const b of s.boxes) {
+      page.append(el("div", { class: "box", title: b.text, style: `left:${b.x0 * 100}%;top:${b.y0 * 100}%;width:${(b.x1 - b.x0) * 100}%;height:${(b.y1 - b.y0) * 100}%` }));
+    }
+    box.append(el("h3", {}, "On the original scan ", el("small", {}, `page ${s.page + 1} · the Nemotron Parse block that holds the scan rung's quote`)),
+      page,
+      el("p", { class: "small" }, `Parse read: “${s.boxes.map((b) => b.text).join(" ")}”. The box is Parse's own; the scan is a local file, not part of the repository.`));
+    box.classList.remove("hidden");
+  } catch (error) {
+    /* no scan for this case */
+  }
+}
+
 async function loadScratchpad(caseId) {
   const box = $("nemotron");
   const old = box.querySelector(".scratch");
@@ -505,6 +527,7 @@ async function openCase(position, options = {}) {
     loadNote(caseId);
     loadTrace(caseId);
     loadScratchpad(caseId);
+    loadScanBox(caseId);
     $("f-out").replaceChildren();
     $("reject-reasons").classList.add("hidden");
     history.replaceState(null, "", `?case=${caseId}`);

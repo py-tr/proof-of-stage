@@ -90,3 +90,44 @@ def test_sample_mode_shows_no_scratchpad() -> None:
     client = TestClient(create_app(SampleData()))
     case_id = client.get("/api/queue").json()[0]["case_id"]
     assert client.get(f"/api/case/{case_id}/scratchpad").json() == {"scratchpad": None}
+
+
+def test_the_scan_box_is_the_parse_block_holding_the_scan_rungs_quote(tmp_path: Path) -> None:
+    from app.web.scanbox import scan_box
+
+    case = tmp_path / "TCGA-A2-A0CV"
+    case.mkdir()
+    pages = [
+        [
+            {"x0": 0.1, "y0": 0.2, "x1": 0.9, "y1": 0.25, "text": "HEADER"},
+            {
+                "x0": 0.1,
+                "y0": 0.6,
+                "x1": 0.9,
+                "y1": 0.68,
+                "text": "METASTASIS IN TWO OF EIGHTEEN (2/18) NODES",
+            },
+        ]
+    ]
+    (case / "blocks.json").write_text(json.dumps({"pages": pages}), encoding="utf-8")
+    (case / "page-0.png").write_bytes(b"png")
+    log = tmp_path / "chunks.jsonl"
+    row = {
+        "case": "TCGA-A2-A0CV",
+        "rung": "R3",
+        "fields": {
+            "NPOS": {"status": "accepted", "value": "2", "quote": "TWO OF EIGHTEEN (2/18) NODES"}
+        },
+    }
+    log.write_text(json.dumps(row) + chr(10), encoding="utf-8")
+    found = scan_box("TCGA-A2-A0CV", tmp_path, log)
+    assert found["page"] == 0 and found["field"] == "NPOS"
+    assert [b["y0"] for b in found["boxes"]] == [0.6]
+    assert scan_box("TCGA-OTHER", tmp_path, log) is None
+
+
+def test_sample_mode_serves_no_scan() -> None:
+    client = TestClient(create_app(SampleData()))
+    case_id = client.get("/api/queue").json()[0]["case_id"]
+    assert client.get(f"/api/case/{case_id}/scanbox").json() == {"scanbox": None}
+    assert client.get(f"/api/case/{case_id}/scan/0.png").status_code == 404

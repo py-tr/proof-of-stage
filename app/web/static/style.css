@@ -84,6 +84,10 @@ mark.glow { outline: 2px solid var(--ink); }
 mark strong { font-weight: 800; text-decoration: underline; }
 .decide button.primary { border-color: var(--red); }
 .decide button:disabled { opacity: .5; cursor: wait; }
+.scanbox { margin-top: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.scanbox .page { position: relative; width: 100%; max-width: 640px; }
+.scanbox .page img { width: 100%; display: block; border: 1px solid var(--line); }
+.scanbox .box { position: absolute; border: 3px solid #e65100; background: rgba(255, 183, 77, .18); border-radius: 2px; }
 .scratch { margin-top: 8px; border-left: 3px solid #c9d7ee; padding: 4px 0 4px 10px; }
 .scratch blockquote { margin: 6px 0; font: 12px/1.5 var(--mono); white-space: pre-wrap; color: #333; }
 .trace { font-size: 12px; }
