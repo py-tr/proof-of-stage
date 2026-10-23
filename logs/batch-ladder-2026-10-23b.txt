@@ -1,0 +1,203 @@
+=== TCGA-3C-AAAU
+TCGA-3C-AAAU: engine status completed, 2 rung(s)
+  R1: budget 0, 2.33 s, 230 completion tokens, open after: ['N']
+  R2: budget 4000, 38.68 s, 2800 completion tokens (2628 reasoning), open after: []
+  closed: {'NPOS': {'rung': 'R1', 'value': '4'}, 'N': {'rung': 'R2', 'value': 'N2A'}}
+  open (a person decides): []
+  stored outcome: {'NPOS': 'stored', 'N': 'kept-earlier: N2A'}
+exit 0
+=== TCGA-A1-A0SN
+TCGA-A1-A0SN: engine status completed, 2 rung(s)
+  R1: budget 0, 2.14 s, 147 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 58.29 s, 4140 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N2A'}, 'NPOS': {'rung': 'R2', 'value': '4'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N2A', 'NPOS': 'kept-earlier: 4'}
+exit 0
+=== TCGA-A2-A0CV
+TCGA-A2-A0CV: engine status completed, 2 rung(s)
+  R1: budget 0, 2.37 s, 254 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 78.68 s, 4208 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '2'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 2'}
+exit 0
+=== TCGA-A7-A26E
+TCGA-A7-A26E: engine status completed, 2 rung(s)
+  R1: budget 0, 1.53 s, 128 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 45.47 s, 4136 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '1'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 1'}
+exit 0
+=== TCGA-A7-A26H
+TCGA-A7-A26H: engine status completed, 2 rung(s)
+  R1: budget 0, 4.93 s, 179 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 33.17 s, 4172 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '1'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 1'}
+exit 0
+=== TCGA-AC-A2FK
+TCGA-AC-A2FK: engine status completed, 2 rung(s)
+  R1: budget 0, 2.84 s, 222 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 45.06 s, 4174 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '3'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 3'}
+exit 0
+=== TCGA-AN-A0XN
+TCGA-AN-A0XN: engine status completed, 2 rung(s)
+  R1: budget 0, 1.67 s, 97 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 11.93 s, 1110 completion tokens (1013 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N1', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-AN-A0XO
+TCGA-AN-A0XO: engine status completed, 3 rung(s)
+  R1: budget 0, 1.99 s, 85 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 11.53 s, 1268 completion tokens (1171 reasoning), open after: ['NPOS']
+  R3: budget 4000, 45.3 s, 3103 completion tokens (2987 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N1', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-AN-A0XP
+TCGA-AN-A0XP: engine status completed, 2 rung(s)
+  R1: budget 0, 1.33 s, 101 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 8.82 s, 915 completion tokens (805 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N1', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-AN-A0XS
+TCGA-AN-A0XS: engine status completed, 3 rung(s)
+  R1: budget 0, 1.39 s, 123 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 59.3 s, 4105 completion tokens (3999 reasoning), open after: ['NPOS']
+  R3: budget 4000, 6.87 s, 931 completion tokens (841 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-AN-A0XT
+TCGA-AN-A0XT: engine status completed, 2 rung(s)
+  R1: budget 0, 2.09 s, 87 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 25.53 s, 1097 completion tokens (996 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-AN-A0XW
+TCGA-AN-A0XW: engine status completed, 2 rung(s)
+  R1: budget 0, 1.1 s, 83 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 33.41 s, 2107 completion tokens (1983 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N1', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-AO-A1KP
+TCGA-AO-A1KP: engine status completed, 2 rung(s)
+  R1: budget 0, 11.51 s, 259 completion tokens, open after: ['NPOS']
+  R2: budget 4000, 37.16 s, 4311 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R1', 'value': 'N1MI'}, 'NPOS': {'rung': 'R2', 'value': '1'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 1'}
+exit 0
+=== TCGA-AQ-A1H2
+TCGA-AQ-A1H2: engine status completed, 2 rung(s)
+  R1: budget 0, 1.57 s, 147 completion tokens, open after: ['NPOS']
+  R2: budget 4000, 78.55 s, 2299 completion tokens (2127 reasoning), open after: []
+  closed: {'N': {'rung': 'R1', 'value': 'N2A'}, 'NPOS': {'rung': 'R2', 'value': '7'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N2A', 'NPOS': 'kept-earlier: 7'}
+exit 0
+=== TCGA-BH-A0BS
+TCGA-BH-A0BS: engine status completed, 2 rung(s)
+  R1: budget 0, 1.85 s, 182 completion tokens, open after: ['NPOS']
+  R2: budget 4000, 29.51 s, 3370 completion tokens (3186 reasoning), open after: []
+  closed: {'N': {'rung': 'R1', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '2'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 2'}
+exit 0
+=== TCGA-BH-A0DD
+TCGA-BH-A0DD: engine status completed, 2 rung(s)
+  R1: budget 0, 7.74 s, 191 completion tokens, open after: ['NPOS']
+  R2: budget 4000, 65.73 s, 4189 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R1', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '1'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N1A', 'NPOS': 'kept-earlier: 1'}
+exit 0
+=== TCGA-E2-A1B4
+TCGA-E2-A1B4: engine status completed, 2 rung(s)
+  R1: budget 0, 2.6 s, 181 completion tokens, open after: ['N']
+  R2: budget 4000, 13.61 s, 1164 completion tokens (1026 reasoning), open after: ['N']
+  closed: {'NPOS': {'rung': 'R1', 'value': '3'}}
+  open (a person decides): ['N']
+  stored outcome: {'NPOS': 'kept-earlier: 3', 'N': 'flagged'}
+exit 0
+=== TCGA-E2-A572
+TCGA-E2-A572: engine status completed, 2 rung(s)
+  R1: budget 0, 1.59 s, 119 completion tokens, open after: ['NPOS']
+  R2: budget 4000, 44.95 s, 4182 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R1', 'value': 'N2A'}, 'NPOS': {'rung': 'R2', 'value': '8'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N2A', 'NPOS': 'kept-earlier: 8'}
+exit 0
+=== TCGA-E9-A3X8
+TCGA-E9-A3X8: engine status completed, 2 rung(s)
+  R1: budget 0, 1.63 s, 172 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 40.3 s, 1289 completion tokens (1130 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N2A'}, 'NPOS': {'rung': 'R2', 'value': '4'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N2A', 'NPOS': 'kept-earlier: 4'}
+exit 0
+=== TCGA-EW-A424
+TCGA-EW-A424: engine status completed, 2 rung(s)
+  R1: budget 0, 6.84 s, 172 completion tokens, open after: ['N']
+  R2: budget 4000, 36.49 s, 3164 completion tokens (2954 reasoning), open after: []
+  closed: {'NPOS': {'rung': 'R1', 'value': '0'}, 'N': {'rung': 'R2', 'value': 'N0'}}
+  open (a person decides): []
+  stored outcome: {'NPOS': 'kept-earlier: 0', 'N': 'kept-earlier: N0'}
+exit 0
+=== TCGA-A2-A0EW
+TCGA-A2-A0EW: engine status completed, 2 rung(s)
+  R1: budget 0, 1.89 s, 230 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 120.07 s, 4217 completion tokens (3999 reasoning), open after: []
+  closed: {'N': {'rung': 'R2', 'value': 'N2A'}, 'NPOS': {'rung': 'R2', 'value': '4'}}
+  open (a person decides): []
+  stored outcome: {'N': 'kept-earlier: N2A', 'NPOS': 'stored'}
+exit 0
+=== TCGA-AO-A03P
+TCGA-AO-A03P: engine status completed, 2 rung(s)
+  R1: budget 0, 2.56 s, 306 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 28.8 s, 4237 completion tokens (3999 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1MI'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N1MI', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-AR-A1AT
+TCGA-AR-A1AT: engine status completed, 2 rung(s)
+  R1: budget 0, 1.47 s, 146 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 83.85 s, 4202 completion tokens (3999 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N0(I+)'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: N0(I+)', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-D8-A27L
+TCGA-D8-A27L: engine status completed, 2 rung(s)
+  R1: budget 0, 20.43 s, 107 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 20.27 s, 2289 completion tokens (2128 reasoning), open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'NX'}}
+  open (a person decides): ['NPOS']
+  stored outcome: {'N': 'kept-earlier: NX', 'NPOS': 'flagged'}
+exit 0
+=== TCGA-E2-A1LI
+TCGA-E2-A1LI: engine status completed, 2 rung(s)
+  R1: budget 0, 1.49 s, 123 completion tokens, open after: ['N']
+  R2: budget 4000, 59.49 s, 3492 completion tokens (3342 reasoning), open after: []
+  closed: {'NPOS': {'rung': 'R1', 'value': '0'}, 'N': {'rung': 'R2', 'value': 'N0'}}
+  open (a person decides): []
+  stored outcome: {'NPOS': 'stored', 'N': 'stored'}
+exit 0
+DONE
