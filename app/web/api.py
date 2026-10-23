@@ -82,7 +82,10 @@ def create_app(
     async def mode() -> dict[str, Any]:
         return {
             "mode": source.mode,
-            "reader": f"Nemotron Super, thinking budget {THINKING_BUDGET} (current reader setting)",
+            "reader": (
+                "R1 Nemotron Lightning, thinking off; R2 and R3 Nemotron Super, "
+                f"thinking budget {THINKING_BUDGET}"
+            ),
             "source_note": getattr(source, "source_note", None),
         }
 
