@@ -29,7 +29,22 @@ SELECT
      AND (classified.report_nodes_positive IS NULL
        OR CAST(classified.report_nodes_positive AS DOUBLE) = CAST(classified.lymph_nodes_positive AS DOUBLE)) THEN 'pathologic_n'
     ELSE 'review'
-  END AS fault_field
+  END AS fault_field,
+  CASE
+    WHEN classified.reason_class NOT IN ('n_count_contradiction', 'n_missing_derivable')
+      THEN CAST(CAST(CAST(classified.lymph_nodes_positive AS DOUBLE) AS INT) AS STRING)
+    WHEN classified.report_n_main IS NULL THEN NULL
+    WHEN classified.reason_class = 'n_count_contradiction'
+     AND classified.report_n_main = classified.recorded_n_main
+     AND classified.report_nodes_positive IS NOT NULL
+     AND CAST(classified.report_nodes_positive AS DOUBLE) <> CAST(classified.lymph_nodes_positive AS DOUBLE)
+      THEN CAST(CAST(CAST(classified.report_nodes_positive AS DOUBLE) AS INT) AS STRING)
+    WHEN classified.report_n_main = classified.derived_n_main
+     AND (classified.report_nodes_positive IS NULL
+       OR CAST(classified.report_nodes_positive AS DOUBLE) = CAST(classified.lymph_nodes_positive AS DOUBLE))
+      THEN CAST(CAST(CAST(classified.lymph_nodes_positive AS DOUBLE) AS INT) AS STRING)
+    ELSE NULL
+  END AS positive_nodes_checked
 FROM (
 SELECT
   scored.case_id AS case_id,

@@ -71,6 +71,7 @@ EXPECTED_COLUMNS = {
         "report_n_main",
         "report_nodes_positive",
         "fault_field",
+        "positive_nodes_checked",
     ],
     "parse_block": [
         "case_id",

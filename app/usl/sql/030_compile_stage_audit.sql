@@ -69,7 +69,8 @@ CREATE TABLE stage_check (
   reason_class varchar(32),
   report_n_main varchar(8),
   report_nodes_positive varchar(32),
-  fault_field varchar(32)
+  fault_field varchar(32),
+  positive_nodes_checked varchar(32)
 );
 CREATE TABLE parse_block (
   case_id varchar(64) NOT NULL,

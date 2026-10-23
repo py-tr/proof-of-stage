@@ -12,7 +12,7 @@ from app.usl.client import DqCounts
 from app.usl.errors import SetupError
 from app.usl.model import USL_TABLES
 from app.usl.postgres import apply_ddl, user_from_env
-from app.usl.setup import _ACTIVATE, dq_report, setup, status_report, teardown
+from app.usl.setup import _ACTIVATE, SCHEMA_MARKER, dq_report, setup, status_report, teardown
 from app.usl.sqltext import load_statements, sql_fingerprint
 from app.zetaris import SqlResult, ZetarisError
 
@@ -71,7 +71,7 @@ def _load_usl_contract(digest_for: dict[str, str] | None = None) -> SqlResult:
         digest = (digest_for or {}).get(name, sql_fingerprint(statement))
         entry = {"name": name, "activateQuery": f"SELECT /* uslfp:{digest} */ 1"}
         if name == "stage_check":
-            entry["columns"] = [{"name": "fault_field"}]
+            entry["columns"] = [{"name": SCHEMA_MARKER}]
         tables.append(entry)
     return SqlResult([[json.dumps({"name": "stage_audit", "tables": tables})]], ["contract"])
 

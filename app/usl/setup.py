@@ -48,7 +48,7 @@ from app.zetaris import SqlResult, ZetarisError, run_sql
 
 # Newest stage_check column: if the deployed USL lacks it, the schema changed and the
 # USL is recompiled (the Postgres tables and the cached sources are kept).
-SCHEMA_MARKER = "fault_field"
+SCHEMA_MARKER = "positive_nodes_checked"
 
 _ACTIVATE = (
     "050_activate_tumour_case.sql",
