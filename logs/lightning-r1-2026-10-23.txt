@@ -1,0 +1,21 @@
+{
+  "run": "20261023T172640",
+  "records": 28,
+  "provider_failures": 0,
+  "void": false,
+  "scored": 28,
+  "lightning_settled": 18,
+  "super_settled": 15,
+  "lightning_fields_closed": 38,
+  "super_fields_closed": 31,
+  "lightning_vs_control": {
+    "agree": 33,
+    "disagree": 0,
+    "unconfirmed": 5
+  },
+  "unsafe": false,
+  "lightning_tokens": 7753,
+  "super_r1_tokens": 4703,
+  "lightning_seconds": 114.0,
+  "super_r1_seconds": 435.6
+}
