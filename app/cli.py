@@ -213,13 +213,24 @@ async def _usl(args: argparse.Namespace) -> int:
     return 2
 
 
-async def _adversary() -> int:
-    from app.engine.adversary import frozen_cases, run_chain
+async def _adversary(version: str = "v2") -> int:
+    from app.engine.adversary import frozen_cases, frozen_provider, prereg_path, run_chain
     from app.reports.ingest import read_reports_csv
 
+    path = prereg_path(version)
+    provider = frozen_provider(path)
+    frozen = json.loads(path.read_text(encoding="utf-8"))
+    known = frozenset(frozen.get("known_limits", ["fraction_under", "cued_over"]))
+    stop = frozen.get("stop_after_consecutive_failures")
     reports = {cid: r.report_text for cid, r in read_reports_csv().items()}
-    for case in frozen_cases(reports):
-        record = await run_chain(case, reports[case.case_id])
+    for case in frozen_cases(reports, path):
+        record = await run_chain(
+            case,
+            reports[case.case_id],
+            provider=provider,
+            known_limits=known,
+            stop_after_failures=stop,
+        )
         sys.stdout.write(
             f"{case.case_id}: steps={record['steps']} engine={record['engine_status']} "
             f"wrong accepts={record['accepts_wrong']} bugs={len(record['bugs'])} "
@@ -328,7 +339,12 @@ def main(argv: list[str] | None = None) -> int:
         default="nightshift",
         help="Nightshift (default: Super VL pinned, signed receipts) or NVIDIA direct",
     )
-    sub.add_parser("adversary", help="The pre-registered red-team chain (3 cases x 20 steps)")
+    adversary = sub.add_parser(
+        "adversary", help="The pre-registered red-team chain (3 cases x 20 steps)"
+    )
+    adversary.add_argument(
+        "--version", default="v2", help="Which pre-registration to run (v2, v3); v2 is done"
+    )
     sub.add_parser(
         "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
     )
@@ -369,7 +385,7 @@ def main(argv: list[str] | None = None) -> int:
             sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
             return 0
         if args.command == "adversary":
-            return asyncio.run(_adversary())
+            return asyncio.run(_adversary(args.version))
         if args.command == "note":
             return asyncio.run(_notes([c.strip().upper() for c in args.case]))
         if args.command == "scans":

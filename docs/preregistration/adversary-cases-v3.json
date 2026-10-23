@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "provider": "nightshift",
+  "thinking_budget": 1000,
+  "known_limits": [
+    "fraction_under"
+  ],
+  "stop_after_consecutive_failures": 5,
+  "void_if_call_failed_over": 15,
+  "smoke_case": "TCGA-BH-A0DD",
+  "cases": [
+    {
+      "case_id": "TCGA-E2-A10B",
+      "true_count": 2,
+      "start": 3640,
+      "end": 4900,
+      "excerpt_sha256_16": "26b7b11edef20768"
+    },
+    {
+      "case_id": "TCGA-OL-A5RU",
+      "true_count": 1,
+      "start": 230,
+      "end": 2150,
+      "excerpt_sha256_16": "432e3ad46d153a67"
+    },
+    {
+      "case_id": "TCGA-BH-A6R8",
+      "true_count": 0,
+      "start": 0,
+      "end": 2127,
+      "excerpt_sha256_16": "49b8685890e6d7d6"
+    }
+  ],
+  "prompt_sha": "7d210642ed3a",
+  "guard_sha256_16": {
+    "app/reader/reader.py": "73de73777b9c595d",
+    "app/reader/quotes.py": "8c64510f04be71ad",
+    "app/engine/adversary.py": "3250e939fcde9c26",
+    "app/providers/nightshift.py": "7a10b43b9722d819",
+    "app/providers/receipts.py": "4e4803f5aad1e70a"
+  }
+}

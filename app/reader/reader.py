@@ -111,7 +111,19 @@ _NOT_POSITIVE_BEFORE = re.compile(
     re.I,
 )
 # "NUCLEAR GRADE: COMPONENT: 3": a grade a few words back, in the same sentence.
-_GRADE_BEFORE = re.compile(r"\bgrade\b[^.;]{0,25}$", re.I)
+_GRADE_BEFORE = re.compile(
+    r"\b(?:grade|sbr|bloom|richardson|elston|nottingham)\b[^.;]{0,25}$", re.I
+)
+# "two contiguous sections", "3 blocks", "two cores": the number counts something else.
+_OTHER_NOUN_AFTER = re.compile(
+    r"^\W{0,2}(?:\w+\W+){0,2}?(?:sections?|slides?|blocks?|cores?|fragments?|pieces?|foci|"
+    r"focus|levels?|cassettes?|specimens?|parts?|quadrants?|margins?|samples?|stains?|views?|"
+    r"images?|cm|mm)\b",
+    re.I,
+)
+# "3. Excisional biopsy margins": a list index, not a count (but "POSITIVE: 1." counts).
+_INDEX_BEFORE = re.compile(r"(?:^|[.;]\s*|\s-\s*)$")
+_INDEX_AFTER = re.compile(r"^\.\s+[A-Za-z]")
 _CONTEXT = 30  # report characters read on each side of a quote for units and labels
 _VALUE = r"(\d+|[a-z]+)"
 # A total the report states with a label ("Number of positive lymph nodes: 4", "Total number
@@ -421,15 +433,16 @@ def count_path(count: int, span_text: str, before: str = "", after: str = "") ->
     `after` are the report text around the quote: a unit or a grade just outside it
     ("PRESENT, 4" + " MM") still disqualifies a number."""
     positive, negative = [], False
+    full_after = span_text + after  # the report continues past the quote ("AE 1/3" NEGATIVE)
     for match in _FRACTION.finditer(span_text):
         top, bottom = _as_number(match.group(1)), _as_number(match.group(2))
         if top is None or bottom is None or top > bottom:
             continue
-        before = span_text[max(0, match.start() - _SCORE_WINDOW) : match.start()]
-        if _SCORE_BEFORE.search(before):
+        lead = (before + span_text)[: len(before) + match.start()][-_SCORE_WINDOW:]
+        if _SCORE_BEFORE.search(lead):
             continue
-        after = re.split(r"[.;]", span_text[match.end() : match.end() + _NEGATIVE_WINDOW])[0]
-        if _NEGATIVE_AFTER.search(after):
+        trail = full_after[match.end() : match.end() + _NEGATIVE_WINDOW]
+        if _NEGATIVE_AFTER.search(re.split(r"[.;]", trail)[0]):
             negative = True
         else:
             positive.append(top)
@@ -460,6 +473,8 @@ def _cued_counts(span_text: str, before_text: str = "", after_text: str = "") ->
             _UNIT_AFTER.search(after)
             or _NOT_POSITIVE_BEFORE.search(before)
             or _GRADE_BEFORE.search(before)
+            or _OTHER_NOUN_AFTER.search(full[end : end + 40])
+            or (_INDEX_AFTER.search(after) and _INDEX_BEFORE.search(before))
         ):
             continue
         numbers.append((match.start(), match.end(), value))

@@ -75,3 +75,18 @@ Fix (`supports_category`): an N read from a count must pass the whole count guar
 | The six breaks above (`tests/test_reader.py::test_category_words_must_be_unnegated_and_about_the_element`, on synthetic text; and replayed on the real reports) | all rejected; the true readings beside them accepted |
 | The 37 stored T/N rows | 36 accepted; 1 rejected (the same "Stage: 1c", fail-closed) |
 | Fresh reads of the 25 queue reports, previous vs current guard (`logs/guard-ab-round2-2026-10-23.txt`) | 3 verdicts changed: 2 were model errors the previous guard accepted (N1a quoting "TOTAL: 4 of 13", which is N2; N1a quoting one specimen's "(1/1)" in a report whose labelled total is 4); 1 is a false rejection, T2 quoting "3.4 CM IN SIZE." whose tumour cue ("CARCINOMA … INVOLVING THE NIPPLE DERMIS") is outside the quote (fail-closed; T is not audited) |
+
+## Sixth round: a judge-panel review of the red-team v3 draft (Fable, 2026-10-23)
+
+Offline probes on the draft's records found five holes, all replayed before fixing: "- AE 1/3" (a stain name) accepted as 1 positive node, because the negative word after it ("NEGATIVE") lies just outside the quote; "INVASIVE LOBULAR CARCINOMA, SBR 2" (a grading system) and "… measured on two contiguous sections" accepted through the cue rule; a list index ("3. Excisional biopsy margins: Positive") accepted as 3; and in `count_path` the loop variables shadowed the report context passed in, so after a score fraction the cue path lost the text before the quote.
+
+Fix: a fraction's negative word is read in the report after the quote too; no shadowing; a cued number never counts when a grading system (SBR, Bloom-Richardson, Elston, Nottingham) comes just before it, a non-node noun (sections, slides, blocks, cores, foci, cm, mm, …) within two words after it, or when it is a list index ("3. Word" at the start of a sentence; "POSITIVE: 1." still counts).
+
+| Check | Result |
+|---|---|
+| The five probes | all rejected; the true readings beside them accepted |
+| The 16 stored counts; the stored T/N rows | 16 accepted; T/N unchanged (the known "Stage: 1c") |
+| v2's 8 wrong accepts and its true counts | still rejected; still accepted |
+| Fresh reads of the 25 queue reports, previous vs current guard (`logs/guard-ab-round6-2026-10-23.txt`) | 0 of 75 verdicts changed |
+
+The record the fix was designed on (TCGA-E2-A14U) was dropped from the v3 pre-registration and replaced by an untouched one.

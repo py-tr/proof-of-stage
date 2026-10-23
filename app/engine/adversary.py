@@ -102,9 +102,19 @@ def _sha16(text: str) -> str:
     return hashlib.sha256(text.replace("\r\n", "\n").encode("utf-8")).hexdigest()[:16]
 
 
-def frozen_cases(reports: dict[str, str]) -> list[Case]:
+def prereg_path(version: str = "v2") -> Path:
+    """v2 is adversary-cases.json (the first valid run); later versions add a suffix."""
+    return PREREG if version == "v2" else PREREG.with_name(f"adversary-cases-{version}.json")
+
+
+def frozen_provider(path: Path | None = None) -> str:
+    """The provider a pre-registration fixed (v2 predates the field: NVIDIA direct)."""
+    return str(json.loads((path or PREREG).read_text(encoding="utf-8")).get("provider", "nvidia"))
+
+
+def frozen_cases(reports: dict[str, str], path: Path | None = None) -> list[Case]:
     """The pre-registered cases; raises if anything frozen has changed since."""
-    frozen = json.loads(PREREG.read_text(encoding="utf-8"))
+    frozen = json.loads((path or PREREG).read_text(encoding="utf-8"))
     problems = []
     if frozen["prompt_sha"] != PROMPT_SHA:
         problems.append("the system prompt changed")
@@ -214,6 +224,7 @@ async def _ask(
             "signature": receipt.signature,
             "signer": key_fingerprint(receipt.signer_key),
             "from_cache": receipt.from_cache,
+            "budget": THINKING_BUDGET,
             "prompt_tokens": usage.get("prompt_tokens"),
             "completion_tokens": usage.get("completion_tokens"),
         }
@@ -245,14 +256,21 @@ async def run_chain(
     provider: str = PROVIDER,
     chat: Chat | None = None,
     nv_chat: NvChat | None = None,
+    known_limits: frozenset[str] = KNOWN_LIMITS,
+    stop_after_failures: int | None = None,
 ) -> dict[str, Any]:
-    """One red-team chain (STEPS attacks) on one case; every step is logged, none retried."""
+    """One red-team chain (STEPS attacks) on one case; every step is logged, none retried.
+
+    `stop_after_failures` (pre-registered from v3): that many call failures in a row stop the
+    chain (the engine records an errored run), so a provider outage cannot burn the session."""
+    failures_in_a_row = 0
     excerpt = report[case.start : case.end]
     chain = Chain(case=case, report=report, excerpt=excerpt)
     run_id = f"adv-{datetime.now(UTC):%Y%m%dT%H%M%S}-{uuid.uuid4().hex[:6]}"
     goal = f"Red-team the count guard on case {case.case_id} for {STEPS} steps."
 
     async def generate(step: int, prompt: str) -> str:
+        nonlocal failures_in_a_row
         carryover = _carryover(prompt) if step > 1 else None
         state = carryover if carryover is not None else "ATTEMPTS: none yet (this is step 1)"
         user = f"[CARRYOVER STATE]\n{state}\n\nReport excerpt (case {case.case_id}):\n{excerpt}"
@@ -297,14 +315,19 @@ async def run_chain(
             ledger_within_budget=est(ledger) <= LEDGER_TOKENS,
         )
         chain.steps.append(row)
+        failures_in_a_row = failures_in_a_row + 1 if attempt.verdict == "call_failed" else 0
         LOG.parent.mkdir(parents=True, exist_ok=True)
         with LOG.open("a", encoding="utf-8") as log:
             log.write(json.dumps(row, ensure_ascii=False) + "\n")
-        head = "[TASK_COMPLETE]\n" if step >= STEPS else ""
+        stop = bool(stop_after_failures and failures_in_a_row >= stop_after_failures)
+        head = "[TASK_COMPLETE]\n" if step >= STEPS or stop else ""
         return f"{visible or '{}'}\n{head}[STATE_CHECKPOINT]\n{ledger}"
 
     run = await run_engine(goal, generate, chunk_config=CHUNK_CONFIG)
-    summary = summarise(chain)
+    summary = summarise(chain, known_limits)
+    summary["stopped_for_failures"] = bool(
+        stop_after_failures and failures_in_a_row >= stop_after_failures
+    )
     record = {
         "run_id": run_id,
         "case": case.case_id,
@@ -321,7 +344,7 @@ async def run_chain(
     return record
 
 
-def summarise(chain: Chain) -> dict[str, Any]:
+def summarise(chain: Chain, known_limits: frozenset[str] = KNOWN_LIMITS) -> dict[str, Any]:
     """The pre-registered measures for one chain."""
     accepted = [a for a in chain.attempts if a.verdict == "accepted"]
     seen: set[str] = set()
@@ -330,7 +353,7 @@ def summarise(chain: Chain) -> dict[str, Any]:
         if a.kind in seen:
             continue  # a second accept of the same kind is a repeat, not a second bug
         seen.add(a.kind)
-        (known if a.kind in KNOWN_LIMITS else bugs).append(
+        (known if a.kind in known_limits else bugs).append(
             {"step": a.step, "value": a.value, "quote": a.quote, "kind": a.kind}
         )
     rows = chain.steps

@@ -109,3 +109,34 @@ async def test_the_nvidia_generator_uses_the_pre_registered_budget(
     assert kwargs == {"enable_thinking": True, "reasoning_budget": adv.THINKING_BUDGET}
     assert record["unverified_receipts"] == 0
     assert record["carryover_failures"] == adv.STEPS - 1  # the same attack every step
+
+
+@needs_node
+@pytest.mark.asyncio
+async def test_failures_in_a_row_stop_the_chain_and_known_limits_come_from_the_caller(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(adv, "LOG", tmp_path / "steps.jsonl")
+    monkeypatch.setattr(adv, "RUNS_LOG", tmp_path / "runs.jsonl")
+    calls = []
+
+    async def failing(messages: list[dict[str, Any]], model: str, **kwargs: Any):
+        calls.append(1)
+        if len(calls) == 1:
+            attack = {"N": 1, "quote": "metastatic carcinoma in one lymph node (1/1)"}
+            return json.dumps(attack), Receipt(
+                receipt_id="r", winning_model=model, signature="verified"
+            )
+        raise RuntimeError("502")
+
+    record = await adv.run_chain(
+        CASE,
+        REPORT,
+        provider="nightshift",
+        chat=failing,
+        known_limits=frozenset(),
+        stop_after_failures=3,
+    )
+    assert len(calls) == 4 and record["steps"] == 4 and record["stopped_for_failures"] is True
+    # with no known limits, the per-specimen accept counts as a bug
+    assert [b["kind"] for b in record["bugs"]] == ["fraction_under"]
