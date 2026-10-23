@@ -162,19 +162,28 @@ class LiveData:
         return order_queue(_rows(checks), decided, read)
 
     async def cohort(self) -> dict[str, Any]:
-        classes, reports = await asyncio.gather(
+        from app.usl.demo import node_positive_sql
+
+        classes, reports, node_positive = await asyncio.gather(
             select(
                 "SELECT reason_class, fault_field, count(*) AS n "
                 f"FROM {table_fqn('stage_check')} GROUP BY reason_class, fault_field",
                 limit=100,
             ),
             select(f"SELECT count(*) AS n FROM {table_fqn('path_report')}", limit=1),
+            select(node_positive_sql(), limit=1),
         )
         groups = [
             {"reason_class": r["reason_class"], "fault_field": r["fault_field"], "n": int(r["n"])}
             for r in _rows(classes)
         ]
-        return {"groups": groups, "reports": int(_rows(reports)[0]["n"])}
+        scoreboard = _rows(node_positive)
+        return {
+            "groups": groups,
+            "reports": int(_rows(reports)[0]["n"]),
+            # "how many patients are node-positive?" by the N column, the count and the verdict
+            "node_positive": {k: int(v) for k, v in scoreboard[0].items()} if scoreboard else None,
+        }
 
     async def case(self, case_id: str, fresh: bool = True) -> dict[str, Any] | None:
         cid_text = valid_case_id(case_id)

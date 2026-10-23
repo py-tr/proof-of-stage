@@ -52,6 +52,11 @@ function num(value) {
 function show(value) { return value === null || value === undefined || value === "" ? "—" : String(value); }
 
 // ---------- cohort ----------
+// One question, three answers, live from the semantic layer (usl demo step 11).
+function nodePositiveLine(np) {
+  if (!np) return null;
+  return `How many patients are node-positive? ${np.node_positive_by_n_column} by the N column, ${np.node_positive_by_count_column} by the count column, ${np.node_positive_by_verdict} by the verdict (${np.left_to_a_person} left to a person): the two columns disagree on ${np.columns_disagree} of ${np.records} records.`;
+}
 async function loadCohort() {
   try {
     const c = await api("/api/cohort");
@@ -69,6 +74,8 @@ async function loadCohort() {
       missing ? ` · ${missing} missing N the count could fill` : "",
       unread ? ` · ${unread} not read yet` : "",
       " · research data, not for clinical use");
+    const line = nodePositiveLine(c.node_positive);
+    if (line) box.append(el("div", { class: "cohort-np" }, line));
   } catch (error) {
     $("cohort").textContent = `Cohort counts unavailable: ${error.message}`;
   }

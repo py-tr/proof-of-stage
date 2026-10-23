@@ -171,3 +171,9 @@ def test_the_redteam_endpoint_serves_the_logged_v3_chains() -> None:
     chains = client.get("/api/redteam").json()["chains"]
     assert [c["case"] for c in chains] == ["TCGA-E2-A10B", "TCGA-OL-A5RU", "TCGA-BH-A6R8"]
     assert all(len(c["steps"]) == 20 and c["accepts_wrong"] == 0 for c in chains)
+
+
+def test_sample_mode_shows_no_node_positive_scoreboard() -> None:
+    # four bundled cases are not the cohort the scoreboard counts
+    client = TestClient(create_app(SampleData()))
+    assert client.get("/api/cohort").json().get("node_positive") is None

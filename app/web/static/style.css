@@ -66,6 +66,7 @@ mark.glow { outline: 2px solid var(--ink); }
 
 .cohort { font-size: 12px; color: var(--muted); }
 .cohort b { color: var(--ink); }
+.cohort-np { margin-top: 2px; color: var(--ink); }
 .legend .sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; }
 .sw.red { background: var(--red); } .sw.grey { background: var(--grey); } .sw.green { background: var(--green); }
 .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 10px; }

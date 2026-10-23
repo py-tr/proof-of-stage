@@ -115,20 +115,7 @@ def steps() -> list[Step]:
             "the records where both apply (6th/7th edition, N and count recorded, no "
             "micrometastasis or isolated tumour cells): the columns disagree on some records, "
             "and the contradictions that keep the same answer still change the N category",
-            f"SELECT count(*) AS records, {_BY_N_SUM} AS node_positive_by_n_column, "
-            f"{_BY_COUNT_SUM} AS node_positive_by_count_column, "
-            f"sum(CASE WHEN {_DISAGREE} THEN 1 ELSE 0 END) AS columns_disagree, "
-            # the third answer: where the columns disagree, trust the field the verdict did not
-            # name; a case left to a person is not counted as node-positive
-            f"sum(CASE WHEN NOT ({_DISAGREE}) AND {_BY_N} THEN 1 "
-            f"WHEN {_DISAGREE} AND fault_field = 'node_count' AND {_BY_N} THEN 1 "
-            f"WHEN {_DISAGREE} AND fault_field = 'pathologic_n' AND {_BY_COUNT} THEN 1 "
-            "ELSE 0 END) AS node_positive_by_verdict, "
-            f"sum(CASE WHEN {_DISAGREE} AND fault_field = 'review' THEN 1 ELSE 0 END) "
-            "AS left_to_a_person, "
-            "sum(CASE WHEN reason_class = 'n_count_contradiction' AND NOT "
-            f"({_DISAGREE}) THEN 1 ELSE 0 END) AS same_answer_other_category "
-            f"FROM {check} WHERE {_BOTH_APPLY}",
+            node_positive_sql(check),
         ),
         Step(
             "Which answer the report supports",
@@ -284,3 +271,25 @@ def write_doc(results: list[StepResult], meta: dict[str, Any], path: Path = DEMO
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(render(results, meta), encoding="utf-8")
     return path
+
+
+def node_positive_sql(check: str | None = None) -> str:
+    """'How many patients are node-positive?' by the N column, the count column and the verdict
+    (usl demo step 11; the case page and /how show the same row, live)."""
+    check = check or table_fqn("stage_check")
+    return (
+        f"SELECT count(*) AS records, {_BY_N_SUM} AS node_positive_by_n_column, "
+        f"{_BY_COUNT_SUM} AS node_positive_by_count_column, "
+        f"sum(CASE WHEN {_DISAGREE} THEN 1 ELSE 0 END) AS columns_disagree, "
+        # the third answer: where the columns disagree, trust the field the verdict did not
+        # name; a case left to a person is not counted as node-positive
+        f"sum(CASE WHEN NOT ({_DISAGREE}) AND {_BY_N} THEN 1 "
+        f"WHEN {_DISAGREE} AND fault_field = 'node_count' AND {_BY_N} THEN 1 "
+        f"WHEN {_DISAGREE} AND fault_field = 'pathologic_n' AND {_BY_COUNT} THEN 1 "
+        "ELSE 0 END) AS node_positive_by_verdict, "
+        f"sum(CASE WHEN {_DISAGREE} AND fault_field = 'review' THEN 1 ELSE 0 END) "
+        "AS left_to_a_person, "
+        "sum(CASE WHEN reason_class = 'n_count_contradiction' AND NOT "
+        f"({_DISAGREE}) THEN 1 ELSE 0 END) AS same_answer_other_category "
+        f"FROM {check} WHERE {_BOTH_APPLY}"
+    )

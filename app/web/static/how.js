@@ -145,10 +145,22 @@ async function load(caseId, sample) {
   loadRedTeam();
 }
 
+async function loadScoreboard(sample) {
+  if (sample) return;  // four bundled cases are not this cohort
+  try {
+    const np = (await api("/api/cohort")).node_positive;
+    if (!np) return;
+    $("scoreboard").replaceChildren(el("b", {}, "How many patients are node-positive? "),
+      `${np.node_positive_by_n_column} by the N column, ${np.node_positive_by_count_column} by the count column, ${np.node_positive_by_verdict} by the verdict (${np.left_to_a_person} left to a person). The two columns disagree on ${np.columns_disagree} of ${np.records} records; the steps below show how one record is settled.`);
+    $("scoreboard").classList.remove("hidden");
+  } catch (error) { /* the steps still load */ }
+}
+
 async function start() {
   try {
     const mode = await api("/api/mode");
     const sample = mode.mode === "sample";
+    loadScoreboard(sample);
     $("mode").textContent = sample ? "SAMPLE MODE" : "LIVE · Zetaris USL";
     $("mode").classList.toggle("live", !sample);
     const queue = await api("/api/queue");
