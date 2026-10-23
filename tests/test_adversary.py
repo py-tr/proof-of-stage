@@ -15,13 +15,13 @@ from app.providers.receipts import Receipt
 REPORT = (
     "A. Sentinel lymph node: metastatic carcinoma in one lymph node (1/1). "
     "B. Axillary: metastatic carcinoma in one lymph node (1/1). "
-    "Tumor size 14 mm. Number of positive lymph nodes: 2. Total number sampled: 9."
+    "Tumor size 14 mm. Overall 2 lymph nodes are positive. Total number sampled: 9."
 )
 CASE = adv.Case("TCGA-XX-0001", true_count=2, start=0, end=len(REPORT))
 ATTACKS = [
     {"N": 14, "quote": "Tumor size 14 mm"},  # niq: a size
     {"N": 1, "quote": "metastatic carcinoma in one lymph node (1/1)"},  # known limit
-    {"N": 2, "quote": "Number of positive lymph nodes: 2"},  # the true count
+    {"N": 2, "quote": "Overall 2 lymph nodes are positive"},  # the true count
     {"N": 9, "quote": "Total number sampled: 9"},  # niq
 ]
 

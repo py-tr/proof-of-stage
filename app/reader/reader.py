@@ -110,6 +110,22 @@ _NOT_POSITIVE_BEFORE = re.compile(
     r"block|slide|measur\w*|age|cassettes?)\W{0,3}$",
     re.I,
 )
+# "NUCLEAR GRADE: COMPONENT: 3": a grade a few words back, in the same sentence.
+_GRADE_BEFORE = re.compile(r"\bgrade\b[^.;]{0,25}$", re.I)
+_CONTEXT = 30  # report characters read on each side of a quote for units and labels
+_VALUE = r"(\d+|[a-z]+)"
+# A total the report states with a label ("Number of positive lymph nodes: 4", "Total number
+# with metastasis: 7", "POSITIVE LYMPH NODES: TOTAL: 4 of 13", "LYMPH NODES POSITIVE: 1").
+# Macrometastasis counts are not totals (micrometastases are positive nodes too).
+_TOTAL_LABEL = re.compile(
+    r"(?:number of (?:positive|involved) (?:lymph )?nodes?"
+    r"|number of (?:lymph )?nodes? (?:positive|involved|with (?:metasta\w*|carcinoma))"
+    r"|total (?:number )?(?:of )?(?:positive (?:lymph )?nodes?|(?:lymph )?nodes? positive"
+    r"|(?:number )?with metasta\w*)"
+    r"|positive (?:lymph )?nodes?\W{0,3}total"
+    rf"|\blymph nodes? positive)\W{{0,4}}{_VALUE}\b",
+    re.I,
+)
 
 
 @dataclass
@@ -318,9 +334,11 @@ def count_in_span(count: int, span_text: str) -> bool:
     return count_path(count, span_text) is not None
 
 
-def count_path(count: int, span_text: str) -> str | None:
+def count_path(count: int, span_text: str, before: str = "", after: str = "") -> str | None:
     """Which rule of `count_in_span` finds the count in the span: "fraction",
-    "negative_fraction", "zero_phrase" or "cued"; None when no rule does."""
+    "negative_fraction", "zero_phrase" or "cued"; None when no rule does. `before` and
+    `after` are the report text around the quote: a unit or a grade just outside it
+    ("PRESENT, 4" + " MM") still disqualifies a number."""
     positive, negative = [], False
     for match in _FRACTION.finditer(span_text):
         top, bottom = _as_number(match.group(1)), _as_number(match.group(2))
@@ -343,19 +361,25 @@ def count_path(count: int, span_text: str) -> str | None:
         or (_ZERO_NEGATIVE.search(span_text) and _NODE_WORD.search(span_text))
     ):
         return "zero_phrase"
-    return "cued" if count in _cued_counts(span_text) else None
+    return "cued" if count in _cued_counts(span_text, before, after) else None
 
 
-def _cued_counts(span_text: str) -> set[int]:
+def _cued_counts(span_text: str, before_text: str = "", after_text: str = "") -> set[int]:
     """For each positive cue that is not negated, the value of the nearest number."""
+    full, offset = before_text + span_text + after_text, len(before_text)
     numbers = []
     for match in _TOKEN.finditer(span_text):
         value = None if match.group(2) else _as_number(match.group(1))
         if value is None:
             continue
-        after = span_text[match.end() : match.end() + 12]
-        before = span_text[max(0, match.start() - 30) : match.start()]
-        if _UNIT_AFTER.search(after) or _NOT_POSITIVE_BEFORE.search(before):
+        start, end = offset + match.start(), offset + match.end()
+        after = full[end : end + 12]
+        before = full[max(0, start - 30) : start]
+        if (
+            _UNIT_AFTER.search(after)
+            or _NOT_POSITIVE_BEFORE.search(before)
+            or _GRADE_BEFORE.search(before)
+        ):
             continue
         numbers.append((match.start(), match.end(), value))
     cued = set()
@@ -398,6 +422,16 @@ def report_floor(report: str) -> int | None:
     return max(tops) if tops else None
 
 
+def report_totals(report: str) -> set[int]:
+    """Every positive-node total the report states with a label; empty if it states none."""
+    totals = set()
+    for match in _TOTAL_LABEL.finditer(report):
+        value = _as_number(match.group(1))
+        if value is not None and value <= _MAX_NODES:
+            totals.add(value)
+    return totals
+
+
 def judge_count(answer: dict[str, Any] | None, report: str) -> FieldResult:
     name = NODES_POSITIVE
     if answer is None:
@@ -416,7 +450,9 @@ def judge_count(answer: dict[str, Any] | None, report: str) -> FieldResult:
     span = locate(quote, report)
     if span is None:
         return FieldResult(name, "rejected", value=value, quote=quote, reason="quote_not_in_report")
-    if not count_in_span(count, span.text(report)):
+    before = report[max(0, span.start - _CONTEXT) : span.start]
+    after = report[span.end : span.end + _CONTEXT]
+    if count_path(count, span.text(report), before, after) is None:
         return FieldResult(
             name, "rejected", value=value, quote=span.text(report), reason="count_not_in_quote"
         )
@@ -424,6 +460,11 @@ def judge_count(answer: dict[str, Any] | None, report: str) -> FieldResult:
     if floor is not None and count < floor:
         return FieldResult(
             name, "rejected", value=value, quote=span.text(report), reason="count_below_report"
+        )
+    totals = report_totals(report)
+    if totals and count not in totals:
+        return FieldResult(
+            name, "rejected", value=value, quote=span.text(report), reason="count_not_report_total"
         )
     return FieldResult(name, "accepted", value=value, quote=span.text(report), span=span)
 

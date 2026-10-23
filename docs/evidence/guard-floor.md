@@ -46,3 +46,20 @@ A Fable review found that `judge_field` only checked that the quote exists in th
 Known limit (N): a quote of one specimen ("(1/1)") supports N1 even when the total makes it N2, the same per-specimen limit as the count.
 
 Known limits: a per-specimen count when no fraction states the total (the floor is the largest fraction, by design); a count above every stated fraction if it is the number nearest a positive cue; a node fraction more than 60 characters from the word "node" is not in the floor.
+
+## Fourth round: the red-team chain's accepts (2026-10-23)
+
+The pre-registered chain (`docs/evidence/adversary-chain-results.md`) got 8 wrong counts accepted (1 bug, 3 kinds of documented limit). Two changes:
+
+- **Context:** a number's unit and label are read in the report around the quote (30 characters each side), not only inside it: "…EXTRANODAL EXTENSION: PRESENT, 4" is followed by " MM" in the report; "NUCLEAR GRADE: COMPONENT: 3" has a grade a few words back.
+- **A stated total:** when the report states a labelled total ("Number of positive lymph nodes: 4", "Total number with metastasis: 7", "POSITIVE LYMPH NODES: TOTAL: 4 of 13", "LYMPH NODES POSITIVE: 1"; not a macrometastasis count), the count must equal it (`count_not_report_total`).
+
+| Check | Result |
+|---|---|
+| The chain's 8 wrong accepts, re-judged | all 8 rejected (7 `count_not_report_total`, 1 `count_not_in_quote`); its 2 true counts still accepted |
+| The hero case's "PRESENT, 4" (found by the Fable review) | rejected |
+| Fresh reads of the 25 queue reports, previous vs current guard (`logs/guard-ab-total-2026-10-23.txt`) | 0 verdicts changed; 16 accepted counts still pass |
+| The 13 stored counts; the specimen attack | 13 accepted; still rejected |
+| Labelled totals vs the registry (stage_check, cases with a report and a count) | 105 reports state a labelled total; it equals the registry count in 94, differs in 11 (incl. queue cases BH-A0DD, AQ-A1H2, BH-A0BS) |
+
+These fixes were designed after seeing the chain's accepts, so the chain's 1-in-60 does not describe the new guard; a fresh pre-registered chain (new cases) is needed to measure it.
