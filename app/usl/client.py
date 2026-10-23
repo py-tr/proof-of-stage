@@ -36,6 +36,16 @@ _SHOW_DB = re.compile(
     re.IGNORECASE,
 )
 _COMMA_NAME = re.compile(r"\s*,\s*(`[^`]+`|[A-Za-z_][\w.]*)")
+# A table alias: "FROM <table> r", "JOIN <table> AS r", or a subquery's "... ) scored". The
+# table itself is checked like any other name; "r.column" is then a column, not a source.
+_TABLE_ALIAS = re.compile(
+    r"\b(?:FROM|JOIN)\s+([A-Za-z_][\w.]*)\s+(?:AS\s+)?([A-Za-z_]\w*)", re.IGNORECASE
+)
+_SUBQUERY_ALIAS = re.compile(r"\)\s*(?:AS\s+)?([A-Za-z_]\w*)", re.IGNORECASE)
+_NOT_ALIAS = frozenset(
+    "where join left right inner outer full cross on group order having limit union select "
+    "as and or not lateral natural using window from".split()
+)
 _DENY = re.compile(
     r"\b(?:INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|MERGE|COMPILE|REMOVE|GRANT|REVOKE|"
     r"TRUNCATE|UPSERT|CALL|COPY|INTO)\b",
@@ -101,8 +111,9 @@ def guard_select(sql: str) -> str:
             raise SqlGuardError("unknown data-quality rule")
         if (rule, table) not in allowed:
             raise SqlGuardError("data-quality commands may only target the rule's own USL table")
+    aliases = _aliases(masked)
     for name in _referenced_names(masked):
-        if not allowed_name(name):
+        if not allowed_name(name) and not _is_alias_column(name, aliases):
             raise SqlGuardError("name is outside the registry audit sources")
     return statement
 
@@ -329,6 +340,23 @@ def _check_rule(rule: str) -> str:
 def _require_text(value: str, label: str) -> None:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{label} is required")
+
+
+def _aliases(masked_sql: str) -> set[str]:
+    """Aliases declared for one of our tables or for a subquery (whose names are checked too)."""
+    out = set()
+    for match in _TABLE_ALIAS.finditer(masked_sql):
+        if allowed_name(match.group(1)) and match.group(2).lower() not in _NOT_ALIAS:
+            out.add(match.group(2).lower())
+    for match in _SUBQUERY_ALIAS.finditer(masked_sql):
+        if match.group(1).lower() not in _NOT_ALIAS:
+            out.add(match.group(1).lower())
+    return out
+
+
+def _is_alias_column(name: str, aliases: set[str]) -> bool:
+    parts = name.lower().split(".")
+    return len(parts) == 2 and parts[0] in aliases
 
 
 def _referenced_names(masked_sql: str) -> list[str]:
