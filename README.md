@@ -72,6 +72,24 @@ Nightshift is integrated (Super VL pinned, the receipt's Ed25519 signature verif
 
 What we changed so Nightshift's answers are one model's own text: Adaptive compute, Self-refine, Answer fusion, Reasoning scaffold, Optimistic streaming and Tier-split off; cloud Lightning moved from Race to Judge, after which a pinned Super won 10/10 races. If Meterless adds a per-request thinking switch, the two text rungs move back through Nightshift with a one-line change (`provider=` in `app/engine/rungs.py`).
 
+## Reflection on the Zetaris USL
+
+**Built** (`app/usl/sql/`, run in order by `usl setup`): identified 3 kinds of source (the NCI GDC REST API; file-store CSVs of paraphrased rules, report text and Parse blocks; our own Postgres results), onboarded each (`020–022` REST, `010–016` file store, `002–005` Postgres), queried each, compiled one USL `stage_audit` (8 tables, primary and foreign keys, 87 table and column descriptions in `040_descriptions.sql`), queried it (the case page reads only USL tables; `usl demo` is a timed query pack) and added data-quality rules (one basic source-level rule, `nodes_within_tested`, plus 7 custom rules and the 13 key rules Zetaris generates from the DDL).
+
+**How it saved time.** What we measured: the whole cross-source audit, 21 rule results over 1,097 cases from three source types, runs with one command in 51.5 s (`usl dq`), and the reproducible demo pack in 21 s (`docs/zetaris-demo.md`). We did not time a manual or hand-coded alternative, so we claim no "hours saved" number. What we did not have to build: an ETL step (the verdict `stage_check.fault_field` is one SQL CASE over the GDC API, the CSVs and Postgres, joined in place); a reload step (a value the reader appends to Postgres is in the next USL query); a lineage view (the page's lineage panel comes from `LOAD USL`); our own key checks (the 13 key rules come from the DDL).
+
+**How it can help in our work.** The layer is a pattern, not a cancer tool: a record table, a source-document table, a rule table, the model's verified readings and a verdict, with every write append-only. Only the rule table is about staging. The same shape fits other "does the record match its source document" audits (trial source-data checks, claims against clinical notes, invoices against an ERP); we have not tested those.
+
+**How to improve it** (each one observed while building; build journal ids in brackets):
+1. A schema change needs REMOVE USL + COMPILE, so a failed compile takes the live layer down; a validate-only compile or an ALTER USL would avoid that (M17).
+2. `double` is rejected in USL DDL with "Invalid DDL statement" (`decimal` works); an error naming the type would save a search (M17).
+3. A file-store table keeps its first schema when the CSV header changes; we had to drop and re-register it (M17).
+4. `'O''Brien'` returns `OBrien` (adjacent literals are concatenated) instead of `O'Brien`; backslash escaping works (M14).
+5. The Postgres datasource takes INSERT but not UPDATE, DELETE or CREATE VIEW; fine for an append-only log, worth documenting.
+6. Each REST call takes about 3 s; a read-only batch endpoint (several statements per call) would make pages faster.
+7. `RUN DQ` cannot address a composite-key rule by the name `LIST DQ USL` prints (`case_id,page_no,block_index` gives "mismatched input ','"); running it through its first column works.
+8. What helped: the NOT NULL mismatch error suggested the exact COALESCE fix (M17).
+
 ## Limits (honest)
 
 - Hosted Nemotron Parse 2.0 returned an empty document on our key (even on NVIDIA's own example); we use Parse v1.
