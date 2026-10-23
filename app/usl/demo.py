@@ -109,8 +109,44 @@ def steps() -> list[Step]:
             f"FROM {table_fqn('parse_block')} "
             "WHERE case_id = 'TCGA-A2-A0CV' AND block_text LIKE '%2/18%'",
         ),
+        Step(
+            "Same question, two answers",
+            "'is this patient node-positive?' asked of the N column and of the count column, on "
+            "the records where both apply (6th/7th edition, N and count recorded, no "
+            "micrometastasis or isolated tumour cells): the columns disagree on some records, "
+            "and the contradictions that keep the same answer still change the N category",
+            f"SELECT count(*) AS records, {_BY_N_SUM} AS node_positive_by_n_column, "
+            f"{_BY_COUNT_SUM} AS node_positive_by_count_column, "
+            f"sum(CASE WHEN {_DISAGREE} THEN 1 ELSE 0 END) AS columns_disagree, "
+            "sum(CASE WHEN reason_class = 'n_count_contradiction' AND NOT "
+            f"({_DISAGREE}) THEN 1 ELSE 0 END) AS same_answer_other_category "
+            f"FROM {check} WHERE {_BOTH_APPLY}",
+        ),
+        Step(
+            "Which answer the report supports",
+            "the records where the two columns disagree, with the quote-verified reading of the "
+            "report and the field the layer names; node_positive_by_report is empty where the "
+            "layer leaves the case to a person",
+            "SELECT case_id, recorded_n, lymph_nodes_positive, report_n, report_nodes_positive, "
+            "fault_field, CASE WHEN fault_field = 'review' OR report_n_main IS NULL THEN NULL "
+            "WHEN report_n_main <> 'N0' THEN 'yes' ELSE 'no' END AS node_positive_by_report "
+            f"FROM {check} WHERE {_BOTH_APPLY} AND {_DISAGREE} ORDER BY fault_field, case_id",
+            sample=20,
+        ),
     ]
     return out
+
+
+# "Is this patient node-positive?" by each registry column, where both columns apply.
+_BOTH_APPLY = (
+    "coalesce(edition_code, '') IN ('6', '7') "
+    "AND reason_class IN ('consistent', 'n_count_contradiction')"
+)
+_BY_N = "recorded_n_main <> 'N0'"
+_BY_COUNT = "CAST(lymph_nodes_positive AS DOUBLE) > 0"
+_BY_N_SUM = f"sum(CASE WHEN {_BY_N} THEN 1 ELSE 0 END)"
+_BY_COUNT_SUM = f"sum(CASE WHEN {_BY_COUNT} THEN 1 ELSE 0 END)"
+_DISAGREE = f"({_BY_N}) <> ({_BY_COUNT})"
 
 
 @dataclass
