@@ -29,5 +29,5 @@ The agent's 476 (`recorded_stage`, all editions, `lymph_nodes_positive > 0`) lea
 ## What it means, and what it does not
 
 - n = 5 per arm, one question, one model: this is a probe, not a rate. It shows that a pointer sentence in a description is not enough to make this agent use a verdict column; it does not show that no wording or schema design would.
-- It supports the README's claim from the other side: the layer's meaning (the descriptions) was clear enough for the agent to write a working query 9 times, and the answer was still wrong for the 6 patients whose record contradicts its report. The verdict has to be applied, not only described.
+- It supports the README's claim from the other side: the layer's meaning (the descriptions) was clear enough for the agent to write a working query 9 times, and the answer was still wrong for the 6 patients whose record contradicts its report. It does not show that applying the verdict in the layer would work; that is untested.
 - Not tested: a column or view that applies the verdict for the agent (for example a node-positive flag that is already corrected). That would be a new, separately pre-registered question; nothing here was tuned after the run.
