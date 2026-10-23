@@ -263,3 +263,11 @@ def test_lineage_is_read_from_the_usl_contract() -> None:
     } in rows
     assert {"usl_table": "stage_check", "source": "tumour_case", "kind": "USL table"} in rows
     assert contract_lineage({}) == []
+
+
+def test_the_how_it_works_page_is_served() -> None:
+    client = _client()
+    page = client.get("/how")
+    assert page.status_code == 200 and 'id="steps"' in page.text and "/static/how.js" in page.text
+    assert client.get("/static/how.js").status_code == 200
+    assert 'href="/how"' in client.get("/").text

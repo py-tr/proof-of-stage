@@ -10,6 +10,7 @@
   <header class="top">
     <div class="brand">Proof of Stage <span class="tag">checks registry stage fields against the pathology report</span></div>
     <div id="cohort" class="cohort"></div>
+    <a class="howlink" href="/how">How it works</a>
     <div id="mode" class="mode">…</div>
   </header>
 
@@ -30,68 +31,82 @@
       </p>
     </aside>
 
-    <section class="report">
-      <div class="report-head">
-        <h2 id="report-title">Pathology report</h2>
-        <div class="keys">
-          <span class="k n">N quote</span><span class="k c">count quote</span><span class="k t">T quote</span><span class="k x">your quote</span>
+    <div class="main">
+      <section id="verdict-band" class="verdict-band">
+        <div class="verdict-text">
+          <div class="verdict-kicker">The semantic layer names</div>
+          <h1 id="verdict-title" class="verdict-title">Pick a case</h1>
+          <p id="headline" class="headline"></p>
+          <div class="block decide-block">
+            <h3>Your call</h3>
+            <div id="decide" class="decide"></div>
+            <div id="reject-reasons" class="reasons hidden">
+              <button data-r="addendum">1 another source / addendum</button>
+              <button data-r="misread">2 quote misread</button>
+              <button data-r="rule">3 rule or edition wrong here</button>
+              <button data-r="other">4 other</button>
+            </div>
+            <div id="decided" class="small"></div>
+            <p class="small">Proof of Stage never edits a record. Each decision is a new row in Zetaris (oa_pg.flag_log); earlier rows stay.</p>
+          </div>
         </div>
-      </div>
-      <pre id="report-text" class="report-text">Pick a case.</pre>
-      <div id="rejected" class="rejected"></div>
-    </section>
+        <div class="verdict-compare">
+          <table class="compare">
+            <thead><tr><th></th><th>Registry<br><small>recorded_stage</small></th><th>From the count<br><small>staging_rule</small></th><th>Report<br><small>Nemotron, quote-checked</small></th></tr></thead>
+            <tbody>
+              <tr><th>N category</th><td id="c-rec-n"></td><td id="c-der-n"></td><td id="c-rep-n" data-mark="n"></td></tr>
+              <tr><th>Positive nodes</th><td id="c-rec-c"></td><td>—</td><td id="c-rep-c" data-mark="c"></td></tr>
+            </tbody>
+          </table>
+          <ul id="rules" class="rules"></ul>
+          <p class="small">Rules paraphrased; the AJCC manual has the exact text. Hover a report value to see its quote in the report.</p>
+        </div>
+      </section>
 
-    <section class="panel">
-      <p id="headline" class="headline"></p>
-      <div id="strip" class="strip"></div>
-      <table class="compare">
-        <thead><tr><th></th><th>Registry<br><small>recorded_stage</small></th><th>From the count<br><small>staging_rule</small></th><th>Report<br><small>Nemotron, quote-checked</small></th></tr></thead>
-        <tbody>
-          <tr><th>N</th><td id="c-rec-n"></td><td id="c-der-n"></td><td id="c-rep-n" data-mark="n"></td></tr>
-          <tr><th>Positive nodes</th><td id="c-rec-c"></td><td>—</td><td id="c-rep-c" data-mark="c"></td></tr>
-        </tbody>
-      </table>
-      <div class="block">
-        <h3>Rule <small>paraphrased; the AJCC manual has the exact text</small></h3>
-        <ul id="rules" class="rules"></ul>
+      <div class="below">
+        <section class="report">
+          <div class="report-head">
+            <h2 id="report-title">Pathology report</h2>
+            <div class="keys">
+              <span class="k n">N quote</span><span class="k c">count quote</span><span class="k t">T quote (not audited)</span><span class="k x">your quote</span>
+            </div>
+          </div>
+          <pre id="report-text" class="report-text">Pick a case.</pre>
+          <div id="rejected" class="rejected"></div>
+        </section>
+
+        <section class="panel">
+          <div class="block first">
+            <h3>How the USL got here <small>each step is a USL table</small></h3>
+            <div id="strip" class="strip"></div>
+          </div>
+          <div class="block">
+            <h3>How it was read <small>the latest ladder run, rung by rung: the reasoning setting, the provider and the signed receipt</small></h3>
+            <div id="trace" class="trace"></div>
+          </div>
+          <div class="block">
+            <h3>What Nemotron did <small>and the guard it had to pass</small></h3>
+            <div id="nemotron" class="nemotron"></div>
+          </div>
+          <div class="block">
+            <h3>Case note <small>Nemotron Super through Meterless Nightshift; each sentence cites the facts it restates</small></h3>
+            <div id="note" class="note"></div>
+            <button id="note-run" class="note-run">Write a new note</button>
+          </div>
+          <details class="block fool" open>
+            <summary>Try to fool it <small>you play the reader; the same guards decide</small></summary>
+            <div class="fool-form">
+              <select id="f-field"><option value="NPOS">positive nodes</option><option value="N">N category</option><option value="T">T category</option></select>
+              <input id="f-value" placeholder="value, e.g. 4 or N2a">
+              <textarea id="f-quote" rows="3" placeholder="a quote: type one, or select text in the report"></textarea>
+              <button id="f-run">Check</button>
+            </div>
+            <div id="f-out" class="fool-out"></div>
+          </details>
+          <p id="source-note" class="small"></p>
+        </section>
       </div>
-      <div class="block">
-        <h3>What Nemotron did <small>and the guard it had to pass</small></h3>
-        <div id="nemotron" class="nemotron"></div>
-      </div>
-      <div class="block">
-        <h3>How it was read <small>the latest ladder run, rung by rung: the reasoning setting, the provider and the signed receipt</small></h3>
-        <div id="trace" class="trace"></div>
-      </div>
-      <div class="block">
-        <h3>Case note <small>Nemotron Super through Meterless Nightshift; each sentence cites the facts it restates</small></h3>
-        <div id="note" class="note"></div>
-        <button id="note-run" class="note-run">Write a new note</button>
-      </div>
-      <div class="block">
-        <h3>Your call</h3>
-        <div id="decide" class="decide"></div>
-        <div id="reject-reasons" class="reasons hidden">
-          <button data-r="addendum">1 another source / addendum</button>
-          <button data-r="misread">2 quote misread</button>
-          <button data-r="rule">3 rule or edition wrong here</button>
-          <button data-r="other">4 other</button>
-        </div>
-        <div id="decided" class="small"></div>
-        <p class="small">Proof of Stage never edits a record. Each decision is a new row in Zetaris (oa_pg.flag_log); earlier rows stay.</p>
-      </div>
-      <details class="block fool" open>
-        <summary>Try to fool it <small>you play the reader; the same guards decide</small></summary>
-        <div class="fool-form">
-          <select id="f-field"><option value="NPOS">positive nodes</option><option value="N">N category</option><option value="T">T category</option></select>
-          <input id="f-value" placeholder="value, e.g. 4 or N2a">
-          <textarea id="f-quote" rows="3" placeholder="a quote: type one, or select text in the report"></textarea>
-          <button id="f-run">Check</button>
-        </div>
-        <div id="f-out" class="fool-out"></div>
-      </details>
-      <p id="source-note" class="small"></p>
-    </section>
+    </div>
   </main>
 
   <footer id="status" class="status">Starting…</footer>

@@ -96,3 +96,31 @@ mark strong { font-weight: 800; text-decoration: underline; }
 .note .receipt code { font-family: var(--mono); font-size: 11px; background: var(--grey-bg); padding: 0 3px; border-radius: 3px; }
 .note-run { font: inherit; font-size: 12px; padding: 4px 8px; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; cursor: pointer; margin-top: 4px; }
 .note-run:disabled { opacity: .5; cursor: wait; }
+
+/* ---------- layout v2: queue | verdict band on top, report + evidence below ---------- */
+.grid { grid-template-columns: 250px minmax(0, 1fr); height: auto; min-height: calc(100vh - 86px); }
+.queue { position: sticky; top: 0; align-self: start; max-height: calc(100vh - 86px); }
+.main { padding: 12px 14px 48px; min-width: 0; }
+.howlink { font-size: 12px; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 12px; padding: 3px 10px; background: var(--bg); }
+.howlink:hover { border-color: var(--ink); }
+.verdict-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--red); border-radius: 10px; padding: 14px 18px; margin-bottom: 12px; }
+.verdict-band.review { border-left-color: var(--grey); }
+.verdict-band.agree { border-left-color: var(--green); }
+.verdict-kicker { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.verdict-title { font-size: 22px; line-height: 1.25; margin: 2px 0 8px; color: var(--red); }
+.verdict-band.review .verdict-title { color: var(--grey); }
+.verdict-band.agree .verdict-title { color: var(--green); }
+.verdict-band .headline { font-size: 14px; font-weight: 400; margin: 0 0 10px; }
+.verdict-band .decide-block { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 4px; }
+.verdict-compare .compare td { font-size: 16px; font-weight: 600; padding: 7px 8px; }
+.verdict-compare .compare th { font-size: 12px; }
+.verdict-compare .compare td.good { background: #e8f3e8; color: var(--green); }
+.verdict-compare .rules { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.below { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.below .report { padding: 0; overflow: visible; }
+.below .report-text { max-height: 72vh; overflow: auto; }
+.below .panel { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; overflow: visible; }
+.block.first { border-top: 0; padding-top: 0; margin-top: 0; }
+.panel .strip { grid-template-columns: repeat(2, 1fr); }
+mark.t { opacity: .45; }
+@media (max-width: 1100px) { .grid, .verdict-band, .below { grid-template-columns: 1fr; } .queue { position: static; max-height: none; } }

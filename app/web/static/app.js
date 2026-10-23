@@ -177,9 +177,24 @@ function renderStrip(data) {
 }
 
 // ---------- the evidence panel ----------
+// The band's title: which field the evidence names, in plain words.
+function verdictTitle(c) {
+  if (state.mode === "sample" && !c.fault_field) return ["Play the reader", "review"];
+  if (c.fault_field === "node_count") return ["The node-count field is wrong", "named"];
+  if (c.fault_field === "pathologic_n") {
+    return [c.reason_class === "n_missing_derivable" ? "The N field should be filled in" : "The N field is wrong", "named"];
+  }
+  if (c.fault_field === "review" && c.read === false) return ["Not read yet", "review"];
+  if (c.fault_field === "review") return ["A person decides: the evidence does not settle it", "review"];
+  return ["The registry fields agree", "agree"];
+}
+
 function renderPanel(data) {
   const c = data.check;
   $("headline").textContent = data.headline;
+  const [title, kind] = verdictTitle(c);
+  $("verdict-title").textContent = title;
+  $("verdict-band").className = `verdict-band ${kind === "named" ? "" : kind}`;
   $("report-title").textContent = `Pathology report · ${c.case_id} · edition ${show(c.edition_code)}`;
   renderStrip(data);
   const sample = state.mode === "sample";
@@ -189,8 +204,11 @@ function renderPanel(data) {
   $("c-rec-c").textContent = show(num(c.lymph_nodes_positive));
   $("c-rep-c").textContent = sample ? "you play the reader ↓" : show(num(c.report_nodes_positive));
   for (const id of ["c-rec-n", "c-rec-c"]) $(id).classList.remove("bad");
+  for (const id of ["c-rep-n", "c-rep-c"]) $(id).classList.remove("good");
   if (c.fault_field === "node_count") $("c-rec-c").classList.add("bad");
   if (c.fault_field === "pathologic_n") $("c-rec-n").classList.add("bad");
+  if (!sample && c.report_n) $("c-rep-n").classList.add("good");
+  if (!sample && num(c.report_nodes_positive) != null) $("c-rep-c").classList.add("good");
 
   const rules = $("rules");
   rules.replaceChildren();

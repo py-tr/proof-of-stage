@@ -181,5 +181,9 @@ def create_app(
     async def index() -> FileResponse:
         return FileResponse(STATIC / "index.html")
 
+    @app.get("/how")
+    async def how_it_works() -> FileResponse:
+        return FileResponse(STATIC / "how.html")
+
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
     return app
