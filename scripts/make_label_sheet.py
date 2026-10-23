@@ -118,8 +118,8 @@ mark.cur { background: #ffb74d; outline: 2px solid #e65100; }
 <label class="opt"><input type="radio" name="f" value="node_count">The node count is wrong (the report backs the N category)</label>
 <label class="opt"><input type="radio" name="f" value="pathologic_n">The N category is wrong or missing (the report backs the count)</label>
 <label class="opt"><input type="radio" name="f" value="review">A person must decide (the report settles neither, or contradicts both)</label>
-<label class="small">The line in the report that convinced you (select it in the report, it is copied here)</label>
-<textarea id="quote" rows="3"></textarea>
+<label class="small">The line(s) in the report that convinced you: each selection in the report is added on a new line (you can also edit the box) <button id="clearq" type="button" style="font-size:11px">clear</button></label>
+<textarea id="quote" rows="4"></textarea>
 <label class="small">Notes (optional)</label>
 <input type="text" id="note">
 </div>
@@ -182,7 +182,14 @@ function upd() {
 }
 ["count", "n", "quote", "note"].forEach((id) => $(id).addEventListener("input", upd));
 document.querySelectorAll("input[name=f]").forEach((r) => r.addEventListener("change", upd));
-$("report").addEventListener("mouseup", () => { const s = String(window.getSelection() || "").trim(); if (s.length > 3) { $("quote").value = s; upd(); } });
+$("report").addEventListener("mouseup", () => {
+  const s = String(window.getSelection() || "").trim();
+  if (s.length <= 3) return;
+  const lines = $("quote").value.split("\n").map((l) => l.trim()).filter(Boolean);
+  if (!lines.includes(s)) lines.push(s);
+  $("quote").value = lines.join("\n"); upd();
+});
+$("clearq").onclick = () => { $("quote").value = ""; upd(); };
 $("hit").onclick = nextHit;
 $("prev").onclick = () => { i = (i + CASES.length - 1) % CASES.length; show(); };
 $("next").onclick = () => { i = (i + 1) % CASES.length; show(); };
