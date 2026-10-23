@@ -48,7 +48,7 @@ async def test_a_chain_carries_the_code_written_ledger(
             receipt_id=f"r{step}", winning_model=model, signature="verified", usage=usage
         )
 
-    record = await adv.run_chain(CASE, REPORT, chat=fake_chat)
+    record = await adv.run_chain(CASE, REPORT, provider="nightshift", chat=fake_chat)
     steps = [json.loads(line) for line in (tmp_path / "steps.jsonl").read_text().splitlines()]
 
     assert len(sent) == adv.STEPS and record["steps"] == adv.STEPS
@@ -86,3 +86,25 @@ def test_the_run_refuses_a_changed_pre_registration(
     reports = {frozen["cases"][0]["case_id"]: "x" * 4000}
     with pytest.raises(RuntimeError, match="prompt changed.*excerpt changed"):
         adv.frozen_cases(reports)
+
+
+@needs_node
+@pytest.mark.asyncio
+async def test_the_nvidia_generator_uses_the_pre_registered_budget(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(adv, "LOG", tmp_path / "steps.jsonl")
+    monkeypatch.setattr(adv, "RUNS_LOG", tmp_path / "runs.jsonl")
+    seen: list[dict[str, Any]] = []
+
+    async def fake_nv(messages: list[dict[str, Any]], model: str, **kwargs: Any):
+        seen.append(kwargs)
+        usage = {"prompt_tokens": 250, "completion_tokens": 400}
+        return json.dumps(ATTACKS[0]), "served-model", usage
+
+    record = await adv.run_chain(CASE, REPORT, nv_chat=fake_nv)
+    assert record["provider"] == "nvidia" and record["steps"] == adv.STEPS
+    kwargs = seen[0]["chat_template_kwargs"]
+    assert kwargs == {"enable_thinking": True, "reasoning_budget": adv.THINKING_BUDGET}
+    assert record["unverified_receipts"] == 0
+    assert record["carryover_failures"] == adv.STEPS - 1  # the same attack every step

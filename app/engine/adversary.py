@@ -33,9 +33,9 @@ from typing import Any
 
 from app import config
 from app.engine.markovian import run_engine
-from app.providers import nightshift
+from app.providers import nightshift, nvidia
 from app.reader.quotes import locate
-from app.reader.reader import count_path, judge_count, parse_answer
+from app.reader.reader import count_path, judge_count, parse_answer, thinking_args
 
 ROOT = Path(__file__).resolve().parents[2]
 LOG = ROOT / "logs" / "adversary-steps.jsonl"
@@ -50,6 +50,11 @@ CHUNK_CONFIG = {
 }
 QUOTE_CHARS = 18  # how much of each tried quote the ledger keeps
 MAX_TOKENS = 4000  # Nightshift keeps thinking on; the answer itself is under 40 words
+# Pre-registration v2: the generator runs on NVIDIA direct with a bounded thinking budget.
+# Through Nightshift (thinking forced on, cloud calls cut at 45 s) the adaptive steps ran
+# past the deadline: v1 lost its first 3 steps to 502s (docs/preregistration/).
+PROVIDER = "nvidia"
+THINKING_BUDGET = 1000
 
 # Short guard verdicts, explained once in the (constant) system prompt.
 VERDICT_CODES = {
@@ -175,6 +180,53 @@ class Chain:
 
 
 Chat = Callable[..., Awaitable[tuple[str, Any]]]
+NvChat = Callable[..., Awaitable[tuple[str, str, dict[str, Any]]]]
+
+
+async def _ask(
+    provider: str,
+    messages: list[dict[str, Any]],
+    item_id: str,
+    chat: Chat | None,
+    nv_chat: NvChat | None,
+) -> tuple[str, dict[str, Any]]:
+    """(answer text, what the call recorded) through Nightshift or NVIDIA direct."""
+    if provider == "nightshift":
+        text, receipt = await (chat or nightshift.chat)(
+            messages,
+            config.NS_SUPER_VL,
+            item_id=item_id,
+            require_model=config.NS_SUPER_VL,
+            retry_on_mismatch=True,
+            require_signature=True,
+            pinned_key=config.getenv("NS_RECEIPT_PUBKEY"),
+            allow_cache=False,
+            max_tokens=MAX_TOKENS,
+        )
+        usage = receipt.usage or {}
+        return text, {
+            "provider": provider,
+            "receipt_id": receipt.receipt_id,
+            "model": receipt.winning_model,
+            "signature": receipt.signature,
+            "from_cache": receipt.from_cache,
+            "prompt_tokens": usage.get("prompt_tokens"),
+            "completion_tokens": usage.get("completion_tokens"),
+        }
+    extra, max_tokens = thinking_args(THINKING_BUDGET)
+    text, model, usage = await (nv_chat or nvidia.chat_with_usage)(
+        messages, config.NV_SUPER, max_tokens=max_tokens, **extra
+    )
+    details = usage.get("completion_tokens_details") or {}
+    return text, {
+        "provider": provider,
+        "receipt_id": None,
+        "model": model,
+        "budget": THINKING_BUDGET,
+        "prompt_tokens": usage.get("prompt_tokens"),
+        "completion_tokens": usage.get("completion_tokens"),
+        "reasoning_tokens": details.get("reasoning_tokens"),
+    }
 
 
 def _carryover(prompt: str) -> str | None:
@@ -183,12 +235,18 @@ def _carryover(prompt: str) -> str | None:
     return match.group(1) if match else None
 
 
-async def run_chain(case: Case, report: str, *, chat: Chat | None = None) -> dict[str, Any]:
+async def run_chain(
+    case: Case,
+    report: str,
+    *,
+    provider: str = PROVIDER,
+    chat: Chat | None = None,
+    nv_chat: NvChat | None = None,
+) -> dict[str, Any]:
     """One red-team chain (STEPS attacks) on one case; every step is logged, none retried."""
     excerpt = report[case.start : case.end]
     chain = Chain(case=case, report=report, excerpt=excerpt)
     run_id = f"adv-{datetime.now(UTC):%Y%m%dT%H%M%S}-{uuid.uuid4().hex[:6]}"
-    call = chat or nightshift.chat
     goal = f"Red-team the count guard on case {case.case_id} for {STEPS} steps."
 
     async def generate(step: int, prompt: str) -> str:
@@ -204,27 +262,16 @@ async def run_chain(case: Case, report: str, *, chat: Chat | None = None) -> dic
             "carryover_est_tokens": est(state),
         }
         try:
-            text, receipt = await call(
-                [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": user}],
-                config.NS_SUPER_VL,
-                item_id=f"{run_id}-{case.case_id}-s{step}",
-                require_model=config.NS_SUPER_VL,
-                retry_on_mismatch=True,
-                require_signature=True,
-                pinned_key=config.getenv("NS_RECEIPT_PUBKEY"),
-                allow_cache=False,
-                max_tokens=MAX_TOKENS,
+            messages = [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user},
+            ]
+            text, meta = await _ask(
+                provider, messages, f"{run_id}-{case.case_id}-s{step}", chat, nv_chat
             )
             attempt = chain.judge(step, parse_answer(text))
             visible = text.strip()
-            row.update(
-                receipt_id=receipt.receipt_id,
-                model=receipt.winning_model,
-                signature=receipt.signature,
-                from_cache=receipt.from_cache,
-                prompt_tokens=(receipt.usage or {}).get("prompt_tokens"),
-                completion_tokens=(receipt.usage or {}).get("completion_tokens"),
-            )
+            row.update(meta)
         except Exception as exc:  # scored as no bug; the step is never re-run
             attempt = Attempt(step, None, "", "call_failed", "call_failed")
             visible = ""
@@ -263,6 +310,7 @@ async def run_chain(case: Case, report: str, *, chat: Chat | None = None) -> dic
         "engine_levels": run.levels,
         "engine_tokens_saved_estimate": run.record.get("totalTokensSaved"),
         "prompt_sha": PROMPT_SHA,
+        "provider": provider,
         **summary,
     }
     with RUNS_LOG.open("a", encoding="utf-8") as log:
@@ -294,7 +342,11 @@ def summarise(chain: Chain) -> dict[str, Any]:
         "carryover_failures": sum(a.repeat for a in chain.attempts),
         "ledger_over_budget_steps": sum(not r["ledger_within_budget"] for r in rows),
         "unverified_receipts": sum(
-            1 for r in rows if "error" not in r and r.get("signature") != "verified"
+            1
+            for r in rows
+            if r.get("provider") == "nightshift"
+            and "error" not in r
+            and r.get("signature") != "verified"
         ),
         "markovian_prompt_tokens_measured": sum(measured),
         "tokens_saved_est": sum(max(0, s) for s in saved),

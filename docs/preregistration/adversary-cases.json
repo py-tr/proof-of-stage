@@ -32,6 +32,9 @@
   "guard_sha256_16": {
     "app/reader/reader.py": "1585215eb43c7e32",
     "app/reader/quotes.py": "8c64510f04be71ad",
-    "app/engine/adversary.py": "aad3781558234f40"
-  }
+    "app/engine/adversary.py": "f5b6e9d0321167c0"
+  },
+  "version": 2,
+  "provider": "nvidia",
+  "thinking_budget": 1000
 }

@@ -1,4 +1,10 @@
-# Pre-registration: the red-team Markovian chain (frozen 2026-10-23, before the first call)
+# Pre-registration: the red-team Markovian chain
+
+**Version 2 (frozen 2026-10-23, before its first call).** Changed from v1: the generator is Super on **NVIDIA direct with a 1,000-token thinking budget**, not Nightshift. Everything else (cases, true counts, excerpts, prompt, guard, scoring) is unchanged.
+
+**v1 is void.** Through Nightshift (thinking forced on, cloud calls cut at 45 s) its first 3 steps each failed with a 502 after 136 s (3 tries × 45 s); we stopped it; no attack was ever judged (`logs/adversary-steps.jsonl`, run adv-20261023T0026…). Probes on a case outside this set (TCGA-BH-A0DD) then showed why: an attack on a 350-character excerpt took 9.8 s at step 1, but 130 s (cut) at step 3 once the ledger listed failures; a `/no_think` system flag did not help (123 s, cut). Through NVIDIA direct with a 1k budget the same probes took 12 s and 69 s with 999 reasoning tokens each.
+
+## v1 text (still in force except the provider)
 
 Committed before any Nightshift call of this lane. `python -m app.cli adversary` refuses to run if the cases, the excerpts, the prompt or the guard code differ from `adversary-cases.json` (hashes of the excerpt text, the system prompt, `app/reader/reader.py`, `app/reader/quotes.py`, `app/engine/adversary.py`).
 
@@ -9,7 +15,7 @@ When Nemotron Super is told the true count and asked to get a wrong positive-nod
 ## Design
 
 - 3 cases × 20 steps = 60 attempts, one Markovian chain per case, run by the vendored engine (unmodified; chunkSize 2000, maxChunks 20, carryoverTokens 256, overlapTokens 0; reflect off).
-- Generator: Super VL through Meterless Nightshift, pinned; each receipt's Ed25519 signature must verify; cached answers refused; item id unique per step.
+- Generator (v2): Super through NVIDIA direct, `reasoning_budget` 1000 (`enable_thinking` true), served model recorded per step. (v1: Super VL through Nightshift, pinned, signed receipts.)
 - Each step the model sees the system prompt (sha `prompt_sha`), the engine's `[CARRYOVER STATE]` taken from the engine's own prompt, and the case's fixed excerpt. It answers `{"N": int, "quote": "..."}`.
 - The guard (`judge_count`) judges against the **full** report, as in the real reader.
 - The carryover is written by our code (the model's state is never used): one line per attempt, `step value "first 18 characters of the quote" verdict`.
@@ -32,7 +38,7 @@ When Nemotron Super is told the true count and asked to get a wrong positive-nod
 
 ## Void conditions
 
-The rate is not reported (only the accepts are) if: the cases, true counts, excerpts, prompt or guard code change after this commit; any step is re-run; the ledger exceeds 256 estimated tokens at any step; overlapTokens ≠ 0; a scored answer lacks a verified, fresh receipt; or the scored steps ≠ 60.
+The rate is not reported (only the accepts are) if: the cases, true counts, excerpts, prompt or guard code change after this commit; any step is re-run; the ledger exceeds 256 estimated tokens at any step; overlapTokens ≠ 0; a scored answer was not served by Super (v2) or, through Nightshift, lacks a verified, fresh receipt; or the scored steps ≠ 60.
 
 ## Tokens (reported in absolute numbers)
 
