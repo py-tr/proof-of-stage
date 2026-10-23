@@ -338,7 +338,48 @@ function fieldVerdict(f) {
   return f.status === "accepted" ? `${f.value} ✓` : `${f.value ?? "no value"} ✗ ${why(f.reason)}`;
 }
 
+// Stored report values are the first ones written; does the latest ladder run still read them?
+function sameValue(name, stored, latest) {
+  if (stored == null || stored === "" || latest == null) return false;
+  return name === "NPOS" ? Number(stored) === Number(latest) : String(stored).toUpperCase() === String(latest).toUpperCase();
+}
+
+function mainN(value) {
+  const m = String(value || "").toUpperCase().match(/N(X|\d)/);
+  return m ? m[0] : null;
+}
+
+function renderFreshness(trace) {
+  const badge = $("freshness");
+  badge.classList.add("hidden");
+  badge.classList.remove("differs");
+  const c = state.current && state.current.check;
+  if (!trace || !c) return;
+  const stored = { N: c.report_n, NPOS: c.report_nodes_positive };
+  const label = { N: "N", NPOS: "count" };
+  const parts = [];
+  let differs = false;
+  for (const name of ["N", "NPOS"]) {
+    if (stored[name] == null || stored[name] === "") continue;
+    const latest = (trace.closed || {})[name];
+    if (!latest) { parts.push(`${label[name]} not re-closed`); continue; }
+    if (sameValue(name, stored[name], latest.value)) parts.push(`${label[name]} ${show(latest.value)} ✓`);
+    else if (name === "N" && mainN(stored[name]) === mainN(latest.value)) parts.push(`N ${show(latest.value)} ✓ (stored ${show(stored[name])}: same main category, the latest read less precise)`);
+    else { differs = true; parts.push(`${label[name]}: stored ${show(num(stored[name]) ?? stored[name])}, latest ${show(latest.value)}`); }
+  }
+  if (!parts.length) return;
+  const when = (trace.run_id.match(/run-(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/) || []).slice(1);
+  const at = when.length ? ` (${when[0]}-${when[1]}-${when[2]} ${when[3]}:${when[4]} UTC)` : "";
+  badge.textContent = differs
+    ? `Latest read${at} differs: ${parts.join(" · ")}. The stored value stays: first write wins; a person decides.`
+    : `Latest read${at} matches the stored values: ${parts.join(" · ")}`;
+  badge.title = `Ladder run ${trace.run_id}. Stored values are append-only (first write kept).`;
+  if (differs) badge.classList.add("differs");
+  badge.classList.remove("hidden");
+}
+
 function renderTrace(trace) {
+  renderFreshness(trace);
   const box = $("trace");
   box.replaceChildren();
   if (!trace) {

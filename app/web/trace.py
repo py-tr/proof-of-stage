@@ -56,7 +56,17 @@ def latest_trace(case_id: str, path: Path = CHUNKS_LOG) -> dict[str, Any] | None
         return None
     run_id = order[-1]
     rungs = []
+    closed: dict[str, dict[str, Any]] = {}
     for row in sorted(runs[run_id], key=lambda r: r.get("step") or 0):
+        still_open = set(row.get("outgoing_need") or [])
+        for name, field in (row.get("fields") or {}).items():
+            if (
+                name in ("N", "NPOS")
+                and name not in closed
+                and name not in still_open
+                and field.get("status") == "accepted"
+            ):
+                closed[name] = {"value": field.get("value"), "rung": row["rung"]}
         usage = row.get("usage") or {}
         budget = int(row.get("budget") or 0)
         rungs.append(
@@ -83,4 +93,4 @@ def latest_trace(case_id: str, path: Path = CHUNKS_LOG) -> dict[str, Any] | None
                 },
             }
         )
-    return {"run_id": run_id, "rungs": rungs}
+    return {"run_id": run_id, "rungs": rungs, "closed": closed}

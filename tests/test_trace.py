@@ -131,3 +131,36 @@ def test_sample_mode_serves_no_scan() -> None:
     case_id = client.get("/api/queue").json()[0]["case_id"]
     assert client.get(f"/api/case/{case_id}/scanbox").json() == {"scanbox": None}
     assert client.get(f"/api/case/{case_id}/scan/0.png").status_code == 404
+
+
+def test_closed_takes_each_field_at_the_rung_it_left_the_need(tmp_path: Path) -> None:
+    from app.web.trace import latest_trace
+
+    log = tmp_path / "chunks.jsonl"
+    rows = [
+        {
+            "case": "C",
+            "run_id": "run-1",
+            "rung": "R1",
+            "step": 1,
+            "outgoing_need": ["N"],
+            "fields": {
+                "N": {"status": "accepted", "value": "N1"},
+                "NPOS": {"status": "accepted", "value": "3"},
+            },
+        },
+        {
+            "case": "C",
+            "run_id": "run-1",
+            "rung": "R2",
+            "step": 2,
+            "outgoing_need": [],
+            "fields": {
+                "N": {"status": "accepted", "value": "N1MI"},
+                "NPOS": {"status": "accepted", "value": "4"},
+            },
+        },
+    ]
+    log.write_text("".join(json.dumps(r) + chr(10) for r in rows), encoding="utf-8")
+    closed = latest_trace("C", log)["closed"]
+    assert closed == {"NPOS": {"value": "3", "rung": "R1"}, "N": {"value": "N1MI", "rung": "R2"}}
