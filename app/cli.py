@@ -379,6 +379,9 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
     )
+    sub.add_parser(
+        "lightning", help="Pre-registered: Lightning in R1's place on the dial test's 28 records"
+    )
     baseline = sub.add_parser(
         "baseline", help="Pre-registered M0: Super alone on the queue (run), then score vs labels"
     )
@@ -424,6 +427,11 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.dial import run_sample
 
             sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
+            return 0
+        if args.command == "lightning":
+            from app.engine.lightning import run_lightning
+
+            sys.stdout.write(json.dumps(asyncio.run(run_lightning()), indent=2) + "\n")
             return 0
         if args.command == "baseline":
             return asyncio.run(_baseline(args.step))
