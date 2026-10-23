@@ -1,0 +1,5 @@
+TCGA-A1-A0SN budget=0 7.0s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified cache=False completion=163 reasoning=None T=accepted:T1C N=rejected:N1A NPOS=accepted:4
+TCGA-A2-A0CV budget=0 8.7s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified cache=False completion=273 reasoning=None T=rejected:T2 N=accepted:N1A NPOS=rejected:3
+TCGA-AQ-A1H2 budget=0 1.9s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified cache=False completion=135 reasoning=None T=accepted:T2 N=accepted:N2A NPOS=accepted:7
+TCGA-A1-A0SN budget=4000 74.3s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified cache=False completion=4174 reasoning=None T=accepted:T1C N=accepted:N2A NPOS=accepted:4
+TCGA-A2-A0CV budget=4000 91.7s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified cache=False completion=4215 reasoning=None T=rejected:T2 N=accepted:N1A NPOS=accepted:2

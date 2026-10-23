@@ -41,7 +41,9 @@ def _reader(script: dict[str, tuple], seen: list[dict[str, object]]):
     async def read(case_id, document, *, provider, budget, run_id):  # type: ignore[no-untyped-def]
         assert "[CARRYOVER STATE]" not in document  # the model never sees the carryover
         rung = run_id.rsplit("-", 1)[1]
-        seen.append({"rung": rung, "budget": budget, "document": document[:12]})
+        seen.append(
+            {"rung": rung, "budget": budget, "document": document[:12], "provider": provider}
+        )
         n, count = script[rung]
         return _result(case_id, budget, n, count)
 
@@ -145,3 +147,18 @@ async def test_a_self_contradictory_cheap_read_cannot_clear_a_contradictory_reco
         "N": {"rung": R2, "value": "N2A"},
         NODES_POSITIVE: {"rung": R2, "value": "4"},
     }
+
+
+@pytest.mark.asyncio
+async def test_every_rung_goes_through_nightshift_by_default() -> None:
+    # Nightshift 1.2.3 forwards the thinking switch and budget, so the ladder runs on it
+    seen: list[dict[str, object]] = []
+    script = {
+        R1: (("rejected", None), ("rejected", None)),
+        R2: (("accepted", "N1A"), ("accepted", "2")),
+    }
+    await climb(CASE, run_id="t-ns", reader=_reader(script, seen))
+    assert {s["provider"] for s in seen} == {"nightshift"}
+    seen.clear()
+    await climb(CASE, run_id="t-nv", reader=_reader(script, seen), provider="nvidia")
+    assert {s["provider"] for s in seen} == {"nvidia"}

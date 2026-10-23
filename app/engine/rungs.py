@@ -10,9 +10,10 @@ R3  Super, 4k thinking budget, on Nemotron Parse's reading of the original scan.
 Our code writes the carryover after every rung: {case, need, consulted, ledger}. A rung's
 model call sees only the fixed reader prompt and one document, never the carryover or an
 earlier answer, so no reading can anchor the next. The run ends when `need` is empty
-([TASK_COMPLETE]) or the ladder runs out (the open fields go to a person). Budgeted reads go
-to NVIDIA directly: Nightshift currently overwrites the thinking switch and forwards no
-budget (docs/evidence/nightshift-limits.md).
+([TASK_COMPLETE]) or the ladder runs out (the open fields go to a person). Every rung goes
+through Meterless Nightshift (Super VL pinned in the signed receipt): since Nightshift 1.2.3
+the client's thinking switch and `reasoning_budget` reach NVIDIA. NVIDIA direct remains
+available with provider="nvidia" (docs/evidence/nightshift-limits.md).
 """
 
 from __future__ import annotations
@@ -41,6 +42,7 @@ _MAIN_N = re.compile(r"N[0-9X]")
 CHUNK_CONFIG = {"chunkSize": 8000, "maxChunks": 6, "carryoverTokens": 256, "overlapTokens": 0}
 
 Reader = Callable[..., Awaitable[ReadResult]]
+LADDER_PROVIDER = "nightshift"
 
 
 @dataclass
@@ -138,7 +140,7 @@ class RungsGenerator:
         *,
         reader: Reader = read_report,
         run_id: str,
-        provider: str = "nvidia",
+        provider: str = LADDER_PROVIDER,
     ) -> None:
         self.case = case
         self.reader = reader
@@ -272,7 +274,7 @@ async def climb(
     *,
     run_id: str,
     reader: Reader = read_report,
-    provider: str = "nvidia",
+    provider: str = LADDER_PROVIDER,
     abort_after: int | None = None,
 ) -> Ladder:
     """One Markovian run for one case: the engine drives the ladder until no field is open.

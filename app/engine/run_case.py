@@ -21,7 +21,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from app.engine.rungs import R3, CaseEvidence, Ladder, climb
+from app.engine.rungs import LADDER_PROVIDER, R3, CaseEvidence, Ladder, climb
 from app.reader.reader import METHOD, FieldResult, ReadResult
 from app.reader.store import REASON_SUFFIX, REVIEW_RULE
 from app.reports.ingest import read_reports_csv
@@ -208,10 +208,12 @@ def write_trace(ladder: Ladder, run_id: str, outcome: dict[str, str] | None) -> 
         )
 
 
-async def run_case(case_id: str, *, store: bool) -> tuple[Ladder, dict[str, str] | None]:
+async def run_case(
+    case_id: str, *, store: bool, provider: str = LADDER_PROVIDER
+) -> tuple[Ladder, dict[str, str] | None]:
     evidence = await load_evidence(case_id)
     run_id = f"run-{datetime.now(UTC).strftime('%Y%m%dT%H%M%S')}-{uuid.uuid4().hex[:6]}"
-    ladder = await climb(evidence, run_id=run_id)
+    ladder = await climb(evidence, run_id=run_id, provider=provider)
     outcome = await store_ladder(ladder) if store else None
     write_trace(ladder, run_id, outcome)
     return ladder, outcome

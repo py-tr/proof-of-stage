@@ -312,6 +312,12 @@ def main(argv: list[str] | None = None) -> int:
     run = sub.add_parser("run", help="One case through the Markovian evidence ladder (RUNGS)")
     run.add_argument("--case", required=True, help="Case id, e.g. TCGA-A2-A0CV")
     run.add_argument("--store", action="store_true", help="Append closed fields to Zetaris")
+    run.add_argument(
+        "--provider",
+        choices=("nightshift", "nvidia"),
+        default="nightshift",
+        help="Nightshift (default: Super VL pinned, signed receipts) or NVIDIA direct",
+    )
     sub.add_parser("adversary", help="The pre-registered red-team chain (3 cases x 20 steps)")
     note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
     note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
@@ -339,7 +345,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "run":
             from app.engine.run_case import run_case, summary
 
-            ladder, outcome = asyncio.run(run_case(args.case.strip().upper(), store=args.store))
+            ladder, outcome = asyncio.run(
+                run_case(args.case.strip().upper(), store=args.store, provider=args.provider)
+            )
             sys.stdout.write(summary(ladder, outcome))
             return 0
         if args.command == "adversary":
