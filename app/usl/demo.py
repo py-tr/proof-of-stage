@@ -110,7 +110,7 @@ def steps() -> list[Step]:
             "WHERE case_id = 'TCGA-A2-A0CV' AND block_text LIKE '%2/18%'",
         ),
         Step(
-            "Same question, two answers",
+            "One question, three answers",
             "'is this patient node-positive?' asked of the N column and of the count column, on "
             "the records where both apply (6th/7th edition, N and count recorded, no "
             "micrometastasis or isolated tumour cells): the columns disagree on some records, "
