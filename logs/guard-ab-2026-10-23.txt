@@ -1,0 +1,25 @@
+TCGA-3C-AAAU	4	old=accepted:	new=accepted:		XIII. POSITIVE LYMPH NODES: TOTAL: 4 of 13. LEVEL I: 2 of 4. LEVEL II: 1 of 2. LEVEL III:0 of 6.
+TCGA-A1-A0SN	4	old=accepted:	new=accepted:		Number of positive lymph nodes: 4.
+TCGA-A2-A0CV	3	old=rejected:quote_not_in_report	new=rejected:quote_not_in_report		ONE (1) LYMPH NODE (SPECIMEN C, LOW, C12) : POSITIVE. ... (2/18) POSITIVE EXAMINED LYMPH NODES
+TCGA-A7-A26E	1	old=accepted:	new=accepted:		As per parts A, C and E, there are 16 1 mmnh nodes. one of which contains metastatic carcinoma, l.
+TCGA-A7-A26H	1	old=accepted:	new=accepted:		Metastatic carcinoma is present in one lymph node.
+TCGA-AC-A2FK	3	old=accepted:	new=accepted:		All three nodes sampled are positive and, therefore, the nodal stage is at least pN1a.
+TCGA-AN-A0XN	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XO	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XP	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XS	0	old=rejected:quote_too_short	new=rejected:quote_too_short		
+TCGA-AN-A0XT	0	old=rejected:quote_too_short	new=rejected:quote_too_short		
+TCGA-AN-A0XW	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AO-A1KP	1	old=accepted:	new=accepted:		ONE LYMPH NODE POSITIVE FOR METASTATIC CARCINOMA (1/1)
+TCGA-AQ-A1H2	7	old=accepted:	new=accepted:		Total number with metastasis: 7.
+TCGA-BH-A0BS	2	old=accepted:	new=accepted:		LYMPH NODES POSITIVE: 2.
+TCGA-BH-A0DD	1	old=accepted:	new=accepted:		LYMPH NODES POSITIVE: 1.
+TCGA-E2-A1B4	3	old=accepted:	new=accepted:		Positive 3/4.
+TCGA-E2-A572	8	old=accepted:	new=accepted:		Positive 8 / 13 Extranodal extension
+TCGA-E9-A3X8	4	old=accepted:	new=accepted:		Lymph nodes: 4/8 positive for metastasis (Axillary 4/8)
+TCGA-EW-A424	0	old=accepted:	new=accepted:		Number of lymph nodes with macrometastases: 0.
+TCGA-A2-A0EW	4	old=accepted:	new=accepted:		FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E
+TCGA-AO-A03P	2	old=rejected:quote_not_in_report	new=rejected:quote_not_in_report		METASTATIC CARCINOMA ... IS IDENTIFIED ON CYTOKERATIN IMMUNOHISTOCHEMICAL STAINS ONLY. PART #2. ONE ISOLATED CYTOKERATIN
+TCGA-AR-A1AT	0	old=rejected:count_not_in_quote	new=rejected:count_not_in_quote		positive for isolated tumor cells
+TCGA-D8-A27L	0	old=rejected:quote_too_short	new=rejected:quote_too_short		
+TCGA-E2-A1LI	0	old=accepted:	new=accepted:		Lymph nodes: Negative (0/2).

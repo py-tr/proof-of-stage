@@ -8,6 +8,7 @@ const FIELD_NAME = { T: "T", N: "N", NPOS: "Positive nodes" };
 const GUARD_WHY = {
   quote_not_in_report: "its quote is not in the report word for word",
   count_not_in_quote: "the sentence is in the report, but it does not contain that number as the positive count",
+  count_below_report: "the report states more positive nodes elsewhere (a fraction), so this is one specimen, not the total",
   quote_too_short: "its quote is too short to prove anything",
   invalid_category: "not a valid category",
   invalid_count: "not a valid count",

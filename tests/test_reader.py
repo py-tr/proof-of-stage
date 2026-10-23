@@ -355,3 +355,90 @@ def test_the_floor_ignores_fractions_of_negative_nodes() -> None:
     assert reader_mod.report_floor(report) is None
     assert reader_mod.report_floor("Grade 2/3. No lymph nodes received.") is None
     assert reader_mod.report_floor("(2/18) POSITIVE EXAMINED LYMPH NODES") == 2
+
+
+# Attacks from a red-team review, replayed on synthetic text: each wrong count is rejected,
+# each true count beside it still passes.
+@pytest.mark.parametrize(
+    ("value", "quote", "report", "status"),
+    [
+        (14, "Tumor size 14 mm", "Tumor size 14 mm. Metastasis in 2/10 lymph nodes.", "rejected"),
+        (
+            18,
+            "Total lymph nodes examined: 18",
+            "Lymph nodes positive: 2. Total lymph nodes examined: 18.",
+            "rejected",
+        ),
+        (
+            2,
+            "Lymph nodes positive: 2",
+            "Lymph nodes positive: 2. Total lymph nodes examined: 18.",
+            "accepted",
+        ),
+        (
+            8,
+            "Eight of eight sentinel lymph nodes, free of metastatic carcinoma",
+            "Eight of eight sentinel lymph nodes, free of metastatic carcinoma. "
+            "Axillary: carcinoma in 2/10 nodes.",
+            "rejected",
+        ),
+        (
+            8,
+            "Nottingham score 8/9; 2/14 lymph nodes",
+            "Nottingham score 8/9; 2/14 lymph nodes positive.",
+            "rejected",
+        ),
+        (
+            2,
+            "Nottingham score 8/9; 2/14 lymph nodes",
+            "Nottingham score 8/9; 2/14 lymph nodes positive.",
+            "accepted",
+        ),
+        (
+            2,
+            "Two lymph nodes, one of which contains metastatic carcinoma",
+            "Two lymph nodes, one of which contains metastatic carcinoma.",
+            "rejected",
+        ),
+        (
+            1,
+            "Two lymph nodes, one of which contains metastatic carcinoma",
+            "Two lymph nodes, one of which contains metastatic carcinoma.",
+            "accepted",
+        ),
+        (
+            0,
+            "No lymphovascular invasion",
+            "No lymphovascular invasion. Carcinoma in one lymph node.",
+            "rejected",
+        ),
+        (
+            1,
+            "Stage pN1a assigned",
+            "Stage pN1a assigned. Carcinoma in two lymph nodes.",
+            "rejected",
+        ),
+        (14, "Block S14 lymph node positive", "Block S14 lymph node positive.", "rejected"),
+        (
+            14,
+            "positive for carcinoma. CLINICAL HISTORY: pain for 14 months",
+            "Lymph node positive for carcinoma. CLINICAL HISTORY: pain for 14 months. 2/10 nodes",
+            "rejected",
+        ),
+        (
+            4,
+            "FOUR (4) LYMPH NODES POSITIVE",
+            "FOUR (4) LYMPH NODES POSITIVE FOR CARCINOMA.",
+            "accepted",
+        ),
+        (
+            7,
+            "Total number with metastasis: 7",
+            "Total number with metastasis: 7. Total number examined: 10. Six of nine (6/9).",
+            "accepted",
+        ),
+    ],
+)
+def test_red_team_counts(value: int, quote: str, report: str, status: str) -> None:
+    fr = reader_mod.judge_count({"N_positive": value, "N_positive_quote": quote}, report)
+    assert fr.status == status, fr.reason

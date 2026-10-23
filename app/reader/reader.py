@@ -80,12 +80,36 @@ _NEGATIVE_WINDOW = 50
 # Grades and scores ("Grade 2/3", "Nottingham score 8/9") are not node fractions.
 _SCORE_BEFORE = re.compile(
     r"\b(?:grade|score|nottingham|tubules?|tubule formation|mitos[ei]s|mitotic|nuclear|"
-    r"pleomorphism|her-?2|allred)\W*(?:\w+\W+){0,2}$",
+    r"pleomorphism|her-?2|allred)[^\w;.]*(?:\w+[^\w;.]+){0,2}$",
     re.I,
 )
 _SCORE_WINDOW = 30
-# "no"/"none" mean zero only when they are about nodes or metastasis.
-_ZERO = re.compile(r"\b(?:no|none)\b(?:\W+\w+){0,3}?\W+(?:nodes?|lymph|metasta\w*)", re.I)
+# "no"/"none" mean zero only when they are about nodes or metastasis ("lymph" alone is
+# not enough: "No lymphovascular invasion" says nothing about nodes).
+_ZERO = re.compile(
+    r"\b(?:no|none)\b(?:\W+\w+){0,3}?\W+(?:nodes?\b|lymph\s+nodes?\b|metasta\w*)", re.I
+)
+_ZERO_NEGATIVE = re.compile(r"\b(?:negative|free of|benign)\b", re.I)
+# Without a fraction, the count is the number written nearest a positive-node cue.
+_TOKEN = re.compile(r"(?<![\w.])(\d+|[a-z]+)(\.\d+)?(?!\w)", re.I)
+_POSITIVE_CUE = re.compile(
+    r"\b(?:positive|metasta\w*|macrometasta\w*|micrometasta\w*|involv\w*|carcinoma|"
+    r"tumou?r\s+(?:deposits?|cells))",
+    re.I,
+)
+_NEGATED_CUE = re.compile(
+    r"\b(?:no|not|free of|negative for|without|absence of)\b[^.;:]{0,25}$", re.I
+)
+# Not a node count: a measurement or duration after it, or "examined"/"size" just before.
+_UNIT_AFTER = re.compile(
+    r"^\s*(?:mm|cm|%|percent|months?|years?|yrs?|weeks?|days?|hours?|hrs?|x\b|-\s*\d|to\s+\d)",
+    re.I,
+)
+_NOT_POSITIVE_BEFORE = re.compile(
+    r"\b(?:examined|tested|total\s+(?:lymph\s+)?nodes?|received|retrieved|size|grade|score|"
+    r"block|slide|measur\w*|age|cassettes?)\W{0,3}$",
+    re.I,
+)
 
 
 @dataclass
@@ -186,26 +210,66 @@ def _as_number(token: str) -> int | None:
 def count_in_span(count: int, span_text: str) -> bool:
     """The count is written inside the span as the positive number.
 
-    If the span holds a fraction ("2/14", "two of fourteen"), the count must be its first
-    number, so the tested count cannot pass as the positive count. Otherwise the count must
-    appear as a whole number (not part of "2.4" or "14") or, up to twenty, as a word; zero
-    may also be "no"/"none" followed closely by nodes/lymph/metastasis. Known limit: a bare
-    number elsewhere in the span (a date, a size in mm) can still match.
+    If the span holds a fraction ("2/14", "two of fourteen"), the count must be the first
+    number of a positive one: a fraction of negative nodes ("eight of eight ..., free of
+    metastatic carcinoma") states zero positives, and a score ("Nottingham 8/9") is ignored.
+    Otherwise the count must be the number (digits, or a word up to twenty) written nearest a
+    positive cue that is not negated ("positive", "metastatic", "involving", "carcinoma"):
+    "two lymph nodes, one of which contains metastatic carcinoma" states 1, not 2. A number
+    with a unit after it (mm, %, months) or "examined"/"size" just before it never counts.
+    Zero may also be "no"/"none" closely followed by nodes or metastasis, or a negative word
+    in a span about nodes. Known limits: a count above every stated fraction, and a
+    per-specimen count when no fraction states the total (the report floor catches the rest).
     """
-    numerators = []
+    positive, negative = [], False
     for match in _FRACTION.finditer(span_text):
         top, bottom = _as_number(match.group(1)), _as_number(match.group(2))
-        if top is not None and bottom is not None:
-            numerators.append(top)
-    if numerators:
-        return count in numerators
-    if re.search(rf"(?<![\d.]){count}(?!\d|\.\d)", span_text):
-        return True
-    if count < len(_NUMBER_WORDS) and re.search(
-        rf"\b{_NUMBER_WORDS[count]}\b", span_text, re.IGNORECASE
+        if top is None or bottom is None or top > bottom:
+            continue
+        before = span_text[max(0, match.start() - _SCORE_WINDOW) : match.start()]
+        if _SCORE_BEFORE.search(before):
+            continue
+        after = re.split(r"[.;]", span_text[match.end() : match.end() + _NEGATIVE_WINDOW])[0]
+        if _NEGATIVE_AFTER.search(after):
+            negative = True
+        else:
+            positive.append(top)
+    if positive:
+        return count in positive
+    if negative:
+        return count == 0
+    if count == 0 and (
+        _ZERO.search(span_text)
+        or (_ZERO_NEGATIVE.search(span_text) and _NODE_WORD.search(span_text))
     ):
         return True
-    return count == 0 and _ZERO.search(span_text) is not None
+    return count in _cued_counts(span_text)
+
+
+def _cued_counts(span_text: str) -> set[int]:
+    """For each positive cue that is not negated, the value of the nearest number."""
+    numbers = []
+    for match in _TOKEN.finditer(span_text):
+        value = None if match.group(2) else _as_number(match.group(1))
+        if value is None:
+            continue
+        after = span_text[match.end() : match.end() + 12]
+        before = span_text[max(0, match.start() - 30) : match.start()]
+        if _UNIT_AFTER.search(after) or _NOT_POSITIVE_BEFORE.search(before):
+            continue
+        numbers.append((match.start(), match.end(), value))
+    cued = set()
+    for cue in _POSITIVE_CUE.finditer(span_text):
+        if _NEGATED_CUE.search(span_text[max(0, cue.start() - 40) : cue.start()]):
+            continue
+
+        def gap(number: tuple[int, int, int], cue: re.Match[str] = cue) -> int:
+            start, end, _ = number
+            return cue.start() - end if end <= cue.start() else start - cue.end()
+
+        if numbers:
+            cued.add(min(numbers, key=gap)[2])
+    return cued
 
 
 def report_floor(report: str) -> int | None:
