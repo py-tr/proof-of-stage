@@ -145,7 +145,8 @@ Still direct: Nemotron Parse on the scan images (1.2.3 offers a `vision` class t
 5. The Postgres datasource takes INSERT but not UPDATE, DELETE or CREATE VIEW; fine for an append-only log, worth documenting.
 6. Each REST call takes about 3 s; a read-only batch endpoint (several statements per call) would make pages faster.
 7. `RUN DQ` cannot address a composite-key rule by the name `LIST DQ USL` prints (`case_id,page_no,block_index` gives "mismatched input ','"); running it through its first column works.
-8. What helped: the NOT NULL mismatch error suggested the exact COALESCE fix (M17).
+8. Registered DQ rules do not show up where an agent reads the layer: every column's `dqAnnotations` in `LOAD USL` stays empty with 8 rules registered on these tables, and the command reference does not say what fills it. Filling it from `REGISTER DQ` (which rule checks this column, how many records fail) would let an agent discover data quality from the layer itself; our two agent probes show a sentence in a description is not enough (`docs/evidence/agent-probe-results.md`).
+9. What helped: the NOT NULL mismatch error suggested the exact COALESCE fix (M17).
 
 ## Meterless Runtime as a provider: where we stand (provider contract v4)
 
