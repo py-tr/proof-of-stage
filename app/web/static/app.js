@@ -360,6 +360,25 @@ function renderTrace(trace) {
     el("p", { class: "small" }, `Run ${trace.run_id}. Stored values are the first ones written (append-only), so they can come from an earlier run. Hover a receipt for its id, a token count for the budget check.`));
 }
 
+async function loadScratchpad(caseId) {
+  const box = $("nemotron");
+  const old = box.querySelector(".scratch");
+  if (old) old.remove();
+  if (state.mode !== "live") return;
+  try {
+    const found = await api(`/api/case/${caseId}/scratchpad`);
+    const s = found.scratchpad;
+    if (!s || !state.current || state.current.check.case_id !== caseId) return;
+    box.append(el("div", { class: "scratch" },
+      el("div", {}, el("b", {}, "Nemotron's scratchpad"), el("span", { class: "small" },
+        ` · excerpts from one recorded call (${show(s.provider)}, thinking budget ${show(s.thinking_budget)}, ${show(s.reasoning_tokens)} reasoning tokens, ${show(s.recorded_at)})`)),
+      ...s.excerpts.map((t) => el("blockquote", {}, t)),
+      el("div", { class: "small" }, `How the model got there, not the proof: the proof is the quote and the guard above. Full text: ${s.file}`)));
+  } catch (error) {
+    /* no scratchpad for this case */
+  }
+}
+
 async function loadTrace(caseId) {
   try {
     const found = await api(`/api/case/${caseId}/trace`);
@@ -485,6 +504,7 @@ async function openCase(position, options = {}) {
     renderReport(data.report_text, acceptedSpans(data.accepted));
     loadNote(caseId);
     loadTrace(caseId);
+    loadScratchpad(caseId);
     $("f-out").replaceChildren();
     $("reject-reasons").classList.add("hidden");
     history.replaceState(null, "", `?case=${caseId}`);

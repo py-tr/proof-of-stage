@@ -68,3 +68,25 @@ def test_sample_mode_shows_no_run() -> None:
     client = TestClient(create_app(SampleData()))
     case_id = client.get("/api/queue").json()[0]["case_id"]
     assert client.get(f"/api/case/{case_id}/trace").json() == {"trace": None}
+
+
+def test_a_scratchpad_shows_only_the_chosen_excerpts(tmp_path: Path) -> None:
+    from app.web.scratchpad import scratchpad
+
+    record = {
+        "reasoning": "AAA garbled line BBB so the total is 2 CCC",
+        "excerpts": [[4, 16], [21, 38]],
+        "usage": {"completion_tokens_details": {"reasoning_tokens": 3999}},
+        "provider": "nvidia direct",
+    }
+    (tmp_path / "TCGA-A2-A0CV.json").write_text(json.dumps(record), encoding="utf-8")
+    s = scratchpad("TCGA-A2-A0CV", tmp_path)
+    assert s["excerpts"] == ["garbled line", "so the total is 2"] and s["reasoning_tokens"] == 3999
+    assert "reasoning" not in s  # never the whole text
+    assert scratchpad("TCGA-OTHER", tmp_path) is None
+
+
+def test_sample_mode_shows_no_scratchpad() -> None:
+    client = TestClient(create_app(SampleData()))
+    case_id = client.get("/api/queue").json()[0]["case_id"]
+    assert client.get(f"/api/case/{case_id}/scratchpad").json() == {"scratchpad": None}

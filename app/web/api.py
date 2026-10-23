@@ -137,6 +137,16 @@ def create_app(
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
+    @app.get("/api/case/{case_id}/scratchpad")
+    async def case_scratchpad(case_id: str) -> dict[str, Any]:
+        """Excerpts of Nemotron's reasoning text from one recorded call, if one was recorded."""
+        from app.web.data import valid_case_id
+        from app.web.scratchpad import scratchpad
+
+        if source.mode == "sample":
+            return {"scratchpad": None}
+        return {"scratchpad": scratchpad(valid_case_id(case_id))}
+
     @app.get("/api/case/{case_id}/trace")
     async def case_trace(case_id: str) -> dict[str, Any]:
         """How the latest ladder run read this case (metadata and verdicts only)."""
