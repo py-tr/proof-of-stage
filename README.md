@@ -1,14 +1,35 @@
 # Proof of Stage
 
-> The database proves the record is impossible; Nemotron may only quote the report; the semantic layer names which field the quote contradicts; a person decides.
+> An auditor for data typed in from documents: it finds records that cannot be true as written, quotes the source document that shows which field is wrong, and lets a person decide. It never edits a record.
 
-Proof of Stage audits cancer-stage fields in NCI's public cancer data (TCGA-BRCA, 1,097 cases). A Zetaris Unified Semantic Layer finds records that cannot be true as written (for example, a recorded N category that contradicts the record's own positive-node count). NVIDIA Nemotron reads the original pathology report and may accept a value only with a verbatim quote that code finds in the report. The semantic layer then names which registry field the evidence points to: the node count, the N category, or "a person decides". It never edits a record.
+**Open Agent Hackathon 2026 · Track 2: "The Agent That Can Explain Why"** · worked on NCI's public cancer data (TCGA-BRCA, 1,097 cases) · Zetaris semantic layer · NVIDIA Nemotron · Meterless Nightshift and Markovian engine
 
-**Open Agent Hackathon 2026 · Track 2: "The Agent That Can Explain Why"** (investigate across multiple data sources, connect findings, produce evidence-backed answers).
+**One question, three answers** (live from the semantic layer, `usl demo` step 11, `docs/zetaris-demo.md`): *how many patients are node-positive?*
+
+| Read from | Node-positive |
+|---|---|
+| the registry's N category column | **336** |
+| the registry's positive-node count column | **328** |
+| the verdict (`stage_check.fault_field`): the field the pathology report contradicts is set aside | **333**, and 2 left to a person |
+
+The two columns disagree on 10 of 663 records where both apply, and the basic source-level check (positive nodes never exceed nodes examined) passes on all 1,097: the errors are visible only across fields. One of the 10, TCGA-E2-A572, is recorded with 0 positive nodes; its report says "Lymph node status: Positive 8 / 13".
+
+**How it decides**
+1. **The semantic layer proves the record is impossible.** A SQL rule in the Zetaris USL, over three live sources (the NCI GDC API, a file store, Postgres): the recorded N category and the record's own node count cannot both be true (24 of 1,097, plus 1 missing N the count could fill).
+2. **Nemotron may only quote the report.** Lightning reads first with thinking off; Super VL with a 4k thinking budget reads what is still open; Nemotron Parse reads the original scan. Every call goes through Nightshift with a signed receipt (Parse on NVIDIA direct).
+3. **Code checks every quote:** it must be in the report and show the value; otherwise the value is rejected with a reason.
+4. **The semantic layer names the field** the report contradicts (node count, N category, or a person decides), and **a person decides**. Every write is append-only.
+
+**Measured, pre-registered where marked** (each number links to its file):
+- The verdict names a field for **21 of the 25** impossible records (8 node count, 13 N category); 4 go to a person ([Results](#results-live-2026-10-2223-every-number-has-its-file)).
+- **Red team (pre-registered):** Nemotron as a Markovian attacker, 0 wrong accepts in 57 judged attacks ([v3](docs/evidence/adversary-chain-v3-results.md)).
+- **Reasoning dial (pre-registered):** thinking off first, then 4k, used 40% fewer tokens than always 4k; 0 of 31 cheap closings contradicted ([dial](docs/evidence/dial-sample-results.md)).
+- **Model per step (pre-registered):** Lightning took the first rung from Super (18 vs 15 of 28 settled, 0 of 38 contradicted, [Lightning](docs/evidence/lightning-r1-results.md)); Ultra lost the case-note seat to Super (8 vs 21 of 25, [Ultra](docs/evidence/ultra-notes-results.md)).
+- **Nemotron alone vs the product (pre-registered):** run, scored against blind human labels before submission ([pre-registration](docs/preregistration/baseline-m0.md)).
 
 ## Why it matters: agents trust the semantic layer
 
-Agents now read data through semantic layers: the layer tells them what every table and column means, so they can query without ETL. But a semantic layer gives meaning, not truth. TCGA-E2-A572 is recorded N2 with 0 positive nodes; its pathology report says "Lymph node status: Positive 8 / 13". The layer describes both columns perfectly, and anything counting node-positive patients from the count column leaves this patient out, with nothing in the chain noticing. Proof of Stage puts the missing piece inside the layer itself: a verdict per record (`stage_check.fault_field`) naming which field the source document contradicts, next to the accepted reading and its verbatim quote (`derived_stage`, also in the layer). Anything that reads `stage_check` gets that verdict next to the record, and the layer's own descriptions of the N and count columns (what an agent reads to learn the schema) point to it (`040_descriptions.sql`). Measured on the layer (`usl demo` steps 11–12, `docs/zetaris-demo.md`): asked "how many patients are node-positive?", the N column says **336**, the count column **328**, and the verdict **333** (2 left to a person); the two columns disagree on **10 of 663** records where both apply; the quote-verified report reading settles 8 (6 node-positive patients recorded with 0 positive nodes, one of them with 8 in the report; 2 node-negative patients recorded N1) and leaves 2 to a person; 14 more contradictions keep the same answer but change the N category. Every column-level check passes: `nodes_within_tested` holds on all 1,097 records; only the cross-field rule sees the 24. The report readings are the system's own guarded readings until they are scored against blind human labels.
+Agents now read data through semantic layers: the layer tells them what every table and column means, so they can query without ETL. But a semantic layer gives meaning, not truth. The layer describes TCGA-E2-A572's two columns perfectly, and anything counting node-positive patients from the count column leaves this patient out, with nothing in the chain noticing. Proof of Stage puts the missing piece inside the layer itself: a verdict per record (`stage_check.fault_field`) naming which field the source document contradicts, next to the accepted reading and its verbatim quote (`derived_stage`, also in the layer). Anything that reads `stage_check` gets that verdict next to the record, and the layer's own descriptions of the N and count columns (what an agent reads to learn the schema) point to it (`040_descriptions.sql`). Of the 10 records where the columns disagree, the quote-verified report reading settles 8 (6 node-positive patients recorded with 0 positive nodes, 2 node-negative patients recorded N1) and leaves 2 to a person (`usl demo` step 12); 14 more contradictions keep the same yes/no answer but change the N category. `nodes_within_tested` holds on all 1,097 records; only the cross-field rule sees the 24. The report readings are the system's own guarded readings until they are scored against blind human labels.
 
 The problem is not medical: a database says X, the source document says Y. Which field is wrong, and can you prove it? Cancer staging on NCI's public data is the worked, measured example; you do not need to know staging to follow it, only that the count and the category disagree and the report settles it.
 
