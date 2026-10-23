@@ -383,6 +383,9 @@ def main(argv: list[str] | None = None) -> int:
         "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
     )
     sub.add_parser(
+        "r1-timing", help="Pre-registered: Lightning vs Super at R1, same hour, 3 trials"
+    )
+    sub.add_parser(
         "agent-probe-2", help="Pre-registered follow-up: does an agent use the checked column"
     )
     sub.add_parser(
@@ -440,6 +443,11 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.dial import run_sample
 
             sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
+            return 0
+        if args.command == "r1-timing":
+            from app.engine.timing import run_timing
+
+            sys.stdout.write(json.dumps(asyncio.run(run_timing()), indent=2, default=str))
             return 0
         if args.command == "agent-probe-2":
             from app.engine.agent_probe2 import run_probe2

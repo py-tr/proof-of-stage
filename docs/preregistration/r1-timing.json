@@ -1,0 +1,45 @@
+{
+  "frozen_at": "2026-10-23",
+  "trials": 3,
+  "models": {
+    "lightning": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "super": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+  },
+  "cases": [
+    "TCGA-BH-A0BQ",
+    "TCGA-BH-A0DS",
+    "TCGA-AR-A24O",
+    "TCGA-GM-A2DD",
+    "TCGA-D8-A27P",
+    "TCGA-BH-A0AU",
+    "TCGA-OK-A5Q2",
+    "TCGA-E2-A10B",
+    "TCGA-A2-A04X",
+    "TCGA-E2-A1BD",
+    "TCGA-A2-A4S3",
+    "TCGA-AR-A24R",
+    "TCGA-D8-A1Y3",
+    "TCGA-D8-A140",
+    "TCGA-PE-A5DD",
+    "TCGA-BH-A0DE",
+    "TCGA-OL-A5RU",
+    "TCGA-D8-A27T",
+    "TCGA-A2-A0EV",
+    "TCGA-LL-A7SZ",
+    "TCGA-E2-A1B1",
+    "TCGA-A2-A04R",
+    "TCGA-AN-A0FN",
+    "TCGA-E9-A1RD",
+    "TCGA-S3-AA12",
+    "TCGA-E2-A14U",
+    "TCGA-AN-A0XL",
+    "TCGA-BH-A6R8"
+  ],
+  "code_sha256_16": {
+    "app/engine/timing.py": "6a78b496827ba20c",
+    "app/engine/lightning.py": "a7987f8b5a3338af",
+    "app/engine/rungs.py": "97167dc234356165",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  }
+}
