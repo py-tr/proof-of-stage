@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import re
 import sys
 from uuid import uuid4
@@ -134,7 +135,16 @@ async def _doctor() -> int:
             )
         )
     except Exception as exc:
-        lines.append(_line(False, "nightshift meterless/text", _exc_reason(exc)))
+        reason = _exc_reason(exc)
+        if "No provider is configured" in reason or "no_route" in reason:
+            # 1.2.3: an opted-in Super VL is kept out of automatic routing, so a routing
+            # mode needs another lane on Race; our product calls name Super VL explicitly
+            reason += (
+                " | no lane for automatic routing: an opted-in Super VL is excluded from"
+                " races; put another Nemotron lane on Race, or rely on the explicit-id"
+                " check above"
+            )
+        lines.append(_line(False, "nightshift meterless/text", reason))
         failed += 1
 
     try:
@@ -319,6 +329,9 @@ def main(argv: list[str] | None = None) -> int:
         help="Nightshift (default: Super VL pinned, signed receipts) or NVIDIA direct",
     )
     sub.add_parser("adversary", help="The pre-registered red-team chain (3 cases x 20 steps)")
+    sub.add_parser(
+        "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
+    )
     note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
     note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
@@ -349,6 +362,11 @@ def main(argv: list[str] | None = None) -> int:
                 run_case(args.case.strip().upper(), store=args.store, provider=args.provider)
             )
             sys.stdout.write(summary(ladder, outcome))
+            return 0
+        if args.command == "dial":
+            from app.engine.dial import run_sample
+
+            sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
             return 0
         if args.command == "adversary":
             return asyncio.run(_adversary())

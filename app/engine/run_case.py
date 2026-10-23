@@ -166,13 +166,24 @@ def _append(path: Path, row: dict[str, Any]) -> None:
 
 
 def budget_honoured(chunk: dict[str, Any]) -> bool | None:
-    """Thinking OFF must show no reasoning tokens; a budget must not be exceeded."""
-    details = (chunk.get("usage") or {}).get("completion_tokens_details") or {}
-    reasoning = details.get("reasoning_tokens")
-    if reasoning is None or chunk.get("budget") is None:
+    """Thinking OFF must show no reasoning tokens; a budget must not be exceeded.
+
+    NVIDIA direct reports reasoning tokens; Nightshift's usage does not, so there the check
+    is on completion tokens: at most the budget plus the answer allowance (app/web/trace.py).
+    """
+    from app.web.trace import ANSWER_ALLOWANCE
+
+    usage = chunk.get("usage") or {}
+    reasoning = (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
+    if chunk.get("budget") is None:
         return None
     budget = int(chunk["budget"])
-    return reasoning == 0 if budget == 0 else reasoning <= budget
+    if reasoning is not None:
+        return reasoning == 0 if budget == 0 else reasoning <= budget
+    completion = usage.get("completion_tokens")
+    if not isinstance(completion, int):
+        return None
+    return completion <= max(budget, 0) + ANSWER_ALLOWANCE
 
 
 def write_trace(ladder: Ladder, run_id: str, outcome: dict[str, str] | None) -> None:
@@ -187,6 +198,7 @@ def write_trace(ladder: Ladder, run_id: str, outcome: dict[str, str] | None) -> 
             "outcome": outcome,
             "engine": "meterless-markovian@4eb96f2",
             "status": record.get("status"),
+            "error": record.get("error"),  # why an errored run stopped (the provider's message)
             "chunks": len(record.get("chunks") or []),
             "cascade_levels": ladder.run.levels,
             "closed": ladder.closed,

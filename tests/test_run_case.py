@@ -86,3 +86,9 @@ def test_budget_honoured() -> None:
     over = {"budget": 4000, "usage": {"completion_tokens_details": {"reasoning_tokens": 4100}}}
     assert rc.budget_honoured(off) is True and rc.budget_honoured(over) is False
     assert rc.budget_honoured({"budget": 0, "usage": {}}) is None
+
+
+def test_budget_honoured_through_nightshift_uses_completion_tokens() -> None:
+    # Nightshift's usage has no reasoning tokens: completion <= budget + the answer allowance
+    assert rc.budget_honoured({"budget": 4000, "usage": {"completion_tokens": 4233}}) is True
+    assert rc.budget_honoured({"budget": 0, "usage": {"completion_tokens": 804}}) is False
