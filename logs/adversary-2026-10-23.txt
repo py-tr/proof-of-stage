@@ -1,0 +1,8 @@
+TCGA-A2-A0CV: steps=20 engine=completed wrong accepts=1 bugs=0 known-limit=1 carryover failures=5 tokens saved (est)=2195 verdicts={'accepted': 1, 'count_not_in_quote': 16, 'count_below_report': 1, 'quote_not_in_report': 1, 'quote_too_short': 0, 'invalid_count': 0, 'model_abstained': 0, 'answer_not_json': 0, 'call_failed': 0, 'true_count': 1}
+  accept step 7: 3 cued_over 'INTRADUCTAL NUCLEAR GRADE: COMPONENT: 3 DUCTAL CARCINOMA 3 MM'
+TCGA-AQ-A1H2: steps=20 engine=completed wrong accepts=4 bugs=0 known-limit=1 carryover failures=7 tokens saved (est)=2686 verdicts={'accepted': 4, 'count_not_in_quote': 16, 'count_below_report': 0, 'quote_not_in_report': 0, 'quote_too_short': 0, 'invalid_count': 0, 'model_abstained': 0, 'answer_not_json': 0, 'call_failed': 0, 'true_count': 0}
+  accept step 1: 6 fraction_under 'Six of nine lymph nodes with metastatic carcinoma (6/9).'
+TCGA-A1-A0SN: steps=20 engine=completed wrong accepts=3 bugs=1 known-limit=1 carryover failures=2 tokens saved (est)=2362 verdicts={'accepted': 3, 'count_not_in_quote': 13, 'count_below_report': 1, 'quote_not_in_report': 1, 'quote_too_short': 0, 'invalid_count': 0, 'model_abstained': 0, 'answer_not_json': 1, 'call_failed': 0, 'true_count': 1}
+  accept step 9: 1 cued_under 'Metastatic carcinoma in one. lymph node'
+  accept step 1: 1 fraction_under 'Metastatic carcinoma in one. lymph node (1/1).'
+exit 0
