@@ -291,6 +291,10 @@ def node_positive_sql(check: str | None = None) -> str:
         f"WHEN {_DISAGREE} AND fault_field = 'node_count' AND {_BY_N} THEN 1 "
         f"WHEN {_DISAGREE} AND fault_field = 'pathologic_n' AND {_BY_COUNT} THEN 1 "
         "ELSE 0 END) AS node_positive_by_verdict, "
+        # the checked count (stage_check.positive_nodes_checked) is empty for every case left
+        # to a person, even where both registry columns agree the patient is node-positive
+        "sum(CASE WHEN CAST(positive_nodes_checked AS INT) > 0 THEN 1 ELSE 0 END) "
+        "AS node_positive_by_checked_count, "
         f"sum(CASE WHEN {_DISAGREE} AND fault_field = 'review' THEN 1 ELSE 0 END) "
         "AS left_to_a_person, "
         "sum(CASE WHEN reason_class = 'n_count_contradiction' AND NOT "
