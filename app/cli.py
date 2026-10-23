@@ -7,6 +7,7 @@ import asyncio
 import json
 import re
 import sys
+from pathlib import Path
 from uuid import uuid4
 
 from app import config, zetaris
@@ -426,6 +427,11 @@ def main(argv: list[str] | None = None) -> int:
         "baseline", help="Pre-registered M0: Super alone on the queue (run), then score vs labels"
     )
     baseline.add_argument("step", choices=("run", "score"))
+    labels = sub.add_parser(
+        "labels", help="Freeze the blind labels, then score every run that waits for them"
+    )
+    labels.add_argument("step", choices=("freeze", "score"))
+    labels.add_argument("path", nargs="?", help="freeze: the labels.json the sheet downloaded")
     note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
     note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
     note.add_argument(
@@ -494,6 +500,18 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.lightning import run_lightning
 
             sys.stdout.write(json.dumps(asyncio.run(run_lightning()), indent=2) + "\n")
+            return 0
+        if args.command == "labels":
+            from app.engine import labels as labels_mod
+
+            if args.step == "freeze":
+                if not args.path:
+                    sys.stderr.write("usage: labels freeze <labels.json>\n")
+                    return 2
+                out = labels_mod.freeze(Path(args.path))
+            else:
+                out = asyncio.run(labels_mod.score_all())
+            sys.stdout.write(json.dumps(out, indent=2, default=str) + "\n")
             return 0
         if args.command == "baseline":
             return asyncio.run(_baseline(args.step))
