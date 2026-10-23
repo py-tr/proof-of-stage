@@ -1,0 +1,22 @@
+{
+  "run": "20261023T230536",
+  "cases": 6,
+  "failures": 0,
+  "fields": {
+    "same": 6,
+    "contradicts": 0,
+    "only_a": 2,
+    "only_b": 1,
+    "none": 3
+  },
+  "cases_matching": 4,
+  "image_read_passes": true,
+  "seconds": {
+    "a": 175.8,
+    "b": 120.3
+  },
+  "tokens": {
+    "a": 19064,
+    "b": 19044
+  }
+}
