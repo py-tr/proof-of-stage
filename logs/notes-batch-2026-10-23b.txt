@@ -1,0 +1,70 @@
+TCGA-3C-AAAU: rejected sentence_1_word_identifies_not_in_cited_facts 21.26s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_9on112zy
+TCGA-A1-A0SN: accepted  25.18s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_06dlfpqv
+  The semantic layer names the N category field because the registry records N category N1, meaning 1-3 positive nodes. [F4][F1]
+  The registry records 4 positive nodes of 13 examined. [F2]
+  The count rule turns the registry count into pN2a. [F3]
+  A person decides N category N2A. [Q1]
+TCGA-A2-A0CV: accepted  185.93s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_vny6ojka
+  The semantic layer names the positive-node count field because the registry records positive-node counts. [F4][F2]
+  The report verifies positive-node count 2 as N category N1A; a person decides the final N category. [Q1][Q2]
+TCGA-A7-A26E: rejected sentence_1_word_drives_not_in_cited_facts 17.03s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_5hiy8319
+TCGA-A7-A26H: accepted  15.27s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_25zdbiqt
+  The semantic layer names the positive-node count field because the report is verified as positive-node count 1. [F4][Q2]
+  The registry records N category N1A, meaning 1-3 positive nodes, while the registry count is 0 of 5 examined. [F1][F2]
+  The count rule turns the registry count into pN0. [F3]
+  A person decides the N category. [Q1]
+TCGA-AC-A2FK: rejected sentence_4_word_using_not_in_cited_facts 13.78s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_895kpbld
+TCGA-AN-A0XN: accepted  386.59s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_gwbeu0zf
+  The semantic layer names the N category field. [F4]
+  The registry records N2, meaning 4-9 positive nodes, and 1 positive node of 15 examined. [F1][F2]
+  The count rule turns the registry count into pN1a. [F3]
+  The report states N Stage: 1 as N category N1; a person decides. [Q1]
+TCGA-AN-A0XO: rejected sentence_2_word_does_not_in_cited_facts 34.29s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_6fw6sii5
+TCGA-AN-A0XP: accepted  388.18s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_vdkp3iai
+  Because the semantic layer names the N category field, a person decides the final category. [F4]
+  The registry records N2 (4-9 positive nodes) and 1 positive node of 19 examined. [F1][F2]
+  The count rule turns that count into pN1a; the report states "N Stage: 1", read and verified as N category N1. [F3][Q1]
+TCGA-AN-A0XS: accepted  43.33s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_4277xz4u
+  The semantic layer names the N category field because the count rule turns the registry count into pN1a. [F3][F4]
+  The registry records N2 meaning 4-9 positive nodes, but records 1 positive node of 11 examined. [F1][F2]
+  The report states N Stage 1a read and verified as N category N1A, and a person decides the final N category. [Q1][F4]
+TCGA-AN-A0XT: accepted  207.53s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_mvckin5p
+  The semantic layer names the N category field because the report reads N Stage 1a as N category N1A. [F4][Q1]
+  The registry records N category N2 meaning 4-9 positive nodes but records 1 positive node of 17 examined. [F1][F2]
+  The count rule turns the registry count into pN1a. [F3]
+  A person decides N category N1A. [Q1]
+TCGA-AN-A0XW: rejected sentence_2_word_using_not_in_cited_facts 37.47s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_d0l9pyg0
+TCGA-AO-A1KP: accepted  25.5s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_i6ipujub
+  The registry records N category N1, meaning 1-3 positive nodes, and also records 0 positive nodes of 9 examined. [F1][F2]
+  A count rule turns the registry count into pN0. [F3]
+  The semantic layer names the positive-node count field because the report is read and verified as positive-node count 1. [F4][Q2]
+  A person decides. [Q1][Q2]
+TCGA-AQ-A1H2: ERROR NightshiftError: Nightshift chat retryable status 502
+TCGA-BH-A0BS: accepted  41.8s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_ae768jb3
+  The semantic layer names the positive-node count field because the report's positive-node count is verified as 2. [F4][Q2]
+  The registry records N category N1C and 0 positive nodes of 11 examined. [F1][F2]
+  The count rule turns the registry count into pN0. [F3]
+  The report is read and verified as N category N1A; a person decides the final N category. [Q1]
+TCGA-BH-A0DD: accepted  29.45s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_0xl8awox
+  The semantic layer names the positive-node count field because the report verifies positive-node count 1. [F4][Q2]
+  The report states 1 positive of 23 examined and is verified as N category N1A. [Q1]
+  The registry records N category N1A meaning 1-3 positive nodes and 0 positive nodes of 22 examined. [F1][F2]
+  The count rule turns the registry count into pN0, and a person decides. [F3]
+TCGA-E2-A1B4: ERROR NightshiftError: Nightshift chat retryable status 502
+TCGA-E2-A572: ERROR NightshiftError: Nightshift chat transport error: ReadTimeout
+TCGA-E9-A3X8: accepted  24.17s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_u57hi9h6
+  The semantic layer names the N category field; the count rule converts the registry count into pN2a. [F3][F4]
+  The registry records N category N1 (1-3 positive nodes) and 4 positive nodes of 8 examined. [F1][F2]
+  The report is read and verified as N category N2A and positive-node count 4. [Q1][Q2]
+  A person decides. [Q1]
+TCGA-EW-A424: rejected sentence_3_word_where_not_in_cited_facts 199.15s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_sk8aj7sy
+TCGA-A2-A0EW: ERROR NightshiftError: Nightshift chat retryable status 502
+TCGA-AO-A03P: ERROR ReceiptMismatch: winning model 'local-runtime/nemotron-3.5-lightning-30b-a3b' != required 'nvidia/nemotron-3.5-super-vl-120b-a12b'
+TCGA-AR-A1AT: rejected sentence_3_word_pathology_not_in_cited_facts 170.61s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_79e2c4r4
+TCGA-D8-A27L: accepted  31.47s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_41fqu9m2
+  The registry records N category N2A, meaning 4-9 positive nodes. [F1]
+  The registry records 2 positive nodes of 16 examined. [F2]
+  The count rule turns the registry count into pN1a. [F3]
+  The report states removed without axillary tissues and is read as N category NX; the semantic layer names neither field, so a person must decide. [Q1][F4]
+TCGA-E2-A1LI: rejected sentence_3_word_applies_not_in_cited_facts 160.18s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_6aiirlf3
+exit 1

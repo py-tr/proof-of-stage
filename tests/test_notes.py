@@ -139,7 +139,7 @@ def test_a_number_before_a_full_stop_counts() -> None:
 def test_the_guard_rejects_claims_no_fact_makes(sentence: str) -> None:
     facts = note_mod.build_facts(FOUND)
     _, reason = note_mod.check_note(_answer((sentence, ["F4"])), facts)
-    assert "_claims_" in reason
+    assert "_claims_" in reason or "_word_" in reason
 
 
 def test_a_claim_word_a_cited_fact_uses_passes() -> None:
@@ -148,7 +148,7 @@ def test_a_claim_word_a_cited_fact_uses_passes() -> None:
     assert reason == "" and sentences
 
 
-def test_the_page_shows_a_logged_note_only_if_it_passes_the_current_guard(
+def test_the_page_rejudges_the_newest_logged_note(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     log = tmp_path / "case-notes.jsonl"
@@ -156,11 +156,28 @@ def test_the_page_shows_a_logged_note_only_if_it_passes_the_current_guard(
     facts = note_mod.build_facts(FOUND)
     good = json.dumps(_answer(("The semantic layer names the count field.", ["F4"])))
     bad = json.dumps(_answer(("A reviewer checked the count field.", ["F4"])))
-    rows = [
-        {"case_id": "TCGA-A2-A0CV", "status": "accepted", "facts": facts, "raw_text": good},
-        {"case_id": "TCGA-A2-A0CV", "status": "accepted", "facts": facts, "raw_text": bad},
-    ]
-    log.write_text("".join(json.dumps(r) + chr(10) for r in rows), encoding="utf-8")
+    row = {"case_id": "TCGA-A2-A0CV", "status": "accepted", "facts": facts}
+    log.write_text(json.dumps({**row, "raw_text": good}) + chr(10), encoding="utf-8")
     shown = note_mod.latest_note("TCGA-A2-A0CV")
-    assert shown is not None and "raw_text" not in shown
-    assert shown["sentences"][0]["text"].startswith("The semantic layer")
+    assert shown["status"] == "accepted" and "raw_text" not in shown
+    with log.open("a", encoding="utf-8") as f:
+        f.write(json.dumps({**row, "raw_text": bad}) + chr(10))
+    shown = note_mod.latest_note("TCGA-A2-A0CV")
+    assert shown["status"] == "rejected" and shown["logged_status"] == "accepted"
+    assert shown["sentences"] == [] and "_word_" in shown["reason"]
+    assert note_mod.latest_note("TCGA-OTHER") is None
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "The report counts seven positive nodes, so the registry count of 4 is too low.",
+        "A later surgery found 4 positive nodes, so both values are right.",
+        "The report's 2 is a transcription slip for 4; the registry N1A stands.",
+        "The pathologist who signed the report later amended the count to 4.",
+    ],
+)
+def test_the_guard_rejects_facts_the_note_makes_up(sentence: str) -> None:
+    facts = note_mod.build_facts(FOUND)
+    _, reason = note_mod.check_note(_answer((sentence, ["F1", "F2", "F4", "Q1", "Q2"])), facts)
+    assert reason.startswith("sentence_1_"), reason

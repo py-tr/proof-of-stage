@@ -8,6 +8,7 @@ const FIELD_NAME = { T: "T", N: "N", NPOS: "Positive nodes" };
 const GUARD_WHY = {
   quote_not_in_report: "its quote is not in the report word for word",
   count_not_in_quote: "the sentence is in the report, but it does not contain that number as the positive count",
+  count_not_report_total: "the report states a different total positive-node count",
   count_below_report: "the report states more positive nodes elsewhere (a fraction), so this is one specimen, not the total",
   quote_too_short: "its quote is too short to prove anything",
   quote_does_not_support: "the quote is in the report, but it does not show that category (no matching stage, node count or size in it)",
@@ -324,6 +325,7 @@ function noteWhy(code) {
     .replace(/^states_(.+)_not_in_cited_facts$/, "it states $1, which none of its cited facts says")
     .replace(/^cites_unknown_(.+)$/, "it cites $1, which is not a fact")
     .replace("no_citation", "it cites no fact").replace("too_long", "it is too long")
+    .replace(/^word_(.+)_not_in_cited_facts$/, "it uses \u201c$1\u201d, a word none of its cited facts has")
     .replace(/^claims_(.+)_not_in_cited_facts$/, "it says “$1”, which none of its cited facts says")
     .replace("fact_id_in_text", "it writes a fact id into the text").replace("malformed", "it is malformed");
   return `sentence ${m[1]}: ${rest}`;
@@ -392,7 +394,7 @@ async function challenge() {
     out.replaceChildren();
     if (verdict.status === "accepted") {
       out.append(el("span", { class: "pass" }, `Accepted ${FIELD_NAME[verdict.field]} = ${verdict.value}`),
-        verdict.field === "NPOS" ? ": the quote is in the report and its positive count is that number." : ": the quote is in the report word for word. (The guard checks the quote exists; the category itself comes from the rule check, not from the quote.)");
+        verdict.field === "NPOS" ? ": the quote is in the report and its positive count is that number." : ": the quote is in the report word for word and shows that category (a matching stage, a node count that implies it, or a tumour size in its range).");
       if (verdict.used) {
         if (verdict.used.report_n_main) state.known.report_n_main = verdict.used.report_n_main;
         if (verdict.used.report_nodes_positive) state.known.report_nodes_positive = verdict.used.report_nodes_positive;

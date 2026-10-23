@@ -221,7 +221,12 @@ class RungsGenerator:
             "seconds": seconds,
             "self_consistent": consistent,
             "fields": {
-                name: {"status": fr.status, "value": fr.value, "reason": fr.reason[:80]}
+                name: {
+                    "status": fr.status,
+                    "value": fr.value,
+                    "reason": fr.reason[:80],
+                    "quote": (fr.quote or "")[:200],  # kept for rejected reads too
+                }
                 for name, fr in result.fields.items()
             },
         }

@@ -61,6 +61,16 @@ def test_registered_sql_matches_the_python_checks() -> None:
     assert "N0(I+)" in nodes
     assert "N0(MOL+)" in nodes
     assert "recorded_n_main <> 'NX'" in nodes
-    assert "edition_code IN ('6', '7')" in nodes
+    assert "coalesce(edition_code, '') IN ('6', '7')" in nodes
     assert "recorded_n_main = 'NX'" in missing
     assert "lymph_nodes_positive IS NOT NULL" in missing
+
+
+def test_a_missing_edition_is_not_derivable() -> None:
+    # TCGA-BH-A0H6: no edition, 0 of 0 nodes, NX. SQL's NULL IN (...) once made it invalid.
+    from app.usl.dq import stage_derivable_but_missing_valid
+
+    row = {"edition_code": None, "lymph_nodes_positive": "0.0", "recorded_n_main": "NX"}
+    assert stage_derivable_but_missing_valid(row)
+    sql = load_sql("061_dq_stage_derivable_but_missing.sql")
+    assert "coalesce(edition_code, '') IN ('6', '7')" in sql

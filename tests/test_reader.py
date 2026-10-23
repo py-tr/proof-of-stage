@@ -448,7 +448,7 @@ HERO = (
     "TUMOR BREAST, TYPE: LEFT, MASTECTOMY. gritty mass measuring 4.1 x 3.5 x 1.5 cm. "
     "LYMPH NODES: METASTASIS IN TWO OF EIGHTEEN (2/18) POSITIVE EXAMINED LYMPH NODES. "
     "PATHOLOGIC STAGE: pT2N1aMX. Grade: 2. Stage: 1c N Stage: 1a. "
-    "LYMPH NODES POSITIVE: 0. LYMPH NODES EXAMINED: 0. Micrometastasis in one node."
+    "LYMPH NODES EXAMINED: 0. Micrometastasis in one node."
 )
 
 
@@ -480,3 +480,35 @@ def test_a_hyphenated_size_counts() -> None:
     report = "INVASIVE DUCTAL CARCINOMA, SBR GRADE 1, MEASURING 1.2-CM."
     fr = reader_mod.judge_field("T", {"T": "T1c", "T_quote": "MEASURING 1.2-CM"}, report)
     assert fr.status == "accepted"
+
+
+# Round-2 judge review: wrong categories that passed the first category check.
+REAL_LIKE = (
+    "Specimen measures 23 cm medial to lateral. SKIN IDENTIFIED. "
+    "INVASIVE DUCTAL CARCINOMA, IN INVASIVE AND IN SITU TUMOR. "
+    "LYMPH NODES: METASTASIS IN TWO OF EIGHTEEN (2/18) POSITIVE EXAMINED LYMPH NODES. "
+    "EXTRANODAL EXTENSION: PRESENT, 4 MM. Sentinel node is negative for micrometastases in "
+    "the levels examined. Distant metastasis (pM) : Cannot be assessed. "
+    "Tumor invades the skin of the nipple. Regional lymph nodes (pN): cannot be assessed."
+)
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "quote", "status"),
+    [
+        ("N", "N2a", "POSITIVE EXAMINED LYMPH NODES. EXTRANODAL EXTENSION: PRESENT, 4", "rejected"),
+        ("T", "T4b", "SKIN IDENTIFIED", "rejected"),
+        ("T", "Tis", "IN INVASIVE AND IN SITU TUMOR", "rejected"),
+        ("T", "T3", "Specimen measures 23 cm medial to lateral", "rejected"),
+        ("N", "N1mi", "is negative for micrometastases in", "rejected"),
+        ("N", "NX", "Distant metastasis (pM) : Cannot be assessed", "rejected"),
+        ("T", "T4b", "Tumor invades the skin of the nipple", "accepted"),
+        ("N", "NX", "Regional lymph nodes (pN): cannot be assessed", "accepted"),
+        ("N", "N1a", "(2/18) POSITIVE EXAMINED LYMPH NODES", "accepted"),
+    ],
+)
+def test_category_words_must_be_unnegated_and_about_the_element(
+    field: str, value: str, quote: str, status: str
+) -> None:
+    fr = reader_mod.judge_field(field, {field: value, f"{field}_quote": quote}, REAL_LIKE)
+    assert fr.status == status, fr.reason

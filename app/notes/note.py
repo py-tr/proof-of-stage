@@ -64,6 +64,28 @@ _CLAIM = re.compile(
 # a whole or decimal number; a full stop after it ends the sentence ("POSITIVE: 1. NODES")
 _NUMBER = re.compile(r"(?<!\w)(?<!\d\.)\d+(?:\.\d+)?(?!\w|\.\d)")
 _CATEGORY = re.compile(r"\b(?:y?p)?([TN](?:X|IS|\d[A-D]?|\dMI))\b", re.I)
+_NUMBER_WORDS = (
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+    "fifteen sixteen seventeen eighteen nineteen twenty"
+).split()
+_NUMBER_WORD = re.compile(r"\b(" + "|".join(_NUMBER_WORDS) + r")\b", re.I)
+_WORD = re.compile(r"[a-z]+")
+# Besides the words of the facts it cites, a sentence may only use these: grammar and the
+# connecting words honest notes used (logs/case-notes.jsonl). Anything else ("surgery",
+# "pathologist", "slip", "amended") is a fact the note made up.
+_VOCABULARY = frozenset(
+    """a an the and or but so because while whereas also then than that this these those it
+    its is are was were be been being has have had of to for with on in at by as from per
+    after before both each neither nor not no s which what
+    person decides decide final verifies verified verify verifying verification reading reads
+    read shows show gives give meaning means mean defined consistent disagree disagrees agree
+    agrees contradict contradicts contradiction converts convert turns implies node nodes
+    count counts category categories field fields record records recorded report registry
+    value values separately against based considering facts element data identify
+    review map maps mapped derive derives derived
+    do does did where when how using uses used apply applies applied drive drives driven
+    identifies identified pathology whether nodal""".split()
+)
 
 
 def _count(value: Any) -> str | None:
@@ -115,6 +137,7 @@ def build_facts(found: dict[str, Any]) -> dict[str, str]:
 
 def _tokens(text: str) -> set[str]:
     numbers = {f"{float(n):g}" for n in _NUMBER.findall(text)}
+    numbers |= {str(_NUMBER_WORDS.index(w.lower())) for w in _NUMBER_WORD.findall(text)}
     categories = {c.upper() for c in _CATEGORY.findall(text)}
     return numbers | {f"cat:{c}" for c in categories}
 
@@ -145,6 +168,14 @@ def check_note(answer: dict[str, Any] | None, facts: dict[str, str]) -> tuple[li
         extra = sorted(_tokens(text) - _tokens(cited))
         if extra:
             return [], f"sentence_{n}_states_{extra[0].removeprefix('cat:')}_not_in_cited_facts"
+        unknown_words = sorted(
+            set(_WORD.findall(text.lower()))
+            - set(_WORD.findall(cited.lower()))
+            - _VOCABULARY
+            - set(_NUMBER_WORDS)
+        )
+        if unknown_words:
+            return [], f"sentence_{n}_word_{unknown_words[0]}_not_in_cited_facts"
         cited_claims = {w.lower() for w in _CLAIM.findall(cited)}
         claims = sorted({w.lower() for w in _CLAIM.findall(text)} - cited_claims)
         if claims:
@@ -212,18 +243,23 @@ def _append(result: dict[str, Any], raw_text: str) -> None:
 
 
 def latest_note(case_id: str) -> dict[str, Any] | None:
-    """The last logged note for a case that passes the CURRENT guard (re-checked from the
-    model's raw answer, so a note accepted by an older guard is not shown as if it passed)."""
+    """The newest logged note for a case, re-judged by the CURRENT guard from the model's raw
+    answer: a note an older guard accepted is shown as rejected, with the reason, if it no
+    longer passes (the page never hides a signed answer, and never shows it as passing)."""
     if not NOTES_LOG.exists():
         return None
     last = None
     for line in NOTES_LOG.read_text(encoding="utf-8").splitlines():
         row = json.loads(line)
-        if row.get("case_id") != case_id or "raw_text" not in row:
-            continue
-        sentences, reason = check_note(parse_answer(row["raw_text"]), row.get("facts") or {})
-        if not reason:
-            last = {**row, "status": "accepted", "reason": "", "sentences": sentences}
-    if last is not None:
-        last.pop("raw_text", None)
-    return last
+        if row.get("case_id") == case_id and "raw_text" in row:
+            last = row
+    if last is None:
+        return None
+    sentences, reason = check_note(parse_answer(last.pop("raw_text")), last.get("facts") or {})
+    return {
+        **last,
+        "status": "accepted" if not reason else "rejected",
+        "reason": reason,
+        "sentences": sentences,
+        "logged_status": last.get("status"),
+    }

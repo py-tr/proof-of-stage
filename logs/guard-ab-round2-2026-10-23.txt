@@ -1,0 +1,75 @@
+TCGA-3C-AAAU	NPOS	4	old=accepted:	new=accepted:		XIII. POSITIVE LYMPH NODES: TOTAL: 4 of 13.
+TCGA-3C-AAAU	N	N1a	old=accepted:4 of 13 axillary nodes positive including sentinel node, consistent with N1a (1-3 axillary nodes positive? Actually 4 is N2a; however report supports at least N1a).	new=rejected:quote_does_not_support	CHANGED	XIII. POSITIVE LYMPH NODES: TOTAL: 4 of 13. LEVEL I: 2 of 4. LEVEL II: 1 of 2. LEVEL III:0 of 6. SENTINEL NODE: 1 of 1.
+TCGA-3C-AAAU	T	T2	old=rejected:quote_does_not_support	new=rejected:quote_does_not_support		IV. GROSS/MICRO FINAL INVASIVE TUMOR SIZE INTERPRETATION: 1.2 cm in greatest dimension, at least.
+TCGA-A1-A0SN	NPOS	4	old=accepted:	new=accepted:		Number of positive lymph nodes: 4.
+TCGA-A1-A0SN	N	N1a	old=accepted:Synoptic comment states 4 positive regional lymph nodes with no extranodal metastases (not N1c), corresponding to N1a.	new=rejected:quote_does_not_support	CHANGED	Metastatic carcinoma in one lymph node (1/1).
+TCGA-A1-A0SN	T	T1c	old=accepted:Largest invasive focus is 1.1 cm, which is greater than 1 cm and at most 2 cm, corresponding to T1c.	new=accepted:Largest invasive focus is 1.1 cm, which is greater than 1 cm and at most 2 cm, corresponding to T1c.		Invasive tumor size: 1.1 cm maximum diameter.
+TCGA-A2-A0CV	NPOS	3	old=rejected:quote_not_in_report	new=rejected:quote_not_in_report		(2/18) POSITIVE EXAMINED LYMPH NODES. ... ONE (1) LYMPH NODE (SPECIMEN C, LOW, C12) : POSITIVE.
+TCGA-A2-A0CV	N	N1a	old=accepted:Metastases are present in 1 to 3 axillary lymph nodes, with at least one metastasis larger than 2 mm, supporting N1a.	new=accepted:Metastases are present in 1 to 3 axillary lymph nodes, with at least one metastasis larger than 2 mm, supporting N1a.		(1) SENTINEL METASTASIS LYMPH IN NODE TWO (SPECIMEN OF EIGHTEEN A) : (2/18) POSITIVE EXAMINED LYMPH NODES.
+TCGA-A2-A0CV	T	T2	old=rejected:quote_not_in_report	new=rejected:quote_not_in_report		SIZE (GREATEST DIMENSION) : 4.1 CM
+TCGA-A7-A26E	NPOS	1	old=accepted:	new=accepted:		Number of positive nodes of total: As per parts A, C and E, there are 16 1 mmnh nodes. one of which contains metastatic 
+TCGA-A7-A26E	N	N1a	old=accepted:The report states pN: 1A, corresponding to metastasis in 1–3 axillary lymph nodes.	new=accepted:The report states pN: 1A, corresponding to metastasis in 1–3 axillary lymph nodes.		pN: 1A.
+TCGA-A7-A26E	T	T3	old=accepted:Largest invasive tumor measures 5.5 cm, which exceeds 5.0 cm and classifies as T3.	new=accepted:Largest invasive tumor measures 5.5 cm, which exceeds 5.0 cm and classifies as T3.		Greatest dimension (pT) : The tumor measures 5.5 cm., pT3.
+TCGA-A7-A26H	NPOS	1	old=rejected:count_not_in_quote	new=rejected:count_not_in_quote		Metastatic carcinoma in a single lymph node.
+TCGA-A7-A26H	N	N1a	old=rejected:quote_does_not_support	new=rejected:quote_does_not_support		Metastatic carcinoma in a single lymph node.
+TCGA-A7-A26H	T	T2	old=rejected:quote_does_not_support	new=rejected:quote_does_not_support		Tumor size: 1.5 cm
+TCGA-AC-A2FK	NPOS	3	old=accepted:	new=accepted:		All three nodes sampled are positive and, therefore, the nodal stage is at least pN1a.
+TCGA-AC-A2FK	N	N1a	old=accepted:All 3 sampled sentinel nodes are positive with no internal mammary nodes identified, meeting N1a criteria (≥1–3 axillary nodes positive).	new=accepted:All 3 sampled sentinel nodes are positive with no internal mammary nodes identified, meeting N1a criteria (≥1–3 axillary nodes positive).		All three nodes sampled are positive and, therefore, the nodal stage is at least pN1a.
+TCGA-AC-A2FK	T	T2	old=accepted:Largest invasive focus is 3.4 cm (>2 cm and ≤5 cm), so T2.	new=accepted:Largest invasive focus is 3.4 cm (>2 cm and ≤5 cm), so T2.		Tumor Size: Greatest dimension: 3.4 cm.
+TCGA-AN-A0XN	NPOS	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XN	N	N1	old=accepted:The report explicitly states N Stage: 1, corresponding to N1.	new=accepted:The report explicitly states N Stage: 1, corresponding to N1.		N Stage: 1
+TCGA-AN-A0XN	T	T2	old=accepted:The report explicitly states T Stage: 2, corresponding to T2.	new=accepted:The report explicitly states T Stage: 2, corresponding to T2.		T Stage: 2
+TCGA-AN-A0XO	NPOS	0	old=rejected:quote_too_short	new=rejected:quote_too_short		
+TCGA-AN-A0XO	N	N1a	old=accepted:The report states N Stage: 1, corresponding to AJCC N1a.	new=accepted:The report states N Stage: 1, corresponding to AJCC N1a.		N Stage: 1
+TCGA-AN-A0XO	T	T2	old=accepted:The report states T Stage: 2, corresponding to AJCC T2.	new=accepted:The report states T Stage: 2, corresponding to AJCC T2.		T Stage: 2
+TCGA-AN-A0XP	NPOS	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XP	N	N1	old=accepted:The report explicitly states N Stage 1.	new=accepted:The report explicitly states N Stage 1.		N Stage: 1
+TCGA-AN-A0XP	T	T2	old=accepted:The report explicitly states T Stage 2.	new=accepted:The report explicitly states T Stage 2.		T Stage: 2
+TCGA-AN-A0XS	NPOS	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XS	N	N1a	old=accepted:N stage 1a corresponds to N1a.	new=accepted:N stage 1a corresponds to N1a.		N Stage: 1a
+TCGA-AN-A0XS	T	T1c	old=rejected:quote_does_not_support	new=rejected:quote_does_not_support		Stage: 1c
+TCGA-AN-A0XT	NPOS	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XT	N	N1a	old=accepted:Report explicitly states N Stage 1a.	new=accepted:Report explicitly states N Stage 1a.		N Stage: 1a
+TCGA-AN-A0XT	T	T1c	old=accepted:Report explicitly states T Stage 1c.	new=accepted:Report explicitly states T Stage 1c.		T Stage: 1c
+TCGA-AN-A0XW	NPOS	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-AN-A0XW	N	N1a	old=accepted:The report explicitly documents N stage 1.	new=accepted:The report explicitly documents N stage 1.		N Stage: 1
+TCGA-AN-A0XW	T	T2	old=accepted:The report explicitly documents T stage 2.	new=accepted:The report explicitly documents T stage 2.		T Stage: 2
+TCGA-AO-A1KP	NPOS	1	old=accepted:	new=accepted:		ONE LYMPH NODE POSITIVE FOR METASTATIC CARCINOMA (1/1)
+TCGA-AO-A1KP	N	N1a	old=accepted:One regional lymph node is positive for metastatic carcinoma and it is an axillary lymph node, corresponding to N1a.	new=accepted:One regional lymph node is positive for metastatic carcinoma and it is an axillary lymph node, corresponding to N1a.		ONE LYMPH NODE POSITIVE FOR METASTATIC CARCINOMA (1/1)
+TCGA-AO-A1KP	T	T2	old=rejected:quote_not_in_report	new=rejected:quote_not_in_report		MULTIPLE FOCI OF INVASIVE DUCTAL CARCIMONA, NOS TYPE ... RANGING IN SIZE FROM 0.3 CK UP TO 1.8 CM.
+TCGA-AQ-A1H2	NPOS	7	old=accepted:	new=accepted:		Total number with metastasis: 7.
+TCGA-AQ-A1H2	N	N2a	old=accepted:Four to nine regional axillary lymph nodes positive.	new=accepted:Four to nine regional axillary lymph nodes positive.		Total number with metastasis: 7.
+TCGA-AQ-A1H2	T	T2	old=accepted:Largest invasive focus is greater than 2 cm but not greater than 5 cm.	new=accepted:Largest invasive focus is greater than 2 cm but not greater than 5 cm.		Tumor size (greatest dimension): 3.5 cm
+TCGA-BH-A0BS	NPOS	2	old=accepted:	new=accepted:		LYMPH NODES POSITIVE: 2. LYMPH NODES EXAMINED: 14.
+TCGA-BH-A0BS	N	N1a	old=accepted:2 positive ipsilateral axillary nodes out of 14 examined, with no internal mammary or supraclavicular involvement documented -> N1a.	new=accepted:2 positive ipsilateral axillary nodes out of 14 examined, with no internal mammary or supraclavicular involvement documented -> N1a.		LYMPH NODES POSITIVE: 2. LYMPH NODES EXAMINED: 14.
+TCGA-BH-A0BS	T	T3	old=accepted:Largest invasive focus 6.0 cm (>5 cm) -> T3.	new=accepted:Largest invasive focus 6.0 cm (>5 cm) -> T3.		INVASIVE TUMOR MEASURES 6.0 CM IN LARGEST DIMENSION BY GROSS MEASUREMENT (See comment).
+TCGA-BH-A0DD	NPOS	1	old=accepted:	new=accepted:		LYMPH NODES POSITIVE: 1.
+TCGA-BH-A0DD	N	N1a	old=accepted:One axillary lymph node is positive with a metastasis greater than 2 mm (30.0 mm), meeting criteria for N1a.	new=accepted:One axillary lymph node is positive with a metastasis greater than 2 mm (30.0 mm), meeting criteria for N1a.		LYMPH NODES POSITIVE: 1.
+TCGA-BH-A0DD	T	T2	old=accepted:The largest invasive focus measures 3.0 cm, which falls within the T2 range (>2 cm to 5 cm).	new=accepted:The largest invasive focus measures 3.0 cm, which falls within the T2 range (>2 cm to 5 cm).		SIZE OF TUMOR: Maximum dimension invasive component: 3.0 cm.
+TCGA-E2-A1B4	NPOS	3	old=accepted:	new=accepted:		Lymph node status: Positive 3/4.
+TCGA-E2-A1B4	N	N1mi	old=accepted:Three of four sentinel nodes contain micrometastases (each ≤2 mm), so this is N1mi.	new=accepted:Three of four sentinel nodes contain micrometastases (each ≤2 mm), so this is N1mi.		Lymph node status: Positive 3/4. Micrometastases
+TCGA-E2-A1B4	T	T1c	old=accepted:The largest invasive focus measures 1.2 cm, which falls within the T1c range of more than 1 cm but not more than 2 cm.	new=accepted:The largest invasive focus measures 1.2 cm, which falls within the T1c range of more than 1 cm but not more than 2 cm.		INVASIVE, DUCTAL CARCINOMA, SBR GRADE 1, MEASURING 1.2-CM.
+TCGA-E2-A572	NPOS	8	old=accepted:	new=accepted:		Positive 8 / 13
+TCGA-E2-A572	N	N2	old=accepted:There are 8 positive regional lymph nodes out of 13 examined, which falls into the N2 category (4-9 positive axillary nodes).	new=accepted:There are 8 positive regional lymph nodes out of 13 examined, which falls into the N2 category (4-9 positive axillary nodes).		Positive 8 / 13
+TCGA-E2-A572	T	T2	old=accepted:The largest invasive tumor focus is 3.4 cm, which is greater than 2 cm and not greater than 5 cm, meeting the criterion for T2.	new=rejected:quote_does_not_support	CHANGED	3.4 CM IN SIZE.
+TCGA-E9-A3X8	NPOS	4	old=accepted:	new=accepted:		Lymph nodes: 4/8 positive for metastasis (Axillary 4/8)
+TCGA-E9-A3X8	N	N1a	old=rejected:quote_does_not_support	new=rejected:quote_does_not_support		Lymph nodes: 4/8 positive for metastasis (Axillary 4/8)
+TCGA-E9-A3X8	T	T2	old=accepted:Largest invasive focus 3.5 cm (>2 and ≤5 cm) -> T2.	new=accepted:Largest invasive focus 3.5 cm (>2 and ≤5 cm) -> T2.		Tumor size: 3.5 X 3.5 x 3.5 cm
+TCGA-EW-A424	NPOS	0	old=accepted:	new=accepted:		Number of lymph nodes with macrometastases: 0. Number of lymph nodes with micrometastases: 0. Number of lymph nodes with
+TCGA-EW-A424	N	N0	old=accepted:One sentinel node examined is negative for carcinoma.	new=accepted:One sentinel node examined is negative for carcinoma.		Negative for carcinoma in one lymph node examined (0/1).
+TCGA-EW-A424	T	T3	old=accepted:Largest invasive carcinoma measures 5.5 cm, which is greater than 5 cm, so pT3.	new=accepted:Largest invasive carcinoma measures 5.5 cm, which is greater than 5 cm, so pT3.		Size of Largest Invasive Carcinoma: Greatest dimension of largest focus of invasion: 5.5 cm.
+TCGA-A2-A0EW	NPOS	4	old=accepted:	new=accepted:		LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E).
+TCGA-A2-A0EW	N	N2a	old=accepted:Four ipsilateral axillary lymph nodes are positive for tumor; 4 positive nodes meets criteria for N2a.	new=accepted:Four ipsilateral axillary lymph nodes are positive for tumor; 4 positive nodes meets criteria for N2a.		LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E).
+TCGA-A2-A0EW	T	T1c	old=accepted:For multicentric tumors the largest focus determines category; Tumor #2 largest dimension is stated in comment as 1.2 cm, which is greater than 1 cm but not more than 2 cm, giving T1c.	new=accepted:For multicentric tumors the largest focus determines category; Tumor #2 largest dimension is stated in comment as 1.2 cm, which is greater than 1 cm but not more than 2 cm, giving T1c.		TUMOR SIZE (GREATEST DIMENSION) : 1.0 CM (MEASURED GROSSLY) (SEE. COMMENT)
+TCGA-AO-A03P	NPOS	1	old=accepted:	new=accepted:		PART #1. METASTATIC CARCINOMA IN THE FORM OF MICROSCOPIC CLUSTERS AND SINGLE CELLS. MEASURING LESS THAN 2MM (MICROMETAST
+TCGA-AO-A03P	N	N1mi	old=accepted:Metastatic deposits measuring less than 2 mm in a sentinel lymph node are classified as micrometastasis, N1mi.	new=accepted:Metastatic deposits measuring less than 2 mm in a sentinel lymph node are classified as micrometastasis, N1mi.		PART #1. METASTATIC CARCINOMA IN THE FORM OF MICROSCOPIC CLUSTERS AND SINGLE CELLS. MEASURING LESS THAN 2MM (MICROMETAST
+TCGA-AO-A03P	T	T2	old=rejected:quote_not_in_report	new=rejected:quote_not_in_report		INVASIVE DUCTAL CARCINOMA, NOS TYPE, HISTOLOGIC GRADE III/III ... PRESENT AS THREE SEPARATE NODULES, RANGING IN SIZE FRO
+TCGA-AR-A1AT	NPOS	0	old=rejected:count_not_in_quote	new=rejected:count_not_in_quote		A single (of 3) left axillary sentinel lymph node is positive for isolated tumor cells [AJCC pN0(i+)(sn)]
+TCGA-AR-A1AT	N	N0(i+)	old=accepted:isolated tumor cells only in sentinel node -> N0(i+)	new=accepted:isolated tumor cells only in sentinel node -> N0(i+)		A single (of 3) left axillary sentinel lymph node is positive for isolated tumor cells [AJCC pN0(i+)(sn)]
+TCGA-AR-A1AT	T	T2	old=accepted:largest invasive focus 2.5 cm -> T2	new=accepted:largest invasive focus 2.5 cm -> T2		forming a 2.5 x 2.1 x 1.9 cm mass [AJCC pT2]
+TCGA-D8-A27L	NPOS	None	old=abstained:model_abstained	new=abstained:model_abstained		
+TCGA-D8-A27L	N	NX	old=rejected:quote_too_short	new=rejected:quote_too_short		pNx
+TCGA-D8-A27L	T	T1c	old=accepted:The largest dimension of the invasive carcinoma is 1.1 cm, which is greater than 1 cm but not more than 2 cm, defining T1c.	new=accepted:The largest dimension of the invasive carcinoma is 1.1 cm, which is greater than 1 cm but not more than 2 cm, defining T1c.		Tumour sized 1.1 x 0.6. x 1.0 cm
+TCGA-E2-A1LI	NPOS	0	old=accepted:	new=accepted:		Lymph nodes: Negative (0/2)
+TCGA-E2-A1LI	N	N0	old=accepted:No positive regional lymph nodes among 2 sentinel nodes supports pN0.	new=accepted:No positive regional lymph nodes among 2 sentinel nodes supports pN0.		Lymph nodes: Negative (0/2)
+TCGA-E2-A1LI	T	T2	old=accepted:Invasive focus 2.5 cm falls in the T2 range (>2 cm to ≤5 cm).	new=accepted:Invasive focus 2.5 cm falls in the T2 range (>2 cm to ≤5 cm).		Size of Invasive Focus: 2.5 cm

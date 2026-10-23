@@ -195,7 +195,7 @@ def judge_field(field_name: Field, answer: dict[str, Any] | None, report: str) -
         return FieldResult(
             field_name, "rejected", value=value, quote=quote, reason="quote_not_in_report"
         )
-    if not supports_category(field_name, value, span.text(report)):
+    if not supports_category(field_name, value, span.text(report), report, span.start):
         return FieldResult(
             field_name,
             "rejected",
@@ -233,8 +233,16 @@ _SIZE = re.compile(
     rf"(?<![\w.])((?:{_DIMENSION}\s*(?:x|×|by)\s*)*{_DIMENSION})\s*-?\s*(cm|mm)\b", re.I
 )  # also "1.2-CM"
 # Categories a count or size cannot show, with the words that can.
+_NEGATED_BEFORE = re.compile(
+    r"\b(?:no|not|negative for|free of|without|absence of|absent)\b[^.;]{0,30}$", re.I
+)
+_NEGATED_AFTER = re.compile(
+    r"^[^.;]{0,25}\b(?:not (?:identified|present|involved|seen)|none|absent|negative)\b", re.I
+)
+# Categories a count or size cannot show, with the words that can. Each match must not be
+# negated, and must be about the right element (see `_category_words_show`).
 _CATEGORY_WORDS = {
-    "N1MI": re.compile(r"micro-?\s?metasta", re.I),
+    "N1MI": re.compile(r"micro-?\s?metasta\w*", re.I),
     "N0(I+)": re.compile(r"isolated\s+tumou?r\s+cells?|\bITCs?\b|\(i\+\)", re.I),
     "NX": re.compile(
         r"cannot be assessed|not assessed|without axillary|no axillary"
@@ -244,8 +252,36 @@ _CATEGORY_WORDS = {
     ),
     "TX": re.compile(r"cannot be assessed|not assessed", re.I),
     "TIS": re.compile(r"\bin[- ]situ\b", re.I),
-    "T4": re.compile(r"\bskin\b|chest wall|inflammatory|ulcerat|satellite|peau d", re.I),
+    "T4": re.compile(
+        r"(?:invad\w*|involv\w*|infiltrat\w*|extend\w*|extension|ulcerat\w*)[^.;]{0,30}"
+        r"\b(?:skin|dermis|epidermis|chest wall)\b"
+        r"|\b(?:skin|dermis|epidermis|chest wall)\b[^.;]{0,20}"
+        r"(?:invad\w*|involv\w*|infiltrat\w*|ulcerat\w*)"
+        r"|satellite (?:skin )?nodules?|inflammatory (?:breast )?carcinoma|peau d",
+        re.I,
+    ),
 }
+# A word about these categories is deliberately one of the negating or assessing kind
+# itself ("cannot be assessed", "no axillary"), so the general negation check skips them.
+_SELF_NEGATING = frozenset({"NX", "TX"})
+# "cannot be assessed" belongs to the element named just before it.
+_ELEMENT_NODES = re.compile(r"\bp?N\b|regional|lymph|nodes?|axilla", re.I)
+_ELEMENT_OTHER = {
+    "NX": re.compile(r"\bp?[MT]\b|distant|primary tumou?r|\(p[MT]\)", re.I),
+    "TX": re.compile(r"\bp?[MN]\b|distant|lymph|nodes?|\(p[MN]\)", re.I),
+}
+_ELEMENT_TUMOUR = re.compile(r"\bp?T\b|primary tumou?r", re.I)
+_INVASIVE = re.compile(r"\binvasive|infiltrat\w*|micro-?invas", re.I)
+# A size shows T only after a tumour cue, with nothing between that names something else.
+_TUMOUR_CUE = re.compile(
+    r"\b(?:invasive|carcinoma|tumou?r|mass|focus|foci|lesion|neoplasm|largest)\b", re.I
+)
+_NOT_TUMOUR = re.compile(
+    r"\b(?:lymph|nodes?|margins?|specimen|away|distance|from|ellipse|nipple|skin|biopsy|"
+    r"cavity|clip|fat|tissue)\b",
+    re.I,
+)
+_SIZE_WINDOW = 60
 
 
 def _main(category: str) -> str:
@@ -262,20 +298,66 @@ def _t_from_size(cm: float) -> str:
     return "T1" if cm <= 2.0 else "T2" if cm <= 5.0 else "T3"
 
 
-def supports_category(field_name: str, value: str, span_text: str) -> bool:
+def _category_words_show(key: str, span_text: str, before: str, after: str) -> bool:
+    """A category word in the quote, not negated, about the right element."""
+    words = _CATEGORY_WORDS[key]
+    context = before + span_text
+    for match in words.finditer(span_text):
+        lead = context[: len(before) + match.start()][-40:]
+        trail = span_text[match.end() :] + after
+        if key not in _SELF_NEGATING and (
+            _NEGATED_BEFORE.search(lead) or _NEGATED_AFTER.search(trail)
+        ):
+            continue
+        if key in _ELEMENT_OTHER and match.group(0).lower().endswith("assessed"):
+            near = lead[-30:] + match.group(0)
+            element = _ELEMENT_NODES if key == "NX" else _ELEMENT_TUMOUR
+            if _ELEMENT_OTHER[key].search(near) or not element.search(near):
+                continue
+        if key == "TIS" and _INVASIVE.search(span_text):
+            continue
+        return True
+    return False
+
+
+def _tumour_sizes(span_text: str, before: str) -> list[float]:
+    """Sizes in cm that follow a tumour cue in the quote (or just before it)."""
+    context = before + span_text
+    sizes = []
+    for match in _SIZE.finditer(span_text):
+        at = len(before) + match.start()
+        window = context[max(0, at - _SIZE_WINDOW) : at]
+        cues = list(_TUMOUR_CUE.finditer(window))
+        if not cues or _NOT_TUMOUR.search(window[cues[-1].end() :]):
+            continue
+        largest = max(float(d) for d in re.findall(_DIMENSION, match.group(1)))
+        sizes.append(largest / (10 if match.group(2).lower() == "mm" else 1))
+    return sizes
+
+
+def supports_category(
+    field_name: str, value: str, span_text: str, report: str | None = None, start: int = 0
+) -> bool:
     """The located quote shows the category, not just that it exists in the report.
 
     Accepted when the quote holds a stage token or label with the same main category
-    ("pN1a" or "N Stage: 1a" for N1A); for N, a node count the count guard reads in the
-    quote that implies it (2 positive nodes -> N1); for T, a tumour size in its range
-    (2.4 cm -> T2); for the categories a number cannot show, their words (micrometastasis
-    -> N1mi, isolated tumour cells -> N0(i+), "cannot be assessed" -> NX/TX, skin or chest
-    wall -> T4, in situ -> Tis). Precision is checked on the main category (N1 vs N1A).
+    ("pN1a" or "N Stage: 1a" for N1A); for N, a node count that passes the whole count
+    guard (the context around the quote, the report's fraction floor and labelled total)
+    and implies it (2 positive nodes -> N1); for T, a tumour size in its range, after a
+    tumour cue (the largest invasive focus 2.4 cm -> T2; not a node, margin or specimen
+    size); for the categories a number cannot show, their words, not negated and about the
+    right element (micrometastasis -> N1mi, isolated tumour cells -> N0(i+), nodes "cannot
+    be assessed" -> NX, skin or chest-wall invasion -> T4, in situ without invasion -> Tis).
+    Precision is checked on the main category (N1 vs N1A). `report` and `start` give the
+    report around the quote; without them only the quote is read.
     """
+    end = start + len(span_text)
+    before = report[max(0, start - _CONTEXT) : start] if report else ""
+    after = report[end : end + _CONTEXT] if report else ""
     want = _main(value)
     upper = value.upper()
-    for key, words in _CATEGORY_WORDS.items():
-        if (upper == key or want == key) and words.search(span_text):
+    for key in _CATEGORY_WORDS:
+        if (upper == key or want == key) and _category_words_show(key, span_text, before, after):
             return True
     found = {
         _main(f"{field_name}{m.group(1)}") for m in _STAGE_TOKEN[field_name].finditer(span_text)
@@ -286,17 +368,16 @@ def supports_category(field_name: str, value: str, span_text: str) -> bool:
     if want in found:
         return True
     if field_name == "N":
+        floor = report_floor(report) if report else None
+        totals = report_totals(report) if report else set()
         return any(
             _n_from_count(count) == want
             for count in range(_MAX_NODES + 1)
-            if count_path(count, span_text) is not None
+            if count_path(count, span_text, before, after) is not None
+            and (floor is None or count >= floor)
+            and (not totals or count in totals)
         )
-    sizes = [
-        max(float(d) for d in re.findall(_DIMENSION, m.group(1)))
-        / (10 if m.group(2).lower() == "mm" else 1)
-        for m in _SIZE.finditer(span_text)
-    ]
-    return any(_t_from_size(cm) == want for cm in sizes)
+    return any(_t_from_size(cm) == want for cm in _tumour_sizes(span_text, before))
 
 
 def parse_count(value: Any) -> int | None:

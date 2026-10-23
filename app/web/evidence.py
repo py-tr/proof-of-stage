@@ -8,8 +8,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from app.reader.quotes import locate
-from app.reader.reader import NODES_POSITIVE, count_in_span, judge_count, judge_field
+from app.reader.reader import NODES_POSITIVE, judge_count, judge_field
 from app.usl.dq import (
     FAULT_NODE_COUNT,
     FAULT_PATHOLOGIC_N,
@@ -155,24 +154,37 @@ def headline(check: dict[str, Any]) -> str:
     return f"{rec}. {reg}. They agree."
 
 
+# The guard's checks in the order it runs them: (rejection reason, what passing means).
+COUNT_CHECKS = (
+    ("invalid_count", "a whole number from 0 to 99"),
+    ("quote_too_short", "a quote long enough to prove something"),
+    ("quote_not_in_report", "the quote is word for word in the report"),
+    ("count_not_in_quote", "the number is the positive count inside that quote"),
+    ("count_below_report", "not below a node fraction the report states"),
+    ("count_not_report_total", "equal to the total the report states, if it states one"),
+)
+FIELD_CHECKS = (
+    ("invalid_category", "a valid category"),
+    ("quote_too_short", "a quote long enough to prove something"),
+    ("quote_not_in_report", "the quote is word for word in the report"),
+    ("quote_does_not_support", "the quote shows that category (a stage, node count or size)"),
+)
+
+
 def recheck(field: str, value: Any, quote: str | None, report: str) -> list[dict[str, Any]]:
-    """Re-run the guard on a stored accepted value and list each check with its result."""
-    checks: list[dict[str, Any]] = []
-    span = locate(quote, report) if quote else None
+    """Re-run the guard on a stored value: every check it passed, then the one it failed."""
     if field == NODES_POSITIVE:
         result = judge_count({"N_positive": value, "N_positive_quote": quote}, report)
-        checks.append(
-            {"check": "a whole number from 0 to 99", "ok": result.reason != "invalid_count"}
-        )
-        checks.append({"check": "the quote is word for word in the report", "ok": span is not None})
-        in_span = bool(span) and count_in_span(int(float(value)), span.text(report))
-        checks.append(
-            {"check": "the number is the positive count inside that quote", "ok": in_span}
-        )
+        steps = COUNT_CHECKS
     else:
         result = judge_field(field, {field: value, f"{field}_quote": quote}, report)  # type: ignore[arg-type]
-        checks.append({"check": "a valid category", "ok": result.reason != "invalid_category"})
-        checks.append({"check": "the quote is word for word in the report", "ok": span is not None})
+        steps = FIELD_CHECKS
+    checks = []
+    for reason, label in steps:
+        failed = result.status != "accepted" and result.reason == reason
+        checks.append({"check": label, "ok": not failed})
+        if failed:
+            break
     checks.append({"check": "accepted", "ok": result.status == "accepted"})
     return checks
 

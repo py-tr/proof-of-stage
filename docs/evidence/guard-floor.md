@@ -63,3 +63,15 @@ The pre-registered chain (`docs/evidence/adversary-chain-results.md`) got 8 wron
 | Labelled totals vs the registry (stage_check, cases with a report and a count) | 105 reports state a labelled total; it equals the registry count in 94, differs in 11 (incl. queue cases BH-A0DD, AQ-A1H2, BH-A0BS) |
 
 These fixes were designed after seeing the chain's accepts, so the chain's 1-in-60 does not describe the new guard; a fresh pre-registered chain (new cases) is needed to measure it.
+
+## Fifth round: a second judge-panel review (Fable, 2026-10-23)
+
+Found on real report text, all replayed before fixing: on the hero case, N2a was accepted through "…EXTRANODAL EXTENSION: PRESENT, 4" (the N check read the count without the report around the quote, so "4 MM" did not count) and "Try to fool it" would then name the N field; T4b through "SKIN IDENTIFIED"; Tis through "IN INVASIVE AND IN SITU TUMOR"; T3 through "Specimen measures 23 cm"; N1mi through "is negative for micrometastases in" (TCGA-A2-A25F); NX through "Distant metastasis (pM) : Cannot be assessed" (TCGA-A7-A13G).
+
+Fix (`supports_category`): an N read from a count must pass the whole count guard (context, floor, labelled total); category words must not be negated and must be about the right element; T4 needs an invasion or ulceration word next to skin or chest wall; Tis needs "in situ" without invasion in the quote; a T size must follow a tumour cue with no node, margin, specimen or distance word between.
+
+| Check | Result |
+|---|---|
+| The six breaks above (`tests/test_reader.py::test_category_words_must_be_unnegated_and_about_the_element`, on synthetic text; and replayed on the real reports) | all rejected; the true readings beside them accepted |
+| The 37 stored T/N rows | 36 accepted; 1 rejected (the same "Stage: 1c", fail-closed) |
+| Fresh reads of the 25 queue reports, previous vs current guard (`logs/guard-ab-round2-2026-10-23.txt`) | 3 verdicts changed: 2 were model errors the previous guard accepted (N1a quoting "TOTAL: 4 of 13", which is N2; N1a quoting one specimen's "(1/1)" in a report whose labelled total is 4); 1 is a false rejection, T2 quoting "3.4 CM IN SIZE." whose tumour cue ("CARCINOMA … INVOLVING THE NIPPLE DERMIS") is outside the quote (fail-closed; T is not audited) |
