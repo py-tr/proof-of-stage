@@ -38,3 +38,15 @@ Meterless Nightshift, Windows edition, NVIDIA cloud lanes, model `nvidia/nemotro
 - Nightshift writes the case note, a short prompt that fits its contract: 24 of 24 answers were Super VL with a valid Ed25519 receipt signature, none from cache; median 22.8 s (`logs/notes-batch-2026-10-23.txt`).
 - A model id alone does not pin a Nightshift lane, so every call requires the winning model in the signed receipt and rejects a substitute.
 - If Nightshift gains a per-request thinking switch, the rungs move back with a one-line change (`provider=` in `app/engine/rungs.py`).
+
+## 5. Three Nightshift models on the case-note job (2026-10-23, after Meterless said Super VL had reliability issues)
+
+Each model pinned explicitly (`require_model`, signature against the pinned key, cache refused), the note prompt on 3 cases (`logs/nightshift-note-models-2026-10-23.jsonl`):
+
+| Model requested | Answers | Notes |
+|---|---|---|
+| `nvidia/nemotron-3.5-super-vl-120b-a12b` | 1 of 3 (42.7 s, signed, passed the guard) | 1 × 502, 1 timeout (500–540 s with retries) |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` | 0 of 3 | 502s and a timeout |
+| `nvidia/nemotron-3-super-120b-a12b` | 0 of 3 | one call was **won by Super VL instead** and refused by our receipt check (an explicit id did not pin the lane on this Windows build); 502 and a timeout |
+
+The same note prompt sent to NVIDIA directly at the same time: 146.7 s with thinking on (as Nightshift sends it), 1.3 s with thinking off. So the hosted model itself was slow; through Nightshift the call meets the 45 s cut. Nothing in our code changes: the note keeps Super VL, and the receipt check keeps refusing a substituted model.

@@ -92,6 +92,20 @@ What we changed so Nightshift's answers are one model's own text: Adaptive compu
 7. `RUN DQ` cannot address a composite-key rule by the name `LIST DQ USL` prints (`case_id,page_no,block_index` gives "mismatched input ','"); running it through its first column works.
 8. What helped: the NOT NULL mismatch error suggested the exact COALESCE fix (M17).
 
+## Meterless Runtime as a provider: where we stand (provider contract v4)
+
+Graded against the levels in Meterless' own "Grade my provider integration" prompt (meterless.ai/engines.html). Run `python -m app.cli doctor` to see each check live.
+
+| Level | What the contract asks | Us | Where |
+|---|---|---|---|
+| L0 Text | `meterless/*` routing modes on `/v1/chat/completions`, the real bearer token, 401/403 shown as unauthorized | yes: a plain request on `meterless/text` returns a string (doctor); health reads `/v1/models` (online / unauthorized / offline). The product's calls pin the explicit `nvidia/nemotron-3.5-super-vl-120b-a12b` and require it in the signed receipt (explicit ids are respected; check the routed model) | `app/providers/nightshift.py`, `app/cli.py` |
+| L1 Discovery | `/v1/models` and `/v1/meterless/classes` (both shapes), unknown `meterless/*` ids kept | yes: `nightshift.discover()`; doctor prints the text class state and confirms Super VL is a cloud lane | `app/providers/nightshift.py` |
+| Errors | the server's message first, then its `fix[]`; a 429 retries after 2, 4 and 8 s | yes | `app/providers/nightshift.py` |
+| Local-only | local-only work never reaches a cloud provider | yes: Jobs API with `privacy: local-only`, every resolved lane checked | `nightshift.local_job` |
+| L2+ | attachments, media, transcription, 3D, Quick Connect | not used (a text-only audit) | |
+
+One deliberate difference: the contract sends `meterless-scope: user` on chat; we send a unique `meterless-scope` per work item, so the runtime's memory never mixes one case's report into another's answer (we saw the runtime inject memories into requests early on). Every receipt is checked: the winning model, `egress`, `context_sources` (only `messages`), the cache status and the Ed25519 signature against the pinned key.
+
 ## Limits (honest)
 
 - Hosted Nemotron Parse 2.0 returned an empty document on our key (even on NVIDIA's own example); we use Parse v1.

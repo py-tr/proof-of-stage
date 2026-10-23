@@ -1,0 +1,9 @@
+{"case": "TCGA-A2-A0CV", "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "s": 42.7, "won": "nvidia/nemotron-3.5-super-vl-120b-a12b", "sig": "verified", "signer": "7a6d14e27e1a", "guard": "pass", "tokens": 3988}
+{"case": "TCGA-A2-A0CV", "model": "nvidia/nemotron-3.5-lightning-30b-a3b", "s": 399.9, "error": "NightshiftError: Nightshift chat transport error: ReadTimeout"}
+{"case": "TCGA-A2-A0CV", "model": "nvidia/nemotron-3-super-120b-a12b", "s": 351.7, "error": "ReceiptMismatch: winning model 'nvidia/nemotron-3.5-super-vl-120b-a12b' != required 'nvidia/nemotron-3-supe"}
+{"case": "TCGA-AQ-A1H2", "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "s": 504.5, "error": "NightshiftError: Nightshift chat retryable status 502"}
+{"case": "TCGA-AQ-A1H2", "model": "nvidia/nemotron-3.5-lightning-30b-a3b", "s": 437.8, "error": "NightshiftError: Nightshift chat retryable status 502"}
+{"case": "TCGA-AQ-A1H2", "model": "nvidia/nemotron-3-super-120b-a12b", "s": 435.2, "error": "NightshiftError: Nightshift chat retryable status 502"}
+{"case": "TCGA-EW-A424", "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "s": 541.0, "error": "NightshiftError: Nightshift chat transport error: ReadTimeout"}
+{"case": "TCGA-EW-A424", "model": "nvidia/nemotron-3.5-lightning-30b-a3b", "s": 207.4, "error": "NightshiftError: Nightshift chat retryable status 502"}
+{"case": "TCGA-EW-A424", "model": "nvidia/nemotron-3-super-120b-a12b", "s": 509.8, "error": "NightshiftError: Nightshift chat transport error: ReadTimeout"}
