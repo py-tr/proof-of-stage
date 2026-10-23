@@ -580,9 +580,11 @@ async def read_report(
     provider: Provider = "nvidia",
     budget: int = THINKING_BUDGET,
     run_id: str | None = None,
+    model: str | None = None,
 ) -> ReadResult:
-    """One read. Through Nightshift the model is pinned to Super VL (a substituted model is
-    retried, then refused), the receipt signature must verify, and a cached answer is refused.
+    """One read. Through Nightshift the model (Super VL unless `model` names another cloud
+    Nemotron) is pinned in the receipt (a substituted model is retried, then refused), the
+    receipt signature must verify, and a cached answer is refused.
     `run_id` makes the item id unique per run (never reuse an item id across runs)."""
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
@@ -594,11 +596,13 @@ async def read_report(
     signature = "absent"
     if provider == "nightshift":
         run = run_id or uuid.uuid4().hex[:8]
+        pinned = model or config.NS_SUPER_VL
         text, receipt = await nightshift.chat(
             messages,
-            config.NS_SUPER_VL,
+            pinned,
             item_id=f"read-{case_id}-{run}-b{budget}",
-            require_model=config.NS_SUPER_VL,
+            require_model=pinned,
+            require_kind="cloud",
             retry_on_mismatch=True,
             require_signature=True,
             pinned_key=config.getenv("NS_RECEIPT_PUBKEY"),
@@ -610,7 +614,7 @@ async def read_report(
         usage, from_cache, signature = receipt.usage, receipt.from_cache, receipt.signature
     else:
         text, model, usage = await nvidia.chat_with_usage(
-            messages, config.NV_SUPER, max_tokens=max_tokens, **extra
+            messages, model or config.NV_SUPER, max_tokens=max_tokens, **extra
         )
         receipt_id = None
     answer = parse_answer(text)

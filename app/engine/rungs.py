@@ -1,6 +1,7 @@
 """RUNGS: one Markovian run per case climbs a ladder of independent evidence, one rung per chunk.
 
-R1  Super, thinking OFF, on the report text. It may only CLEAR a field (an accepted value
+R1  Lightning, thinking OFF, on the report text (Super VL until 2026-10-23; the pre-registered
+    swap: docs/evidence/lightning-r1-results.md). It may only CLEAR a field (an accepted value
     that agrees with the registry), never accuse one, and only when its own N and count are
     consistent under the count rule (live 10-23: thinking OFF read "4 positive nodes" yet
     answered N1A, matching a wrong registry N; the rule check sends that case up the ladder).
@@ -25,6 +26,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from typing import Any
 
+from app import config
 from app.engine.markovian import EngineRun, run_engine
 from app.reader.reader import (
     NODES_POSITIVE,
@@ -43,6 +45,9 @@ CHUNK_CONFIG = {"chunkSize": 8000, "maxChunks": 6, "carryoverTokens": 256, "over
 
 Reader = Callable[..., Awaitable[ReadResult]]
 LADDER_PROVIDER = "nightshift"
+# The model per rung: R1 Lightning (18 of 28 settled vs Super's 15, 0 of 38 contradicted by a
+# 4k Super read, a quarter of the time); R2 and R3 Super VL (the reader's default).
+RUNG_MODEL = {R1: config.NS_LIGHTNING_CLOUD}
 
 
 @dataclass
@@ -171,6 +176,7 @@ class RungsGenerator:
             provider=self.provider,
             budget=budget,
             run_id=f"{self.run_id}-{rung}",
+            model=RUNG_MODEL.get(rung),
         )
 
     async def __call__(self, step: int, prompt: str) -> str:

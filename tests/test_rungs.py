@@ -38,11 +38,17 @@ def _result(case_id: str, budget: int, n: tuple[str, str | None], count: tuple[s
 
 
 def _reader(script: dict[str, tuple], seen: list[dict[str, object]]):
-    async def read(case_id, document, *, provider, budget, run_id):  # type: ignore[no-untyped-def]
+    async def read(case_id, document, *, provider, budget, run_id, model=None):  # type: ignore[no-untyped-def]
         assert "[CARRYOVER STATE]" not in document  # the model never sees the carryover
         rung = run_id.rsplit("-", 1)[1]
         seen.append(
-            {"rung": rung, "budget": budget, "document": document[:12], "provider": provider}
+            {
+                "rung": rung,
+                "budget": budget,
+                "document": document[:12],
+                "provider": provider,
+                "model": model,
+            }
         )
         n, count = script[rung]
         return _result(case_id, budget, n, count)
@@ -162,3 +168,17 @@ async def test_every_rung_goes_through_nightshift_by_default() -> None:
     seen.clear()
     await climb(CASE, run_id="t-nv", reader=_reader(script, seen), provider="nvidia")
     assert {s["provider"] for s in seen} == {"nvidia"}
+
+
+@pytest.mark.asyncio
+async def test_r1_reads_with_lightning_and_the_deep_rungs_with_super() -> None:
+    from app import config
+
+    seen: list[dict[str, object]] = []
+    case = CaseEvidence("TCGA-AA-0007", "TEXT", recorded_n="N1", registry_count=4.0, edition="6")
+    script = {
+        R1: (("accepted", "N1A"), ("accepted", "4")),
+        R2: (("accepted", "N2A"), ("accepted", "4")),
+    }
+    await climb(case, run_id="t7", reader=_reader(script, seen))
+    assert [s["model"] for s in seen] == [config.NS_LIGHTNING_CLOUD, None]  # None = Super VL
