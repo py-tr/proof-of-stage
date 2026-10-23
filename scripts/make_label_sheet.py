@@ -66,7 +66,7 @@ async def queue() -> list[dict]:
     return cases
 
 
-PAGE = """<!doctype html>
+PAGE = r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blind labels: review queue</title>
 <style>
@@ -82,11 +82,18 @@ textarea, input[type=text] { width: 100%; font: 13px ui-monospace, Consolas, mon
 pre { white-space: pre-wrap; font: 12.5px/1.6 ui-monospace, Consolas, monospace; margin: 0; max-height: 78vh; overflow: auto; }
 .small { color: #6b6b66; font-size: 12px; }
 .done { color: #2e7d32; }
+mark { background: #fff3a0; border-radius: 2px; }
+mark.cur { background: #ffb74d; outline: 2px solid #e65100; }
+.guide { background: #eef3fb; border: 1px solid #c9d7ee; border-radius: 8px; padding: 8px 10px; font-size: 13px; margin-bottom: 10px; }
 </style></head><body>
 <header><b>Blind labels</b><span id="pos"></span><span id="progress" class="small"></span>
 <button id="prev">◀ prev</button><button id="next">next ▶</button><button id="dl">Download labels.json</button></header>
 <main>
 <div>
+<div class="guide"><b>How to label (no medical knowledge needed)</b><br>
+1. Use the yellow highlights / "next node line" to find what the report says about lymph nodes.<br>
+2. Write the <b>total</b> positive nodes (some reports list each specimen; the total is the summary line or the sum) and the pN category if printed (e.g. pT2N1aMX = N1a).<br>
+3. Compare with the registry: report count fits the registry N but not its count = <b>count wrong</b>; fits the count but not the N = <b>N wrong</b>; unclear, micrometastases, isolated tumour cells, no count, or both off = <b>a person decides</b> (a valid answer).</div>
 <div class="card">
 <div class="small">Case <span id="cid"></span> · AJCC edition <span id="ed"></span></div>
 <h3 style="margin:6px 0">What the registry says</h3>
@@ -114,7 +121,7 @@ pre { white-space: pre-wrap; font: 12.5px/1.6 ui-monospace, Consolas, monospace;
 </div>
 <p class="small">Saved in this browser as you go. Download when done and send the file to Claude.</p>
 </div>
-<div class="card"><h3 style="margin:0 0 6px">Pathology report</h3><pre id="report"></pre></div>
+<div class="card"><h3 style="margin:0 0 6px">Pathology report <button id="hit">next node line ▼</button> <span id="hits" class="small"></span></h3><pre id="report"></pre></div>
 </main>
 <script>
 const CASES = __CASES__;
@@ -131,9 +138,26 @@ function show() {
   $("rn").textContent = c.recorded_n + (c.recorded_n_means ? ` (${c.recorded_n_means})` : "");
   $("rc").textContent = c.recorded_count == null ? "missing" : c.recorded_count + (c.tested ? ` of ${c.tested} examined` : "");
   $("rule").textContent = c.count_rule_gives || "—";
-  $("report").textContent = c.report;
+  renderReport(c.report);
   $("count").value = l.count || ""; $("n").value = l.n || ""; $("quote").value = l.quote || ""; $("note").value = l.note || "";
   document.querySelectorAll("input[name=f]").forEach((r) => (r.checked = r.value === l.field));
+}
+// Keyword highlights only (no model output): lines about lymph nodes and the N category.
+const KW = /(lymph\s*nodes?|nodes?|pN\s*\w*|N\s*stage|positive|metasta\w*|\d+\s*\/\s*\d+|\w+\s+of\s+\w+\s+(?:lymph\s+)?nodes?)/gi;
+let hitIndex = -1;
+function renderReport(text) {
+  const pre = $("report"); pre.replaceChildren(); let last = 0; let m; KW.lastIndex = 0;
+  while ((m = KW.exec(text)) !== null) {
+    if (m.index > last) pre.append(document.createTextNode(text.slice(last, m.index)));
+    const mk = document.createElement("mark"); mk.textContent = m[0]; pre.append(mk); last = m.index + m[0].length;
+  }
+  pre.append(document.createTextNode(text.slice(last))); hitIndex = -1;
+  $("hits").textContent = `${pre.querySelectorAll("mark").length} highlights`;
+}
+function nextHit() {
+  const marks = $("report").querySelectorAll("mark"); if (!marks.length) return;
+  marks.forEach((x) => x.classList.remove("cur")); hitIndex = (hitIndex + 1) % marks.length;
+  marks[hitIndex].classList.add("cur"); marks[hitIndex].scrollIntoView({ block: "center", behavior: "smooth" });
 }
 function upd() {
   const c = CASES[i]; const f = document.querySelector("input[name=f]:checked");
@@ -143,6 +167,7 @@ function upd() {
 ["count", "n", "quote", "note"].forEach((id) => $(id).addEventListener("input", upd));
 document.querySelectorAll("input[name=f]").forEach((r) => r.addEventListener("change", upd));
 $("report").addEventListener("mouseup", () => { const s = String(window.getSelection() || "").trim(); if (s.length > 3) { $("quote").value = s; upd(); } });
+$("hit").onclick = nextHit;
 $("prev").onclick = () => { i = (i + CASES.length - 1) % CASES.length; show(); };
 $("next").onclick = () => { i = (i + 1) % CASES.length; show(); };
 $("dl").onclick = () => {
