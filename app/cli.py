@@ -194,12 +194,15 @@ async def _usl(args: argparse.Namespace) -> int:
         sys.stdout.write(await dq_report(invalid_rule=args.invalid, limit=args.limit))
         return 0
     if args.usl_command == "demo":
-        from app.usl.demo import run_demo, summary, write_doc
+        from app.usl.demo import run_demo, summary, write_doc, write_snapshot
 
         results, meta = await run_demo()
         sys.stdout.write(summary(results, meta))
         if args.write:
             sys.stdout.write(f"wrote {write_doc(results, meta).name}\n")
+            snapshot = write_snapshot(results, meta)
+            if snapshot:
+                sys.stdout.write(f"wrote {snapshot.name}\n")
         return 0
     if args.usl_command == "teardown":
         if not args.yes:

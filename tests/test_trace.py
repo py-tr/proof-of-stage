@@ -173,7 +173,12 @@ def test_the_redteam_endpoint_serves_the_logged_v3_chains() -> None:
     assert all(len(c["steps"]) == 20 and c["accepts_wrong"] == 0 for c in chains)
 
 
-def test_sample_mode_shows_no_node_positive_scoreboard() -> None:
-    # four bundled cases are not the cohort the scoreboard counts
+def test_sample_mode_shows_the_scoreboard_only_as_a_dated_copy_of_the_live_run() -> None:
+    # four bundled cases are not the cohort: sample mode serves the usl demo snapshot, labelled
     client = TestClient(create_app(SampleData()))
-    assert client.get("/api/cohort").json().get("node_positive") is None
+    cohort = client.get("/api/cohort").json()
+    assert cohort["node_positive"]["records"] > 0
+    assert cohort["node_positive_snapshot_of"].startswith("usl demo ")
+    snapshot = Path("app/web/sample/node_positive_snapshot.json").read_text(encoding="utf-8")
+    for model_field in ("report_n", "report_nodes_positive", "fault_field", "quote"):
+        assert model_field not in snapshot  # no model output in sample mode

@@ -17,6 +17,10 @@ from app.usl.client import load_contract, select
 from app.usl.model import ROOT, USL_FQN, USL_TABLES, table_fqn
 
 DEMO_DOC = ROOT / "docs" / "zetaris-demo.md"
+# Sample mode's copy of "one question, three answers": the aggregate numbers and the registry
+# columns of the disagreeing records only (no report reading, quote or verdict text).
+SNAPSHOT = ROOT / "app" / "web" / "sample" / "node_positive_snapshot.json"
+_SNAPSHOT_COLUMNS = ("case_id", "recorded_n", "lymph_nodes_positive")
 SQL_DIR = ROOT / "app" / "usl" / "sql"
 SAMPLE_ROWS = 5
 # the setup files that identify and onboard each source, in the order `usl setup` runs them
@@ -293,3 +297,27 @@ def node_positive_sql(check: str | None = None) -> str:
         f"({_DISAGREE}) THEN 1 ELSE 0 END) AS same_answer_other_category "
         f"FROM {check} WHERE {_BOTH_APPLY}"
     )
+
+
+def write_snapshot(
+    results: list[StepResult], meta: dict[str, Any], path: Path = SNAPSHOT
+) -> Path | None:
+    """Save steps 11-12 for sample mode, dated to this run; None if either step failed."""
+    import json
+
+    by_title = {r.step.title: r for r in results}
+    board = by_title.get("One question, three answers")
+    rows = by_title.get("Which answer the report supports")
+    if not board or not rows or board.error or rows.error or not board.rows:
+        return None
+    numbers = {c: int(v) for c, v in zip(board.columns, board.rows[0], strict=True)}
+    keep = [rows.columns.index(c) for c in _SNAPSHOT_COLUMNS]
+    record = {
+        "snapshot_of": f"usl demo {meta['run_at']} (docs/zetaris-demo.md steps 11-12)",
+        "node_positive": numbers,
+        "disagreeing_records": [
+            dict(zip(_SNAPSHOT_COLUMNS, (row[i] for i in keep), strict=True)) for row in rows.rows
+        ],
+    }
+    path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    return path

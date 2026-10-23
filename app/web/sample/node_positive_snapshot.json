@@ -1,0 +1,64 @@
+{
+  "snapshot_of": "usl demo 2026-10-23 20:17 UTC (docs/zetaris-demo.md steps 11-12)",
+  "node_positive": {
+    "records": 663,
+    "node_positive_by_n_column": 336,
+    "node_positive_by_count_column": 328,
+    "columns_disagree": 10,
+    "node_positive_by_verdict": 333,
+    "left_to_a_person": 2,
+    "same_answer_other_category": 14
+  },
+  "disagreeing_records": [
+    {
+      "case_id": "TCGA-A7-A26E",
+      "recorded_n": "N1A",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-A7-A26H",
+      "recorded_n": "N1A",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-AO-A1KP",
+      "recorded_n": "N1",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-BH-A0BS",
+      "recorded_n": "N1C",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-BH-A0DD",
+      "recorded_n": "N1A",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-E2-A572",
+      "recorded_n": "N2",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-E2-A1LI",
+      "recorded_n": "N1",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-EW-A424",
+      "recorded_n": "N1",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-AO-A03P",
+      "recorded_n": "N1",
+      "lymph_nodes_positive": "0.0"
+    },
+    {
+      "case_id": "TCGA-AR-A1AT",
+      "recorded_n": "N0",
+      "lymph_nodes_positive": "1.0"
+    }
+  ]
+}

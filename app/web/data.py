@@ -261,6 +261,16 @@ class LiveData:
         return {"flag_id": flag_id, "created_at": stamp, "saved": True}
 
 
+SNAPSHOT_FILE = Path(__file__).parent / "sample" / "node_positive_snapshot.json"
+
+
+def _snapshot() -> dict[str, Any]:
+    try:
+        return json.loads(SNAPSHOT_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
 class SampleData:
     """Bundled cases for SAMPLE_MODE: no network, no model outputs, no write-back."""
 
@@ -286,6 +296,10 @@ class SampleData:
             ],
             "reports": len(self._cases),
             "sample": True,
+            # a dated copy of the live layer's usl demo run (aggregates and registry columns
+            # only, written by `usl demo --write`); never a live answer
+            "node_positive": _snapshot().get("node_positive"),
+            "node_positive_snapshot_of": _snapshot().get("snapshot_of"),
         }
 
     async def case(self, case_id: str, fresh: bool = True) -> dict[str, Any] | None:
