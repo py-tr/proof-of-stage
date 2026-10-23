@@ -92,6 +92,17 @@ def steps() -> list[Step]:
             f"RUN DQ case_id TABLE {table_fqn('parse_block')}",
         ),
         Step(
+            "The composite keys hold (no output rows means no duplicates)",
+            "Zetaris runs a composite-key rule only through its first column, so we check the "
+            "full keys of derived_stage (case_id, method, field) and parse_block (case_id, "
+            "page_no, block_index) directly",
+            f"SELECT 'derived_stage' AS usl_table, case_id, count(*) AS n FROM "
+            f"{table_fqn('derived_stage')} GROUP BY case_id, method, field HAVING count(*) > 1 "
+            f"UNION ALL SELECT 'parse_block' AS usl_table, case_id, count(*) AS n FROM "
+            f"{table_fqn('parse_block')} GROUP BY case_id, page_no, block_index "
+            "HAVING count(*) > 1",
+        ),
+        Step(
             "Evidence on the original scan",
             "the block Nemotron Parse read, with its box, for the hero case",
             "SELECT case_id, page_no, block_text, xmin, ymin, xmax, ymax "
