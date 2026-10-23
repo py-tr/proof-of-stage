@@ -1,0 +1,87 @@
+TABLE lightning.metastore.registry_audit.stage_audit.recorded_stage: Pathologic stage values recorded for the case in the registry
+  - case_id (varchar(64)): Tumour case these recorded stage values belong to
+  - site_key (varchar(32)): Site family used to choose staging rules for this case
+  - pathologic_t (varchar(64)): Registry T category with a leading p or yp removed and letters uppercased
+  - pathologic_n (varchar(64)): Registry N category with a leading p or yp removed and letters uppercased (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts)
+  - pathologic_stage (varchar(64)): Registry stage group as recorded
+  - edition (varchar(32)): Staging system edition as recorded
+  - edition_code (varchar(8)): Edition number taken from the recorded edition, such as 6, 7, or 8
+  - lymph_nodes_positive (varchar(32)): Number of positive regional lymph nodes recorded for the case (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts)
+  - lymph_nodes_tested (varchar(32)): Number of regional lymph nodes examined for the case
+  - year_of_diagnosis (varchar(16)): Year of the diagnosis row chosen for this case
+  - n_main (varchar(8)): Main N category of the recorded N value, such as N0 or N1, with the subcategory removed
+TABLE lightning.metastore.registry_audit.stage_audit.staging_rule: One paraphrased staging rule used to derive or check a T or N category
+  - rule_id (varchar(32)): Stable identifier of the staging rule
+  - site (varchar(32)): Site family the rule applies to
+  - element (varchar(8)): T or N, the stage element the rule assigns
+  - edition (varchar(32)): Comma-separated edition numbers the rule applies to
+  - condition_text (varchar(800)): Our paraphrase of when the rule applies
+  - min_value (varchar(32)): Inclusive lower bound for a numeric rule, in millimetres for size or a node count
+  - max_value (varchar(32)): Inclusive upper bound for a numeric rule, in millimetres for size or a node count
+  - output (varchar(64)): Category the rule assigns, or a review marker when it does not assign one
+  - cite (varchar(200)): Public source codes for the paraphrase
+TABLE lightning.metastore.registry_audit.stage_audit.derived_stage: A derived T or N value, from the node-count rules or from a report extraction
+  - case_id (varchar(64)): Tumour case this derived value belongs to
+  - method (varchar(64)): How the value was produced. sql_node_count is the node-count rule. Other methods are model extractions
+  - field (varchar(32)): Stage element, T or N
+  - value (varchar(256)): Derived category
+  - quote (varchar(8000)): Verbatim source span supporting a model extraction
+  - quote_start (integer): Start offset of the quote in the report text
+  - quote_end (integer): End offset of the quote in the report text
+  - model (varchar(256)): Model id that produced a model extraction
+  - receipt_id (varchar(256)): Provider receipt id for a model extraction
+  - created_at (varchar(40)): When the derived value was recorded
+TABLE lightning.metastore.registry_audit.stage_audit.stage_check: Recorded stage and derived stage for one case, side by side, for the data-quality checks
+  - case_id (varchar(64)): Tumour case this comparison belongs to
+  - site_key (varchar(32)): Site family used to choose the node-count rule
+  - edition_code (varchar(8)): Edition number the checks use
+  - recorded_t (varchar(64)): Registry T category normalised the same way as a report extraction
+  - recorded_n (varchar(64)): Registry N category normalised the same way as a report extraction (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts)
+  - recorded_stage (varchar(64)): Registry stage group as recorded
+  - recorded_n_main (varchar(8)): Main N category recorded for the case
+  - lymph_nodes_positive (varchar(32)): Positive regional nodes used to choose the N rule (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts)
+  - lymph_nodes_tested (varchar(32)): Examined regional nodes. A zero or missing count selects the not-examined rule
+  - derived_n (varchar(64)): N category chosen from the staging rules using the positive-node count
+  - derived_n_main (varchar(8)): Main N category of that rule output
+  - report_t (varchar(64)): Model-derived T category when a report extraction exists, normalised. If several exist, the greatest value is shown
+  - report_n (varchar(64)): Model-derived N category when a report extraction exists, normalised. If several exist, the greatest value is shown
+  - year_of_diagnosis (varchar(8)): Year the tumour was diagnosed, from the case record
+  - edition_year_class (varchar(16)): Whether the staging edition was in use in the diagnosis year (with one year of transition slack): in_window, out_of_window or unknown
+  - reason_class (varchar(32)): How the recorded N and the node count relate: n_count_contradiction, n_missing_derivable, n_ambiguous_micromet, count_missing, or consistent
+  - report_n_main (varchar(8)): Main N category the pathology report supports, from a quote-verified model extraction
+  - report_nodes_positive (varchar(32)): Positive regional nodes stated in the report, accepted only when the number lies inside its verified quote
+  - fault_field (varchar(32)): For a node-count contradiction or a missing N, the registry field the quote-verified report evidence points to: node_count (needs a verified report count that differs from the registry count), pathologic_n, or review when the evidence does not settle it
+TABLE lightning.metastore.registry_audit.stage_audit.flag: One review-queue flag raised for a case
+  - flag_id (varchar(64)): Unique identifier of the flag
+  - case_id (varchar(64)): Tumour case this flag belongs to
+  - rule_id (varchar(64)): Rule that raised the flag
+  - field (varchar(32)): Stage field the flag is about
+  - recorded_value (varchar(256)): Value recorded in the registry
+  - derived_value (varchar(256)): Value the check derived
+  - quote (varchar(8000)): Verbatim source span that supports the flag
+  - reason (varchar(2000)): Why the row was sent to review
+  - severity (varchar(32)): How serious the disagreement is
+  - model (varchar(256)): Model id recorded with the flag
+  - receipt_id (varchar(256)): Provider receipt id recorded with the flag
+  - created_at (varchar(40)): When the flag was recorded
+TABLE lightning.metastore.registry_audit.stage_audit.tumour_case: One tumour case from the cancer registry, keyed by the case submitter id
+  - case_id (varchar(64)): GDC case submitter id and the primary key of the case
+  - primary_site (varchar(128)): Anatomical site recorded for the case
+  - site_key (varchar(32)): Site family used to match staging rules, such as breast or colon
+  - year_of_diagnosis (varchar(16)): Year the diagnosis was recorded
+TABLE lightning.metastore.registry_audit.stage_audit.path_report: One pathology report linked to a tumour case
+  - report_id (varchar(64)): Identifier of the pathology report
+  - case_id (varchar(64)): Tumour case this report belongs to
+  - report_text (varchar(60000)): Full text of the pathology report
+TABLE lightning.metastore.registry_audit.stage_audit.parse_block: One text block that Nemotron Parse read on a page of the original scanned pathology report, with its box
+  - case_id (varchar(64)): Tumour case the scanned report belongs to
+  - page_no (integer): Page of the report PDF, counting from 0
+  - block_index (integer): Position of the block in Nemotron Parse reading order on that page
+  - block_text (varchar(8000)): Text Nemotron Parse read inside the box
+  - block_kind (varchar(32)): Layout class Nemotron Parse gave the block, such as Text, Table or Caption
+  - xmin (decimal(9,6)): Left edge of the box as a fraction of the 1024 by 1280 page canvas
+  - ymin (decimal(9,6)): Top edge of the box as a fraction of the page canvas
+  - xmax (decimal(9,6)): Right edge of the box as a fraction of the page canvas
+  - ymax (decimal(9,6)): Bottom edge of the box as a fraction of the page canvas
+  - model (varchar(128)): Model that read the page, as served
+  - gdc_file_id (varchar(64)): Open-access GDC file id of the scanned report

@@ -1,0 +1,13 @@
+{
+  "frozen_at": "2026-10-23",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b (Nightshift, pinned, signed)",
+  "calls_per_arm": 5,
+  "thinking_budget": 4000,
+  "question": "How many patients are node-positive?",
+  "prompt_sha256_16": "1a49a6c1baa78bbe",
+  "schema_with_sha256_16": "abf83db8976a3390",
+  "schema_without_sha256_16": "accff460a87f7223",
+  "code_sha256_16": {
+    "app/engine/agent_probe.py": "4cf7f41df8c1e778"
+  }
+}
