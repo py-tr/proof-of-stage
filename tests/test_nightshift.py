@@ -306,3 +306,47 @@ async def test_local_job_retries_attempt_5xx(
         )
     assert text == "ready"
     assert route.call_count == 2
+
+
+@pytest.mark.usefixtures("env", "fast_poll")
+@pytest.mark.asyncio
+async def test_chat_429_waits_2_4_8_then_surfaces_with_the_servers_fix() -> None:
+    waits: list[float] = []
+
+    async def _sleep(seconds: float) -> None:
+        waits.append(seconds)
+
+    body = {"error": {"message": "rate limited"}, "meterless": {"fix": ["wait for the lane"]}}
+    with respx.mock:
+        respx.post("https://nightshift.test/chat/completions").mock(
+            return_value=httpx.Response(429, json=body)
+        )
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr(nightshift.asyncio, "sleep", _sleep)
+            with pytest.raises(NightshiftError) as err:
+                await nightshift.chat(
+                    [{"role": "user", "content": "x"}], NS_LIGHTNING_CLOUD, item_id="r"
+                )
+    assert waits[:3] == [2.0, 4.0, 8.0]
+    assert "rate limited" in str(err.value) and "fix: wait for the lane" in str(err.value)
+
+
+@pytest.mark.usefixtures("env")
+@pytest.mark.asyncio
+async def test_discover_reads_models_and_the_text_class_in_both_shapes() -> None:
+    models = {"data": [{"id": "meterless/text"}, {"id": "meterless/new-mode"}, {"id": "nvidia/x"}]}
+    text = {"class": "text", "availability": "ready", "ready": ["l1"], "cloud": ["nvidia/x"]}
+    for classes in ({"classes": {"text": text}}, {"classes": [text]}):
+        with respx.mock:
+            respx.get("https://nightshift.test/models").mock(
+                return_value=httpx.Response(200, json=models)
+            )
+            respx.get("https://nightshift.test/meterless/classes").mock(
+                return_value=httpx.Response(200, json=classes)
+            )
+            found = await nightshift.discover()
+        assert found["modes"] == ["meterless/text", "meterless/new-mode"]  # unknown ids kept
+        assert found["text"]["cloud"] == ["nvidia/x"] and found["text"]["availability"] == "ready"
+    with respx.mock:
+        respx.get("https://nightshift.test/models").mock(return_value=httpx.Response(401))
+        assert (await nightshift.discover())["state"] == "unauthorized"

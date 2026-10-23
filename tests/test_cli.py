@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
+from app import config
 from app.cli import _doctor, _sanitize
 from app.providers.nightshift import NightshiftError
 from app.providers.receipts import Receipt
@@ -45,19 +46,28 @@ async def test_doctor_pass_lines(
     )
     chat = AsyncMock(return_value=("ready", receipt))
     local = AsyncMock(return_value=("ready", {}))
+    found = {
+        "state": "online",
+        "models": ["meterless/text", "nvidia/nemotron-3.5-super-vl-120b-a12b"],
+        "modes": ["meterless/text"],
+        "text": {"availability": "ready", "ready": [], "cloud": [config.NS_SUPER_VL]},
+    }
     monkeypatch.setattr("app.cli.nightshift.health", AsyncMock(return_value="online"))
+    monkeypatch.setattr("app.cli.nightshift.discover", AsyncMock(return_value=found))
     monkeypatch.setattr("app.cli.nightshift.chat", chat)
     monkeypatch.setattr("app.cli.nightshift.local_job", local)
     monkeypatch.setattr("app.cli.nvidia.chat", AsyncMock(return_value=("ready", "served")))
     monkeypatch.setattr("app.cli.zetaris.ping", AsyncMock(return_value=SqlResult([[1]], ["one"])))
     code = await _doctor()
     out = capsys.readouterr().out
-    assert code == 0
+    assert code == 0, out
+    assert "PASS  nightshift discovery:" in out and "PASS  nightshift meterless/text:" in out
+    assert chat.call_args_list[1].args[1] == "meterless/text"
     lines = [line for line in out.splitlines() if line.strip()]
     assert all(line.startswith("PASS  ") for line in lines)
     assert any(line.startswith("PASS  config:") for line in lines)
     assert any(line.startswith("PASS  nightshift chat:") for line in lines)
-    chat_id = chat.call_args.kwargs["item_id"]
+    chat_id = chat.call_args_list[0].kwargs["item_id"]
     local_id = local.call_args.kwargs["item_id"]
     assert chat_id.startswith("doctor-chat-")
     assert local_id.startswith("doctor-local-")

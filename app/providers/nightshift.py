@@ -15,6 +15,7 @@ from app.providers.text import strip_think
 
 _TIMEOUT_S = 180.0
 _MAX_RETRIES = 2
+_RATE_LIMIT_WAITS_S = (2.0, 4.0, 8.0)
 _POLL_INTERVAL_S = 2.0
 _THINK_OFF = {"role": "assistant", "content": "<think></think>"}
 _DONE_STATUSES = {"completed", "succeeded", "success", "done"}
@@ -91,10 +92,29 @@ def _response_error_message(response: httpx.Response) -> str:
     return response.text
 
 
+def _server_fix(response: httpx.Response) -> list[str]:
+    """The runtime's own fix[] (in its meterless block or the error), if it sent one."""
+    try:
+        payload = response.json()
+    except ValueError:
+        return []
+    if not isinstance(payload, dict):
+        return []
+    for block in (payload.get("meterless"), payload.get("error"), payload):
+        if isinstance(block, dict) and isinstance(block.get("fix"), list):
+            return [str(item) for item in block["fix"] if item]
+    return []
+
+
 def _raise_http(response: httpx.Response, what: str) -> None:
-    raise NightshiftError(
-        f"{what} HTTP {response.status_code}: {_response_error_message(response)}"
-    )
+    """The server's message first, then its fix[] (Meterless provider contract v4)."""
+    message = f"{what} HTTP {response.status_code}: {_response_error_message(response)}"
+    fix = _server_fix(response)
+    if fix:
+        message += " | fix: " + "; ".join(fix)
+    elif response.status_code in {401, 403}:
+        message += " | paste the runtime's access token into METERLESS_RUNTIME_TOKEN"
+    raise NightshiftError(message)
 
 
 def _raise_for_jobs(response: httpx.Response, what: str) -> None:
@@ -210,6 +230,12 @@ async def chat(
                     await _backoff(attempt)
                     continue
                 raise last_error from exc
+            for wait in _RATE_LIMIT_WAITS_S:
+                if response.status_code != 429:
+                    break
+                # contract v4: a 429 retries after 2 s, 4 s and 8 s, then surfaces
+                await asyncio.sleep(wait)
+                response = await client.post(url, headers=_headers(item_id), json=body)
             if 400 <= response.status_code < 500:
                 _raise_http(response, "Nightshift chat")
             if response.status_code >= 500 or not response.content:
@@ -316,6 +342,38 @@ async def local_job(
                 return await local_job(messages, item_id=item_id, _empty_retries=_empty_retries - 1)
             raise EmptyAnswer("Nightshift local job returned an empty answer")
         return text, attempt_payload
+
+
+async def discover() -> dict[str, Any]:
+    """What the runtime serves now: GET /models (every id, unknown meterless/* modes kept)
+    and GET /meterless/classes (live state of the text class)."""
+    base = _base_url()
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        models = await client.get(f"{base}/models", headers=_headers("discover"))
+        if models.status_code in {401, 403}:
+            return {"state": "unauthorized"}
+        models.raise_for_status()
+        classes = await client.get(f"{base}/meterless/classes", headers=_headers("discover"))
+    ids = [str(m.get("id")) for m in models.json().get("data", []) if m.get("id")]
+    text: dict[str, Any] = {}
+    if classes.status_code == 200:
+        payload = classes.json()
+        found = payload.get("classes") if isinstance(payload, dict) else None
+        if isinstance(found, dict):
+            text = found.get("text") or {}
+        elif isinstance(found, list):  # the other shape the contract mentions
+            text = next((c for c in found if isinstance(c, dict) and c.get("class") == "text"), {})
+    return {
+        "state": "online",
+        "models": ids,
+        "modes": [i for i in ids if i.startswith("meterless/")],
+        "text": {
+            "availability": text.get("availability"),
+            "ready": text.get("ready") or [],
+            "cloud": text.get("cloud") or [],
+            "dispositions": text.get("dispositions") or [],
+        },
+    }
 
 
 async def health() -> str:

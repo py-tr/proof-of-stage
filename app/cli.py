@@ -95,6 +95,49 @@ async def _doctor() -> int:
         failed += 1
 
     try:
+        found = await nightshift.discover()
+        text_class = found.get("text", {})
+        ok = found.get("state") == "online" and config.NS_SUPER_VL in text_class.get("cloud", [])
+        lines.append(
+            _line(
+                ok,
+                "nightshift discovery",
+                f"state={found.get('state')} models={len(found.get('models', []))} "
+                f"modes={len(found.get('modes', []))} text={text_class.get('availability')!r} "
+                f"ready={text_class.get('ready')!r} super_vl_cloud={ok}",
+            )
+        )
+        if not ok:
+            failed += 1
+    except Exception as exc:
+        lines.append(_line(False, "nightshift discovery", _exc_reason(exc)))
+        failed += 1
+
+    try:
+        # contract v4's own done-test: a plain text request on a routing mode returns a string
+        text, receipt = await nightshift.chat(
+            [{"role": "user", "content": "Reply with one word: ready"}],
+            "meterless/text",
+            item_id=f"doctor-mode-{uuid4().hex[:8]}",
+            require_signature=True,
+            pinned_key=config.getenv("NS_RECEIPT_PUBKEY"),
+            allow_cache=False,
+            max_tokens=_PING_MAX_TOKENS,
+        )
+        _require_text(text, "nightshift meterless/text")
+        lines.append(
+            _line(
+                True,
+                "nightshift meterless/text",
+                f"routed={receipt.winning_model!r} kind={receipt.winning_kind!r} "
+                f"signature={receipt.signature}",
+            )
+        )
+    except Exception as exc:
+        lines.append(_line(False, "nightshift meterless/text", _exc_reason(exc)))
+        failed += 1
+
+    try:
         text, _record = await nightshift.local_job(
             [{"role": "user", "content": "Reply with one word: ready"}],
             item_id=f"doctor-local-{uuid4().hex[:8]}",
