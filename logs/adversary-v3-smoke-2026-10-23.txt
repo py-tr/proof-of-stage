@@ -1,0 +1,1 @@
+{"smoke": "TCGA-BH-A0DD (not a case; not scored)", "seconds": 13.4, "provider": "nightshift", "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "signature": "verified", "signer": "7a6d14e27e1a", "from_cache": false, "budget": 1000, "prompt_tokens": 755, "completion_tokens": 1017, "answer": "{\"N\": 0, \"quote\": \"(0/22)\"}"}
