@@ -193,8 +193,8 @@ async def write_note(
 ) -> dict[str, Any]:
     """One note for one case; the result is logged and returned, never stored as evidence.
 
-    writer "ultra": Nemotron Ultra on NVIDIA direct (no Nightshift lane for it), same facts,
-    prompt and guard, logged to ULTRA_LOG."""
+    writer "ultra": Nemotron Ultra on NVIDIA direct (as pre-registered; Ultra also answers
+    through Nightshift 1.2.3), same facts, prompt and guard, logged to ULTRA_LOG."""
     case_id = found["check"]["case_id"]
     facts = build_facts(found)
     messages = [

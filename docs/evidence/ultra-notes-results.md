@@ -12,7 +12,7 @@ Pre-registration: `docs/preregistration/ultra-notes.md` (written before the firs
 | Median seconds / completion tokens per Ultra note | 56 s / 1,784 |
 | **Kill line (Ultra replaces Super only if at least 12 of 25 and more than Super)** | **hit: the note stays with Super** |
 
-Why Ultra's 17 notes failed (first failing check): 14 used a word that none of their cited facts has ("determines", "documents", "translates", "triggers", …), 3 wrote fact ids into the text, 1 was not JSON, 1 sentence had no citation. Ultra writes fuller explanatory prose; the guard allows only the facts' words plus a fixed connecting vocabulary.
+Why Ultra's 17 notes failed (first failing check): 12 used a word that none of their cited facts has ("determines", "documents", "translates", "triggers", …), 3 wrote fact ids into the text, 1 was not JSON, 1 sentence had no citation. Ultra writes fuller explanatory prose; the guard allows only the facts' words plus a fixed connecting vocabulary.
 
 Prediction (before the run): "Ultra passes more notes than Super, at more seconds per note." **Did not hold** on passes; it did take longer (Super thinking on: about 20–60 s).
 
