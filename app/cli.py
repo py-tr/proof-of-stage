@@ -213,6 +213,33 @@ async def _usl(args: argparse.Namespace) -> int:
     return 2
 
 
+async def _baseline(step: str) -> int:
+    from app.engine import baseline
+
+    if step == "run":
+        sys.stdout.write(json.dumps(await baseline.run_baseline(), indent=2) + "\n")
+        return 0
+    record = baseline.frozen()
+    if not baseline.LABELS.exists():
+        sys.stderr.write(f"no frozen labels at {baseline.LABELS.relative_to(baseline.ROOT)}\n")
+        return 1
+    labels_text = baseline.LABELS.read_text(encoding="utf-8")
+    want = (baseline.LABELS.with_suffix(".sha16")).read_text(encoding="utf-8").strip()
+    if baseline.sha16(labels_text) != want:
+        sys.stderr.write("the labels changed since they were frozen\n")
+        return 1
+    rows = await baseline.queue_rows(list(record["cases"]))
+    a0 = {c: r.get("fault_field") for c, r in rows.items()}
+    m0 = [json.loads(line) for line in baseline.LOG.read_text(encoding="utf-8").splitlines()]
+    runs = {r["run"] for r in m0}
+    if len(runs) != 1:
+        sys.stderr.write(f"expected one M0 run in the log, found {sorted(runs)}\n")
+        return 1
+    result = baseline.score(m0, json.loads(labels_text)["labels"], a0)
+    sys.stdout.write(json.dumps(result, indent=2) + "\n")
+    return 0
+
+
 async def _adversary(version: str = "v2") -> int:
     from app.engine.adversary import frozen_cases, frozen_provider, prereg_path, run_chain
     from app.reports.ingest import read_reports_csv
@@ -348,6 +375,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
     )
+    baseline = sub.add_parser(
+        "baseline", help="Pre-registered M0: Super alone on the queue (run), then score vs labels"
+    )
+    baseline.add_argument("step", choices=("run", "score"))
     note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
     note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
@@ -384,6 +415,8 @@ def main(argv: list[str] | None = None) -> int:
 
             sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
             return 0
+        if args.command == "baseline":
+            return asyncio.run(_baseline(args.step))
         if args.command == "adversary":
             return asyncio.run(_adversary(args.version))
         if args.command == "note":

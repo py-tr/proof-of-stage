@@ -1,0 +1,40 @@
+{
+  "rule": "stage_check reason_class in (n_count_contradiction, n_missing_derivable)",
+  "frozen_at": "2026-10-23",
+  "arms": {
+    "off": 0,
+    "4k": 4000
+  },
+  "cases": [
+    "TCGA-3C-AAAU",
+    "TCGA-A1-A0SN",
+    "TCGA-A2-A0CV",
+    "TCGA-A2-A0EW",
+    "TCGA-A7-A26E",
+    "TCGA-A7-A26H",
+    "TCGA-AC-A2FK",
+    "TCGA-AN-A0XN",
+    "TCGA-AN-A0XO",
+    "TCGA-AN-A0XP",
+    "TCGA-AN-A0XS",
+    "TCGA-AN-A0XT",
+    "TCGA-AN-A0XW",
+    "TCGA-AO-A03P",
+    "TCGA-AO-A1KP",
+    "TCGA-AQ-A1H2",
+    "TCGA-AR-A1AT",
+    "TCGA-BH-A0BS",
+    "TCGA-BH-A0DD",
+    "TCGA-D8-A27L",
+    "TCGA-E2-A1B4",
+    "TCGA-E2-A1LI",
+    "TCGA-E2-A572",
+    "TCGA-E9-A3X8",
+    "TCGA-EW-A424"
+  ],
+  "prompt_sha256_16": "45358ff37032cd0d",
+  "code_sha256_16": {
+    "app/engine/baseline.py": "764f40a1e8f4873a",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  }
+}
