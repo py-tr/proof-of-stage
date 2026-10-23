@@ -12,7 +12,7 @@ model call sees only the fixed reader prompt and one document, never the carryov
 earlier answer, so no reading can anchor the next. The run ends when `need` is empty
 ([TASK_COMPLETE]) or the ladder runs out (the open fields go to a person). Budgeted reads go
 to NVIDIA directly: Nightshift currently overwrites the thinking switch and forwards no
-budget (research/nightshift-thinking-problem-2026-10-23.md).
+budget (docs/evidence/nightshift-limits.md).
 """
 
 from __future__ import annotations

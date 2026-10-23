@@ -34,6 +34,7 @@ from typing import Any
 from app import config
 from app.engine.markovian import run_engine
 from app.providers import nightshift, nvidia
+from app.providers.receipts import key_fingerprint
 from app.reader.quotes import locate
 from app.reader.reader import count_path, judge_count, parse_answer, thinking_args
 
@@ -209,6 +210,7 @@ async def _ask(
             "receipt_id": receipt.receipt_id,
             "model": receipt.winning_model,
             "signature": receipt.signature,
+            "signer": key_fingerprint(receipt.signer_key),
             "from_cache": receipt.from_cache,
             "prompt_tokens": usage.get("prompt_tokens"),
             "completion_tokens": usage.get("completion_tokens"),
@@ -349,5 +351,5 @@ def summarise(chain: Chain) -> dict[str, Any]:
             and r.get("signature") != "verified"
         ),
         "markovian_prompt_tokens_measured": sum(measured),
-        "tokens_saved_est": sum(max(0, s) for s in saved),
+        "tokens_saved_est": sum(saved),  # as pre-registered: no clamp at 0
     }

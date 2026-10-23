@@ -22,6 +22,7 @@ from typing import Any
 
 from app import config
 from app.providers import nightshift
+from app.providers.receipts import key_fingerprint
 from app.reader.reader import NODES_POSITIVE, parse_answer
 from app.web.evidence import n_range
 
@@ -41,7 +42,8 @@ SYSTEM_PROMPT = (
     'cites the ids of the facts it uses (in "cites" only, never in the text); every number '
     "and stage category you write must appear in a fact that sentence cites; say which "
     "field the semantic layer names and why, then that a person decides. Never recommend "
-    "a value the facts do not state."
+    "a value the facts do not state, and never say anyone reviewed, confirmed or judged "
+    "anything the facts do not say."
 )
 
 FAULT_WORDS = {
@@ -51,6 +53,14 @@ FAULT_WORDS = {
 }
 _CITE = re.compile(r"^[FQ]\d{1,2}$")
 _ID_IN_TEXT = re.compile(r"\b[FQ]\d{1,2}\b")
+# Words that claim an action or a judgment; a sentence may use one only if a fact it cites
+# does ("A reviewer verified the report" passed the number check, but no reviewer did).
+_CLAIM = re.compile(
+    r"\b(?:review(?:er|ed)s?|confirm\w*|recommend\w*|should|must|correct\w*|wrong|"
+    r"incorrect|error\w*|mistak\w*|likely|probabl\w*|clearly|definitely|proves?|"
+    r"approved|decided)\b",
+    re.I,
+)
 # a whole or decimal number; a full stop after it ends the sentence ("POSITIVE: 1. NODES")
 _NUMBER = re.compile(r"(?<!\w)(?<!\d\.)\d+(?:\.\d+)?(?!\w|\.\d)")
 _CATEGORY = re.compile(r"\b(?:y?p)?([TN](?:X|IS|\d[A-D]?|\dMI))\b", re.I)
@@ -131,10 +141,14 @@ def check_note(answer: dict[str, Any] | None, facts: dict[str, str]) -> tuple[li
         unknown = [c for c in cites if c not in facts]
         if unknown:
             return [], f"sentence_{n}_cites_unknown_{unknown[0]}"
-        allowed = _tokens(" ".join(facts[c] for c in cites))
-        extra = sorted(_tokens(text) - allowed)
+        cited = " ".join(facts[c] for c in cites)
+        extra = sorted(_tokens(text) - _tokens(cited))
         if extra:
             return [], f"sentence_{n}_states_{extra[0].removeprefix('cat:')}_not_in_cited_facts"
+        cited_claims = {w.lower() for w in _CLAIM.findall(cited)}
+        claims = sorted({w.lower() for w in _CLAIM.findall(text)} - cited_claims)
+        if claims:
+            return [], f"sentence_{n}_claims_{claims[0]}_not_in_cited_facts"
         out.append({"text": text.strip(), "cites": cites})
     return out, ""
 
@@ -179,6 +193,7 @@ async def write_note(found: dict[str, Any], *, chat: Any = None) -> dict[str, An
             "egress": receipt.egress_destination,
             "context_sources": receipt.context_sources,
             "signature": receipt.signature,
+            "signer": key_fingerprint(receipt.signer_key),
             "from_cache": receipt.from_cache,
             "latency_ms": receipt.latency_ms,
             "usage": receipt.usage,
@@ -197,14 +212,18 @@ def _append(result: dict[str, Any], raw_text: str) -> None:
 
 
 def latest_note(case_id: str) -> dict[str, Any] | None:
-    """The last accepted note logged for a case (the page shows it until a new one is asked for)."""
+    """The last logged note for a case that passes the CURRENT guard (re-checked from the
+    model's raw answer, so a note accepted by an older guard is not shown as if it passed)."""
     if not NOTES_LOG.exists():
         return None
     last = None
     for line in NOTES_LOG.read_text(encoding="utf-8").splitlines():
         row = json.loads(line)
-        if row.get("case_id") == case_id and row.get("status") == "accepted":
-            last = row
+        if row.get("case_id") != case_id or "raw_text" not in row:
+            continue
+        sentences, reason = check_note(parse_answer(row["raw_text"]), row.get("facts") or {})
+        if not reason:
+            last = {**row, "status": "accepted", "reason": "", "sentences": sentences}
     if last is not None:
         last.pop("raw_text", None)
     return last

@@ -11,6 +11,7 @@ from uuid import uuid4
 from app import config, zetaris
 from app.providers import nightshift, nvidia
 from app.providers.errors import EmptyAnswer
+from app.providers.receipts import key_fingerprint
 from app.reader.commands import fetch_reports, read_cases
 from app.usl.setup import dq_report, setup, status_report, teardown
 
@@ -68,17 +69,25 @@ async def _doctor() -> int:
         failed += 1
 
     try:
+        pinned = config.getenv("NS_RECEIPT_PUBKEY")
         text, receipt = await nightshift.chat(
             [{"role": "user", "content": "Reply with one word: ready"}],
-            config.NS_LIGHTNING_CLOUD,
+            config.NS_SUPER_VL,
             item_id=f"doctor-chat-{uuid4().hex[:8]}",
+            require_model=config.NS_SUPER_VL,
+            retry_on_mismatch=True,
+            require_signature=True,
+            pinned_key=pinned,
+            allow_cache=False,
             max_tokens=_PING_MAX_TOKENS,
         )
         _require_text(text, "nightshift chat")
         reason = (
             f"model={receipt.winning_model!r} kind={receipt.winning_kind!r} "
             f"egress={receipt.egress_destination!r} sources={receipt.context_sources!r} "
-            f"receipt_id={receipt.receipt_id!r}"
+            f"receipt_id={receipt.receipt_id!r} signature={receipt.signature} "
+            f"signer={key_fingerprint(receipt.signer_key)} "
+            f"key={'pinned (NS_RECEIPT_PUBKEY)' if pinned else 'NOT pinned: set NS_RECEIPT_PUBKEY'}"
         )
         lines.append(_line(True, "nightshift chat", reason))
     except Exception as exc:
@@ -260,9 +269,7 @@ def main(argv: list[str] | None = None) -> int:
     run = sub.add_parser("run", help="One case through the Markovian evidence ladder (RUNGS)")
     run.add_argument("--case", required=True, help="Case id, e.g. TCGA-A2-A0CV")
     run.add_argument("--store", action="store_true", help="Append closed fields to Zetaris")
-    sub.add_parser(
-        "adversary", help="The pre-registered red-team chain (3 cases x 20 steps, Nightshift)"
-    )
+    sub.add_parser("adversary", help="The pre-registered red-team chain (3 cases x 20 steps)")
     note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
     note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
