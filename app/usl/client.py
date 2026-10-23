@@ -41,7 +41,7 @@ _DENY = re.compile(
     r"TRUNCATE|UPSERT|CALL|COPY|INTO)\b",
     re.IGNORECASE,
 )
-_ALLOWED_COMMANDS = ("SHOW DQ", "LOAD USL", "RUN DQ", "SELECT", "SHOW")
+_ALLOWED_COMMANDS = ("SHOW DQ", "LOAD USL", "LIST DQ USL", "RUN DQ", "SELECT", "SHOW")
 _DQ_RULE = re.compile(
     r"(?:RUN\s+DQ|SHOW\s+DQ\s+(?:INVALID|VALID)\s+RECORD)\s+([A-Za-z_][\w]*)\s+TABLE\b",
     re.IGNORECASE,

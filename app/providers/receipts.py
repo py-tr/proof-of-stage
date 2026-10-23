@@ -137,6 +137,15 @@ def _signed_receipt(envelope: dict[str, Any]) -> tuple[SignatureState, dict[str,
     return "invalid", {}, key_b64
 
 
+def key_fingerprint(key_b64: str | None) -> str:
+    """A short, printable id of a public key (first 12 hex of its SHA-256); "-" if none."""
+    if not key_b64:
+        return "-"
+    import hashlib
+
+    return hashlib.sha256(key_b64.encode("ascii")).hexdigest()[:12]
+
+
 def parse_receipt(payload: dict[str, Any]) -> Receipt:
     """Build a Receipt. Prefer meterless top-level fields, then meterless.receipt."""
     meterless = _as_dict(payload.get("meterless"))

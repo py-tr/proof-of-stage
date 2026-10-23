@@ -126,3 +126,41 @@ def test_a_number_before_a_full_stop_counts() -> None:
     answer = _answer(("The report states 1 positive node of 23 examined.", ["Q1"]))
     assert note_mod.check_note(answer, facts)[1] == ""
     assert note_mod._tokens("size 2.4 cm") == {"2.4"}
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "A reviewer looked at the report and the count field.",
+        "The count field is wrong; a person decides.",
+        "The registry should record the report's count.",
+    ],
+)
+def test_the_guard_rejects_claims_no_fact_makes(sentence: str) -> None:
+    facts = note_mod.build_facts(FOUND)
+    _, reason = note_mod.check_note(_answer((sentence, ["F4"])), facts)
+    assert "_claims_" in reason
+
+
+def test_a_claim_word_a_cited_fact_uses_passes() -> None:
+    facts = {"F4": "The semantic layer names neither field (a person must decide)"}
+    sentences, reason = note_mod.check_note(_answer(("A person must decide.", ["F4"])), facts)
+    assert reason == "" and sentences
+
+
+def test_the_page_shows_a_logged_note_only_if_it_passes_the_current_guard(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    log = tmp_path / "case-notes.jsonl"
+    monkeypatch.setattr(note_mod, "NOTES_LOG", log)
+    facts = note_mod.build_facts(FOUND)
+    good = json.dumps(_answer(("The semantic layer names the count field.", ["F4"])))
+    bad = json.dumps(_answer(("A reviewer checked the count field.", ["F4"])))
+    rows = [
+        {"case_id": "TCGA-A2-A0CV", "status": "accepted", "facts": facts, "raw_text": good},
+        {"case_id": "TCGA-A2-A0CV", "status": "accepted", "facts": facts, "raw_text": bad},
+    ]
+    log.write_text("".join(json.dumps(r) + chr(10) for r in rows), encoding="utf-8")
+    shown = note_mod.latest_note("TCGA-A2-A0CV")
+    assert shown is not None and "raw_text" not in shown
+    assert shown["sentences"][0]["text"].startswith("The semantic layer")

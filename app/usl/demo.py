@@ -17,7 +17,14 @@ from app.usl.client import load_contract, select
 from app.usl.model import ROOT, USL_FQN, USL_TABLES, table_fqn
 
 DEMO_DOC = ROOT / "docs" / "zetaris-demo.md"
+SQL_DIR = ROOT / "app" / "usl" / "sql"
 SAMPLE_ROWS = 5
+# the setup files that identify and onboard each source, in the order `usl setup` runs them
+ONBOARDING = (
+    ("Postgres (our append-only results)", ("002", "003", "004", "005")),
+    ("File store REG_FILES (rules, report text, Parse blocks)", ("010", "011", "012", "015")),
+    ("NCI GDC REST API (cases, recorded stage, node counts)", ("020", "021", "022")),
+)
 
 
 @dataclass
@@ -25,6 +32,7 @@ class Step:
     title: str
     why: str
     sql: str
+    sample: int = SAMPLE_ROWS  # rows shown in the doc
 
 
 def steps() -> list[Step]:
@@ -37,6 +45,23 @@ def steps() -> list[Step]:
                 f"SELECT '{t}' AS usl_table, count(*) AS rows FROM {table_fqn(t)}"
                 for t in USL_TABLES
             ),
+            sample=len(USL_TABLES),
+        ),
+        Step(
+            "Every rule registered on the layer",
+            "our custom rules and the key rules Zetaris generated from the DDL",
+            f"LIST DQ USL {USL_FQN}",
+            sample=50,
+        ),
+        Step(
+            "A plain question to the layer",
+            "how many records in each edition cannot be true as written, and which field the "
+            "evidence names",
+            f"SELECT edition_code, fault_field, count(*) AS cases FROM {check} "
+            "WHERE reason_class IN ('n_count_contradiction', 'n_missing_derivable') "
+            "GROUP BY edition_code, fault_field "
+            "ORDER BY edition_code, fault_field",
+            sample=50,
         ),
         Step(
             "The cross-source verdict",
@@ -102,7 +127,7 @@ async def run_demo() -> tuple[list[StepResult], dict[str, Any]]:
                     step,
                     round(time.monotonic() - t0, 2),
                     list(result.columns),
-                    rows[:SAMPLE_ROWS],
+                    rows[: step.sample],
                     len(rows),
                 )
             )
@@ -118,6 +143,14 @@ async def run_demo() -> tuple[list[StepResult], dict[str, Any]]:
         "total_seconds": round(time.monotonic() - started, 2),
     }
     return results, meta
+
+
+def _onboarding() -> list[str]:
+    lines = []
+    for source, prefixes in ONBOARDING:
+        files = sorted(f.name for f in SQL_DIR.glob("*.sql") if f.name[:3] in prefixes)
+        lines.append(f"- {source}: " + ", ".join(f"`app/usl/sql/{name}`" for name in files))
+    return lines
 
 
 def _table(columns: list[str], rows: list[list[Any]]) -> str:
@@ -148,6 +181,10 @@ def render(results: list[StepResult], meta: dict[str, Any]) -> str:
         "(TCGA-Reports, MIT) and Nemotron Parse blocks of the original scanned reports.",
         "- Postgres `oa_pg`: the reader's quote-verified values and the review log "
         "(INSERT only, append-only).",
+        "",
+        "## How the sources were onboarded (`usl setup` runs these files in order)",
+        "",
+        *_onboarding(),
         "",
         "## How to run it (the SQL in order, with output)",
     ]

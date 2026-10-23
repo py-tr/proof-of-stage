@@ -324,6 +324,7 @@ function noteWhy(code) {
     .replace(/^states_(.+)_not_in_cited_facts$/, "it states $1, which none of its cited facts says")
     .replace(/^cites_unknown_(.+)$/, "it cites $1, which is not a fact")
     .replace("no_citation", "it cites no fact").replace("too_long", "it is too long")
+    .replace(/^claims_(.+)_not_in_cited_facts$/, "it says “$1”, which none of its cited facts says")
     .replace("fact_id_in_text", "it writes a fact id into the text").replace("malformed", "it is malformed");
   return `sentence ${m[1]}: ${rest}`;
 }
