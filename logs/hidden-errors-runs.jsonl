@@ -1,0 +1,1 @@
+{"run": "20261023T194427", "records": 60, "provider_failures": 0, "void": false, "scored": 60, "records_contradicting_registry": 1, "fields_contradicting_registry": {"N": 0, "NPOS": 1}, "records_fully_settled": 41, "cases": ["TCGA-A2-A25D"]}
