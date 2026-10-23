@@ -1,0 +1,10 @@
+TCGA-A7-A26E: engine status completed, 2 rung(s)
+  R1: budget 0, 2.13 s, 151 completion tokens, open after: ['NPOS']
+  R2: budget 4000, 88.47 s, 4176 completion tokens, open after: []
+  closed: {'N': {'rung': 'R1', 'value': 'N1A'}, 'NPOS': {'rung': 'R2', 'value': '1'}}
+  open (a person decides): []
+TCGA-AN-A0XT: engine status completed, 2 rung(s)
+  R1: budget 0, 1.92 s, 104 completion tokens, open after: ['N', 'NPOS']
+  R2: budget 4000, 18.97 s, 675 completion tokens, open after: ['NPOS']
+  closed: {'N': {'rung': 'R2', 'value': 'N1A'}}
+  open (a person decides): ['NPOS']
