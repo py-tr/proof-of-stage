@@ -221,6 +221,12 @@ def count_in_span(count: int, span_text: str) -> bool:
     in a span about nodes. Known limits: a count above every stated fraction, and a
     per-specimen count when no fraction states the total (the report floor catches the rest).
     """
+    return count_path(count, span_text) is not None
+
+
+def count_path(count: int, span_text: str) -> str | None:
+    """Which rule of `count_in_span` finds the count in the span: "fraction",
+    "negative_fraction", "zero_phrase" or "cued"; None when no rule does."""
     positive, negative = [], False
     for match in _FRACTION.finditer(span_text):
         top, bottom = _as_number(match.group(1)), _as_number(match.group(2))
@@ -235,15 +241,15 @@ def count_in_span(count: int, span_text: str) -> bool:
         else:
             positive.append(top)
     if positive:
-        return count in positive
+        return "fraction" if count in positive else None
     if negative:
-        return count == 0
+        return "negative_fraction" if count == 0 else None
     if count == 0 and (
         _ZERO.search(span_text)
         or (_ZERO_NEGATIVE.search(span_text) and _NODE_WORD.search(span_text))
     ):
-        return True
-    return count in _cued_counts(span_text)
+        return "zero_phrase"
+    return "cued" if count in _cued_counts(span_text) else None
 
 
 def _cued_counts(span_text: str) -> set[int]:

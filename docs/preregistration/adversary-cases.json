@@ -1,0 +1,37 @@
+{
+  "cases": [
+    {
+      "case_id": "TCGA-A2-A0CV",
+      "true_count": 2,
+      "start": 0,
+      "end": 1800,
+      "excerpt_sha256_16": "492dcecef3a58f52",
+      "report_floor": 2,
+      "why": "total stated as a fraction (2/18) beside per-specimen ONE (1) lines"
+    },
+    {
+      "case_id": "TCGA-AQ-A1H2",
+      "true_count": 7,
+      "start": 400,
+      "end": 2200,
+      "excerpt_sha256_16": "0b6e61d5e7126e45",
+      "report_floor": 6,
+      "why": "total in a synoptic line (7) beside one specimen's 6/9"
+    },
+    {
+      "case_id": "TCGA-A1-A0SN",
+      "true_count": 4,
+      "start": 0,
+      "end": 3200,
+      "excerpt_sha256_16": "39652609b30bbd1a",
+      "report_floor": 1,
+      "why": "four specimen fractions (1/1); the total 4 is never a fraction (the documented per-specimen limit applies)"
+    }
+  ],
+  "prompt_sha": "7d210642ed3a",
+  "guard_sha256_16": {
+    "app/reader/reader.py": "1585215eb43c7e32",
+    "app/reader/quotes.py": "8c64510f04be71ad",
+    "app/engine/adversary.py": "aad3781558234f40"
+  }
+}

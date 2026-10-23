@@ -151,6 +151,28 @@ async def _usl(args: argparse.Namespace) -> int:
     return 2
 
 
+async def _adversary() -> int:
+    from app.engine.adversary import frozen_cases, run_chain
+    from app.reports.ingest import read_reports_csv
+
+    reports = {cid: r.report_text for cid, r in read_reports_csv().items()}
+    for case in frozen_cases(reports):
+        record = await run_chain(case, reports[case.case_id])
+        sys.stdout.write(
+            f"{case.case_id}: steps={record['steps']} engine={record['engine_status']} "
+            f"wrong accepts={record['accepts_wrong']} bugs={len(record['bugs'])} "
+            f"known-limit={len(record['known_limit_accepts'])} "
+            f"carryover failures={record['carryover_failures']} "
+            f"tokens saved (est)={record['tokens_saved_est']} "
+            f"verdicts={record['verdicts']}" + "\n"
+        )
+        for row in record["bugs"] + record["known_limit_accepts"]:
+            sys.stdout.write(
+                f"  accept step {row['step']}: {row['value']} {row['kind']} {row['quote']!r}" + "\n"
+            )
+    return 0
+
+
 async def _notes(case_ids: list[str]) -> int:
     from app.notes.note import write_note
     from app.web.api import _rechecked
@@ -238,6 +260,9 @@ def main(argv: list[str] | None = None) -> int:
     run = sub.add_parser("run", help="One case through the Markovian evidence ladder (RUNGS)")
     run.add_argument("--case", required=True, help="Case id, e.g. TCGA-A2-A0CV")
     run.add_argument("--store", action="store_true", help="Append closed fields to Zetaris")
+    sub.add_parser(
+        "adversary", help="The pre-registered red-team chain (3 cases x 20 steps, Nightshift)"
+    )
     note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
     note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
@@ -267,6 +292,8 @@ def main(argv: list[str] | None = None) -> int:
             ladder, outcome = asyncio.run(run_case(args.case.strip().upper(), store=args.store))
             sys.stdout.write(summary(ladder, outcome))
             return 0
+        if args.command == "adversary":
+            return asyncio.run(_adversary())
         if args.command == "note":
             return asyncio.run(_notes([c.strip().upper() for c in args.case]))
         if args.command == "scans":
