@@ -380,6 +380,9 @@ def main(argv: list[str] | None = None) -> int:
         "dial", help="Pre-registered dial test: the ladder vs always-4k, 30 consistent records"
     )
     sub.add_parser(
+        "hidden", help="Pre-registered: hidden errors in 60 consistent records (the ladder)"
+    )
+    sub.add_parser(
         "lightning", help="Pre-registered: Lightning in R1's place on the dial test's 28 records"
     )
     baseline = sub.add_parser(
@@ -427,6 +430,11 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.dial import run_sample
 
             sys.stdout.write(json.dumps(asyncio.run(run_sample()), indent=2) + "\n")
+            return 0
+        if args.command == "hidden":
+            from app.engine.hidden import run_hidden
+
+            sys.stdout.write(json.dumps(asyncio.run(run_hidden()), indent=2) + "\n")
             return 0
         if args.command == "lightning":
             from app.engine.lightning import run_lightning
