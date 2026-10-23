@@ -84,6 +84,9 @@ pre { white-space: pre-wrap; font: 12.5px/1.6 ui-monospace, Consolas, monospace;
 .done { color: #2e7d32; }
 mark { background: #fff3a0; border-radius: 2px; }
 mark.cur { background: #ffb74d; outline: 2px solid #e65100; }
+.sec { color: #1d4ed8; font-weight: 700; }
+.sec.skip { color: #8a8a85; text-decoration: line-through; }
+.sec.skip::after { content: " (not the result)"; font-weight: 400; text-decoration: none; }
 .guide { background: #eef3fb; border: 1px solid #c9d7ee; border-radius: 8px; padding: 8px 10px; font-size: 13px; margin-bottom: 10px; }
 </style></head><body>
 <header><b>Blind labels</b><span id="pos"></span><span id="progress" class="small"></span>
@@ -91,6 +94,7 @@ mark.cur { background: #ffb74d; outline: 2px solid #e65100; }
 <main>
 <div>
 <div class="guide"><b>How to label (no medical knowledge needed)</b><br>
+0. <span class="sec">Blue headings</span> = sections. The result is in FINAL DIAGNOSIS / SYNOPTIC / ADDENDUM; struck-through ones (pre-op, post-op, frozen section, gross) are not the result.<br>
 1. Use the yellow highlights / "next node line" to find what the report says about lymph nodes.<br>
 2. Write the <b>total</b> positive nodes (some reports list each specimen; the total is the summary line or the sum) and the pN category if printed (e.g. pT2N1aMX = N1a).<br>
 3. Compare with the registry: report count fits the registry N but not its count = <b>count wrong</b>; fits the count but not the N = <b>N wrong</b>; unclear, micrometastases, isolated tumour cells, no count, or both off = <b>a person decides</b> (a valid answer).</div>
@@ -145,11 +149,23 @@ function show() {
 // Keyword highlights only (no model output): lines about lymph nodes and the N category.
 const KW = /(lymph\s*nodes?|nodes?|pN\s*\w*|N\s*stage|positive|metasta\w*|\d+\s*\/\s*\d+|\w+\s+of\s+\w+\s+(?:lymph\s+)?nodes?)/gi;
 let hitIndex = -1;
+// Section headings (blue): the result is in FINAL DIAGNOSIS / SYNOPTIC / ADDENDUM; the
+// pre-op, post-op, frozen-section and gross parts are struck through (not the result).
+const SEC = /(PRE-?\s?OPERATIVE DIAGNOSIS|POST-?\s?OPERATIVE DIAGNOSIS|FROZEN SECTION[A-Z ]*|INTRA-?\s?OPERATIVE[A-Z ]*|GROSS DESCRIPTION|MICROSCOPIC DESCRIPTION|FINAL (?:PATHOLOGIC )?DIAGNOSIS|DIAGNOSIS|SYNOPTIC[A-Z \-]*|CASE SYNOPSIS|COMMENTS?|ADDENDUM[A-Z ]*|CLINICAL HISTORY)/gi;
+const SKIP = /PRE-?\s?OPERATIVE|POST-?\s?OPERATIVE|FROZEN|INTRA-?\s?OPERATIVE|GROSS|CLINICAL HISTORY/i;
 function renderReport(text) {
-  const pre = $("report"); pre.replaceChildren(); let last = 0; let m; KW.lastIndex = 0;
-  while ((m = KW.exec(text)) !== null) {
-    if (m.index > last) pre.append(document.createTextNode(text.slice(last, m.index)));
-    const mk = document.createElement("mark"); mk.textContent = m[0]; pre.append(mk); last = m.index + m[0].length;
+  const pre = $("report"); pre.replaceChildren();
+  const marks = [];
+  let m; KW.lastIndex = 0; while ((m = KW.exec(text)) !== null) marks.push([m.index, m.index + m[0].length, "kw"]);
+  SEC.lastIndex = 0; while ((m = SEC.exec(text)) !== null) marks.push([m.index, m.index + m[0].length, SKIP.test(m[0]) ? "skip" : "sec"]);
+  marks.sort((a, b) => a[0] - b[0]);
+  let last = 0;
+  for (const [a, b, kind] of marks) {
+    if (a < last) continue;
+    if (a > last) pre.append(document.createTextNode(text.slice(last, a)));
+    const node = document.createElement(kind === "kw" ? "mark" : "span");
+    if (kind !== "kw") node.className = kind === "skip" ? "sec skip" : "sec";
+    node.textContent = text.slice(a, b); pre.append(node); last = b;
   }
   pre.append(document.createTextNode(text.slice(last))); hitIndex = -1;
   $("hits").textContent = `${pre.querySelectorAll("mark").length} highlights`;
