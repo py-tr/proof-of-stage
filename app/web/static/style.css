@@ -90,7 +90,9 @@ mark strong { font-weight: 800; text-decoration: underline; }
 .scanbox { margin-top: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .scanbox .page { position: relative; width: 100%; max-width: 640px; }
 .scanbox .page img { width: 100%; display: block; border: 1px solid var(--line); }
-.scanbox .box { position: absolute; border: 3px solid #e65100; background: rgba(255, 183, 77, .18); border-radius: 2px; }
+.scanbox .box { position: absolute; border: 2px solid rgba(230, 81, 0, .85); background: rgba(255, 183, 77, .06); border-radius: 3px; margin: -3px; padding: 3px; pointer-events: none; }
+.scanbox .page.nobox .box { display: none; }
+.scanbox .boxtoggle { font-size: 12px; margin-left: 8px; font-weight: 400; }
 .scratch { margin-top: 8px; border-left: 3px solid #c9d7ee; padding: 4px 0 4px 10px; }
 .scratch blockquote { margin: 6px 0; font: 12px/1.5 var(--mono); white-space: pre-wrap; color: #333; }
 .trace { font-size: 12px; }

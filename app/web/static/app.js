@@ -421,9 +421,13 @@ async function loadScanBox(caseId) {
     for (const b of s.boxes) {
       page.append(el("div", { class: "box", title: b.text, style: `left:${b.x0 * 100}%;top:${b.y0 * 100}%;width:${(b.x1 - b.x0) * 100}%;height:${(b.y1 - b.y0) * 100}%` }));
     }
-    box.append(el("h3", {}, "On the original scan ", el("small", {}, `page ${s.page + 1} · the Nemotron Parse block that holds the scan rung's quote`)),
+    const toggle = el("input", { type: "checkbox" });
+    toggle.checked = true;
+    toggle.addEventListener("change", () => page.classList.toggle("nobox", !toggle.checked));
+    box.append(el("h3", {}, "On the original scan ", el("small", {}, `page ${s.page + 1} · the Nemotron Parse block that holds the scan rung's quote`),
+      el("label", { class: "boxtoggle" }, toggle, " show Parse's box")),
       page,
-      el("p", { class: "small" }, `Parse read: “${s.boxes.map((b) => b.text).join(" ")}”. The box is Parse's own; the scan is a local file, not part of the repository.`));
+      el("p", { class: "small" }, `Parse read: “${s.boxes.map((b) => b.text).join(" ")}”. The box is Parse's own, and always a straight rectangle, so on a tilted scan it can cross a neighbouring line; untick it to read the page underneath. The scan is a local file, not part of the repository.`));
     box.classList.remove("hidden");
   } catch (error) {
     /* no scan for this case */
