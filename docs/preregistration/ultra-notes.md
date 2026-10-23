@@ -23,3 +23,7 @@ The case note (`app/notes/note.py`) is a restating task under a strict guard: ev
 ## Prediction (before the run)
 
 Ultra passes more notes than Super (a larger model follows a format better), at more seconds per note. A guess.
+
+## Correction (2026-10-23, written during the run, design unchanged)
+
+"Nightshift has no Ultra lane" above is wrong. Nightshift 1.2.3 lists `nvidia/nemotron-3-ultra-550b-a55b` and answers with a verified receipt signed by the pinned key (probe 2026-10-23: 14.1 s against 1.0 s direct for a one-line answer). Through Nightshift, Ultra's reasoning arrives inside the answer text, ending in a `</think>` with no opening tag; `strip_think` now removes it. The run stays on NVIDIA direct as registered. A Nightshift run of Ultra notes would be a separate, new measurement.

@@ -20,3 +20,8 @@ def test_strip_think_no_block() -> None:
 def test_strip_think_multiline() -> None:
     raw = "<think>\nstep one\nstep two\n</think>\n\nfinal answer"
     assert strip_think(raw) == "final answer"
+
+
+def test_strip_think_orphan_closing_tag() -> None:
+    assert strip_think('We must output that JSON.</think>{"ok": true}') == '{"ok": true}'
+    assert strip_think('{"ok": true}') == '{"ok": true}'
