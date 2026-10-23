@@ -182,3 +182,11 @@ def test_sample_mode_shows_the_scoreboard_only_as_a_dated_copy_of_the_live_run()
     snapshot = Path("app/web/sample/node_positive_snapshot.json").read_text(encoding="utf-8")
     for model_field in ("report_n", "report_nodes_positive", "fault_field", "quote"):
         assert model_field not in snapshot  # no model output in sample mode
+
+
+def test_the_agent_probe_endpoint_serves_the_two_logged_queries() -> None:
+    client = TestClient(create_app(SampleData()))
+    p = client.get("/api/agent-probe").json()["probe"]
+    assert str(p["raw_query"]["result"]) == "476" and str(p["checked_query"]["result"]) == "482"
+    assert p["read_raw_count"] == p["queries_written"] == 19 and p["pointer_used"] == 0
+    assert len(p["missed"]) == 6 and len(p["person"]) == 3

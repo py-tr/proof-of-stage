@@ -1,0 +1,58 @@
+{
+  "generated": "2026-10-23 from the live layer (stage_check), read-only",
+  "missed_by_raw_count": [
+    {
+      "case_id": "TCGA-A7-A26E",
+      "registry_count": "0.0",
+      "checked_count": "1",
+      "verdict": "node_count"
+    },
+    {
+      "case_id": "TCGA-A7-A26H",
+      "registry_count": "0.0",
+      "checked_count": "1",
+      "verdict": "node_count"
+    },
+    {
+      "case_id": "TCGA-AO-A1KP",
+      "registry_count": "0.0",
+      "checked_count": "1",
+      "verdict": "node_count"
+    },
+    {
+      "case_id": "TCGA-BH-A0BS",
+      "registry_count": "0.0",
+      "checked_count": "2",
+      "verdict": "node_count"
+    },
+    {
+      "case_id": "TCGA-BH-A0DD",
+      "registry_count": "0.0",
+      "checked_count": "1",
+      "verdict": "node_count"
+    },
+    {
+      "case_id": "TCGA-E2-A572",
+      "registry_count": "0.0",
+      "checked_count": "8",
+      "verdict": "node_count"
+    }
+  ],
+  "left_to_a_person_but_raw_positive": [
+    {
+      "case_id": "TCGA-A2-A0EW",
+      "registry_count": "26.0",
+      "verdict": "review"
+    },
+    {
+      "case_id": "TCGA-AR-A1AT",
+      "registry_count": "1.0",
+      "verdict": "review"
+    },
+    {
+      "case_id": "TCGA-D8-A27L",
+      "registry_count": "2.0",
+      "verdict": "review"
+    }
+  ]
+}

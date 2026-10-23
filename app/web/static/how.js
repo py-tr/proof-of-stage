@@ -1,4 +1,4 @@
-// How it works: one record, six numbered steps, every value read live from the same API
+// How it works: one record, seven numbered steps, every value read live from the same API
 // the case page uses. Plain JS; every text is a text node.
 "use strict";
 
@@ -87,6 +87,10 @@ function render(data, trace, sample) {
   steps.append(el("li", { id: "redteam-step" }, card("NVIDIA Nemotron, attacking the guard",
     "Nemotron tries to make the guard accept a wrong count", el("p", { class: "small" }, "Loading the logged chain…"))));
 
+  // 3c. Nemotron as an agent reading the layer (filled in by loadAgentProbe)
+  steps.append(el("li", { id: "agent-step", class: "alert" }, card("NVIDIA Nemotron, as an agent reading the layer",
+    "Does an agent that reads the semantic layer use the verdict?", el("p", { class: "small" }, "Loading the logged probes…"))));
+
   // 4. The verdict
   steps.append(el("li", { class: c.fault_field === "review" ? "" : "alert" }, card("Zetaris semantic layer", title(c, sample),
     flow([`registry N ${show(c.recorded_n)} · report N ${show(c.report_n)}`, c.fault_field === "pathologic_n" ? "bad" : ""],
@@ -137,12 +141,40 @@ async function loadRedTeam() {
   box.replaceChildren(card("NVIDIA Nemotron, attacking the guard", "Nemotron tries to make the guard accept a wrong count", ...body));
 }
 
+function sqlBlock(q, label) {
+  if (!q) return el("p", { class: "small" }, "No logged query.");
+  return el("div", { class: "how-sqlwrap" },
+    el("div", { class: "small" }, `${label} · returned `, el("b", {}, show(q.result)), ` · ${show(q.seconds)} s · Nightshift receipt ${show(q.receipt_id)} (${show(q.signature)})`),
+    el("pre", { class: "how-sql" }, q.sql || ""));
+}
+
+async function loadAgentProbe() {
+  const box = $("agent-step");
+  if (!box) return;
+  let p = null;
+  try { p = (await api("/api/agent-probe")).probe; } catch (error) { /* shown below */ }
+  const title = "Does an agent that reads the semantic layer use the verdict?";
+  if (!p) { box.replaceChildren(card("NVIDIA Nemotron, as an agent reading the layer", title, el("p", { class: "small" }, "No agent probe logged."))); return; }
+  const ids = (list) => list.map((c) => c.case_id).join(", ");
+  const e2 = p.missed.find((c) => c.case_id === "TCGA-E2-A572");
+  box.replaceChildren(card("NVIDIA Nemotron, as an agent reading the layer", title,
+    el("p", {}, `Two pre-registered probes. Super, through Nightshift, saw only the layer's table and column descriptions and the question “${p.question}”, and wrote one SQL query each time; the query ran unchanged on the live layer.`),
+    flow([`${p.read_raw_count} of ${p.queries_written} queries read the raw count column`, "bad"], [`the pointer to the verdict was used ${p.pointer_used} times`, "bad"], [`the checked column was read ${p.read_checked} time`, ""]),
+    sqlBlock(p.raw_query, "Probe 1, with the pointer in the descriptions"),
+    el("p", {}, `Left out of that answer: ${p.missed.length} patients whose report shows positive nodes while the count column records 0 (${ids(p.missed)})`,
+      e2 ? `; TCGA-E2-A572's report says “Positive 8 / 13”.` : "."),
+    sqlBlock(p.checked_query, "Probe 2, with the checked count beside the raw one"),
+    el("p", {}, `This one query read the checked column and included those ${p.missed.length} patients, then filled the ${p.person.length} cases the verdict leaves to a person (${ids(p.person)}) back in from the raw count.`),
+    el("p", { class: "small" }, "A pointer in the description was not enough, and a checked column beside the raw one was not either. So the verdict is for the people and tools that read stage_check and the case page; a person decides. Logged runs, not replayed live: docs/evidence/agent-probe-results.md, agent-probe-2-results.md.")));
+}
+
 async function load(caseId, sample) {
   const [data, found] = await Promise.all([api(`/api/case/${caseId}`), api(`/api/case/${caseId}/trace`)]);
   $("open-case").href = `/?case=${caseId}`;
   history.replaceState(null, "", `?case=${caseId}`);
   render(data, found.trace, sample);
   loadRedTeam();
+  loadAgentProbe();
 }
 
 async function loadScoreboard(sample) {

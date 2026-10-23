@@ -214,6 +214,13 @@ def create_app(
     async def index() -> FileResponse:
         return FileResponse(STATIC / "index.html")
 
+    @app.get("/api/agent-probe")
+    async def agent_probe() -> dict[str, Any]:
+        """The two pre-registered agent probes, from the committed logs (no model call)."""
+        from app.web.agentprobe import probe_story
+
+        return {"probe": probe_story()}
+
     @app.get("/api/redteam")
     async def redteam() -> dict[str, Any]:
         """The pre-registered v3 red-team chains, from the committed logs (no model call)."""

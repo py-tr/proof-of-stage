@@ -18,3 +18,5 @@
 .how-table th, .how-table td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .how-table .how-quote { font-size: 11px; }
 .scoreboard { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--red); border-radius: 8px; padding: 10px 14px; margin: 0 0 14px; font-size: 14px; }
+.how-sqlwrap { margin: 8px 0; }
+.how-sql { font: 11.5px/1.45 var(--mono); white-space: pre-wrap; word-break: break-word; background: var(--grey-bg); border-radius: 6px; padding: 8px 10px; margin: 4px 0 0; }
