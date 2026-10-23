@@ -211,7 +211,7 @@ def test_recheck_and_challenge_what_if() -> None:
         "derived_n_main": "N2",
         "lymph_nodes_positive": "4",
     }
-    only_n = challenge(check, report, "N", "N1a", "axillary lymph nodes positive")
+    only_n = challenge(check, report, "N", "N1a", "(2/14) axillary lymph nodes positive")
     assert only_n["fault_field_if_accepted"] == "review"  # no count yet: not enough
     both = challenge(check, report, "NPOS", "2", "Two of fourteen (2/14)", {"report_n_main": "N1"})
     assert both["fault_field_if_accepted"] == "node_count"

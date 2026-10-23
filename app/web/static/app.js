@@ -10,6 +10,7 @@ const GUARD_WHY = {
   count_not_in_quote: "the sentence is in the report, but it does not contain that number as the positive count",
   count_below_report: "the report states more positive nodes elsewhere (a fraction), so this is one specimen, not the total",
   quote_too_short: "its quote is too short to prove anything",
+  quote_does_not_support: "the quote is in the report, but it does not show that category (no matching stage, node count or size in it)",
   invalid_category: "not a valid category",
   invalid_count: "not a valid count",
   answer_not_json: "the answer was not readable",

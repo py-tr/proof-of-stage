@@ -33,4 +33,16 @@ Fix (`count_in_span`): a fraction in the quote counts only if it is not a score 
 | The 13 stored counts; the specimen attack | 13 accepted; still rejected |
 | Tests | 216 pass |
 
+## Third round: the N and T quote must show the category (2026-10-23)
+
+A Fable review found that `judge_field` only checked that the quote exists in the report: on the hero case N3a with the quote "breast" was accepted, and through "Try to fool it" that reading would have named the N field. Fix (`supports_category`): the located quote must hold a stage token or label with the same main category ("pN1a", "pT2N1aMX", "N Stage: 1a"), or for N a node count the count guard reads in it that implies the category (2 positive -> N1), or for T a tumour size in its range (the largest of "4.1 x 3.5 x 1.5 cm"), or the words of a category a number cannot show (micrometastasis, isolated tumour cells, "cannot be assessed", "examined: 0", skin or chest wall, in situ).
+
+| Check | Result |
+|---|---|
+| Attacks and true readings (`tests/test_reader.py::test_the_quote_must_show_the_category`) | N3a/"breast", T4d/a node sentence, N2a/"pT2N1aMX" rejected; true readings accepted |
+| The 36 stored T/N rows | 35 still accepted; 1 now rejected: T1C quoting "Stage: 1c" (the form reads "Grade: 2. Stage: 1c N Stage: …", no T label in the quote; fail-closed) |
+| Fresh reads of the 25 queue reports, judged by the previous and current guard (`logs/guard-ab-nt-2026-10-23.txt`) | 4 verdicts changed: 3 were model errors the old guard accepted (N1a quoting "4 of 13" and "4/8 positive", which are N2; T2 quoting "1.2 cm", which is T1), 1 the same "Stage: 1c" (fail-closed). A fifth, "1.2-CM", was our size pattern's fault and is fixed |
+
+Known limit (N): a quote of one specimen ("(1/1)") supports N1 even when the total makes it N2, the same per-specimen limit as the count.
+
 Known limits: a per-specimen count when no fraction states the total (the floor is the largest fraction, by design); a count above every stated fraction if it is the number nearest a positive cue; a node fraction more than 60 characters from the word "node" is not in the floor.

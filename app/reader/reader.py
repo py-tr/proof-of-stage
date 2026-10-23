@@ -179,6 +179,14 @@ def judge_field(field_name: Field, answer: dict[str, Any] | None, report: str) -
         return FieldResult(
             field_name, "rejected", value=value, quote=quote, reason="quote_not_in_report"
         )
+    if not supports_category(field_name, value, span.text(report)):
+        return FieldResult(
+            field_name,
+            "rejected",
+            value=value,
+            quote=span.text(report),
+            reason="quote_does_not_support",
+        )
     return FieldResult(
         field_name,
         "accepted",
@@ -187,6 +195,92 @@ def judge_field(field_name: Field, answer: dict[str, Any] | None, report: str) -
         span=span,
         reason=str(answer.get(f"{field_name}_reason") or "")[:REASON_CHARS],
     )
+
+
+# A stage token in the quote: "pN1a", "N1A", "pT2N1aMX" (T2 and N1A), "ypN0(i+)".
+_STAGE_TOKEN = {
+    "T": re.compile(r"(?<![A-Za-z])(?:y?p|c)?T\s?(IS|X|[0-4])(?:\s?(MI|[A-D]))?(?![0-9])", re.I),
+    "N": re.compile(r"(?<![A-Za-z])(?:y?p|c)?N\s?(X|[0-3])(?:\s?(MI|[A-C]))?(?![0-9])", re.I),
+}
+# "N Stage: 1a", "pN: 1A", "T category: T2", "Primary tumor (pT): 2".
+_STAGE_LABEL = {
+    "T": re.compile(
+        r"\b(?:y?p)?T\s*(?:stage|category|\(p?T\))?\s*[:=]\s*(?:y?p?T)?\s*(IS|X|[0-4])", re.I
+    ),
+    "N": re.compile(
+        r"\b(?:y?p)?N\s*(?:stage|category|\(p?N\))?\s*[:=]\s*(?:y?p?N)?\s*(X|[0-3])", re.I
+    ),
+}
+# "2.4 cm", "4.1 x 3.5 x 1.5 cm" (the largest dimension counts), "18 mm".
+_DIMENSION = r"\d+(?:\.\d+)?"
+_SIZE = re.compile(
+    rf"(?<![\w.])((?:{_DIMENSION}\s*(?:x|×|by)\s*)*{_DIMENSION})\s*-?\s*(cm|mm)\b", re.I
+)  # also "1.2-CM"
+# Categories a count or size cannot show, with the words that can.
+_CATEGORY_WORDS = {
+    "N1MI": re.compile(r"micro-?\s?metasta", re.I),
+    "N0(I+)": re.compile(r"isolated\s+tumou?r\s+cells?|\bITCs?\b|\(i\+\)", re.I),
+    "NX": re.compile(
+        r"cannot be assessed|not assessed|without axillary|no axillary"
+        r"|no (?:lymph )?nodes? (?:were )?(?:submitted|received|identified|sampled)"
+        r"|examined\W{0,3}0\b|\b0\s+(?:lymph\s+)?nodes?\s+examined",
+        re.I,
+    ),
+    "TX": re.compile(r"cannot be assessed|not assessed", re.I),
+    "TIS": re.compile(r"\bin[- ]situ\b", re.I),
+    "T4": re.compile(r"\bskin\b|chest wall|inflammatory|ulcerat|satellite|peau d", re.I),
+}
+
+
+def _main(category: str) -> str:
+    """'N1A' -> 'N1', 'T1MI' -> 'T1', 'N0(I+)' -> 'N0', 'TIS' -> 'TIS'."""
+    match = re.match(r"([TN](?:IS|X|\d))", category.upper())
+    return match.group(1) if match else category.upper()
+
+
+def _n_from_count(count: int) -> str:
+    return "N0" if count == 0 else "N1" if count <= 3 else "N2" if count <= 9 else "N3"
+
+
+def _t_from_size(cm: float) -> str:
+    return "T1" if cm <= 2.0 else "T2" if cm <= 5.0 else "T3"
+
+
+def supports_category(field_name: str, value: str, span_text: str) -> bool:
+    """The located quote shows the category, not just that it exists in the report.
+
+    Accepted when the quote holds a stage token or label with the same main category
+    ("pN1a" or "N Stage: 1a" for N1A); for N, a node count the count guard reads in the
+    quote that implies it (2 positive nodes -> N1); for T, a tumour size in its range
+    (2.4 cm -> T2); for the categories a number cannot show, their words (micrometastasis
+    -> N1mi, isolated tumour cells -> N0(i+), "cannot be assessed" -> NX/TX, skin or chest
+    wall -> T4, in situ -> Tis). Precision is checked on the main category (N1 vs N1A).
+    """
+    want = _main(value)
+    upper = value.upper()
+    for key, words in _CATEGORY_WORDS.items():
+        if (upper == key or want == key) and words.search(span_text):
+            return True
+    found = {
+        _main(f"{field_name}{m.group(1)}") for m in _STAGE_TOKEN[field_name].finditer(span_text)
+    }
+    found |= {
+        _main(f"{field_name}{m.group(1)}") for m in _STAGE_LABEL[field_name].finditer(span_text)
+    }
+    if want in found:
+        return True
+    if field_name == "N":
+        return any(
+            _n_from_count(count) == want
+            for count in range(_MAX_NODES + 1)
+            if count_path(count, span_text) is not None
+        )
+    sizes = [
+        max(float(d) for d in re.findall(_DIMENSION, m.group(1)))
+        / (10 if m.group(2).lower() == "mm" else 1)
+        for m in _SIZE.finditer(span_text)
+    ]
+    return any(_t_from_size(cm) == want for cm in sizes)
 
 
 def parse_count(value: Any) -> int | None:

@@ -1,7 +1,7 @@
-"""Judge the same fresh reads with the previous and the current count guard (no storing).
+"""Judge the same fresh reads with the previous and the current guard (no storing).
 
 Reads every review-queue report once (Super, NVIDIA direct, thinking off) and prints, per
-case, the count, its quote and both verdicts. Usage:
+case and field (count, N, T), the value, its quote and both verdicts. Usage:
 python scripts/guard_ab.py <path to the previous reader.py> > logs/guard-ab-<date>.txt
 """
 
@@ -11,7 +11,7 @@ import asyncio
 import importlib.util
 import sys
 
-from app.reader.reader import THINKING_OFF, judge_count, read_report
+from app.reader.reader import THINKING_OFF, judge_count, judge_field, read_report
 from app.reports.ingest import read_reports_csv
 
 QUEUE = (
@@ -35,16 +35,21 @@ async def main(old_path: str) -> None:
         except Exception as exc:
             print(f"{case_id}\tERROR {type(exc).__name__}")
             continue
-        answer = old.parse_answer(result.raw_text)
-        before = old.judge_count(answer, report)
-        after = judge_count(answer, report)
-        value = (answer or {}).get("N_positive")
-        quote = ((answer or {}).get("N_positive_quote") or "").replace("\n", " ")[:120]
-        flag = "" if (before.status, before.reason) == (after.status, after.reason) else "CHANGED"
-        print(
-            f"{case_id}\t{value}\told={before.status}:{before.reason}"
-            f"\tnew={after.status}:{after.reason}\t{flag}\t{quote}"
-        )
+        answer = old.parse_answer(result.raw_text) or {}
+        for field in ("NPOS", "N", "T"):
+            if field == "NPOS":
+                before, after = old.judge_count(answer, report), judge_count(answer, report)
+                value, quote = answer.get("N_positive"), answer.get("N_positive_quote")
+            else:
+                before = old.judge_field(field, answer, report)
+                after = judge_field(field, answer, report)
+                value, quote = answer.get(field), answer.get(f"{field}_quote")
+            quote = " ".join(str(quote or "").split())[:120]
+            same = (before.status, before.reason) == (after.status, after.reason)
+            print(
+                f"{case_id}\t{field}\t{value}\told={before.status}:{before.reason}"
+                f"\tnew={after.status}:{after.reason}\t{'' if same else 'CHANGED'}\t{quote}"
+            )
 
 
 if __name__ == "__main__":

@@ -442,3 +442,41 @@ def test_the_floor_ignores_fractions_of_negative_nodes() -> None:
 def test_red_team_counts(value: int, quote: str, report: str, status: str) -> None:
     fr = reader_mod.judge_count({"N_positive": value, "N_positive_quote": quote}, report)
     assert fr.status == status, fr.reason
+
+
+HERO = (
+    "TUMOR BREAST, TYPE: LEFT, MASTECTOMY. gritty mass measuring 4.1 x 3.5 x 1.5 cm. "
+    "LYMPH NODES: METASTASIS IN TWO OF EIGHTEEN (2/18) POSITIVE EXAMINED LYMPH NODES. "
+    "PATHOLOGIC STAGE: pT2N1aMX. Grade: 2. Stage: 1c N Stage: 1a. "
+    "LYMPH NODES POSITIVE: 0. LYMPH NODES EXAMINED: 0. Micrometastasis in one node."
+)
+
+
+# A quote must show its category; that it exists in the report is not enough (judge review).
+@pytest.mark.parametrize(
+    ("field", "value", "quote", "status"),
+    [
+        ("N", "N3a", "TUMOR BREAST, TYPE: LEFT", "rejected"),
+        ("T", "T4d", "LYMPH NODES: METASTASIS", "rejected"),
+        ("N", "N2a", "pT2N1aMX", "rejected"),
+        ("N", "N1a", "pT2N1aMX", "accepted"),
+        ("T", "T2", "pT2N1aMX", "accepted"),
+        ("N", "N1a", "(2/18) POSITIVE EXAMINED LYMPH NODES", "accepted"),
+        ("N", "N2a", "(2/18) POSITIVE EXAMINED LYMPH NODES", "rejected"),
+        ("N", "N1a", "N Stage: 1a", "accepted"),
+        ("T", "T2", "gritty mass measuring 4.1 x 3.5 x 1.5 cm", "accepted"),
+        ("T", "T1c", "gritty mass measuring 4.1 x 3.5 x 1.5 cm", "rejected"),
+        ("T", "T1c", "Stage: 1c", "rejected"),  # no T label: could be any stage element
+        ("N", "NX", "LYMPH NODES EXAMINED: 0", "accepted"),
+        ("N", "N1mi", "Micrometastasis in one node", "accepted"),
+    ],
+)
+def test_the_quote_must_show_the_category(field: str, value: str, quote: str, status: str) -> None:
+    fr = reader_mod.judge_field(field, {field: value, f"{field}_quote": quote}, HERO)
+    assert fr.status == status, fr.reason
+
+
+def test_a_hyphenated_size_counts() -> None:
+    report = "INVASIVE DUCTAL CARCINOMA, SBR GRADE 1, MEASURING 1.2-CM."
+    fr = reader_mod.judge_field("T", {"T": "T1c", "T_quote": "MEASURING 1.2-CM"}, report)
+    assert fr.status == "accepted"
