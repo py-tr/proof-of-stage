@@ -66,3 +66,9 @@ Measured through Nightshift 1.2.3, Super VL pinned, the reader prompt on full re
 So the evidence ladder now runs through Nightshift by default (`app/engine/rungs.py`, `LADDER_PROVIDER`); `run --provider nvidia` keeps NVIDIA direct.
 
 Images on 1.2.3: the `vision` class is ready (served by Super VL), but Nemotron Parse is not offered and the `perception` class is "unavailable" ("no lane carries the processing capability"), so Parse on the original scans stays on NVIDIA direct.
+
+## 7. Probes on 1.2.3 (2026-10-23 evening)
+
+- **Super VL with a scan image, pinned, through Nightshift:** two calls with one page of the TCGA-A2-A0CV scan (PNG 1024×1280, then a 211 KB JPEG), thinking off: both failed with HTTP 502 after the client's retries. The same JPEG to NVIDIA direct answered in 14.8 s (1,349 prompt tokens, so the image was read), but it reasoned in the answer text despite `enable_thinking: false` and stopped at the 1,500-token cap. So reading a scan with Super VL (a "scan witness") is not possible through Nightshift on this setup; a direct-only measurement is possible but not run yet.
+- **Ultra through Nightshift:** `nvidia/nemotron-3-ultra-550b-a55b` is listed and answers with a verified receipt (pinned key). Its reasoning arrives inside the answer text, ending in `</think>` with no opening tag (NVIDIA direct puts it in `reasoning_content`); `strip_think` now removes it. One-line answer: 14.1 s through Nightshift, 1.0 s direct.
+- **Lightning (cloud) through Nightshift:** thinking off, signed and pinned, 0.7 s for a one-line answer.
