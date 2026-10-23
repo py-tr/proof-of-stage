@@ -6,6 +6,14 @@ Proof of Stage audits cancer-stage fields in NCI's public cancer data (TCGA-BRCA
 
 **Open Agent Hackathon 2026 · Track 2: "The Agent That Can Explain Why"** (investigate across multiple data sources, connect findings, produce evidence-backed answers).
 
+## Why it matters: agents trust the semantic layer
+
+Agents now read data through semantic layers: the layer tells them what every table and column means, so they can query without ETL. But a semantic layer gives meaning, not truth. A record that says N1 with 4 positive nodes is described perfectly by the layer, and an agent reading it can answer, build a cohort or draw a chart from a record that cannot be true, with nothing in the chain noticing. Proof of Stage puts the missing piece inside the layer itself: a verdict per record (`stage_check.fault_field`) saying that the record cannot be true, which field the source document contradicts, and the quote that shows it. Every agent that reads the layer inherits that verdict.
+
+The problem is not medical: a database says X, the source document says Y. Which field is wrong, and can you prove it? Cancer staging on NCI's public data is the worked, measured example; you do not need to know staging to follow it, only that the count and the category disagree and the report settles it.
+
+**Pointing it at other data.** Transfers as-is: the record / source-document / rule / verified-reading / verdict pattern, append-only writes, signed receipts, the evidence ladder, the red-team chain, the case page. Rebuilt per domain: the consistency rules (SQL in the layer) and the guard's field checkers (ours knows how pathology reports write node counts; dates, amounts and identifiers are simpler). Candidate uses, untested: clinical-trial source data verification (the trial database against patients' source documents, today done by hand), registry and research-dataset audits, claims and forms against their attached documents. Built and measured on one domain only.
+
 ## What a judge sees in one case
 
 TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, so both cannot be true. Nemotron reads the report and quotes "(2/18) POSITIVE EXAMINED LYMPH NODES"; the guard confirms the quote and that 2 is the positive count inside it; the semantic layer names **the node-count field**. On the original scan, Nemotron Parse boxes the line "METASTASIS IN TWO OF EIGHTEEN (2/18)". This is the live result; in offline sample mode the same case shows the contradiction and lets you play the reader (no model output is bundled or replayed).
