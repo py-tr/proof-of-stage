@@ -28,7 +28,7 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 263 tests, no network
+pytest -q                                          # 276 tests, no network
 set SAMPLE_MODE=true && python -m app.cli serve    # offline: 4 bundled cases, no model output replayed
 ```
 

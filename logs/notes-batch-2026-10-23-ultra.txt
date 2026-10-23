@@ -1,0 +1,45 @@
+TCGA-3C-AAAU: accepted  47.14s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  The semantic layer names the N category field because the count rule converts the registry count to pN2a and the report verifies N2A. [F3][Q1][F4]
+  A person decides the N category. [F4]
+TCGA-A1-A0SN: accepted  29.64s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  The semantic layer names the N category field because the registry records N1 while the count rule maps four positive nodes to pN2a. [F4][F1][F3][F2]
+  The pathology report states four positive nodes, verified as N2A and as a positive‑node count of four. [Q1][Q2]
+  A person verified the N category as N2A. [Q1]
+TCGA-A2-A0CV: accepted  92.76s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  The registry records N category N1A (1‑3 positive nodes) and 4 positive nodes of 18 examined. [F1][F2]
+  The count rule converts the registry count to pN2a, and the semantic layer names the positive‑node count field. [F3][F4]
+  The report states 2/18 positive nodes, read and verified as N1A and count 2, and a person decides. [Q1][Q2]
+TCGA-A2-A0EW: accepted  40.53s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  Registry records N3A (10+ nodes) and 26 positive nodes, but count rule converts count to pNX. [F1][F2][F3]
+  Pathology report shows 4 positive nodes and N2A. [Q1][Q2]
+  Semantic layer names neither field, so a person must decide. [F4]
+TCGA-A7-A26E: rejected sentence_3_word_determines_not_in_cited_facts 52.21s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-A7-A26H: accepted  18.41s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  The semantic layer names the positive-node count field because the count rule converts registry counts to pN0. [F3][F4]
+  A person decides the final N category using the report’s verified N1A and positive-node count of 1. [Q1][Q2]
+TCGA-AC-A2FK: rejected sentence_1_word_only_not_in_cited_facts 65.06s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AN-A0XN: rejected sentence_2_fact_id_in_text 26.19s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AN-A0XO: rejected sentence_1_fact_id_in_text 71.05s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AN-A0XP: rejected sentence_1_word_only_not_in_cited_facts 63.37s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AN-A0XS: accepted  74.98s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  The semantic layer names the N category field because the count rule converts the registry count to pN1a, and a person decides the final N category. [F4][F3]
+  The registry records N2 (4-9 positive nodes) but the examined count shows 1 positive node of 11. [F1][F2]
+  The report states N Stage 1a, verified as N1A. [Q1]
+TCGA-AN-A0XT: accepted  45.0s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  The semantic layer names the N category field because the registry records N2 and the count rule converts the node count to pN1a. [F4][F1][F3]
+  The report states N Stage 1a, and a person decides the final N category. [Q1]
+TCGA-AN-A0XW: rejected answer_not_json 134.26s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AO-A03P: rejected sentence_1_word_lists_not_in_cited_facts 51.1s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AO-A1KP: rejected sentence_1_word_translates_not_in_cited_facts 58.32s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AQ-A1H2: rejected sentence_1_fact_id_in_text 133.72s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-AR-A1AT: rejected sentence_4_word_describes_not_in_cited_facts 30.96s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-BH-A0BS: rejected sentence_1_word_categorization_not_in_cited_facts 98.84s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-BH-A0DD: rejected sentence_1_word_documents_not_in_cited_facts 86.12s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-D8-A27L: rejected sentence_1_word_indicating_not_in_cited_facts 44.33s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-E2-A1B4: rejected sentence_1_word_yields_not_in_cited_facts 63.97s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-E2-A1LI: rejected sentence_1_word_documents_not_in_cited_facts 41.07s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-E2-A572: rejected sentence_4_no_citation 56.04s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-E9-A3X8: rejected sentence_2_word_triggers_not_in_cited_facts 47.06s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+TCGA-EW-A424: accepted  99.13s model=nvidia/nemotron-3-ultra-550b-a55b signature=- receipt=-
+  The semantic layer names the N category field. [F4]
+  A person decides the final N category using the count rule. [F3][F4]
