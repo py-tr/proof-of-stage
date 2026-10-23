@@ -109,6 +109,7 @@ async def test_write_note_pins_super_vl_requires_a_signature_and_logs(
     assert result["status"] == "accepted" and result["receipt"]["signature"] == "verified"
     assert seen["require_model"] == seen["model"] and seen["require_signature"] is True
     assert seen["allow_cache"] is False and seen["item_id"].startswith("note-TCGA-A2-A0CV-")
+    assert seen["chat_template_kwargs"] == {"enable_thinking": False}  # a note thinks off
     assert "F4: The semantic layer names" in seen["messages"][1]["content"]
     assert note_mod.latest_note("TCGA-A2-A0CV")["receipt"]["receipt_id"] == "r1"
     assert note_mod.latest_note("TCGA-OTHER") is None

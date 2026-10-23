@@ -312,6 +312,45 @@ async function refreshQueueKeep(caseId) {
 }
 
 // ---------- try to fool it ----------
+// ---------- how it was read (latest ladder run) ----------
+const RUNG_NAME = { R1: "R1 fast read", R2: "R2 deep read", R3: "R3 the scan" };
+
+function fieldVerdict(f) {
+  if (!f) return "—";
+  return f.status === "accepted" ? `${f.value} ✓` : `${f.value ?? "no value"} ✗ ${why(f.reason)}`;
+}
+
+function renderTrace(trace) {
+  const box = $("trace");
+  box.replaceChildren();
+  if (!trace) {
+    box.append(el("p", { class: "small" }, state.mode === "sample" ? "Sample mode: no model run is shown." : "No ladder run logged for this case yet."));
+    return;
+  }
+  const head = el("tr", {}, ...["Rung", "Thinking", "Provider", "Tokens", "Seconds", "N", "Positive nodes"].map((h) => el("th", {}, h)));
+  const rows = trace.rungs.map((r) => el("tr", {},
+    el("td", {}, RUNG_NAME[r.rung] || r.rung),
+    el("td", {}, r.thinking),
+    el("td", {}, r.provider === "nightshift"
+      ? el("span", {}, "Nightshift ", el("code", { title: `receipt ${show(r.receipt_id)} · signature ${show(r.signature)} · cached: ${r.from_cache ? "yes" : "no"}` }, `${show(r.signature)} receipt`))
+      : "NVIDIA direct"),
+    el("td", { class: r.budget.ok === false ? "over" : "", title: r.budget.how }, show(r.completion_tokens), r.budget.ok === false ? " (over budget)" : ""),
+    el("td", {}, show(r.seconds)),
+    el("td", {}, fieldVerdict(r.fields.N)),
+    el("td", {}, fieldVerdict(r.fields.NPOS))));
+  box.append(el("table", {}, el("thead", {}, head), el("tbody", {}, ...rows)),
+    el("p", { class: "small" }, `Run ${trace.run_id}. Stored values are the first ones written (append-only), so they can come from an earlier run. Hover a receipt for its id, a token count for the budget check.`));
+}
+
+async function loadTrace(caseId) {
+  try {
+    const found = await api(`/api/case/${caseId}/trace`);
+    if (state.current && state.current.check.case_id === caseId) renderTrace(found.trace);
+  } catch (error) {
+    $("trace").textContent = `Could not load the ladder run: ${error.message}`;
+  }
+}
+
 // ---------- case note (Nightshift) ----------
 const NOTE_WHY = {
   answer_not_json: "the answer was not readable",
@@ -370,7 +409,7 @@ async function writeNote() {
   const caseId = state.current.check.case_id;
   const button = $("note-run");
   button.disabled = true;
-  $("note").replaceChildren(el("p", { class: "small" }, "Asking Nemotron Super through Nightshift (thinking is on there; about 10–25 s)…"));
+  $("note").replaceChildren(el("p", { class: "small" }, "Asking Nemotron Super through Nightshift (thinking off; usually a few seconds)…"));
   try {
     const note = await api(`/api/case/${caseId}/note`, { method: "POST" });
     if (state.current.check.case_id === caseId) renderNote(note);
@@ -427,6 +466,7 @@ async function openCase(position, options = {}) {
     renderPanel(data);
     renderReport(data.report_text, acceptedSpans(data.accepted));
     loadNote(caseId);
+    loadTrace(caseId);
     $("f-out").replaceChildren();
     $("reject-reasons").classList.add("hidden");
     history.replaceState(null, "", `?case=${caseId}`);

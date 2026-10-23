@@ -23,16 +23,16 @@ from typing import Any
 from app import config
 from app.providers import nightshift
 from app.providers.receipts import key_fingerprint
-from app.reader.reader import NODES_POSITIVE, parse_answer
+from app.reader.reader import NODES_POSITIVE, THINKING_OFF, parse_answer, thinking_args
 from app.web.evidence import n_range
 
 ROOT = Path(__file__).resolve().parents[2]
 NOTES_LOG = ROOT / "logs" / "case-notes.jsonl"
 MAX_SENTENCES = 4
 MAX_WORDS = 35  # per sentence
-# Nightshift keeps the model's thinking on and cuts cloud calls at 45 s; a tight answer
-# instruction keeps the call to a few seconds (measured: 3.0 s for a cited note).
-MAX_TOKENS = 4000
+# A note only restates numbered facts, so it runs with thinking off (Nightshift 1.2.3
+# forwards the switch); the answer is under 100 words.
+NOTE_EXTRA, MAX_TOKENS = thinking_args(THINKING_OFF)
 
 SYSTEM_PROMPT = (
     "You write a short case note for a cancer-registry reviewer. Use ONLY the numbered facts "
@@ -207,6 +207,7 @@ async def write_note(found: dict[str, Any], *, chat: Any = None) -> dict[str, An
         pinned_key=config.getenv("NS_RECEIPT_PUBKEY"),
         allow_cache=False,
         max_tokens=MAX_TOKENS,
+        **NOTE_EXTRA,
     )
     seconds = round(time.monotonic() - started, 2)
     sentences, reason = check_note(parse_answer(text), facts)

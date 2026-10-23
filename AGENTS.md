@@ -32,7 +32,7 @@ A Python service with a small one-page web UI. It reads source documents with NV
 - Use straight double quotes in Lightning SQL. Never run `docker compose down -v`.
 
 ## Meterless engine
-- The long-running batch uses the **Markovian** engine (vendored reference). Keep its conformance tests passing (`npx tsx conformance/runner.ts` in the vendored folder) and our own kill-and-resume test green.
+- The long-running batch uses the **Markovian** engine (vendored reference). Keep its conformance tests passing (`npx tsx conformance/runner.ts` in the vendored folder) and our own abort test green (`tests/test_markovian.py`). Resume is not built: a ladder run is 2–3 rungs and stores nothing until it completes, so a killed run is simply run again.
 
 ## Honesty rules (product and tests)
 - An answer is accepted only with a **verbatim quote** found in the source (punctuation-insensitive match). Otherwise it goes to the review queue with a reason.

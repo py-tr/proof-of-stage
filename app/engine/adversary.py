@@ -14,7 +14,7 @@ Token accounting (absolute, not a percent): a naive transcript would resend ever
 attack and its verdict; the chain sends the ledger instead. Per step, saved = est(history)
 - est(ledger), with est = ceil(chars / 4) on both sides (the engine's own estimator); the
 Markovian prompt size is measured (the receipt's prompt_tokens). Thinking tokens are not
-history: Nightshift keeps thinking on, and a transcript never replays it.
+history: a transcript never replays the model's thinking.
 """
 
 from __future__ import annotations
@@ -50,10 +50,10 @@ CHUNK_CONFIG = {
     "overlapTokens": 0,
 }
 QUOTE_CHARS = 18  # how much of each tried quote the ledger keeps
-MAX_TOKENS = 4000  # Nightshift keeps thinking on; the answer itself is under 40 words
-# Pre-registration v2: the generator runs on NVIDIA direct with a bounded thinking budget.
-# Through Nightshift (thinking forced on, cloud calls cut at 45 s) the adaptive steps ran
-# past the deadline: v1 lost its first 3 steps to 502s (docs/preregistration/).
+MAX_TOKENS = 4000  # used only if a provider ignores the budget; the answer is under 40 words
+# Pre-registration v2 ran on NVIDIA direct with a bounded thinking budget, because Nightshift
+# 1.2.1 forced thinking on and its adaptive steps ran past the 45 s cut (v1 lost its first 3
+# steps to 502s). Nightshift 1.2.3 forwards the budget, so both providers send the same one.
 PROVIDER = "nvidia"
 THINKING_BUDGET = 1000
 
@@ -192,6 +192,7 @@ async def _ask(
     nv_chat: NvChat | None,
 ) -> tuple[str, dict[str, Any]]:
     """(answer text, what the call recorded) through Nightshift or NVIDIA direct."""
+    extra, max_tokens = thinking_args(THINKING_BUDGET)
     if provider == "nightshift":
         text, receipt = await (chat or nightshift.chat)(
             messages,
@@ -202,7 +203,8 @@ async def _ask(
             require_signature=True,
             pinned_key=config.getenv("NS_RECEIPT_PUBKEY"),
             allow_cache=False,
-            max_tokens=MAX_TOKENS,
+            max_tokens=max_tokens,
+            **extra,
         )
         usage = receipt.usage or {}
         return text, {
@@ -215,7 +217,6 @@ async def _ask(
             "prompt_tokens": usage.get("prompt_tokens"),
             "completion_tokens": usage.get("completion_tokens"),
         }
-    extra, max_tokens = thinking_args(THINKING_BUDGET)
     text, model, usage = await (nv_chat or nvidia.chat_with_usage)(
         messages, config.NV_SUPER, max_tokens=max_tokens, **extra
     )

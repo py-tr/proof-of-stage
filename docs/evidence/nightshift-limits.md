@@ -32,7 +32,7 @@ Meterless Nightshift, Windows edition, NVIDIA cloud lanes, model `nvidia/nemotro
 | The same red-team prompt at step 3, with a ledger of two failed attempts | 130 s, 502: the model thinks longer once easy answers are ruled out |
 | The pre-registered red-team chain v1 through Nightshift | its first 3 steps each failed at 136 s; the run was stopped and declared void (`docs/preregistration/adversary-chain.md`) |
 
-## 4. What we do about it
+## 4. What we did about it on 1.2.1 (superseded by §6: since 1.2.3 the ladder runs through Nightshift)
 
 - Calls that need a thinking switch or budget (the reader's two rungs, the red-team generator) go to NVIDIA direct, where both are honoured to the token (`docs/evidence/thinking-budget.md`).
 - Nightshift writes the case note, a short prompt that fits its contract: 24 of 24 answers were Super VL with a valid Ed25519 receipt signature, none from cache; median 22.8 s (`logs/notes-batch-2026-10-23.txt`).
@@ -50,3 +50,19 @@ Each model pinned explicitly (`require_model`, signature against the pinned key,
 | `nvidia/nemotron-3-super-120b-a12b` | 0 of 3 | one call was **won by Super VL instead** and refused by our receipt check (an explicit id did not pin the lane on this Windows build); 502 and a timeout |
 
 The same note prompt sent to NVIDIA directly at the same time: 146.7 s with thinking on (as Nightshift sends it), 1.3 s with thinking off. So the hosted model itself was slow; through Nightshift the call meets the 45 s cut. Nothing in our code changes: the note keeps Super VL, and the receipt check keeps refusing a substituted model.
+
+## 6. Nightshift 1.2.3 (Windows, installed 2026-10-23): the limits above are fixed
+
+Read in the new engine code: `proxy.js` now passes `chat_template_kwargs` and `reasoning_budget` through, and `providers.js` (`nvidiaThinkingBody`) lets "a caller that names a kwarg get exactly that kwarg (2026-10-22: it used to be replaced by the row default)"; `reasoning_budget` is sent from the request. `CLOUD_FETCH_DEADLINE_MS` is still 45 000, but budgeted reads were not cut in practice (below). 1.2.3 also gates Super VL off by default ("temporarily excluded … after repeated empty, aborted and 500 responses"; their note: 31 of 94 hosted calls failed in two reviews); we opted back in with the documented flag `NVIDIA_SUPER_VL = "true"` (in the engine's key-value store, `state/engine-kv.json`), so that every read stays on the model all our measurements used. An opted-in Super VL stays out of automatic races; only an explicit request reaches it, so `meterless/text` alone finds no lane on this setup.
+
+Measured through Nightshift 1.2.3, Super VL pinned, the reader prompt on full reports (`logs/nightshift-123-super-vl-2026-10-23.txt`):
+
+| Rung | Result |
+|---|---|
+| Thinking off (`enable_thinking: false`) | 3 of 3 answered in 1.9 s, 7.0 s, 8.7 s (163–273 completion tokens) |
+| 4k budget (`enable_thinking: true`, `reasoning_budget: 4000`) | 2 of 2 answered in 74.3 s and 91.7 s, 4,174 and 4,215 completion tokens (the budget plus the answer), not cut |
+| Every answer | Super VL in the signed receipt, signature verified against the pinned key (`7a6d14e27e1a`, unchanged by the update), none from cache |
+
+So the evidence ladder now runs through Nightshift by default (`app/engine/rungs.py`, `LADDER_PROVIDER`); `run --provider nvidia` keeps NVIDIA direct.
+
+Images on 1.2.3: the `vision` class is ready (served by Super VL), but Nemotron Parse is not offered and the `perception` class is "unavailable" ("no lane carries the processing capability"), so Parse on the original scans stays on NVIDIA direct.

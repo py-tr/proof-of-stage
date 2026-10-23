@@ -137,6 +137,16 @@ def create_app(
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
+    @app.get("/api/case/{case_id}/trace")
+    async def case_trace(case_id: str) -> dict[str, Any]:
+        """How the latest ladder run read this case (metadata and verdicts only)."""
+        from app.web.data import valid_case_id
+        from app.web.trace import latest_trace
+
+        if source.mode == "sample":
+            return {"trace": None}  # sample mode shows no model output, not even its metadata
+        return {"trace": latest_trace(valid_case_id(case_id))}
+
     @app.get("/api/case/{case_id}/note")
     async def last_case_note(case_id: str) -> dict[str, Any]:
         from app.notes.note import latest_note

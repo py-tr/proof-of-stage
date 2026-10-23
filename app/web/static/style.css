@@ -84,6 +84,11 @@ mark.glow { outline: 2px solid var(--ink); }
 mark strong { font-weight: 800; text-decoration: underline; }
 .decide button.primary { border-color: var(--red); }
 .decide button:disabled { opacity: .5; cursor: wait; }
+.trace { font-size: 12px; }
+.trace table { width: 100%; border-collapse: collapse; }
+.trace th, .trace td { border-bottom: 1px solid var(--line); padding: 3px 4px; text-align: left; vertical-align: top; }
+.trace code { font-family: var(--mono); font-size: 11px; background: var(--grey-bg); padding: 0 3px; border-radius: 3px; }
+.trace .over { color: var(--red); font-weight: 600; }
 .note { font-size: 13px; }
 .note p { margin: 0 0 4px; }
 .note .cite { font-family: var(--mono); font-size: 10px; background: #eef3fb; border: 1px solid #c9d7ee; border-radius: 3px; padding: 0 3px; margin-left: 2px; cursor: help; }

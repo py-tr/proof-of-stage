@@ -39,6 +39,7 @@ async def test_a_chain_carries_the_code_written_ledger(
 
     async def fake_chat(messages: list[dict[str, Any]], model: str, **kwargs: Any):
         sent.append(messages[1]["content"])
+        assert kwargs["chat_template_kwargs"]["reasoning_budget"] == adv.THINKING_BUDGET
         step = len(sent)
         if step == 5:
             raise RuntimeError("provider_deadline")  # scored, never re-run
