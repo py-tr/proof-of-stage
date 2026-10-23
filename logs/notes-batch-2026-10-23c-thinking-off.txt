@@ -1,0 +1,40 @@
+TCGA-3C-AAAU: rejected sentence_1_fact_id_in_text 3.03s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_xf38ya63
+TCGA-A1-A0SN: rejected sentence_2_word_include_not_in_cited_facts 18.37s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_kaz9huwo
+TCGA-A2-A0CV: rejected sentence_1_word_contains_not_in_cited_facts 2.31s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_73x6ojm8
+TCGA-A7-A26E: rejected answer_not_json 12.77s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_8cx6lmze
+TCGA-A7-A26H: rejected sentence_2_word_converted_not_in_cited_facts 11.9s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_dl2muhlt
+TCGA-AC-A2FK: rejected sentence_1_word_beyond_not_in_cited_facts 1.52s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_ucy7njzt
+TCGA-AN-A0XN: rejected sentence_1_fact_id_in_text 1.49s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_p5nllrq6
+TCGA-AN-A0XO: accepted  9.1s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_c9zfku45
+  The semantic layer names the N category field. [F4]
+  The registry records N category N2, meaning 4-9 positive nodes, and records 2 positive nodes of 12 examined. [F1][F2]
+  The count rule turns the registry count into pN1a. [F3]
+  The report states N Stage: 1, read and verified as N category N1; a person decides. [Q1]
+TCGA-AN-A0XP: rejected sentence_count 2.0s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_9rnn2wua
+TCGA-AN-A0XS: rejected sentence_4_word_matches_not_in_cited_facts 5.34s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_48zit6vv
+TCGA-AN-A0XT: rejected sentence_1_fact_id_in_text 3.35s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_j11nk1ok
+TCGA-AN-A0XW: rejected sentence_1_word_determines_not_in_cited_facts 7.98s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_warl1ygz
+TCGA-AO-A1KP: rejected sentence_1_word_interpret_not_in_cited_facts 10.94s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_zslziwa1
+TCGA-AQ-A1H2: rejected sentence_1_fact_id_in_text 12.44s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_htm56mq8
+TCGA-BH-A0BS: rejected sentence_1_word_layer_not_in_cited_facts 2.14s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_knhni50f
+TCGA-BH-A0DD: rejected sentence_1_fact_id_in_text 24.91s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_z5o3drbd
+TCGA-E2-A1B4: accepted  1.37s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_fwtq9t9x
+  The semantic layer names the N category field. [F4]
+  A person decides. [Q1][Q2]
+TCGA-E2-A572: rejected sentence_1_fact_id_in_text 9.33s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_of2yvl6g
+TCGA-E9-A3X8: rejected sentence_1_fact_id_in_text 2.23s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_d0620ml1
+TCGA-EW-A424: rejected sentence_count 4.36s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_37y972ow
+TCGA-A2-A0EW: rejected sentence_1_word_between_not_in_cited_facts 6.73s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_5hfkvjjz
+TCGA-AO-A03P: accepted  4.02s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_nztokvvw
+  The semantic layer names neither field because a person must decide. [Q1][F4]
+  The report, read and verified, states N category N1MI. [Q1]
+  Registry facts record N category N1 and 0 positive nodes of 26 examined. [F1][F2]
+  The count rule turns the registry count into pN0. [F3]
+TCGA-AR-A1AT: accepted  1.7s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_coiusocm
+  The registry records N category N0 and 1 positive node of 3 examined. [F1][F2]
+  The count rule turns that count into pN1a. [F3]
+  The report reads pN0(i+)(sn) verified as N category N0(I+). [Q1]
+  The semantic layer names neither field; a person must decide. [F4]
+TCGA-D8-A27L: rejected sentence_2_word_recording_not_in_cited_facts 1.67s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_y0ep0s5w
+TCGA-E2-A1LI: rejected sentence_1_word_cancer_not_in_cited_facts 5.43s model=nvidia/nemotron-3.5-super-vl-120b-a12b signature=verified receipt=rcpt_req_us19bhm4
+exit 0

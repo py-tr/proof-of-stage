@@ -109,7 +109,7 @@ async def test_write_note_pins_super_vl_requires_a_signature_and_logs(
     assert result["status"] == "accepted" and result["receipt"]["signature"] == "verified"
     assert seen["require_model"] == seen["model"] and seen["require_signature"] is True
     assert seen["allow_cache"] is False and seen["item_id"].startswith("note-TCGA-A2-A0CV-")
-    assert seen["chat_template_kwargs"] == {"enable_thinking": False}  # a note thinks off
+    assert "chat_template_kwargs" not in seen  # thinking stays on for the note (measured)
     assert "F4: The semantic layer names" in seen["messages"][1]["content"]
     assert note_mod.latest_note("TCGA-A2-A0CV")["receipt"]["receipt_id"] == "r1"
     assert note_mod.latest_note("TCGA-OTHER") is None
@@ -163,6 +163,11 @@ def test_the_page_rejudges_the_newest_logged_note(
     assert shown["status"] == "accepted" and "raw_text" not in shown
     with log.open("a", encoding="utf-8") as f:
         f.write(json.dumps({**row, "raw_text": bad}) + chr(10))
+    shown = note_mod.latest_note("TCGA-A2-A0CV")
+    assert shown["status"] == "accepted"  # a newer failing note does not hide a passing one
+    only_bad = tmp_path / "only-bad.jsonl"
+    only_bad.write_text(json.dumps({**row, "raw_text": bad}) + chr(10), encoding="utf-8")
+    monkeypatch.setattr(note_mod, "NOTES_LOG", only_bad)
     shown = note_mod.latest_note("TCGA-A2-A0CV")
     assert shown["status"] == "rejected" and shown["logged_status"] == "accepted"
     assert shown["sentences"] == [] and "_word_" in shown["reason"]

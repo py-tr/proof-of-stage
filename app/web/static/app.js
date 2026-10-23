@@ -427,7 +427,7 @@ async function writeNote() {
   const caseId = state.current.check.case_id;
   const button = $("note-run");
   button.disabled = true;
-  $("note").replaceChildren(el("p", { class: "small" }, "Asking Nemotron Super through Nightshift (thinking off; usually a few seconds)…"));
+  $("note").replaceChildren(el("p", { class: "small" }, "Asking Nemotron Super through Nightshift (thinking on; often half a minute)…"));
   try {
     const note = await api(`/api/case/${caseId}/note`, { method: "POST" });
     if (state.current.check.case_id === caseId) renderNote(note);

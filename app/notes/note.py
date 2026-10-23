@@ -23,16 +23,18 @@ from typing import Any
 from app import config
 from app.providers import nightshift
 from app.providers.receipts import key_fingerprint
-from app.reader.reader import NODES_POSITIVE, THINKING_OFF, parse_answer, thinking_args
+from app.reader.reader import NODES_POSITIVE, parse_answer
 from app.web.evidence import n_range
 
 ROOT = Path(__file__).resolve().parents[2]
 NOTES_LOG = ROOT / "logs" / "case-notes.jsonl"
 MAX_SENTENCES = 4
 MAX_WORDS = 35  # per sentence
-# A note only restates numbered facts, so it runs with thinking off (Nightshift 1.2.3
-# forwards the switch); the answer is under 100 words.
-NOTE_EXTRA, MAX_TOKENS = thinking_args(THINKING_OFF)
+# Thinking stays on for the note. Measured 2026-10-23 through Nightshift 1.2.3: with thinking
+# off, 25 of 25 notes answered (median 4.4 s) but only 4 passed the guard (fact ids in the
+# text, words not in the facts); with thinking on, 12 of 20 passed at run time.
+NOTE_EXTRA: dict[str, Any] = {}
+MAX_TOKENS = 4000
 
 SYSTEM_PROMPT = (
     "You write a short case note for a cancer-registry reviewer. Use ONLY the numbered facts "
@@ -244,23 +246,25 @@ def _append(result: dict[str, Any], raw_text: str) -> None:
 
 
 def latest_note(case_id: str) -> dict[str, Any] | None:
-    """The newest logged note for a case, re-judged by the CURRENT guard from the model's raw
-    answer: a note an older guard accepted is shown as rejected, with the reason, if it no
-    longer passes (the page never hides a signed answer, and never shows it as passing)."""
+    """The newest logged note for a case that passes the CURRENT guard (re-judged from the
+    model's raw answer); if none passes, the newest one, shown as rejected with its reason.
+    The page never hides a signed answer, and never shows a failing one as passing."""
     if not NOTES_LOG.exists():
         return None
-    last = None
+    passing = newest = None
     for line in NOTES_LOG.read_text(encoding="utf-8").splitlines():
         row = json.loads(line)
-        if row.get("case_id") == case_id and "raw_text" in row:
-            last = row
-    if last is None:
-        return None
-    sentences, reason = check_note(parse_answer(last.pop("raw_text")), last.get("facts") or {})
-    return {
-        **last,
-        "status": "accepted" if not reason else "rejected",
-        "reason": reason,
-        "sentences": sentences,
-        "logged_status": last.get("status"),
-    }
+        if row.get("case_id") != case_id or "raw_text" not in row:
+            continue
+        sentences, reason = check_note(parse_answer(row["raw_text"]), row.get("facts") or {})
+        judged = {
+            **{k: v for k, v in row.items() if k != "raw_text"},
+            "status": "accepted" if not reason else "rejected",
+            "reason": reason,
+            "sentences": sentences,
+            "logged_status": row.get("status"),
+        }
+        newest = judged
+        if not reason:
+            passing = judged
+    return passing or newest
