@@ -22,15 +22,15 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 | Nemotron Parse | Reads the original scanned PDF from the GDC; every text block with its box; stored as the USL table `parse_block` | `app/scans/` |
 | `stage_check.fault_field` (USL) | node_count / pathologic_n / review, from the registry, the count rule and the quote-verified reading | `app/usl/sql/055_activate_stage_check.sql` |
 | Meterless Markovian engine | The official reference, vendored unmodified (`vendor/meterless-markovian`, conformance 8/8), runs one chain per case: each chunk is a rung of an evidence ladder (R1 thinking off → R2 4k → R3 the scan); our code writes the carryover `{need, consulted, ledger}`, which picks the next rung and ends the chain when no field is open. The engine runs the control flow; the model reads the document beside it and never sees the carryover (so no reading can anchor the next). The engine's own savings estimate is therefore 0 by construction (every run in `logs/markovian-runs.jsonl`); we claim no savings for this chain. Planned: a second chain where the model is the generator (the red-team lane) | `app/engine/` |
-| Meterless Nightshift | Integrated as a provider: Super VL pinned, each receipt's Ed25519 signature verified, cached answers refused (`python -m app.cli doctor` shows a signed call). **Today the ladder's reads go to NVIDIA directly**, because Nightshift cannot take a thinking switch, a budget or an image (next section, reported to Meterless); every logged rung shows `receipt_id: null`. Planned: the red-team lane and the case note through Nightshift | `app/providers/nightshift.py`, `app/providers/receipts.py` |
-| Case page | One case at a time: the headline, the USL steps, the highlighted quote, the guard checks, rejected answers, decisions written back to Zetaris, "Try to fool it" | `app/web/` |
+| Meterless Nightshift | Integrated as a provider: Super VL pinned, each receipt's Ed25519 signature verified, cached answers refused (`python -m app.cli doctor` shows a signed call). **The case note runs through Nightshift**: Super VL restates the case's numbered USL facts in 1–4 sentences, each citing the facts it uses; code rejects any sentence whose numbers or stage categories are not in the facts it cites, and the page shows the signed receipt under the note. **The ladder's reads go to NVIDIA directly**, because Nightshift cannot take a thinking switch, a budget or an image (next section, reported to Meterless); every logged rung shows `receipt_id: null`. Planned: the red-team lane through Nightshift | `app/notes/note.py`, `app/providers/nightshift.py`, `app/providers/receipts.py` |
+| Case page | One case at a time: the headline, the USL steps, the highlighted quote, the guard checks, rejected answers, the case note with its Nightshift receipt, decisions written back to Zetaris, "Try to fool it" | `app/web/` |
 
 ## Run it
 
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 189 tests, no network
+pytest -q                                          # 202 tests, no network
 set SAMPLE_MODE=true && python -m app.cli serve    # offline: 4 bundled cases, no model output replayed
 ```
 
@@ -42,6 +42,7 @@ Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`):
 | `python -m app.cli usl demo --write` | the timed, reproducible query pack → `docs/zetaris-demo.md` |
 | `python -m app.cli scans --case TCGA-A2-A0CV` | Nemotron Parse on the original scanned report |
 | `python -m app.cli run --case TCGA-A1-A0SN [--store]` | one case through the Markovian evidence ladder; trace in `logs/` |
+| `python -m app.cli note --case TCGA-A2-A0CV` | a cited case note by Super through Nightshift; log in `logs/case-notes.jsonl` |
 | `python -m app.cli serve` | the case page |
 
 Nightshift settings we used (Preferences): Adaptive compute, Self-refine, Answer fusion, Reasoning scaffold, Optimistic streaming and Tier-split **off** (so an answer is one model's own text); the cloud Lightning lane moved from Race to Judge (so a pinned Super is never substituted).
@@ -53,6 +54,7 @@ Nightshift settings we used (Preferences): Adaptive compute, Self-refine, Answer
 | Records that cannot be true as written (N vs count, 6th/7th edition) | 24 of 1,097 (+1 missing N the count could fill = the 25-case review queue) | `docs/zetaris-demo.md` (`usl dq`) |
 | Fields named by the evidence (after the ladder batch, 2026-10-23) | **20 of 25** queue cases: 8 node-count field, 12 N field (incl. 1 missing N); 5 for a person (micrometastasis, no count stated) | `stage_check`, `logs/batch-2026-10-23.txt` |
 | The thinking-off rung on contradiction cases | cleared 0 fields in 15 cases: a self-consistent reading cannot agree with both contradicting fields, so every case escalated to the 4k rung (the rung catches a wrong fast read: TCGA-A1-A0SN) | `logs/markovian-chunks.jsonl` |
+| Case notes through Nightshift (25 queue cases, 2026-10-23) | 24 answers, **24 of 24 receipt signatures verified** (Super VL every time, none cached), 1 call failed with a Nightshift 502 after retries; the guard accepted 19 at run time and rejected 5. One of those 5 was our tokenizer's fault ("POSITIVE: 1." was not read as 1; fixed; that answer now passes, so 20 of 25 under the current guard); the other 4 are correct rejections (2 wrote fact ids into the text, 1 sentence cited nothing, 1 answer was not JSON). Latency median 22.8 s (Nightshift keeps thinking on), range 6.2–124 s | `logs/notes-batch-2026-10-23.txt`, `logs/case-notes.jsonl` |
 | Data-quality pack | 8 custom rules + 13 Zetaris key rules, all keys valid; reproducible query pack in 21 s | `docs/zetaris-demo.md` |
 | Thinking budget (Super, 42 fields of a spike set; a measurement, not the ladder) | off 26/42 · 1k 28 · 4k 30 · unlimited 30; the "unlimited" arm was reused from a run on 2026-10-21, before the build window | research spike (knowledge base), TODO: copy into `docs/evidence/` |
 | Scan boxes (Parse → Super → guard, pre-registered) | v1: 0 of 3 passed (the kill line failed); v2: 4 of 6 passed | research spike (knowledge base), TODO: copy into `docs/evidence/` |

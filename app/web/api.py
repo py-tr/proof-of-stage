@@ -137,6 +137,32 @@ def create_app(
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
+    @app.get("/api/case/{case_id}/note")
+    async def last_case_note(case_id: str) -> dict[str, Any]:
+        from app.notes.note import latest_note
+        from app.web.data import valid_case_id
+
+        if source.mode == "sample":
+            return {"note": None}
+        return {"note": latest_note(valid_case_id(case_id))}
+
+    @app.post("/api/case/{case_id}/note")
+    async def case_note(case_id: str) -> dict[str, Any]:
+        if source.mode == "sample":
+            raise HTTPException(
+                status_code=409, detail="the case note needs Nightshift (live mode)"
+            )
+        from app.notes.note import write_note
+
+        found = await _case(case_id, fresh=False)
+        try:
+            return await write_note({**found, "accepted": _rechecked(found)})
+        except Exception as exc:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Nightshift did not return a verified note: {type(exc).__name__}",
+            ) from exc
+
     @app.post("/api/case/{case_id}/decision")
     async def decide(case_id: str, body: Decision) -> dict[str, Any]:
         return await _guarded(source.decide(case_id, body.claim, body.reason_code, body.note))

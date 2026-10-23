@@ -309,6 +309,73 @@ async function refreshQueueKeep(caseId) {
 }
 
 // ---------- try to fool it ----------
+// ---------- case note (Nightshift) ----------
+const NOTE_WHY = {
+  answer_not_json: "the answer was not readable",
+  sentence_count: "it did not have 1 to 4 sentences",
+};
+function noteWhy(code) {
+  if (Object.hasOwn(NOTE_WHY, code)) return NOTE_WHY[code];
+  const m = /^sentence_(\d+)_(.*)$/.exec(code || "");
+  if (!m) return code;
+  const rest = m[2]
+    .replace(/^states_(.+)_not_in_cited_facts$/, "it states $1, which none of its cited facts says")
+    .replace(/^cites_unknown_(.+)$/, "it cites $1, which is not a fact")
+    .replace("no_citation", "it cites no fact").replace("too_long", "it is too long")
+    .replace("fact_id_in_text", "it writes a fact id into the text").replace("malformed", "it is malformed");
+  return `sentence ${m[1]}: ${rest}`;
+}
+
+function renderNote(note) {
+  const box = $("note");
+  box.replaceChildren();
+  if (!note) {
+    box.append(el("p", { class: "small" }, "No note yet for this case."));
+    return;
+  }
+  if (note.status !== "accepted") {
+    box.append(el("p", {}, el("span", { class: "fail" }, "Not shown"), `: ${noteWhy(note.reason)}. The guard checks every sentence against the facts it cites.`));
+  }
+  for (const s of note.sentences) {
+    box.append(el("p", {}, s.text, ...s.cites.map((c) => el("span", { class: "cite", title: note.facts[c] || "" }, c))));
+  }
+  const rc = note.receipt || {};
+  box.append(el("div", { class: "receipt" },
+    "Model ", el("code", {}, show(rc.model)), " · Nightshift receipt ", el("code", {}, show(rc.receipt_id)),
+    ` · Ed25519 signature ${show(rc.signature)} · cached: ${rc.from_cache ? "yes" : "no"} · egress ${show(rc.egress)} · ${show(note.seconds)} s · ${show(note.created_at)}`));
+}
+
+async function loadNote(caseId) {
+  const live = state.mode === "live";
+  $("note-run").classList.toggle("hidden", !live);
+  if (!live) {
+    $("note").replaceChildren(el("p", { class: "small" }, "Sample mode: the case note needs Nightshift (live mode); no saved note is replayed."));
+    return;
+  }
+  try {
+    const found = await api(`/api/case/${caseId}/note`);
+    if (state.current && state.current.check.case_id === caseId) renderNote(found.note);
+  } catch (error) {
+    $("note").textContent = `Could not load the note: ${error.message}`;
+  }
+}
+
+async function writeNote() {
+  if (!state.current) return;
+  const caseId = state.current.check.case_id;
+  const button = $("note-run");
+  button.disabled = true;
+  $("note").replaceChildren(el("p", { class: "small" }, "Asking Nemotron Super through Nightshift (thinking is on there; about 10–25 s)…"));
+  try {
+    const note = await api(`/api/case/${caseId}/note`, { method: "POST" });
+    if (state.current.check.case_id === caseId) renderNote(note);
+  } catch (error) {
+    $("note").textContent = `No note: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+}
+
 async function challenge() {
   if (!state.current) return;
   const caseId = state.current.check.case_id;
@@ -354,6 +421,7 @@ async function openCase(position, options = {}) {
     state.current = data;
     renderPanel(data);
     renderReport(data.report_text, acceptedSpans(data.accepted));
+    loadNote(caseId);
     $("f-out").replaceChildren();
     $("reject-reasons").classList.add("hidden");
     history.replaceState(null, "", `?case=${caseId}`);
@@ -367,6 +435,7 @@ async function openCase(position, options = {}) {
 function wire() {
   document.querySelectorAll(".reasons button").forEach((b) => b.addEventListener("click", () => decide("neither", b.dataset.r)));
   $("f-run").addEventListener("click", challenge);
+  $("note-run").addEventListener("click", writeNote);
   $("report-text").addEventListener("mouseup", () => {
     const picked = String(window.getSelection() || "").trim();
     if (picked.length > 3) $("f-quote").value = picked;

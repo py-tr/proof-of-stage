@@ -151,6 +151,35 @@ async def _usl(args: argparse.Namespace) -> int:
     return 2
 
 
+async def _notes(case_ids: list[str]) -> int:
+    from app.notes.note import write_note
+    from app.web.api import _rechecked
+    from app.web.data import LiveData
+
+    data, failed = LiveData(), 0
+    for case_id in case_ids:
+        found = await data.case(case_id)
+        if found is None:
+            sys.stdout.write(f"{case_id}: not found" + "\n")
+            failed += 1
+            continue
+        try:
+            note = await write_note({**found, "accepted": _rechecked(found)})
+        except Exception as exc:
+            sys.stdout.write(f"{case_id}: ERROR {_exc_reason(exc)}" + "\n")
+            failed += 1
+            continue
+        rc = note["receipt"]
+        sys.stdout.write(
+            f"{case_id}: {note['status']} {note['reason']} {note['seconds']}s "
+            f"model={rc['model']} signature={rc['signature']} receipt={rc['receipt_id']}" + "\n"
+        )
+        for sentence in note["sentences"]:
+            cites = "".join(f"[{c}]" for c in sentence["cites"])
+            sys.stdout.write(f"  {sentence['text']} {cites}" + "\n")
+    return 1 if failed else 0
+
+
 def _utf8_stdout() -> None:
     # Model text holds characters like "≤"; a redirected Windows console is cp1252
     # and would raise mid-batch. Replace what cannot be encoded instead of crashing.
@@ -209,6 +238,8 @@ def main(argv: list[str] | None = None) -> int:
     run = sub.add_parser("run", help="One case through the Markovian evidence ladder (RUNGS)")
     run.add_argument("--case", required=True, help="Case id, e.g. TCGA-A2-A0CV")
     run.add_argument("--store", action="store_true", help="Append closed fields to Zetaris")
+    note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
+    note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
     serve.add_argument("--port", type=int, default=8000, help="Port on 127.0.0.1")
     sample = sub.add_parser("sample", help="Bundled sample cases for SAMPLE_MODE")
@@ -236,6 +267,8 @@ def main(argv: list[str] | None = None) -> int:
             ladder, outcome = asyncio.run(run_case(args.case.strip().upper(), store=args.store))
             sys.stdout.write(summary(ladder, outcome))
             return 0
+        if args.command == "note":
+            return asyncio.run(_notes([c.strip().upper() for c in args.case]))
         if args.command == "scans":
             from app.scans.scans import parse_scan, write_parse_blocks_csv
 
