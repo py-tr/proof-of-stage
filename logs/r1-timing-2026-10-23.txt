@@ -1,0 +1,57 @@
+{
+  "run": "20261023T214313",
+  "reads": 168,
+  "failed_reads": 2,
+  "void": false,
+  "lightning": {
+    "reads": 84,
+    "settled_per_trial": [
+      16,
+      17,
+      16
+    ],
+    "seconds_per_trial": [
+      81.4,
+      65.9,
+      95.2
+    ],
+    "tokens_per_trial": [
+      6391,
+      4817,
+      6364
+    ],
+    "median_seconds_per_read": 2.17,
+    "closings_vs_control": {
+      "agree": 95,
+      "disagree": 0,
+      "unconfirmed": 9
+    },
+    "unsafe": false
+  },
+  "super": {
+    "reads": 82,
+    "settled_per_trial": [
+      13,
+      14,
+      13
+    ],
+    "seconds_per_trial": [
+      97.6,
+      58.4,
+      91.3
+    ],
+    "tokens_per_trial": [
+      4049,
+      4468,
+      4685
+    ],
+    "median_seconds_per_read": 1.92,
+    "closings_vs_control": {
+      "agree": 82,
+      "disagree": 0,
+      "unconfirmed": 2
+    },
+    "unsafe": false
+  },
+  "lightning_faster": false
+}
