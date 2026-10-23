@@ -11,11 +11,11 @@ UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage SET TAB
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.case_id SET COLUMN DESCRIPTION Tumour case these recorded stage values belong to;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.site_key SET COLUMN DESCRIPTION Site family used to choose staging rules for this case;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.pathologic_t SET COLUMN DESCRIPTION Registry T category with a leading p or yp removed and letters uppercased;
-UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.pathologic_n SET COLUMN DESCRIPTION Registry N category with a leading p or yp removed and letters uppercased;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.pathologic_n SET COLUMN DESCRIPTION Registry N category with a leading p or yp removed and letters uppercased (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts);
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.pathologic_stage SET COLUMN DESCRIPTION Registry stage group as recorded;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.edition SET COLUMN DESCRIPTION Staging system edition as recorded;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.edition_code SET COLUMN DESCRIPTION Edition number taken from the recorded edition, such as 6, 7, or 8;
-UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.lymph_nodes_positive SET COLUMN DESCRIPTION Number of positive regional lymph nodes recorded for the case;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.lymph_nodes_positive SET COLUMN DESCRIPTION Number of positive regional lymph nodes recorded for the case (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts);
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.lymph_nodes_tested SET COLUMN DESCRIPTION Number of regional lymph nodes examined for the case;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.year_of_diagnosis SET COLUMN DESCRIPTION Year of the diagnosis row chosen for this case;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.recorded_stage.n_main SET COLUMN DESCRIPTION Main N category of the recorded N value, such as N0 or N1, with the subcategory removed;
@@ -45,10 +45,10 @@ UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.case_id SE
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.site_key SET COLUMN DESCRIPTION Site family used to choose the node-count rule;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.edition_code SET COLUMN DESCRIPTION Edition number the checks use;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.recorded_t SET COLUMN DESCRIPTION Registry T category normalised the same way as a report extraction;
-UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.recorded_n SET COLUMN DESCRIPTION Registry N category normalised the same way as a report extraction;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.recorded_n SET COLUMN DESCRIPTION Registry N category normalised the same way as a report extraction (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts);
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.recorded_stage SET COLUMN DESCRIPTION Registry stage group as recorded;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.recorded_n_main SET COLUMN DESCRIPTION Main N category recorded for the case;
-UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.lymph_nodes_positive SET COLUMN DESCRIPTION Positive regional nodes used to choose the N rule;
+UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.lymph_nodes_positive SET COLUMN DESCRIPTION Positive regional nodes used to choose the N rule (audited: where this field and the other node field cannot both be true, stage_check.fault_field names the field the report contradicts);
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.lymph_nodes_tested SET COLUMN DESCRIPTION Examined regional nodes. A zero or missing count selects the not-examined rule;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.derived_n SET COLUMN DESCRIPTION N category chosen from the staging rules using the positive-node count;
 UPDATE USL lightning.metastore.registry_audit.stage_audit.stage_check.derived_n_main SET COLUMN DESCRIPTION Main N category of that rule output;
