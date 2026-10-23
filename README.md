@@ -21,7 +21,7 @@ The two columns disagree on 10 of 663 records where both apply, and the basic so
 4. **The semantic layer names the field** the report contradicts (node count, N category, or a person decides), and **a person decides**. Every write is append-only.
 
 **Measured, pre-registered where marked** (each number links to its file):
-- The verdict names a field for **21 of the 25** impossible records (8 node count, 13 N category); 4 go to a person ([Results](#results-live-2026-10-2223-every-number-has-its-file)).
+- The verdict names a field for **21 of the 25** queue records (24 impossible + 1 missing N; 8 node count, 13 N category); 4 go to a person ([Results](#results-live-2026-10-2223-every-number-has-its-file)).
 - **Red team (pre-registered):** Nemotron as a Markovian attacker, 0 wrong accepts in 57 judged attacks ([v3](docs/evidence/adversary-chain-v3-results.md)).
 - **Reasoning dial (pre-registered):** thinking off first, then 4k, used 40% fewer tokens than always 4k; 0 of 31 cheap closings contradicted ([dial](docs/evidence/dial-sample-results.md)).
 - **Model per step (pre-registered):** Lightning took the first rung from Super (18 vs 15 of 28 settled, 0 of 38 contradicted, [Lightning](docs/evidence/lightning-r1-results.md)); Ultra lost the case-note seat to Super (8 vs 21 of 25, [Ultra](docs/evidence/ultra-notes-results.md)).
