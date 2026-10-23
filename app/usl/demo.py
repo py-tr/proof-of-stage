@@ -118,6 +118,14 @@ def steps() -> list[Step]:
             f"SELECT count(*) AS records, {_BY_N_SUM} AS node_positive_by_n_column, "
             f"{_BY_COUNT_SUM} AS node_positive_by_count_column, "
             f"sum(CASE WHEN {_DISAGREE} THEN 1 ELSE 0 END) AS columns_disagree, "
+            # the third answer: where the columns disagree, trust the field the verdict did not
+            # name; a case left to a person is not counted as node-positive
+            f"sum(CASE WHEN NOT ({_DISAGREE}) AND {_BY_N} THEN 1 "
+            f"WHEN {_DISAGREE} AND fault_field = 'node_count' AND {_BY_N} THEN 1 "
+            f"WHEN {_DISAGREE} AND fault_field = 'pathologic_n' AND {_BY_COUNT} THEN 1 "
+            "ELSE 0 END) AS node_positive_by_verdict, "
+            f"sum(CASE WHEN {_DISAGREE} AND fault_field = 'review' THEN 1 ELSE 0 END) "
+            "AS left_to_a_person, "
             "sum(CASE WHEN reason_class = 'n_count_contradiction' AND NOT "
             f"({_DISAGREE}) THEN 1 ELSE 0 END) AS same_answer_other_category "
             f"FROM {check} WHERE {_BOTH_APPLY}",
