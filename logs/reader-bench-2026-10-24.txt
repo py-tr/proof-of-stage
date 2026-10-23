@@ -1,0 +1,14 @@
+{
+  "run": "20261023T220113",
+  "cases": 25,
+  "provider_failures": {
+    "lightning": 0,
+    "super": 1,
+    "ultra": 0
+  },
+  "void": {
+    "lightning": false,
+    "super": false,
+    "ultra": false
+  }
+}
