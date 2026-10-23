@@ -14,6 +14,7 @@ NS_LOCAL_LANE = "nemotron-3-5-lightning-3-2"
 LOCAL_RUNTIME_PREFIX = "local-runtime/"
 LOCAL_RUNTIME_NEMOTRON_PREFIX = "local-runtime/nemotron"
 NV_SUPER = "nvidia/nemotron-3.5-super-vl-120b-a12b"
+NV_ULTRA = "nvidia/nemotron-3-ultra-550b-a55b"
 NV_CONTENT_SAFETY = "nvidia/nemotron-3.5-content-safety"
 # Hosted nemotron-parse-2.0 returns empty output (the image is dropped; measured 10-22),
 # so the scan reader uses the v1 model with the markdown_bbox tool.

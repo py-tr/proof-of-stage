@@ -115,6 +115,24 @@ async def test_write_note_pins_super_vl_requires_a_signature_and_logs(
     assert note_mod.latest_note("TCGA-OTHER") is None
 
 
+@pytest.mark.asyncio
+async def test_an_ultra_note_uses_the_same_guard_and_its_own_log(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(note_mod, "NOTES_LOG", tmp_path / "case-notes.jsonl")
+    monkeypatch.setattr(note_mod, "ULTRA_LOG", tmp_path / "case-notes-ultra.jsonl")
+
+    async def fake_ultra(messages: list[dict[str, Any]], model: str, **kwargs: Any):
+        text = json.dumps(_answer(("A surgeon names the count field.", ["F4"])))
+        return text, model, {"completion_tokens": 9}
+
+    result = await note_mod.write_note(FOUND, chat=fake_ultra, writer="ultra")
+    assert result["model"] == note_mod.config.NV_ULTRA and result["provider"] == "nvidia direct"
+    assert result["status"] == "rejected" and "surgeon" in result["reason"]
+    assert (tmp_path / "case-notes-ultra.jsonl").exists()
+    assert note_mod.latest_note("TCGA-A2-A0CV") is None  # the page's log is untouched
+
+
 def test_sample_mode_writes_no_note_and_replays_none() -> None:
     client = TestClient(create_app(SampleData()))
     case_id = client.get("/api/queue").json()[0]["case_id"]

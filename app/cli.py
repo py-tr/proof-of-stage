@@ -273,7 +273,7 @@ async def _adversary(version: str = "v2") -> int:
     return 0
 
 
-async def _notes(case_ids: list[str]) -> int:
+async def _notes(case_ids: list[str], writer: str = "super") -> int:
     from app.notes.note import write_note
     from app.web.api import _rechecked
     from app.web.data import LiveData
@@ -286,12 +286,16 @@ async def _notes(case_ids: list[str]) -> int:
             failed += 1
             continue
         try:
-            note = await write_note({**found, "accepted": _rechecked(found)})
+            note = await write_note({**found, "accepted": _rechecked(found)}, writer=writer)
         except Exception as exc:
             sys.stdout.write(f"{case_id}: ERROR {_exc_reason(exc)}" + "\n")
             failed += 1
             continue
-        rc = note["receipt"]
+        rc = note.get("receipt") or {
+            "model": note.get("model"),
+            "signature": "-",
+            "receipt_id": "-",
+        }
         sys.stdout.write(
             f"{case_id}: {note['status']} {note['reason']} {note['seconds']}s "
             f"model={rc['model']} signature={rc['signature']} receipt={rc['receipt_id']}" + "\n"
@@ -381,6 +385,12 @@ def main(argv: list[str] | None = None) -> int:
     baseline.add_argument("step", choices=("run", "score"))
     note = sub.add_parser("note", help="A cited case note by Super through Nightshift")
     note.add_argument("--case", action="append", required=True, help="Case id (repeatable)")
+    note.add_argument(
+        "--writer",
+        choices=("super", "ultra"),
+        default="super",
+        help="super: through Nightshift (default); ultra: Nemotron Ultra on NVIDIA direct",
+    )
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
     serve.add_argument("--port", type=int, default=8000, help="Port on 127.0.0.1")
     sample = sub.add_parser("sample", help="Bundled sample cases for SAMPLE_MODE")
@@ -420,7 +430,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "adversary":
             return asyncio.run(_adversary(args.version))
         if args.command == "note":
-            return asyncio.run(_notes([c.strip().upper() for c in args.case]))
+            return asyncio.run(_notes([c.strip().upper() for c in args.case], args.writer))
         if args.command == "scans":
             from app.scans.scans import parse_scan, write_parse_blocks_csv
 

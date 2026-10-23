@@ -21,13 +21,15 @@ from pathlib import Path
 from typing import Any
 
 from app import config
-from app.providers import nightshift
+from app.providers import nightshift, nvidia
 from app.providers.receipts import key_fingerprint
 from app.reader.reader import NODES_POSITIVE, parse_answer
 from app.web.evidence import n_range
 
 ROOT = Path(__file__).resolve().parents[2]
 NOTES_LOG = ROOT / "logs" / "case-notes.jsonl"
+# Ultra notes (NVIDIA direct, no receipt) go to their own log; the page reads only NOTES_LOG.
+ULTRA_LOG = ROOT / "logs" / "case-notes-ultra.jsonl"
 MAX_SENTENCES = 4
 MAX_WORDS = 35  # per sentence
 # Thinking stays on for the note. Measured 2026-10-23 through Nightshift 1.2.3: with thinking
@@ -186,8 +188,13 @@ def check_note(answer: dict[str, Any] | None, facts: dict[str, str]) -> tuple[li
     return out, ""
 
 
-async def write_note(found: dict[str, Any], *, chat: Any = None) -> dict[str, Any]:
-    """One note for one case; the result is logged and returned, never stored as evidence."""
+async def write_note(
+    found: dict[str, Any], *, chat: Any = None, writer: str = "super"
+) -> dict[str, Any]:
+    """One note for one case; the result is logged and returned, never stored as evidence.
+
+    writer "ultra": Nemotron Ultra on NVIDIA direct (no Nightshift lane for it), same facts,
+    prompt and guard, logged to ULTRA_LOG."""
     case_id = found["check"]["case_id"]
     facts = build_facts(found)
     messages = [
@@ -199,6 +206,8 @@ async def write_note(found: dict[str, Any], *, chat: Any = None) -> dict[str, An
         },
     ]
     started = time.monotonic()
+    if writer == "ultra":
+        return await _ultra_note(case_id, facts, messages, started, chat)
     text, receipt = await (chat or nightshift.chat)(
         messages,
         config.NS_SUPER_VL,
@@ -239,9 +248,34 @@ async def write_note(found: dict[str, Any], *, chat: Any = None) -> dict[str, An
     return result
 
 
-def _append(result: dict[str, Any], raw_text: str) -> None:
-    NOTES_LOG.parent.mkdir(parents=True, exist_ok=True)
-    with NOTES_LOG.open("a", encoding="utf-8") as log:
+async def _ultra_note(
+    case_id: str, facts: dict[str, str], messages: list[dict], started: float, chat: Any
+) -> dict[str, Any]:
+    text, served, usage = await (chat or nvidia.chat_with_usage)(
+        messages, config.NV_ULTRA, max_tokens=MAX_TOKENS
+    )
+    sentences, reason = check_note(parse_answer(text), facts)
+    result = {
+        "case_id": case_id,
+        "writer": "ultra",
+        "status": "accepted" if sentences else "rejected",
+        "reason": reason,
+        "sentences": sentences,
+        "facts": facts,
+        "provider": "nvidia direct",
+        "model": served,
+        "usage": usage,
+        "seconds": round(time.monotonic() - started, 2),
+        "created_at": datetime.now(UTC).isoformat(timespec="seconds"),
+    }
+    _append(result, text, ULTRA_LOG)
+    return result
+
+
+def _append(result: dict[str, Any], raw_text: str, path: Path | None = None) -> None:
+    path = path or NOTES_LOG
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as log:
         log.write(json.dumps({**result, "raw_text": raw_text}, ensure_ascii=False) + "\n")
 
 
