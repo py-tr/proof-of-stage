@@ -14,3 +14,6 @@
 .flow span.good { background: #e8f3e8; color: var(--green); }
 .how-quote { background: var(--c); border-radius: 3px; padding: 1px 4px; font-family: var(--mono); font-size: 13px; }
 .how-foot { text-align: center; margin-top: 16px; }
+.how-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0; display: block; overflow-x: auto; }
+.how-table th, .how-table td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.how-table .how-quote { font-size: 11px; }

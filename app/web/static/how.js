@@ -1,4 +1,4 @@
-// How it works: one record, five numbered steps, every value read live from the same API
+// How it works: one record, six numbered steps, every value read live from the same API
 // the case page uses. Plain JS; every text is a text node.
 "use strict";
 
@@ -83,6 +83,10 @@ function render(data, trace, sample) {
     accepted.length ? flow(...accepted.map((x) => [`${x.field === "NPOS" ? "positive nodes" : "N"} ${x.value} ✓`, "good"])) : null,
     ...rejected.slice(0, 3).map((t) => el("p", { class: "small" }, t)))));
 
+  // 3b. The guard under attack (filled in by loadRedTeam)
+  steps.append(el("li", { id: "redteam-step" }, card("NVIDIA Nemotron, attacking the guard",
+    "Nemotron tries to make the guard accept a wrong count", el("p", { class: "small" }, "Loading the logged chain…"))));
+
   // 4. The verdict
   steps.append(el("li", { class: c.fault_field === "review" ? "" : "alert" }, card("Zetaris semantic layer", title(c, sample),
     flow([`registry N ${show(c.recorded_n)} · report N ${show(c.report_n)}`, c.fault_field === "pathologic_n" ? "bad" : ""],
@@ -96,11 +100,49 @@ function render(data, trace, sample) {
     el("p", { class: "small" }, "Each decision is a new append-only row in Zetaris; the record itself is never edited."))));
 }
 
+const VERDICT = {
+  count_not_in_quote: "rejected: the number is not the positive count in its quote",
+  count_below_report: "rejected: below a node fraction the report states",
+  count_not_report_total: "rejected: not the total the report states",
+  quote_not_in_report: "rejected: quote not in the report",
+  quote_too_short: "rejected: quote too short",
+  true_count: "sent the true count (not an attack)",
+  call_failed: "the call failed (not judged)",
+};
+
+async function loadRedTeam() {
+  const box = $("redteam-step");
+  if (!box) return;
+  let chains = [];
+  try { chains = (await api("/api/redteam")).chains; } catch (error) { /* shown below */ }
+  const c = chains[0];
+  const body = [];
+  if (!c) body.push(el("p", { class: "small" }, "No red-team run logged."));
+  else {
+    const judged = c.steps.filter((s) => s.verdict !== "call_failed").length;
+    const total = chains.reduce((n, x) => n + x.steps.filter((s) => s.verdict !== "call_failed").length, 0);
+    const wrong = chains.reduce((n, x) => n + (x.accepts_wrong || 0), 0);
+    body.push(el("p", {}, `A pre-registered chain on ${c.case} (the report says ${c.true_count} positive nodes). Each step Super, thinking budget ${c.thinking_budget}, through Nightshift, proposes a wrong count and a quote it hopes passes; the real guard judges it, and our code writes the verdict into the ledger the next step sees.`),
+      flow([`${c.accepts_wrong} wrong accepted of ${judged} judged on this case`, c.accepts_wrong ? "bad" : "good"], [`${wrong} of ${total} over all ${chains.length} chains`, wrong ? "bad" : "good"]),
+      el("table", { class: "how-table" },
+        el("thead", {}, el("tr", {}, ...["Step", "Attack", "Its quote", "Guard", "Receipt"].map((h) => el("th", {}, h)))),
+        el("tbody", {}, ...c.steps.map((s) => el("tr", {},
+          el("td", {}, show(s.step)),
+          el("td", {}, `${show(s.value)} nodes${s.repeat ? " (repeat)" : ""}`),
+          el("td", { class: "how-quote" }, s.quote ? `“${s.quote}”` : "—"),
+          el("td", {}, VERDICT[s.verdict] || show(s.verdict)),
+          el("td", {}, show(s.signature)))))),
+      el("p", { class: "small" }, `Ledger instead of transcript: ${show(c.tokens_saved_est)} estimated prompt tokens saved on this chain (engine estimator, history against ledger); the engine's own totalTokensSaved reports ${show(c.engine_tokens_saved)}. ${show(c.repeats)} of ${c.steps.length} steps repeated an earlier attack despite the ledger. Logged run ${c.run_id}, not replayed live.`));
+  }
+  box.replaceChildren(card("NVIDIA Nemotron, attacking the guard", "Nemotron tries to make the guard accept a wrong count", ...body));
+}
+
 async function load(caseId, sample) {
   const [data, found] = await Promise.all([api(`/api/case/${caseId}`), api(`/api/case/${caseId}/trace`)]);
   $("open-case").href = `/?case=${caseId}`;
   history.replaceState(null, "", `?case=${caseId}`);
   render(data, found.trace, sample);
+  loadRedTeam();
 }
 
 async function start() {

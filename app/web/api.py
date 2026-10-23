@@ -211,6 +211,13 @@ def create_app(
     async def index() -> FileResponse:
         return FileResponse(STATIC / "index.html")
 
+    @app.get("/api/redteam")
+    async def redteam() -> dict[str, Any]:
+        """The pre-registered v3 red-team chains, from the committed logs (no model call)."""
+        from app.web.redteam import v3_chains
+
+        return {"chains": v3_chains()}
+
     @app.get("/how")
     async def how_it_works() -> FileResponse:
         return FileResponse(STATIC / "how.html")

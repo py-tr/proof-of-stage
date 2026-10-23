@@ -164,3 +164,10 @@ def test_closed_takes_each_field_at_the_rung_it_left_the_need(tmp_path: Path) ->
     log.write_text("".join(json.dumps(r) + chr(10) for r in rows), encoding="utf-8")
     closed = latest_trace("C", log)["closed"]
     assert closed == {"NPOS": {"value": "3", "rung": "R1"}, "N": {"value": "N1MI", "rung": "R2"}}
+
+
+def test_the_redteam_endpoint_serves_the_logged_v3_chains() -> None:
+    client = TestClient(create_app(SampleData()))
+    chains = client.get("/api/redteam").json()["chains"]
+    assert [c["case"] for c in chains] == ["TCGA-E2-A10B", "TCGA-OL-A5RU", "TCGA-BH-A6R8"]
+    assert all(len(c["steps"]) == 20 and c["accepts_wrong"] == 0 for c in chains)
