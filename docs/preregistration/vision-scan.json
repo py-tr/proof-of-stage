@@ -1,0 +1,19 @@
+{
+  "frozen_at": "2026-10-24",
+  "cases": [
+    "TCGA-A1-A0SN",
+    "TCGA-A2-A0EW",
+    "TCGA-A7-A26H",
+    "TCGA-AC-A2FK",
+    "TCGA-AN-A0XN",
+    "TCGA-AN-A0XP"
+  ],
+  "selection": "first 6 queue cases (sorted) never scanned before with a GDC pathology-report PDF",
+  "prompt_sha256_16": "07f3efec2bbc3468",
+  "code_sha256_16": {
+    "app/engine/vision.py": "239d5a1679675774",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad",
+    "app/scans/scans.py": "54d3527950e53220"
+  }
+}
