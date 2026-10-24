@@ -424,6 +424,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "vision-scan", help="Pre-registered: Super VL reads the scan images vs Parse + Super"
     )
+    sub.add_parser("parse-bench", help="Pre-registered: Nemotron Parse 2.0 vs v1 in the pipeline")
     sub.add_parser(
         "local-focus", help="Pre-registered: local first read with an on-PC focus step"
     )
@@ -520,6 +521,11 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.timing import run_timing
 
             sys.stdout.write(json.dumps(asyncio.run(run_timing()), indent=2, default=str))
+            return 0
+        if args.command == "parse-bench":
+            from app.engine.parse_bench import run_parse_bench
+
+            sys.stdout.write(json.dumps(asyncio.run(run_parse_bench()), indent=2, default=str))
             return 0
         if args.command == "local-focus":
             from app.engine.local_focus import run_local_focus

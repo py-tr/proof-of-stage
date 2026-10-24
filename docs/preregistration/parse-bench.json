@@ -1,0 +1,109 @@
+{
+  "written": "2026-10-24",
+  "cases": [
+    "TCGA-A1-A0SN",
+    "TCGA-A2-A0EW",
+    "TCGA-A7-A26H",
+    "TCGA-AC-A2FK",
+    "TCGA-AN-A0XN",
+    "TCGA-AN-A0XP",
+    "TCGA-BH-A0DD"
+  ],
+  "frozen_values": {
+    "TCGA-A1-A0SN": {
+      "N": "N2",
+      "NPOS": "4"
+    },
+    "TCGA-A2-A0EW": {
+      "N": "N2",
+      "NPOS": "4"
+    },
+    "TCGA-A7-A26H": {
+      "N": "N1",
+      "NPOS": "1"
+    },
+    "TCGA-AC-A2FK": {
+      "N": "N1",
+      "NPOS": "3"
+    },
+    "TCGA-AN-A0XN": {
+      "N": "N1"
+    },
+    "TCGA-AN-A0XP": {
+      "N": "N1"
+    },
+    "TCGA-BH-A0DD": {
+      "N": "N1",
+      "NPOS": "1"
+    }
+  },
+  "frozen_values_how": "stage_check.report_n_main and report_nodes_positive on the live layer, 2026-10-24, before freezing",
+  "pairs": [
+    [
+      "TCGA-A1-A0SN",
+      "N"
+    ],
+    [
+      "TCGA-A1-A0SN",
+      "NPOS"
+    ],
+    [
+      "TCGA-A2-A0EW",
+      "N"
+    ],
+    [
+      "TCGA-A2-A0EW",
+      "NPOS"
+    ],
+    [
+      "TCGA-A7-A26H",
+      "N"
+    ],
+    [
+      "TCGA-A7-A26H",
+      "NPOS"
+    ],
+    [
+      "TCGA-AC-A2FK",
+      "N"
+    ],
+    [
+      "TCGA-AC-A2FK",
+      "NPOS"
+    ],
+    [
+      "TCGA-AN-A0XN",
+      "N"
+    ],
+    [
+      "TCGA-AN-A0XP",
+      "N"
+    ],
+    [
+      "TCGA-BH-A0DD",
+      "N"
+    ],
+    [
+      "TCGA-BH-A0DD",
+      "NPOS"
+    ]
+  ],
+  "pages": 19,
+  "packet_seed": 20261024,
+  "code_sha256_16": {
+    "app/engine/parse_bench.py": "cbb309457ea3cbac",
+    "app/scans/scans.py": "54d3527950e53220",
+    "app/providers/nvidia.py": "d828db414b30ba39",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "parse2_prompt_sha256_16": "893d80dc972bc643",
+  "rubric": {
+    "on": "a red box covers the printed line(s) that state the accepted value",
+    "off": "beside the line, more than half a line away, or only unrelated text",
+    "missing": "no box"
+  },
+  "ship_rule": "v1-only passes = 0, 2.0-only passes >= 1 with one on a multi-page case, 2.0 empty and truncated pages <= v1's",
+  "void": "more than 2 provider page failures for either model",
+  "prediction": "value agreement about equal (10-12 of 12 each); boxes similar, 2.0 maybe tighter on multi-page; ship rule not met slightly more likely"
+}
