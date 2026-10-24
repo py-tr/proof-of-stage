@@ -1,0 +1,26 @@
+{
+  "run": "20261024T160819",
+  "records": 28,
+  "failures": 4,
+  "void": false,
+  "settled": 13,
+  "fields_closed": 28,
+  "vs_referee": {
+    "agree": 23,
+    "disagree": 0,
+    "unconfirmed": 5
+  },
+  "every_record_local": false,
+  "retries": 0,
+  "seconds": 321.4,
+  "cloud_lightning_settled_row": {
+    "lightning_r1": 18,
+    "timing_trials": [
+      16,
+      17,
+      16
+    ],
+    "unconfirmed": "5 of 38"
+  },
+  "claim_met": false
+}
