@@ -66,6 +66,20 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 | The red team | **Super VL** as the Markovian generator, through Nightshift | 0 wrong accepts in 57 judged attacks (`docs/evidence/adversary-chain-v3-results.md`) |
 | Not used | Content Safety, Embed, Nano | No step needs them: the guard is deterministic code, the queue is found by SQL, not by retrieval; adding them would be model-name collecting |
 
+## Sponsor technology, in one place
+
+| Sponsor | What it does here | Where to check it |
+|---|---|---|
+| **Zetaris** (the data layer) | One Unified Semantic Layer, `stage_audit`, over three live sources: the NCI GDC REST API (registered as a table), a file store (rules, report text, Parse blocks) and our append-only Postgres (readings, decisions). The rule that finds impossible records, the verdict (`stage_check.fault_field`), the checked count and the three answers to "how many patients are node-positive?" are SQL in the layer; 8 custom DQ rules plus 13 generated key rules; the case page reads only USL tables, and a person's decision is a row the layer's answer includes | `app/usl/`, `docs/zetaris-demo.md` (timed, reproducible), "Reflection on the Zetaris USL" below |
+| **Meterless engine: Markovian** | Runs two chains. The evidence ladder, one chain per case: each chunk is a rung (R1 Lightning, R2 Super VL, R3 the scan), our code writes the carryover that picks the next rung and ends the chain when no field is open. The red-team chain: Super is the generator, attacking our guard with a code-written ledger of its earlier attempts as the carryover | Vendored unmodified (`vendor/meterless-markovian`), conformance **8 of 8** (`npx tsx conformance/runner.ts`); our engine tests `tests/test_markovian.py`; red team `docs/evidence/adversary-chain-v3-results.md` |
+| **Meterless Nightshift** (the AI provider) | Every text call goes through it: OpenAI-compatible, a unique scope per work item, the model pinned and checked in the receipt, the receipt's Ed25519 signature verified against a pinned key, cached answers refused. Our report on 1.2.1 (thinking switch and budget not forwarded) was fixed in 1.2.3 | `app/providers/nightshift.py`, `app/providers/receipts.py`, `python -m app.cli doctor` (a signed call, the key fingerprint); every logged rung carries its receipt id |
+| **NVIDIA Nemotron** | Lightning (R1), Super VL (R2, R3, case notes, red team, agent probes), Ultra (measured for notes and the deep read), Parse (the scanned pages); each request's model is shown in its receipt, the ladder trace and `/how` | "Nemotron, model per step" above; `docs/evidence/` |
+| **Cursor** (optional) | The first commits; later Claude Code wrote the code | "How this was built" below |
+
+**What is unique in how we used them:** the semantic layer does the proving and the model only quotes: Nemotron never decides a record, the SQL rule finds it, code checks the quote, the layer names the field and a person decides. Nightshift is used as a verifiable provider (signed, pinned, cache refused), not only a router. The Markovian engine runs an evidence ladder whose model never sees the carryover, plus a red-team chain against our own guard. And each model choice was pre-registered and measured, including the ones that lost.
+
+**Exceptions, stated:** Nemotron Parse and Super VL reading page images go to NVIDIA direct, because Nightshift has no Parse lane and returns 502 on images (`docs/evidence/nightshift-limits.md`).
+
 ## Run it
 
 ```bash
