@@ -1,0 +1,7 @@
+{
+  "run": "20261024T123625",
+  "calls": 46,
+  "real": 41,
+  "planted": 5,
+  "provider_failures": 5
+}
