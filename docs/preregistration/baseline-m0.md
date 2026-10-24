@@ -30,3 +30,9 @@ Does the product's verdict (which registry field the report contradicts) beat wh
 ## Prediction (before the run)
 
 A0 agrees with the labels more often than M0-4k, M0-4k more often than M0-off, and B0 is lowest of the four apart from cases where the N category really is wrong. M0 quotes are in the report for most parsed answers (it is a copy task). A guess, written down so the result can contradict it.
+
+## Note on the labels (written 2026-10-24, before the labels were frozen and before any score)
+
+- The labeller (the builder, a lay reader, not a pathologist) labelled the 25 cases manually on the blind sheet (registry values and the report only, no system output) and says they did not see the system's verdict for any case. The disclosure above about TCGA-A2-A0CV, A1-A0SN and A7-A26E is kept as a precaution, and the baseline is still reported with and without those three, as pre-registered.
+- The decision standard the labeller applied, agreed during labelling with the coding agent explaining the method (never confirming a case against the system): pick the registry field the report directly contradicts; a printed N that contradicts the registry's N counts without a stated count; "the node count is wrong" needs a count the report states; a report that contradicts neither field, both, or itself, or is unclear, goes to "a person must decide". The N box records the category the report prints, not a correction. This standard is close to the logic of `stage_check.fault_field`, which makes agreement between labels and the product likelier by construction; disclosed here so the scores can be read with that in mind.
+- For several borderline cases the labeller asked the coding agent, or a separate helper session that had no access to the project, how to read a report (totals across parts, isolated tumour cells, printed categories); the agent explained the method and laid out both readings where a case was borderline, and the labeller chose.
