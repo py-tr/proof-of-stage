@@ -1,0 +1,484 @@
+{
+  "scored_at": "2026-10-24 13:19 UTC",
+  "labels_sha16": "caef98991d916a90",
+  "baseline_all": {
+    "labelled": 25,
+    "A0_ours": {
+      "agree": 18,
+      "of": 25
+    },
+    "B0_rule_alone": {
+      "agree": 7,
+      "of": 25
+    },
+    "M0_off": {
+      "agree": 9,
+      "of": 25,
+      "provider_failures": 0,
+      "unusable": 0,
+      "quote_not_in_report": 1,
+      "parsed": 25
+    },
+    "M0_4k": {
+      "agree": 17,
+      "of": 25,
+      "provider_failures": 0,
+      "unusable": 0,
+      "quote_not_in_report": 0,
+      "parsed": 25
+    },
+    "per_case": {
+      "TCGA-3C-AAAU": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-A1-A0SN": {
+        "label": "review",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-A2-A0CV": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "node_count",
+        "M0_4k": "node_count"
+      },
+      "TCGA-A2-A0EW": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "pathologic_n",
+        "M0_4k": "review"
+      },
+      "TCGA-A7-A26E": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-A7-A26H": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-AC-A2FK": {
+        "label": "review",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XN": {
+        "label": "node_count",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XO": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XP": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "node_count",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XS": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XT": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XW": {
+        "label": "node_count",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AO-A03P": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "node_count",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AO-A1KP": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-AQ-A1H2": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-AR-A1AT": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "node_count",
+        "M0_4k": "node_count"
+      },
+      "TCGA-BH-A0BS": {
+        "label": "review",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-BH-A0DD": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "node_count",
+        "M0_4k": "node_count"
+      },
+      "TCGA-D8-A27L": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "review",
+        "M0_4k": "review"
+      },
+      "TCGA-E2-A1B4": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-E2-A1LI": {
+        "label": "review",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "review"
+      },
+      "TCGA-E2-A572": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-E9-A3X8": {
+        "label": "review",
+        "A0": "pathologic_n",
+        "M0_off": "node_count",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-EW-A424": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      }
+    }
+  },
+  "baseline_without_disclosed": {
+    "labelled": 22,
+    "A0_ours": {
+      "agree": 16,
+      "of": 22
+    },
+    "B0_rule_alone": {
+      "agree": 7,
+      "of": 22
+    },
+    "M0_off": {
+      "agree": 8,
+      "of": 22,
+      "provider_failures": 0,
+      "unusable": 0,
+      "quote_not_in_report": 1,
+      "parsed": 22
+    },
+    "M0_4k": {
+      "agree": 15,
+      "of": 22,
+      "provider_failures": 0,
+      "unusable": 0,
+      "quote_not_in_report": 0,
+      "parsed": 22
+    },
+    "per_case": {
+      "TCGA-3C-AAAU": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-A2-A0EW": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "pathologic_n",
+        "M0_4k": "review"
+      },
+      "TCGA-A7-A26H": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-AC-A2FK": {
+        "label": "review",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XN": {
+        "label": "node_count",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XO": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XP": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "node_count",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XS": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XT": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AN-A0XW": {
+        "label": "node_count",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AO-A03P": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "node_count",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-AO-A1KP": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-AQ-A1H2": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-AR-A1AT": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "node_count",
+        "M0_4k": "node_count"
+      },
+      "TCGA-BH-A0BS": {
+        "label": "review",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-BH-A0DD": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "node_count",
+        "M0_4k": "node_count"
+      },
+      "TCGA-D8-A27L": {
+        "label": "review",
+        "A0": "review",
+        "M0_off": "review",
+        "M0_4k": "review"
+      },
+      "TCGA-E2-A1B4": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-E2-A1LI": {
+        "label": "review",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "review"
+      },
+      "TCGA-E2-A572": {
+        "label": "node_count",
+        "A0": "node_count",
+        "M0_off": "pathologic_n",
+        "M0_4k": "node_count"
+      },
+      "TCGA-E9-A3X8": {
+        "label": "review",
+        "A0": "pathologic_n",
+        "M0_off": "node_count",
+        "M0_4k": "pathologic_n"
+      },
+      "TCGA-EW-A424": {
+        "label": "pathologic_n",
+        "A0": "pathologic_n",
+        "M0_off": "pathologic_n",
+        "M0_4k": "pathologic_n"
+      }
+    }
+  },
+  "reader_bench": {
+    "lightning": {
+      "fields": {
+        "N": {
+          "correct": 13,
+          "wrong": 3,
+          "not_accepted": 5,
+          "scored": 21
+        },
+        "NPOS": {
+          "correct": 11,
+          "wrong": 0,
+          "not_accepted": 6,
+          "scored": 17
+        }
+      },
+      "correct": 24,
+      "wrong": 3,
+      "provider_failures": 0,
+      "completion_tokens": 101184
+    },
+    "super": {
+      "fields": {
+        "N": {
+          "correct": 16,
+          "wrong": 3,
+          "not_accepted": 2,
+          "scored": 21
+        },
+        "NPOS": {
+          "correct": 16,
+          "wrong": 0,
+          "not_accepted": 1,
+          "scored": 17
+        }
+      },
+      "correct": 32,
+      "wrong": 3,
+      "provider_failures": 1,
+      "completion_tokens": 77212
+    },
+    "ultra": {
+      "fields": {
+        "N": {
+          "correct": 16,
+          "wrong": 4,
+          "not_accepted": 1,
+          "scored": 21
+        },
+        "NPOS": {
+          "correct": 16,
+          "wrong": 0,
+          "not_accepted": 1,
+          "scored": 17
+        }
+      },
+      "correct": 32,
+      "wrong": 4,
+      "provider_failures": 0,
+      "completion_tokens": 47654
+    },
+    "deep_read_seat": "super"
+  },
+  "ultra_critic": {
+    "classes": {
+      "agree": 35,
+      "contradiction_verified": 3,
+      "error": 2,
+      "contradiction_unverified": 1
+    },
+    "right": 3,
+    "wrong": 0,
+    "unscored": 0,
+    "missed": 1,
+    "objections": 3,
+    "objection_list": [
+      {
+        "case": "TCGA-A1-A0SN",
+        "field": "N",
+        "stored": "N2A",
+        "objection": "N1",
+        "quote": "AJCC/UICC stage: pT1cN1MX."
+      },
+      {
+        "case": "TCGA-AC-A2FK",
+        "field": "N",
+        "stored": "N1A",
+        "objection": "NX",
+        "quote": "PATHOLOGIC STAGE: pT2, pNX, pMX."
+      },
+      {
+        "case": "TCGA-E2-A1LI",
+        "field": "N",
+        "stored": "N0",
+        "objection": "N1",
+        "quote": "Stage, Pathology : T2N1"
+      }
+    ],
+    "plants": {
+      "planted": 5,
+      "detected": 2,
+      "objected_value_is_original": 2
+    },
+    "void": false,
+    "ships": false
+  },
+  "second_reader": {
+    "lightning": {
+      "disagreements": 0,
+      "right": 0,
+      "wrong": 0,
+      "unscored": 0,
+      "missed": 4,
+      "list": []
+    },
+    "super": {
+      "disagreements": 1,
+      "right": 1,
+      "wrong": 0,
+      "unscored": 0,
+      "missed": 3,
+      "list": [
+        {
+          "case": "TCGA-A1-A0SN",
+          "field": "N",
+          "stored": "N2",
+          "read": "N1",
+          "quote": "AJCC/UICC stage: pT1cN1MX"
+        }
+      ]
+    },
+    "ultra": {
+      "disagreements": 0,
+      "right": 0,
+      "wrong": 0,
+      "unscored": 0,
+      "missed": 4,
+      "list": []
+    }
+  }
+}
