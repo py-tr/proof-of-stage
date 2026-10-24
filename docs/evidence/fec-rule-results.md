@@ -13,7 +13,7 @@ A committee's report summary (FEC Form 3, detailed summary page, lines 23-27) mu
 | **Paper-filed (keyed from scans)**: 3,156 | **136 (4.3%)** | 2,229 | 783 | 8 |
 | **Electronically filed**: 1,151 | **1 (0.09%)** | 0 | 1,150 | 0 |
 
-- Records keyed from paper are about 50 times as likely to be impossible as electronically filed ones. All 137 impossible records link a PDF of the filed report; 29 of them are amendments. The largest gaps: $22,409,245.08, $1,823,308.23, $793,033.06, $717,149.14, $649,685.00.
+- Records keyed from paper are impossible far more often than electronically filed ones (4.3% against 0.09%). The ratio (about 50 times) rests on a single e-filed impossible record, so it is not a firm number. 26 of the 136 paper gaps are under $2 (17 of them exactly $1), which a rounding step could produce; at $2 or more, 110 paper records remain impossible. All 137 impossible records link a PDF of the filed report; 29 of them are amendments. The largest gaps: $22,409,245.08, $1,823,308.23, $793,033.06, $717,149.14, $649,685.00.
 - The cents-only class (71% of paper reports, none of the e-filed) looks like a systematic artefact of keying or processing (whole dollars where the form has cents), not 2,229 separate errors; it is reported as a class and not read.
 
 ## What it means, and what it does not

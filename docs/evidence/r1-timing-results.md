@@ -10,14 +10,14 @@ Pre-registration: `docs/preregistration/r1-timing.md` + `r1-timing.json` (commit
 
 | 28 records × 3 interleaved trials, thinking off, one guard version | Lightning | Super VL |
 |---|---|---|
-| Records settled (N and count both closed), trials 1 / 2 / 3 | **16 / 17 / 16** | 13 / 14 / 13 |
+| Records settled (N and count both closed), trials 1 / 2 / 3 | **16 / 17 / 16** | 13 / 14 / 13 (trial 1 out of 26 reads: the 2 failed reads were in it) |
 | Closings against the stored 4k referee | 95 agree, **0 disagree**, 9 unconfirmed | 82 agree, 0 disagree, 2 unconfirmed |
 | Median seconds per read | 2.17 | **1.92** |
 | Seconds per trial | 81.4 / 65.9 / 95.2 | 97.6 / 58.4 / 91.3 |
 | Completion tokens per trial | 6,391 / 4,817 / 6,364 | 4,049 / 4,468 / 4,685 |
 
 Kill lines:
-- **Speed: hit.** Lightning's median seconds per read is not lower than Super's (2.17 against 1.92). As pre-registered, the README no longer says Lightning is faster at R1. The earlier 114 s against 436 s (`docs/evidence/lightning-r1-results.md`) came from runs hours apart and was load, not the model.
+- **Speed: hit.** Lightning's median seconds per read is not lower than Super's (2.17 against 1.92). As pre-registered, the README no longer says Lightning is faster at R1. The earlier 114 s against 436 s (`docs/evidence/lightning-r1-results.md`) came from runs hours apart; that it was load, not the model, is an inference from this controlled run (load was not measured).
 - **Safety: not hit.** 0 of 104 Lightning closings contradicted by the referee; R1 stays Lightning.
 - **Settling (reported):** Lightning settled more records than Super in every trial (16–17 against 13–14), confirming the earlier 18 against 15 under controlled conditions.
 

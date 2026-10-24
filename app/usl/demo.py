@@ -97,9 +97,9 @@ def steps() -> list[Step]:
         ),
         Step(
             "The composite keys hold (no output rows means no duplicates)",
-            "Zetaris runs a composite-key rule only through its first column, so we check the "
-            "full keys of derived_stage (case_id, method, field) and parse_block (case_id, "
-            "page_no, block_index) directly",
+            "a second, independent check beside Zetaris's key rules: the full keys of "
+            "derived_stage (case_id, method, field) and parse_block (case_id, page_no, "
+            "block_index), counted directly",
             f"SELECT 'derived_stage' AS usl_table, case_id, count(*) AS n FROM "
             f"{table_fqn('derived_stage')} GROUP BY case_id, method, field HAVING count(*) > 1 "
             f"UNION ALL SELECT 'parse_block' AS usl_table, case_id, count(*) AS n FROM "

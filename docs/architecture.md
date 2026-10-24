@@ -46,4 +46,4 @@ flowchart LR
 - **The guard decides what counts**: a value is accepted only if its verbatim quote is in the document and shows that value.
 - **The layer names the field** (`stage_check.fault_field`) and serves the three answers to "how many patients are node-positive?" (`usl demo` step 11).
 - **A person decides**: each decision is a new append-only row, and the layer's answer includes it.
-- **Off the critical path:** the red-team chain (Super as a Markovian attacker against the guard), the case note (Super, cited facts only), the pre-registered measurements in `docs/evidence/`.
+- **Off the critical path:** the shipped Ultra second reader (read-only: it can only object with a quote the guard checks, which sends the case to a person; served from its logged run), the red-team chain (Super as a Markovian attacker against the guard), the case note (Super, cited facts only), the pre-registered measurements in `docs/evidence/`.

@@ -48,7 +48,10 @@ DQ_RULE_TABLES = {rule: "stage_check" for rule in DQ_RULES} | {
     "nodes_within_tested": "recorded_stage"
 }
 # Rules Zetaris generates from the DDL's keys (LIST DQ USL). A composite key runs via its first
-# column ("case_id"); its listed name ("case_id,page_no,block_index") does not parse in RUN DQ.
+# column's name ("case_id"), and that run checks the full key (532 of 532 valid on parse_block,
+# which has 7 case ids; logs/zetaris-retest-2026-10-24.jsonl). Its listed name
+# ("case_id,page_no,block_index") works in RUN DQ only backquoted, as Zetaris's reference shows;
+# our read guard refuses backquotes, so we address it by the first column.
 KEY_RULES = (
     ("case_id", "tumour_case"),
     ("report_id", "path_report"),

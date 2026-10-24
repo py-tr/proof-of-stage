@@ -28,7 +28,7 @@ Treatment call 4: `... WHERE CAST(COALESCE(NULLIF(TRIM(positive_nodes_checked), 
 
 ## What both probes show together (20 calls)
 
-- Given the layer's descriptions, this agent counted from the raw count column in 18 of 19 working queries. A pointer to the verdict (0 of 10) and a checked column beside the raw one (1 of 5) did not change that habit reliably.
+- Given the layer's descriptions, this agent wrote a query in 19 of 20 calls and every one read the raw count column; 18 counted from it alone (14 returned 476, 3 returned 0 on the "4.0" format gap, 1 was refused by our read guard), and 1 also read the checked column (482). A pointer to the verdict (0 of 10) and a checked column beside the raw one (1 of 5) did not change that habit reliably.
 - The problem the project addresses is real for agents: a clear, well-described layer still led to a confident answer that leaves out the 6 patients whose record contradicts its report.
 - Not tested: removing or replacing the raw column in the view an agent reads (a review called that near-certain to work and uninformative), a different model, other wordings, or other questions. n = 5 per arm, one question: a probe, not a rate.
 - What the project concludes for its own design: the verdict is for the people and tools that read `stage_check` and the case page; we do not claim that agents pick it up on their own.

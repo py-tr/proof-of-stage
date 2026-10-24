@@ -4,6 +4,8 @@ Meterless Nightshift, Windows edition, NVIDIA cloud lanes, model `nvidia/nemotro
 
 ## 1. The same reader request, direct and through Nightshift (one real ~9.8k-character report, TCGA-A1-A0SN)
 
+(Correction 2026-10-24: these calls ran on 1.2.1 before the router extras were switched off, so the setup line above does not apply to this section. The direct and Nightshift rows ran at different times, so their times are not a speed comparison.)
+
 | Request | Result |
 |---|---|
 | NVIDIA direct, `chat_template_kwargs: {enable_thinking: false}` | 200 in **4.0 s**, 143 completion tokens, 0 reasoning |
@@ -36,7 +38,7 @@ Meterless Nightshift, Windows edition, NVIDIA cloud lanes, model `nvidia/nemotro
 
 - Calls that need a thinking switch or budget (the reader's two rungs, the red-team generator) go to NVIDIA direct, where both are honoured to the token (`docs/evidence/thinking-budget.md`).
 - Nightshift writes the case note, a short prompt that fits its contract: 24 of 24 answers were Super VL with a valid Ed25519 receipt signature, none from cache; median 22.8 s (`logs/notes-batch-2026-10-23.txt`).
-- A model id alone does not pin a Nightshift lane, so every call requires the winning model in the signed receipt and rejects a substitute.
+- On 1.2.1 a model id alone did not pin a Nightshift lane, so every call requires the winning model in the signed receipt and rejects a substitute. (On 1.2.3 a concrete id is a pin: 166 of 166 and 28 of 28 calls were served as requested; the receipt check stays.)
 - If Nightshift gains a per-request thinking switch, the rungs move back with a one-line change (`provider=` in `app/engine/rungs.py`).
 
 ## 5. Three Nightshift models on the case-note job (2026-10-23, after Meterless said Super VL had reliability issues)
@@ -47,30 +49,31 @@ Each model pinned explicitly (`require_model`, signature against the pinned key,
 |---|---|---|
 | `nvidia/nemotron-3.5-super-vl-120b-a12b` | 1 of 3 (42.7 s, signed, passed the guard) | 1 × 502, 1 timeout (500–540 s with retries) |
 | `nvidia/nemotron-3.5-lightning-30b-a3b` | 0 of 3 | 502s and a timeout |
-| `nvidia/nemotron-3-super-120b-a12b` | 0 of 3 | one call was **won by Super VL instead** and refused by our receipt check (an explicit id did not pin the lane on this Windows build); 502 and a timeout |
+| `nvidia/nemotron-3-super-120b-a12b` | 0 of 3 | one call was **won by Super VL instead** and refused by our receipt check (an explicit id did not pin the lane on 1.2.1; this section ran before 1.2.3 was installed); 502 and a timeout |
 
 The same note prompt sent to NVIDIA directly at the same time: 146.7 s with thinking on (as Nightshift sends it), 1.3 s with thinking off. So the hosted model itself was slow; through Nightshift the call meets the 45 s cut. Nothing in our code changes: the note keeps Super VL, and the receipt check keeps refusing a substituted model.
 
 ## 6. Nightshift 1.2.3 (Windows, installed 2026-10-23): the limits above are fixed
 
-Read in the new engine code: `proxy.js` now passes `chat_template_kwargs` and `reasoning_budget` through, and `providers.js` (`nvidiaThinkingBody`) lets "a caller that names a kwarg get exactly that kwarg (2026-10-22: it used to be replaced by the row default)"; `reasoning_budget` is sent from the request. `CLOUD_FETCH_DEADLINE_MS` is still 45 000, but budgeted reads were not cut in practice (below). 1.2.3 also gates Super VL off by default ("temporarily excluded … after repeated empty, aborted and 500 responses"; their note: 31 of 94 hosted calls failed in two reviews); we opted back in with the documented flag `NVIDIA_SUPER_VL = "true"` (in the engine's key-value store, `state/engine-kv.json`), so that every read stays on the model all our measurements used. An opted-in Super VL stays out of automatic races; only an explicit request reaches it, so `meterless/text` alone finds no lane on this setup.
+Read in the new engine code: `proxy.js` now passes `chat_template_kwargs` and `reasoning_budget` through, and `providers.js` (`nvidiaThinkingBody`) lets "a caller that names a kwarg get exactly that kwarg (2026-10-22: it used to be replaced by the row default)"; `reasoning_budget` is sent from the request. `CLOUD_FETCH_DEADLINE_MS` is still 45 000, but budgeted reads were not cut in practice (below). (Added 2026-10-24: in 1.2.3 the cloud limit is already configurable, as the `cloudTtfbMs` setting, 45 s by default, 5–300 s, or per request with the `meterless-ttfb-ms` header, and it limits the time to the first token, not the whole call.) 1.2.3 also gates Super VL off by default ("temporarily excluded … after repeated empty, aborted and 500 responses"; their note: 31 of 94 hosted calls failed in two reviews); we opted back in with the documented flag `NVIDIA_SUPER_VL = "true"` (in the engine's key-value store, `state/engine-kv.json`), so that every read stays on the model all our measurements used. An opted-in Super VL stays out of automatic races; only an explicit request reaches it, so `meterless/text` alone finds no lane on this setup.
 
 Measured through Nightshift 1.2.3, Super VL pinned, the reader prompt on full reports (`logs/nightshift-123-super-vl-2026-10-23.txt`):
 
 | Rung | Result |
 |---|---|
-| Thinking off (`enable_thinking: false`) | 3 of 3 answered in 1.9 s, 7.0 s, 8.7 s (163–273 completion tokens) |
+| Thinking off (`enable_thinking: false`) | 3 of 3 answered in 1.9 s, 7.0 s, 8.7 s (135–273 completion tokens; corrected 2026-10-24 from 163–273, per the log) |
 | 4k budget (`enable_thinking: true`, `reasoning_budget: 4000`) | 2 of 2 answered in 74.3 s and 91.7 s, 4,174 and 4,215 completion tokens (the budget plus the answer), not cut |
 | Every answer | Super VL in the signed receipt, signature verified against the pinned key (`7a6d14e27e1a`, unchanged by the update), none from cache |
 
 So the evidence ladder now runs through Nightshift by default (`app/engine/rungs.py`, `LADDER_PROVIDER`); `run --provider nvidia` keeps NVIDIA direct.
 
-Images on 1.2.3: the `vision` class is ready (served by Super VL), but Nemotron Parse is not offered and the `perception` class is "unavailable" ("no lane carries the processing capability"), so Parse on the original scans stays on NVIDIA direct.
+Images on 1.2.3: the `vision` class is listed (Super VL carries the vision tag), but Nemotron Parse is not offered and the `perception` class is "unavailable" ("no lane carries the processing capability"), so Parse on the original scans stays on NVIDIA direct. Pinned Super VL image requests are refused too (§7).
 
 ## 7. Probes on 1.2.3 (2026-10-23 evening)
 
-- **Super VL with a scan image, pinned, through Nightshift:** two calls with one page of the TCGA-A2-A0CV scan (PNG 1024×1280, then a 211 KB JPEG), thinking off: both failed with HTTP 502 after the client's retries. The same JPEG to NVIDIA direct answered in 14.8 s (1,349 prompt tokens, so the image was read), but it reasoned in the answer text despite `enable_thinking: false` and stopped at the 1,500-token cap. So reading a scan with Super VL (a "scan witness") is not possible through Nightshift on this setup; a direct-only measurement is possible but not run yet.
-- **Ultra through Nightshift:** `nvidia/nemotron-3-ultra-550b-a55b` is listed and answers with a verified receipt (pinned key). Its reasoning arrives inside the answer text, ending in `</think>` with no opening tag (NVIDIA direct puts it in `reasoning_content`); `strip_think` now removes it. One-line answer: 14.1 s through Nightshift, 1.0 s direct.
+- **Super VL with a scan image, pinned, through Nightshift:** two calls with one page of the TCGA-A2-A0CV scan (PNG 1024×1280, then a 211 KB JPEG), thinking off: both failed with HTTP 502 after the client's retries. The same JPEG to NVIDIA direct answered in 14.8 s (1,349 prompt tokens, so the image was read), but it reasoned in the answer text despite `enable_thinking: false` and stopped at the 1,500-token cap. So reading a scan with Super VL (a "scan witness") is not possible through Nightshift on this setup; the measurement was later run on NVIDIA direct (`docs/evidence/vision-scan-results.md`).
+- **Why (retest 2026-10-24, error body kept, `logs/capability-retest-2026-10-24.jsonl`):** a tiny PNG and the A2-A0CV page JPEG, pinned Super VL, `meterless-ttfb-ms: 120000`, both returned 502 in 0.3 s with `no_vision_model`: "request has image attachments but no configured vision-capable model admits them". In the installed 1.2.3 engine the vision gate filters the automatic race pool before the pin is applied, and every NVIDIA vision row, Super VL included, is `experimental`, which 1.2.3 drops from the pool even when it is seated in Race. So every pinned image request is refused. On 1.2.1 the same kind of request worked (4 receipts with `needs.vision`, status ok, 10-21/22). This is a Nightshift gate-ordering bug, not a missing capability and not our configuration; reported to Meterless. Our earlier 502s discarded the error body, which is why the cause was missed.
+- **Ultra through Nightshift:** `nvidia/nemotron-3-ultra-550b-a55b` is listed and answers with a verified receipt (pinned key). Its reasoning arrives inside the answer text, ending in `</think>` with no opening tag (NVIDIA direct puts it in `reasoning_content`); `strip_think` now removes it. Confirmed with the raw message on 2026-10-24: through Nightshift the content is the reasoning plus `</think>14` and `reasoning_content` is empty; direct, the content is `14` and `reasoning_content` holds 184 characters (`logs/capability-retest-2026-10-24.jsonl`). One-line answer: 14.1 s through Nightshift, 1.0 s direct.
 - **Lightning (cloud) through Nightshift:** thinking off, signed and pinned, 0.7 s for a one-line answer.
 
 ## 8. The Ultra critic run reused five item scopes (corrected 2026-10-24)

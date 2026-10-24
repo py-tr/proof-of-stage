@@ -1,5 +1,5 @@
-// How it works: one record, seven numbered steps, every value read live from the same API
-// the case page uses. Plain JS; every text is a text node.
+// How it works: one record, eight numbered steps, every value read from the same API the case
+// page uses (live in live mode; a dated copy and no model output in sample mode). Plain JS; every text is a text node.
 "use strict";
 
 const $ = (id) => document.getElementById(id);
@@ -162,7 +162,7 @@ async function loadAgentProbe() {
   const ids = (list) => list.map((c) => c.case_id).join(", ");
   const e2 = p.missed.find((c) => c.case_id === "TCGA-E2-A572");
   box.replaceChildren(card("NVIDIA Nemotron, as an agent reading the layer", title,
-    el("p", {}, `Two pre-registered probes. Super, through Nightshift, saw only the layer's table and column descriptions and the question “${p.question}”, and wrote one SQL query each time; the query ran unchanged on the live layer.`),
+    el("p", {}, `Two pre-registered probes. Super, through Nightshift, saw only the layer's table and column descriptions and the question “${p.question}”, and wrote one SQL query in 19 of 20 calls; each query ran unchanged on the live layer.`),
     flow([`${p.read_raw_count} of ${p.queries_written} queries read the raw count column`, "bad"], [`the pointer to the verdict was used ${p.pointer_used} times`, "bad"], [`the checked column was read ${p.read_checked} time`, ""]),
     sqlBlock(p.raw_query, "Probe 1, with the pointer in the descriptions"),
     el("p", {}, `Left out of that answer: ${p.missed.length} patients whose report shows positive nodes while the count column records 0 (${ids(p.missed)})`,

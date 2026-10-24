@@ -6,4 +6,4 @@
 
 **Evidence.** Six guard review rounds (`docs/evidence/guard-floor.md`); red-team v3 through Nightshift, 0 wrong accepts in 57 judged attacks (`docs/evidence/adversary-chain-v3-results.md`).
 
-**Cost.** Correct readings with a bad quote are rejected, so some cases go to a person that a looser system would settle. Whether the guard also buys accuracy over Nemotron alone is measured separately (`docs/preregistration/baseline-m0.md`).
+**Cost.** Correct readings with a bad quote are rejected, so some cases go to a person that a looser system would settle. Whether the guard also buys accuracy over Nemotron alone is now measured (pre-registered, blind labels): the product agreed with the label on 18 of 25 cases, Super alone with 4k thinking on 17, within one case, so the guard is not shown to buy accuracy; what it adds is a checked quote per value (`docs/evidence/baseline-m0-results.md`).

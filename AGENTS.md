@@ -18,8 +18,8 @@ A Python service with a small one-page web UI. It reads source documents with NV
 
 ## AI providers (both are required; keep them separate)
 1. **Meterless Nightshift (the primary provider)**, an OpenAI-compatible local runtime at `METERLESS_BASE_URL`.
-   - Every request sends headers `Authorization: Bearer <token>`, `meterless-app: <app id>`, and a **unique `meterless-scope` per work item** (never the shared default), so the runtime's memory never mixes items. Item ids must be unique per work item; never reuse an item id across runs.
-   - **Verify the receipt on every response** (`response.meterless.receipt`): record `winning_route.model`, `winning_route.kind`, `egress.destination`, `egress.sent.context_sources`, `receipt_id`. Nightshift chooses the model itself (an identified app's pinned model id is only recorded, not obeyed), so by default require only that the winning model is a Nemotron model (`nvidia/nemotron*` or a local Nemotron lane); require an exact model only when the caller asks for it. If the model/kind/family differs from what the caller required, or `context_sources` contains anything besides `messages`, **reject the answer** (raise a typed error); never silently accept it.
+   - Every request sends headers `Authorization: Bearer <token>`, `meterless-app: <app id>`, and a **unique `meterless-scope` per call** (never the shared default), so the runtime's memory never mixes items. Item ids must be unique per call; never reuse an item id across runs or between a control and its real row.
+   - **Verify the receipt on every response** (`response.meterless.receipt`): record `winning_route.model`, `winning_route.kind`, `egress.destination`, `egress.sent.context_sources`, `receipt_id`. On Nightshift 1.2.1 a requested model id was only recorded, not obeyed; on 1.2.3 a concrete model id is a pin (166 of 166 and 28 of 28 calls served as requested). Still, by default require only that the winning model is a Nemotron model (`nvidia/nemotron*` or a local Nemotron lane); require an exact model only when the caller asks for it. If the model/kind/family differs from what the caller required, or `context_sources` contains anything besides `messages`, **reject the answer** (raise a typed error); never silently accept it.
    - Local-only work runs through the **Jobs API** (`POST /jobs` with `"privacy": "local-only"`, `"auto_synthesize": "off"` (a mode word; a boolean is rejected with 400)); verify `lanes_resolved` contains only local lanes, then read `GET /jobs/{id}/attempts/{seq}`.
    - Use a 180 s timeout; treat 5xx / empty responses as retryable (max 2 retries, with backoff).
 2. **NVIDIA direct** (`https://integrate.api.nvidia.com/v1`, `NVIDIA_API_KEY`), the second provider, for calls that need a guaranteed specific model. Same verification idea: check the `model` field of the response against the requested model OR its known served alias (NVIDIA reports `nvidia/nemotron-3.5-super-vl-120b-a12b` as `private/nvidia/nemotron-3.5-super-120b-a12b`); keep an alias table in config and record the served name.
@@ -28,7 +28,7 @@ A Python service with a small one-page web UI. It reads source documents with NV
 
 ## Data platform: Zetaris
 - REST: `POST {ZETARIS_REST_URL}/sql-editor/sqls/run` with `Authorization: Bearer`, `X-Org-ID`, a fresh UUID `X-Request-ID`, and the body `{queryId, sql, source: "SqlEditor", limit}`.
-- The data model is a **Zetaris Unified Semantic Layer (USL)**. Results are written append-only (INSERT … WHERE NOT EXISTS) to a Postgres datasource registered in Zetaris. UPDATE / DELETE are not supported there.
+- The data model is a **Zetaris Unified Semantic Layer (USL)**. Results are written append-only (INSERT … WHERE NOT EXISTS) to a Postgres datasource registered in Zetaris. We only INSERT there; UPDATE and DELETE through it are untested and our read guard refuses them.
 - Use straight double quotes in Lightning SQL. Never run `docker compose down -v`.
 
 ## Meterless engine

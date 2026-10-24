@@ -21,6 +21,8 @@ Prediction (before the run): "1 to 4 of the 60 records contradict the registry o
 
 TCGA-A2-A25D: the registry records **22** positive nodes. The ladder's 4k rung (Super VL, Nightshift, signed) accepted 23 from the final diagnosis: "LYMPH NODES: TWENTY-THREE (23) LYMPH NODES POSITIVE FOR METASTATIC. CARCINOMA (SEE PARTS "B" AND "C")", with "AJCC PATHOLOGIC STAGE (7TH EDITION): pT2 N3a". Read against the full report (by Claude, the coding agent, before writing this file): part B, the highest axillary node, is "ONE (1) LYMPH NODE POSITIVE"; part C, the dissection, is "(22) OF TWENTY-THREE (23) LYMPH NODES POSITIVE". 1 + 22 = 23: the registry's 22 matches part C alone and leaves out the separately submitted node of part B. This is a guarded reading checked by an AI agent, not by a pathologist.
 
+**Human read (added 2026-10-24).** The builder, a lay reader, read the same report on 2026-10-24: total positive nodes 23 = part C's 22 (of 23 dissected) + part B's 1 (the highest node); the final diagnosis states 23 "SEE PARTS B AND C"; AJCC pT2 N3a fits either count. So the registry recorded part C's 22 and missed part B's 1. A lay human read, still not a pathologist.
+
 Also seen, post-hoc and outside this sample (it is why the study was run): TCGA-AR-A24O in the dial test's data, registry 7, report "Multiple (6 of 17) left axillary lymph nodes are involved … (AJCC pN2)", the only node statement in that 820-character report; both counts are N2.
 
 ## What it means, and what it does not

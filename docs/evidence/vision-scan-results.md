@@ -4,7 +4,7 @@ Pre-registration: `docs/preregistration/vision-scan.md` + `vision-scan.json` (co
 
 ## Validity
 
-6 of 6 cases run, 0 failures. Path A (Parse v1 on every page, NVIDIA direct; then Super VL on Parse's text through Nightshift, 4k budget): every Super answer signed by the pinned key. Path B (Super VL on the page images, NVIDIA direct, 4k budget): every answer served as `private/nvidia/nemotron-3.5-super-120b-a12b`, the documented alias of the requested `nvidia/nemotron-3.5-super-vl-120b-a12b`; no signed receipt (Nightshift returns 502 on images). 18 pages in total (5, 5, 3, 3, 1, 1).
+6 of 6 cases run, 0 failures. Path A (Parse v1 on every page, NVIDIA direct; then Super VL on Parse's text through Nightshift, 4k budget): every Super answer signed by the pinned key. Path B (Super VL on the page images, NVIDIA direct, 4k budget): every answer served as `private/nvidia/nemotron-3.5-super-120b-a12b`, the alias NVIDIA's API serves for the requested `nvidia/nemotron-3.5-super-vl-120b-a12b`; no signed receipt (Nightshift 1.2.3 refuses pinned image requests with `no_vision_model`, a gate-ordering bug; see `docs/evidence/nightshift-limits.md` §7). 18 pages in total (5, 5, 3, 3, 1, 1).
 
 ## Result
 

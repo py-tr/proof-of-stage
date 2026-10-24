@@ -38,4 +38,10 @@ Pipeline: page padded to 1024×1280 → `nvidia/nemotron-parse` blocks → Super
 - Both failures are the same page type (the sparse one-page TSS form); Parse's y runs ~8–10 px low there. Not fixed or re-tested here; any fix (e.g. snapping a box to the nearest ink line) must be tested on pages not used to design it.
 - Not claimed: Parse is "more accurate" than the corpus OCR (one better line on A7-A26E is an example, not a measurement).
 
+
+## Corrections 2026-10-24
+- **2 of the 4 v2 passes are design cases.** TCGA-A2-A0CV and TCGA-A7-A26E were in v1, whose failure the v2 pipeline was designed from; on the 4 cases new to v2, 2 passed.
+- **Parse 2.0 now works.** It returned empty output on 10-19 and 10-22; on 10-24 the same documented example, byte for byte, returned 3,219 characters of boxed markdown, and an A2-A0CV page returned 4,280 (`logs/capability-retest-2026-10-24.jsonl`). The endpoint changed on NVIDIA's side. Our inference above ("prompt_tokens=6: the image is dropped") was wrong: the working v1 also reports 5 or 6 prompt tokens per page. v1 stays the measured reader.
+- **The box offset may be ours.** We pad pages to 1024×1280; NVIDIA's documentation uses 1648×2048. Not tested; the offset is not shown to be Parse's.
+
 *Copied from the project's research notes (2026-10-22). Raw call logs and spike scripts stay in those notes and are not part of this repository.*

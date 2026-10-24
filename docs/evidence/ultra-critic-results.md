@@ -40,3 +40,13 @@ Pre-registration: `docs/preregistration/ultra-critic-v2.md` + `ultra-critic-v2.j
 | **Ship line** (plants ≥ 4/5 and objections ≤ 8 and right > wrong and wrong ≤ 1) | **met: the critic ships** as a read-only "a second reader objects" line on the case page and a `/how` card; it never writes to the layer and never accepts or changes a value |
 
 Prediction ("0 memory refusals; plants at least 4 of 5; objections close to v1's 3 on the same cases"): **held**. v2 is a confirmation run designed after the labels were known; its prompt, guard, plants and ship line are v1's, so nothing in it could be tuned toward the labels.
+
+## Disclosures and notes (added 2026-10-24)
+
+- **v2 overrides v1's "no second run".** v1's pre-registration says "no relabelling, no prompt change, no second run". v2 is a new pre-registration that supersedes that clause for this one bug fix; the v2 file did not say so when it was frozen. We state it here: v2 was designed after the labels were scored, changes only the item id per call, and is a second run that v1 had ruled out.
+- **The plant v2 missed was refused by our parser, not missed by Ultra.** On the planted TCGA-AR-A1AT N control (stored NX, real N0(I+)), Ultra objected with the right category and a verified quote, written "pN0(i+)(sn)"; our category parser rejects that spelling (`invalid_category`), so the objection did not count. Plants 4 of 5 is the frozen score; the parser was not changed.
+- **v1 refusals:** 5 in total, 3 planted controls and 2 real rows (Validity above); the README used to say only "3 controls refused".
+
+## Sensitivity: three labels the labeller later confirmed as mis-clicks (disclosed 2026-10-24); frozen scores stand
+
+The labeller confirmed after scoring that TCGA-AN-A0XO's N was meant as pN1 and that TCGA-AN-A0XN and TCGA-AN-A0XW were meant to name the N category (`docs/evidence/reader-bench-results.md` has the details). Recomputed from the committed logs with `critic.score` and those three labels corrected in memory only (the labels file is unchanged): v1 and v2 both stay at **3 objections, 3 right, 0 wrong**, and **missed goes from 1 to 0**: every value the corrected labels dispute is one Ultra objected to. Plants and the ship decision do not change.

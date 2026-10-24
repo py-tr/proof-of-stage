@@ -380,7 +380,10 @@ def main(argv: list[str] | None = None) -> int:
     read.add_argument("--rule", default=None, help="Read the cases a DQ rule marks invalid")
     read.add_argument("--limit", type=int, default=5, help="Maximum cases to read")
     read.add_argument(
-        "--provider", choices=("nvidia", "nightshift"), default="nvidia", help="Model provider"
+        "--provider",
+        choices=("nvidia", "nightshift"),
+        default="nvidia",
+        help="Model provider (legacy command; default NVIDIA direct; the ladder is `run`)",
     )
     read.add_argument("--store", action="store_true", help="Write results to Zetaris")
     scans = sub.add_parser("scans", help="Original report scans (GDC PDFs) read by Nemotron Parse")
@@ -392,7 +395,8 @@ def main(argv: list[str] | None = None) -> int:
         "--provider",
         choices=("nightshift", "nvidia"),
         default="nightshift",
-        help="Nightshift (default: Super VL pinned, signed receipts) or NVIDIA direct",
+        help="Nightshift (default: each rung's model pinned, Lightning at R1 and Super VL "
+        "at R2/R3, signed receipts) or NVIDIA direct",
     )
     adversary = sub.add_parser(
         "adversary", help="The pre-registered red-team chain (3 cases x 20 steps)"

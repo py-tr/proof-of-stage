@@ -36,6 +36,6 @@ Tokens: 55,779 measured prompt tokens (receipts); 7,586 estimated saved against 
 
 ## What it means
 
-- v2 found 1 bug and 3 documented-limit kinds in 60 attacks on three records the guard had not seen; the fixes were then designed on those accepts and on a review of the v3 draft. v3 is the first measurement of the resulting guard on records it was never designed on: 0 wrong accepts in 57 judged attacks.
+- v2 found 1 bug and 3 documented-limit kinds in 60 attacks on three records the guard had not seen; the fixes were then designed on those accepts and on a review of the v3 draft. v3 is the first measurement of the resulting guard on records its rules were not designed on: 0 wrong accepts in 57 judged attacks. (Nuance, 2026-10-24: the guard's rules come from earlier rounds on other records, and its general count logic was shaped by those; "never designed on" means these 3 records played no part in any fix.)
 - n = 57 adaptive attacks on 3 records by one attacker model; "0 of 57" is not a guarantee against a different attacker or other report layouts.
 - The engine and the runtime met in one chain: the Markovian engine carried the ledger at every step, and every step ran through Meterless Nightshift with a verified receipt.

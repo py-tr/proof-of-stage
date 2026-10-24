@@ -263,8 +263,9 @@ async def dq_report(invalid_rule: str | None = None, limit: int = 50) -> str:
                 f"valid={row.get('valid_record')} invalid={row.get('invalid_record')}"
             )
     lines.append(
-        "  (composite keys run via their first column; their listed names, e.g. "
-        "case_id,page_no,block_index, do not parse in RUN DQ)"
+        "  (composite keys run via their first column's name, which checks the full key; their "
+        "listed names, e.g. case_id,page_no,block_index, need backquotes, which our read guard "
+        "refuses)"
     )
     return "\n".join(lines) + "\n"
 

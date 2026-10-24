@@ -161,7 +161,7 @@ Output:
 
 
 ### 9. The composite keys hold (no output rows means no duplicates) (2.34 s)
-Why: Zetaris runs a composite-key rule only through its first column, so we check the full keys of derived_stage (case_id, method, field) and parse_block (case_id, page_no, block_index) directly.
+Why: a second, independent check beside Zetaris's key rules: the full keys of derived_stage (case_id, method, field) and parse_block (case_id, page_no, block_index), counted directly. (Correction 2026-10-24: this step used to say Zetaris runs a composite-key rule only through its first column. A retest shows the run under the first column's name checks the full key, 532 of 532 valid on parse_block with 7 case ids, and the listed name works backquoted, as Zetaris's reference shows; `logs/zetaris-retest-2026-10-24.jsonl`.)
 ```sql
 SELECT 'derived_stage' AS usl_table, case_id, count(*) AS n FROM lightning.metastore.registry_audit.stage_audit.derived_stage GROUP BY case_id, method, field HAVING count(*) > 1 UNION ALL SELECT 'parse_block' AS usl_table, case_id, count(*) AS n FROM lightning.metastore.registry_audit.stage_audit.parse_block GROUP BY case_id, page_no, block_index HAVING count(*) > 1
 ```
