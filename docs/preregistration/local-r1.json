@@ -1,0 +1,66 @@
+{
+  "written": "2026-10-24",
+  "cases": [
+    "TCGA-BH-A0BQ",
+    "TCGA-BH-A0DS",
+    "TCGA-AR-A24O",
+    "TCGA-GM-A2DD",
+    "TCGA-D8-A27P",
+    "TCGA-BH-A0AU",
+    "TCGA-OK-A5Q2",
+    "TCGA-E2-A10B",
+    "TCGA-A2-A04X",
+    "TCGA-E2-A1BD",
+    "TCGA-A2-A4S3",
+    "TCGA-AR-A24R",
+    "TCGA-D8-A1Y3",
+    "TCGA-D8-A140",
+    "TCGA-PE-A5DD",
+    "TCGA-BH-A0DE",
+    "TCGA-OL-A5RU",
+    "TCGA-D8-A27T",
+    "TCGA-A2-A0EV",
+    "TCGA-LL-A7SZ",
+    "TCGA-E2-A1B1",
+    "TCGA-A2-A04R",
+    "TCGA-AN-A0FN",
+    "TCGA-E9-A1RD",
+    "TCGA-S3-AA12",
+    "TCGA-E2-A14U",
+    "TCGA-AN-A0XL",
+    "TCGA-BH-A6R8"
+  ],
+  "code_sha256_16": {
+    "app/engine/local_r1.py": "d44be74b08e97187",
+    "app/engine/lightning.py": "a7987f8b5a3338af",
+    "app/engine/rungs.py": "97167dc234356165",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "settled_floor": 15,
+  "void_failures": 9,
+  "empty_retries": 1,
+  "checklist": [
+    "privacy_local_only",
+    "lanes_resolved_local",
+    "attempt_lane_local",
+    "model_resolved_local_nemotron",
+    "model_honored",
+    "egress_honored",
+    "not_truncated"
+  ],
+  "local_lane": "nemotron-3-5-lightning-3-2",
+  "nightshift": "1.2.3 (Windows, installed 2026-10-23)",
+  "referee": "logs/dial-sample.jsonl control (the dial run's 4k Super read)",
+  "cloud_lightning_settled": {
+    "lightning_r1": 18,
+    "timing_trials": [
+      16,
+      17,
+      16
+    ],
+    "unconfirmed": "5 of 38"
+  },
+  "claim": "settled >= 15 of 28, contradicted = 0, every attempt passes the checklist and no record failed",
+  "prediction": "settled about 12-16 of 28; 0 contradicted; every attempt local; reaching 15 is a coin flip"
+}
