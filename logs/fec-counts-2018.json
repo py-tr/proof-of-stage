@@ -1,0 +1,27 @@
+{
+  "cycle": "2018",
+  "reports": 4307,
+  "by_filing_and_class": {
+    "e-file:consistent": 1150,
+    "e-file:impossible": 1,
+    "paper:cents_only": 2229,
+    "paper:consistent": 783,
+    "paper:impossible": 136,
+    "paper:incomplete": 8
+  },
+  "impossible": 137,
+  "impossible_amended": 29,
+  "impossible_with_pdf": 137,
+  "largest_gaps": [
+    "22,409,245.08",
+    "1,823,308.23",
+    "793,033.06",
+    "717,149.14",
+    "649,685.00",
+    "359,998.57",
+    "343,016.73",
+    "179,156.35",
+    "153,871.80",
+    "94,957.46"
+  ]
+}

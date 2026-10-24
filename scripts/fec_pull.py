@@ -1,4 +1,4 @@
-"""Pull the FEC Senate committee reports for one cycle (OpenFEC /reports/house-senate/), page by page.
+"""Pull the FEC Senate committee reports for one cycle (OpenFEC /reports/house-senate/).
 
 Public data (api.open.fec.gov). Uses FEC_API_KEY from the environment, else DEMO_KEY (30 calls an
 hour, so calls are paced). Each page is saved as data/fec/raw/page-<n>.json (not committed);
@@ -32,8 +32,14 @@ def main(cycle: str) -> None:
         if target.exists():
             data = json.loads(target.read_text(encoding="utf-8"))
         else:
-            params = {"api_key": key, "committee_type": "S", "cycle": cycle, "per_page": 100,
-                      "page": page, "sort": "committee_id"}
+            params = {
+                "api_key": key,
+                "committee_type": "S",
+                "cycle": cycle,
+                "per_page": 100,
+                "page": page,
+                "sort": "committee_id",
+            }
             response = httpx.get(URL, params=params, timeout=60)
             if response.status_code == 429:
                 time.sleep(600)
