@@ -1,0 +1,31 @@
+{
+ "pass1": {
+  "item-01": "off",
+  "item-02": "off",
+  "item-03": "on",
+  "item-04": "on",
+  "item-05": "on",
+  "item-06": "off",
+  "item-07": "off",
+  "item-08": "on",
+  "item-09": "on",
+  "item-10": "on",
+  "item-11": "on",
+  "item-12": "off"
+ },
+ "pass2": {
+  "item-01": "off",
+  "item-02": "off",
+  "item-03": "on",
+  "item-04": "on",
+  "item-05": "on",
+  "item-06": "off",
+  "item-07": "off",
+  "item-08": "on",
+  "item-09": "on",
+  "item-10": "on",
+  "item-11": "on",
+  "item-12": "off"
+ },
+ "judge": "builder (coding agent), scored before reading map.json"
+}

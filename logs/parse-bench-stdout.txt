@@ -1,0 +1,20 @@
+{
+  "run": "20261024T171040",
+  "packet": "data\\scans\\_parse_bench\\20261024T171040",
+  "items": 12,
+  "map_sha256": "4ba88e59210231e33cdd0f7b368355de7f62672b04267c2890ffb94735f81692",
+  "v1": {
+    "pages": 14,
+    "page_failures": 0,
+    "empty_pages": 0,
+    "truncated_pages": 0,
+    "value_ok_pairs": 10
+  },
+  "v2": {
+    "pages": 19,
+    "page_failures": 0,
+    "empty_pages": 12,
+    "truncated_pages": 12,
+    "value_ok_pairs": 4
+  }
+}
