@@ -1,0 +1,20 @@
+{
+  "run": "20261024T163042",
+  "records": 60,
+  "failures": 0,
+  "void": false,
+  "settled": 28,
+  "settled_floor": 33,
+  "fields_closed": 57,
+  "vs_referee": {
+    "agree": 55,
+    "disagree": 0,
+    "unconfirmed": 2
+  },
+  "focused_records": 6,
+  "focused_settled": 4,
+  "every_record_local": true,
+  "seconds": 526.3,
+  "cloud_r1_settled_row": 34,
+  "claim_met": false
+}
