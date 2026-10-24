@@ -214,6 +214,20 @@ def create_app(
     async def index() -> FileResponse:
         return FileResponse(STATIC / "index.html")
 
+    @app.get("/api/case/{case_id}/second-reader")
+    async def case_second_reader(case_id: str) -> dict[str, Any]:
+        """Ultra's pre-registered second reading of this case (read-only, from the log)."""
+        from app.web.data import valid_case_id
+        from app.web.secondreader import case_reading
+
+        return {"second_reader": case_reading(valid_case_id(case_id))}
+
+    @app.get("/api/second-reader")
+    async def second_reader_summary() -> dict[str, Any]:
+        from app.web.secondreader import summary
+
+        return {"summary": summary()}
+
     @app.get("/api/agent-probe")
     async def agent_probe() -> dict[str, Any]:
         """The two pre-registered agent probes, from the committed logs (no model call)."""

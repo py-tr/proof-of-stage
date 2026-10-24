@@ -91,6 +91,10 @@ function render(data, trace, sample) {
   steps.append(el("li", { id: "agent-step", class: "alert" }, card("NVIDIA Nemotron, as an agent reading the layer",
     "Does an agent that reads the semantic layer use the verdict?", el("p", { class: "small" }, "Loading the logged probes…"))));
 
+  // 3d. The second reader (filled in by loadSecondReaderCard)
+  steps.append(el("li", { id: "second-step" }, card("NVIDIA Nemotron Ultra, a second reader that can only object",
+    "Does a second reader catch what the first one missed?", el("p", { class: "small" }, "Loading the logged run…"))));
+
   // 4. The verdict
   steps.append(el("li", { class: c.fault_field === "review" ? "" : "alert" }, card("Zetaris semantic layer", title(c, sample),
     flow([`registry N ${show(c.recorded_n)} · report N ${show(c.report_n)}`, c.fault_field === "pathologic_n" ? "bad" : ""],
@@ -168,6 +172,20 @@ async function loadAgentProbe() {
     el("p", { class: "small" }, "A pointer in the description was not enough, and a checked column beside the raw one was not either. So the verdict is for the people and tools that read stage_check and the case page; a person decides. Logged runs, not replayed live: docs/evidence/agent-probe-results.md, agent-probe-2-results.md.")));
 }
 
+async function loadSecondReaderCard() {
+  const box = $("second-step");
+  if (!box) return;
+  let s = null;
+  try { s = (await api("/api/second-reader")).summary; } catch (error) { /* shown below */ }
+  const title = "Does a second reader catch what the first one missed?";
+  if (!s) { box.replaceChildren(card("NVIDIA Nemotron Ultra, a second reader that can only object", title, el("p", { class: "small" }, "No second-reader run logged."))); return; }
+  box.replaceChildren(card("NVIDIA Nemotron Ultra, a second reader that can only object", title,
+    el("p", {}, `Ultra, through Nightshift, re-read the report behind each of the ${s.values} stored values and could agree or object with one verbatim quote; our guard checked every objection. Pre-registered, with 5 planted wrong values as a control, and scored against blind human labels.`),
+    flow([`${s.objections} objections, ${s.right} agree with the blind labels, ${s.wrong} wrong`, s.wrong ? "bad" : "good"], [`planted errors caught: ${s.plants.detected} of ${s.plants.planted}`, "good"], [`${s.missed} missed`, ""]),
+    ...(s.objection_list || []).map((o) => el("p", { class: "small" }, `${o.case}: ${o.field === "NPOS" ? "count" : "N"} stored ${show(o.stored)}, Ultra: ${show(o.objection)}`)),
+    el("p", { class: "small" }, "An objection only sends the case to a person; it never changes a value. Logged run, not replayed live: docs/evidence/ultra-critic-results.md (v1 did not ship because of a scope bug of ours; v2 fixed only that).")));
+}
+
 async function load(caseId, sample) {
   const [data, found] = await Promise.all([api(`/api/case/${caseId}`), api(`/api/case/${caseId}/trace`)]);
   $("open-case").href = `/?case=${caseId}`;
@@ -175,6 +193,7 @@ async function load(caseId, sample) {
   render(data, found.trace, sample);
   loadRedTeam();
   loadAgentProbe();
+  loadSecondReaderCard();
 }
 
 async function loadScoreboard(sample) {

@@ -462,6 +462,30 @@ async function loadScratchpad(caseId) {
   }
 }
 
+// The shipped second reader: Ultra's pre-registered objections, read-only, from the logged run.
+async function loadSecondReader(caseId) {
+  const box = $("second-reader");
+  box.classList.add("hidden");
+  box.classList.remove("objects");
+  try {
+    const s = (await api(`/api/case/${caseId}/second-reader`)).second_reader;
+    if (!s || !state.current || state.current.check.case_id !== caseId) return;
+    const objections = s.fields.filter((f) => f.verdict === "objects");
+    if (objections.length) {
+      box.replaceChildren(el("b", {}, "Second reader (Nemotron Ultra) objects: "),
+        ...objections.map((f) => el("span", {}, `${f.field === "NPOS" ? "count" : "N"} stored ${show(f.stored)}, the report says ${show(f.objection)}: “${show(f.quote)}” (receipt ${show(f.receipt_id)}). `)),
+        el("span", { class: "small" }, "It can only send the case to a person; it never changes a value."));
+      box.classList.add("objects");
+    } else {
+      box.replaceChildren(el("b", {}, "Second reader (Nemotron Ultra) agrees "),
+        el("span", { class: "small" }, `with the stored ${s.fields.map((f) => (f.field === "NPOS" ? "count" : "N")).join(" and ")} (logged pre-registered run).`));
+    }
+    box.classList.remove("hidden");
+  } catch (error) {
+    /* not read by the second reader */
+  }
+}
+
 async function loadTrace(caseId) {
   try {
     const found = await api(`/api/case/${caseId}/trace`);
@@ -589,6 +613,7 @@ async function openCase(position, options = {}) {
     loadTrace(caseId);
     loadScratchpad(caseId);
     loadScanBox(caseId);
+    loadSecondReader(caseId);
     $("f-out").replaceChildren();
     $("reject-reasons").classList.add("hidden");
     history.replaceState(null, "", `?case=${caseId}`);

@@ -190,3 +190,11 @@ def test_the_agent_probe_endpoint_serves_the_two_logged_queries() -> None:
     assert str(p["raw_query"]["result"]) == "476" and str(p["checked_query"]["result"]) == "482"
     assert p["read_raw_count"] == p["queries_written"] == 19 and p["pointer_used"] == 0
     assert len(p["missed"]) == 6 and len(p["person"]) == 3
+
+
+def test_the_second_reader_serves_ultras_logged_objections_read_only() -> None:
+    client = TestClient(create_app(SampleData()))
+    s = client.get("/api/case/TCGA-A1-A0SN/second-reader").json()["second_reader"]
+    assert s["objects"] and any(f["verdict"] == "objects" and f["quote"] for f in s["fields"])
+    summary = client.get("/api/second-reader").json()["summary"]
+    assert summary["ships"] and summary["plants"]["detected"] >= 4 and summary["wrong"] == 0
