@@ -17,7 +17,9 @@ CONTRACT = {
 }
 
 RECORD = {
-    "rules": {"stage_check": [["fault_named", "fault_field IS NULL OR fault_field NOT IN ('node_count')"]]},
+    "rules": {
+        "stage_check": [["fault_named", "fault_field IS NULL OR fault_field NOT IN ('node_count')"]]
+    },
     "integers": {
         "raw": 476,
         "checked": 479,
@@ -51,7 +53,9 @@ def test_code_correct_needs_fault_field_and_a_corrected_count():
 def test_code_checked_column_is_never_correct():
     sql = "SELECT count(*) FROM t WHERE positive_nodes_checked > 0 AND fault_field IS NULL"
     assert p.code(sql, "479", RECORD) == "CHECKED"
-    assert p.code("SELECT count(*) FROM t WHERE positive_nodes_checked > 0", 479, RECORD) == "CHECKED"
+    assert (
+        p.code("SELECT count(*) FROM t WHERE positive_nodes_checked > 0", 479, RECORD) == "CHECKED"
+    )
 
 
 def test_code_filter_by_copied_rule_or_filtered_integer():
@@ -61,7 +65,10 @@ def test_code_filter_by_copied_rule_or_filtered_integer():
 
 
 def test_code_fallback_and_other():
-    assert p.code("SELECT coalesce(positive_nodes_checked, lymph_nodes_positive)", "482.0", RECORD) == "CHECKED_FALLBACK"
+    assert (
+        p.code("SELECT coalesce(positive_nodes_checked, lymph_nodes_positive)", "482.0", RECORD)
+        == "CHECKED_FALLBACK"
+    )
     assert p.code("SELECT 1", None, RECORD) == "OTHER"
 
 
@@ -75,5 +82,7 @@ def test_summarise_claim_lines():
     assert p.summarise(near, RECORD)["rules_change_the_query"] is False
     five = rows("control", ["CORRECT"] + ["RAW"] * 4) + rows("treatment", ["CORRECT"] * 5)
     assert p.summarise(five, RECORD)["rules_change_the_query"] is True
-    failed = [{"arm": "treatment", "provider_failure": "x"}] * 3 + rows("treatment", ["CORRECT"] * 2)
+    failed = [{"arm": "treatment", "provider_failure": "x"}] * 3 + rows(
+        "treatment", ["CORRECT"] * 2
+    )
     assert p.summarise(rows("control", ["RAW"] * 5) + failed, RECORD)["treatment"]["void"] is True

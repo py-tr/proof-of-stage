@@ -1,7 +1,7 @@
 {
   "written": "2026-10-24",
   "code_sha256_16": {
-    "app/engine/agent_probe3.py": "20b3f7603be45162",
+    "app/engine/agent_probe3.py": "de759c86174bf377",
     "app/engine/agent_probe.py": "4cf7f41df8c1e778"
   },
   "schema_control_sha256_16": "67b709cfeb295366",
@@ -91,5 +91,6 @@
   "collisions": "correct 479 == checked 479 and correct 482 == checked_fallback 482 (the checked column is the verdict applied); separated by the SQL: CORRECT requires fault_field and not positive_nodes_checked. No filter integer equals a correct, checked or raw integer.",
   "claim": "treatment CORRECT >= 4/5 with control 0/5, or 5/5 with control <= 1/5",
   "void_failures_per_arm": 2,
-  "prediction": "treatment mostly FILTER or RAW, CORRECT 0-1 of 5; control RAW or CHECKED, CORRECT 0; claim not met"
+  "prediction": "treatment mostly FILTER or RAW, CORRECT 0-1 of 5; control RAW or CHECKED, CORRECT 0; claim not met",
+  "refrozen": "2026-10-24 before any call: lint-only change to agent_probe3.py (variable initialised, one line split); schema texts unchanged"
 }

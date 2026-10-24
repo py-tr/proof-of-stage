@@ -53,6 +53,7 @@ def rules_text(contract: dict[str, Any], fqn: str = FQN) -> str:
     """The control text with each table's rules appended under it, nothing else added."""
     rules = rules_of(contract)
     lines: list[str] = []
+    previous = ""
     for line in schema_text(contract, fqn).split("\n"):
         if line.startswith("TABLE ") and lines:
             lines.extend(_rule_lines(rules, previous))
@@ -83,7 +84,8 @@ def code(sql: str, result: Any, record: dict[str, Any]) -> str:
     expressions = [e for rules in record["rules"].values() for _, e in rules]
     if copies_rule(sql, expressions) or value in {str(v) for v in ints["filter"].values()}:
         return "FILTER"
-    if FAULT.search(sql) and not CHECKED.search(sql) and value in {str(v) for v in ints["correct_set"]}:
+    corrected = value in {str(v) for v in ints["correct_set"]}
+    if FAULT.search(sql) and not CHECKED.search(sql) and corrected:
         return "CORRECT"
     if CHECKED.search(sql) and value == str(ints["checked"]):
         return "CHECKED"
