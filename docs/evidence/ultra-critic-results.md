@@ -4,7 +4,7 @@ Pre-registration: `docs/preregistration/ultra-critic.md` + `ultra-critic.json` (
 
 ## Validity
 
-41 of 46 calls answered, every answer Ultra (`nvidia/nemotron-3-ultra-550b-a55b`) signed by the pinned key; 0 unusable. **5 calls were refused by our own receipt check**: Nightshift's H-MEM had added a memory record from an earlier call on the same report (`context_sources = ['messages', 'hmem:1 records']`; `docs/evidence/nightshift-limits.md` §8). 2 of the 5 were real values (under the void line of 8: **not void**), 3 were planted controls.
+41 of 46 calls answered, every answer Ultra (`nvidia/nemotron-3-ultra-550b-a55b`) signed by the pinned key; 0 unusable. **5 calls were refused by our own receipt check** (`context_sources = ['messages', 'hmem:1 records']`). The cause was a bug in the critic, not the provider: each call's item id was built from case + field + run, so a planted control and the real row with the same case and field shared one Nightshift scope, and H-MEM recalled the earlier answer within it (`docs/evidence/nightshift-limits.md` §8, corrected). 2 of the 5 were real values (under the void line of 8: **not void**), 3 were planted controls.
 
 ## Result
 
@@ -18,10 +18,10 @@ Pre-registration: `docs/preregistration/ultra-critic.md` + `ultra-critic.json` (
 
 As pre-registered: **"Ultra as a second reader: measured, not on the critical path."** No re-run, no prompt change, no relabelling.
 
-Prediction (before the run): "at most 3 verified objections on real values; plants at least 4 of 5": the first half **held** (3), the second **did not** (2 of 5, because 3 controls were refused, not missed).
+Prediction (before the run): "at most 3 verified objections on real values; plants at least 4 of 5": the first half **held** (3), the second **did not** (2 of 5, because 3 controls were refused by our own scope bug, not missed).
 
 ## What it means, and what it does not
 
 - On the real values, every objection Ultra could back with a verified quote was one the blind human reader also made, and the 3 objections fall on 3 of the 7 cases where the product's verdict differs from the label (`docs/evidence/baseline-m0-results.md`): as a refer-only second reader it would have sent 3 of the product's 7 disagreements to a person, with no false alarm in this run.
-- The positive control could not be judged: Nightshift's memory injection, refused by design, removed 3 of its 5 rows. A control on repeated documents needs memory switched off or distinct item handling on the provider side.
+- The positive control could not be judged: our scope bug got 3 of its 5 rows refused. The fix is one line (a unique item id per call); a separately pre-registered v2 with only that change is the honest way to test whether the critic can ship.
 - n = 41 values, one run, one lay labeller: an encouraging measurement, not a shipped feature.
