@@ -84,3 +84,11 @@ def test_the_second_reader_scores_blind_disagreements_against_labels() -> None:
     out = second_score(bench, {"A": {"NPOS": "4.0"}}, {"A": {"count": "2"}})
     assert out["ultra"]["disagreements"] == 1 and out["ultra"]["right"] == 1
     assert out["lightning"]["disagreements"] == 0
+
+
+def test_v2_gives_every_call_its_own_scope() -> None:
+    from app.engine.critic_v2 import item_id
+
+    ids = {item_id("TCGA-A7-A26H", "NPOS", n, "t") for n in range(46)}
+    assert len(ids) == 46  # the v1 bug: a planted control and its real row shared one scope
+    assert len({item_id("TCGA-A7-A26H", "NPOS", 3, "t") for _ in range(5)}) == 5

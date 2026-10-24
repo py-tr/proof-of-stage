@@ -411,6 +411,10 @@ def main(argv: list[str] | None = None) -> int:
         "r1-timing", help="Pre-registered: Lightning vs Super at R1, same hour, 3 trials"
     )
     sub.add_parser(
+        "ultra-critic-v2",
+        help="Pre-registered: the Ultra critic v2 (one Nightshift scope per call)",
+    )
+    sub.add_parser(
         "ultra-critic", help="Pre-registered: Ultra as a second reader that can only object"
     )
     sub.add_parser(
@@ -482,6 +486,12 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "reader-bench":
             return asyncio.run(_reader_bench(args.step))
+        if args.command == "ultra-critic-v2":
+            from app.engine.critic_v2 import run_critic_v2
+
+            out = asyncio.run(run_critic_v2())
+            sys.stdout.write(json.dumps(out, indent=2, default=str) + chr(10))
+            return 0
         if args.command == "ultra-critic":
             from app.engine.critic import run_critic
 
