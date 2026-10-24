@@ -1,0 +1,41 @@
+{
+  "classes": {
+    "agree": 38,
+    "contradiction_verified": 3
+  },
+  "right": 3,
+  "wrong": 0,
+  "unscored": 0,
+  "missed": 1,
+  "objections": 3,
+  "objection_list": [
+    {
+      "case": "TCGA-A1-A0SN",
+      "field": "N",
+      "stored": "N2A",
+      "objection": "N1",
+      "quote": "AJCC/UICC stage: pT1cN1MX."
+    },
+    {
+      "case": "TCGA-AC-A2FK",
+      "field": "N",
+      "stored": "N1A",
+      "objection": "NX",
+      "quote": "PATHOLOGIC STAGE: pT2, pNX, pMX."
+    },
+    {
+      "case": "TCGA-E2-A1LI",
+      "field": "N",
+      "stored": "N0",
+      "objection": "N1",
+      "quote": "Stage, Pathology : T2N1."
+    }
+  ],
+  "plants": {
+    "planted": 5,
+    "detected": 4,
+    "objected_value_is_original": 4
+  },
+  "void": false,
+  "ships": true
+}

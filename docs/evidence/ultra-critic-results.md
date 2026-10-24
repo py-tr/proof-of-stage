@@ -25,3 +25,18 @@ Prediction (before the run): "at most 3 verified objections on real values; plan
 - On the real values, every objection Ultra could back with a verified quote was one the blind human reader also made, and the 3 objections fall on 3 of the 7 cases where the product's verdict differs from the label (`docs/evidence/baseline-m0-results.md`): as a refer-only second reader it would have sent 3 of the product's 7 disagreements to a person, with no false alarm in this run.
 - The positive control could not be judged: our scope bug got 3 of its 5 rows refused. The fix is one line (a unique item id per call); a separately pre-registered v2 with only that change is the honest way to test whether the critic can ship.
 - n = 41 values, one run, one lay labeller: an encouraging measurement, not a shipped feature.
+
+## v2: one Nightshift scope per call (pre-registered, run 2026-10-24 13:34 UTC)
+
+Pre-registration: `docs/preregistration/ultra-critic-v2.md` + `ultra-critic-v2.json` (commit 63a6cdd, frozen before the first call; designed after the labels were scored, disclosed; v1 byte-identical except one item id per call). Log: `logs/ultra-critic-v2.jsonl`, summary `logs/ultra-critic-v2-runs.jsonl`, score `logs/ultra-critic-v2-score.json` (scored with v1's `critic.score` against the frozen labels).
+
+| Measure | v2 |
+|---|---|
+| Calls | 46 of 46 answered, 46 unique scopes, **0 provider failures, 0 memory refusals**; every answer Ultra, signed by the pinned key |
+| Real values, by class | 38 agree · **3 contradictions verified** |
+| Verified objections against the labels | **3 right, 0 wrong**, 1 missed |
+| The objections | the same 3 as v1: TCGA-A1-A0SN N (N2A -> N1), TCGA-AC-A2FK N (N1A -> NX), TCGA-E2-A1LI N (N0 -> N1) |
+| Planted controls | **4 of 5 detected**, all 4 objecting with the real value |
+| **Ship line** (plants ≥ 4/5 and objections ≤ 8 and right > wrong and wrong ≤ 1) | **met: the critic ships** as a read-only "a second reader objects" line on the case page and a `/how` card; it never writes to the layer and never accepts or changes a value |
+
+Prediction ("0 memory refusals; plants at least 4 of 5; objections close to v1's 3 on the same cases"): **held**. v2 is a confirmation run designed after the labels were known; its prompt, guard, plants and ship line are v1's, so nothing in it could be tuned toward the labels.
