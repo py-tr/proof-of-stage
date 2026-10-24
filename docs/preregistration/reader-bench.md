@@ -30,3 +30,7 @@ The deep rung (R2) reads what the cheap rung could not settle, with a 4k thinkin
 ## Prediction (before the run)
 
 Super and Ultra accept about the same number of correct values; Lightning accepts fewer; wrong accepts are 0 or 1 for every model (the guard). The seat stays with Super. A guess.
+
+## Addendum (written 2026-10-24, before the blind labels are frozen, without opening logs/reader-bench.jsonl)
+
+A second measure on the same, already committed run, computed by `app/engine/second_reader.py` (hash-frozen in `ultra-critic.json`) and reported by `python -m app.cli labels score`: each model's reads as an **independent second reader** of the values the layer stored. Where a model accepted a value (under the unchanged guard) that differs from the stored `stage_check` value for that case and field (N by main category, the count as an integer), that is a disagreement the model reached without seeing the stored value or its quote. Scored against the labels: **right** when the label disagrees with the stored value, **wrong** when it agrees, **unscored** when the label states no value; **missed** when the label disagrees but the model accepted the stored value or nothing. Only the first completed run counts. Reported per model next to the decision rule above; it does not change the seat rule.

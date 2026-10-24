@@ -74,6 +74,20 @@ def frozen_labels() -> dict[str, Any]:
     return json.loads(text)["labels"]
 
 
+async def critic_stored(case_ids: list[str]) -> dict[str, dict[str, Any]]:
+    """The stored report values per queue case (stage_check, first write kept)."""
+    from app.engine.run_case import _rows
+    from app.usl.client import select
+    from app.usl.model import table_fqn
+
+    result = await select(
+        f"SELECT case_id, report_n, report_nodes_positive FROM {table_fqn('stage_check')} "
+        "WHERE reason_class IN ('n_count_contradiction', 'n_missing_derivable')",
+        limit=100,
+    )
+    return {r["case_id"]: r for r in _rows(result) if r["case_id"] in case_ids}
+
+
 async def score_all() -> dict[str, Any]:
     labels = frozen_labels()
     record = baseline.frozen()
@@ -94,5 +108,24 @@ async def score_all() -> dict[str, Any]:
         "baseline_without_disclosed": baseline.score(m0, without, a0),
         "reader_bench": reader_bench.score(bench_rows, labels),
     }
+    # The Ultra critic and the second-reader addendum (pre-registered in ultra-critic.md and the
+    # reader-bench.md addendum before these labels were frozen): first completed run only.
+    from app.engine import critic, second_reader
+
+    def _lines(path: Path) -> list[dict[str, Any]]:
+        if not path.exists():
+            return []
+        return [json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x]
+
+    critic_rows = critic.first_completed_run(_lines(critic.LOG), _lines(critic.RUNS_LOG))
+    result["ultra_critic"] = critic.score(critic_rows, labels) if critic_rows else None
+    bench_runs = [{"run": r["run"]} for r in _lines(reader_bench.RUNS_LOG)]
+    first_bench = critic.first_completed_run(bench_rows, bench_runs)
+    stored = {
+        c: {"N": r.get("report_n"), "NPOS": r.get("report_nodes_positive")}
+        for c, r in (await critic_stored(list(record["cases"]))).items()
+    }
+    result["second_reader"] = second_reader.score(first_bench, stored, labels)
+    SCORES.write_text(json.dumps(result, indent=2, default=str) + "\n", encoding="utf-8")
     SCORES.write_text(json.dumps(result, indent=2, default=str) + "\n", encoding="utf-8")
     return result
