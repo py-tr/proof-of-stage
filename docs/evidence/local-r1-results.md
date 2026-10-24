@@ -22,6 +22,8 @@ Honesty row, not a bar: cloud Lightning settled 18 of 28 in its test and 16, 17,
 
 The 4 failed records are exactly the 4 longest reports in the set: 8,116, 8,670, 10,523 and 14,193 characters. Every settled record was 8,046 characters or shorter (the 11 unsettled-but-answered records were 483 to 3,077). The job record says only "errored", so the cause is not logged; a context window on the local lane smaller than the longest reports is the likely reading, not a measured one. Without those 4, local Lightning settled 13 of the 24 it could read.
 
+**Diagnosis after the run (one unscored call, 2026-10-24):** the longest failed report (TCGA-E2-A14U, 10,523 characters), sent again as the same local-only job, came back `errored` with "no attempt produced a candidate: no slot was dispatched" and "generated 0 of a planned 1 attempts": the job never reached the model. That fits Nightshift refusing a prompt larger than the local lane's context window before dispatch (its engine drops lanes that cannot hold the prompt). So the four failures are the lane's context setting, not the model's reading; the published result stands as it is.
+
 ## What it means, and what it does not
 
 - The privacy mechanism works: every local attempt that ran stayed on the local lane by Nightshift's own job record, and none of its closings was contradicted.
