@@ -70,10 +70,15 @@ def getenv(name: str) -> str | None:
     return trimmed or None
 
 
+_ZETARIS_NAMES = ("ZETARIS_REST_URL", "ZETARIS_ORG_ID", "ZETARIS_API_KEY")
+
+
 def sample_mode() -> bool:
+    """SAMPLE_MODE when set; otherwise sample mode exactly when Zetaris is not configured, so a
+    clean clone runs offline with no manual step (live mode needs the Zetaris keys anyway)."""
     raw = getenv("SAMPLE_MODE")
     if raw is None:
-        return False
+        return not all(getenv(name) for name in _ZETARIS_NAMES)
     return raw.lower() in {"1", "true", "yes", "on"}
 
 

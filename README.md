@@ -71,12 +71,11 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 286 tests, no network
-cp .env.example .env                               # it sets SAMPLE_MODE=true (Windows cmd: copy .env.example .env)
-python -m app.cli serve                            # offline: 4 bundled cases, no model output replayed
+pytest -q                                          # 297 tests, no network
+python -m app.cli serve                            # no .env needed: without Zetaris settings it runs in sample mode (4 bundled cases, no model output replayed)
 ```
 
-Or set the variable for one shell: `SAMPLE_MODE=true python -m app.cli serve` (bash), `$env:SAMPLE_MODE="true"; python -m app.cli serve` (PowerShell), `set SAMPLE_MODE=true && python -m app.cli serve` (cmd). Sample mode needs no keys and no network. Live mode's ladder and red team also need Node.js 22.7 or newer (the Markovian engine's sidecar).
+With no Zetaris settings the app starts in sample mode by itself; `SAMPLE_MODE=true` forces it (for example with a configured `.env`). Sample mode needs no keys and no network. Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`); its ladder and red team also need Node.js 22.7 or newer (the Markovian engine's sidecar).
 
 Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`):
 

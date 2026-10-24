@@ -99,3 +99,17 @@ async def test_doctor_fail_has_no_urls_or_secrets(
     assert "evil.example" not in out
     assert token not in out
     assert "Bearer <redacted>" in out or "<redacted>" in out
+
+
+def test_a_clean_clone_without_zetaris_settings_runs_in_sample_mode(monkeypatch) -> None:
+    from app import config
+
+    monkeypatch.delenv("SAMPLE_MODE", raising=False)
+    for name in ("ZETARIS_REST_URL", "ZETARIS_ORG_ID", "ZETARIS_API_KEY"):
+        monkeypatch.delenv(name, raising=False)
+    assert config.sample_mode() is True
+    for name in ("ZETARIS_REST_URL", "ZETARIS_ORG_ID", "ZETARIS_API_KEY"):
+        monkeypatch.setenv(name, "x")
+    assert config.sample_mode() is False  # configured: live, unless SAMPLE_MODE says otherwise
+    monkeypatch.setenv("SAMPLE_MODE", "true")
+    assert config.sample_mode() is True
