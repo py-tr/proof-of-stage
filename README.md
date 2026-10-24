@@ -80,6 +80,18 @@ TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, 
 
 **Exceptions, stated:** Nemotron Parse and Super VL reading page images go to NVIDIA direct, because Nightshift has no Parse lane and returns 502 on images (`docs/evidence/nightshift-limits.md`).
 
+## Sample inputs and outputs
+
+Three review-queue records, one per verdict, from the live layer (`stage_check`) and the logged ladder runs (`logs/markovian-chunks.jsonl`). Input: the registry record. Output: the guarded reading, its quote and the field the layer names. These rungs ran on 2026-10-23, before R1 moved to Lightning, so every rung shown is Super VL through Nightshift.
+
+| Case | Input: the registry says | Output: the report reading (quote verified by the guard) | The layer names | Receipts (signed, pinned key) |
+|---|---|---|---|---|
+| TCGA-E2-A572 | N2 with **0** positive nodes of 13 (the count implies N0) | N2a, **8** positive nodes: "Lymph node status: Positive 8 / 13" | **the node-count field** | R1 `rcpt_req_pxgz0ong`, R2 `rcpt_req_ccc9hb04` |
+| TCGA-3C-AAAU | N **missing** (NX) with 4 positive nodes of 13 (the count implies N2a) | N2a, 4 positive: "POSITIVE LYMPH NODES: TOTAL: 4 of 13" | **the N field** (missing, derivable) | R1 `rcpt_req_i1z7yoaj`, R2 `rcpt_req_nghx5dfm`, R3 (the scan) `rcpt_req_pbs2rd0q` |
+| TCGA-D8-A27L | N2a with 2 positive nodes of 16 (the count implies N1a) | NX: "removed without axillary tissues" (no node count in this report) | **a person decides** | R1 `rcpt_req_zznxxphb`, R2 `rcpt_req_3ciog90y` |
+
+The blind human labels (`docs/evidence/baseline-m0-results.md`) agree with the layer on all three. Run any of them yourself in live mode with `python -m app.cli run --case <id>` (it appends a new ladder run to the logs; stored values are never overwritten). Sample mode bundles four cases with no model output and lets you play the reader.
+
 ## Run it
 
 ```bash
