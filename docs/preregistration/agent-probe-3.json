@@ -1,0 +1,95 @@
+{
+  "written": "2026-10-24",
+  "code_sha256_16": {
+    "app/engine/agent_probe3.py": "20b3f7603be45162",
+    "app/engine/agent_probe.py": "4cf7f41df8c1e778"
+  },
+  "schema_control_sha256_16": "67b709cfeb295366",
+  "schema_treatment_sha256_16": "460d80154663cf66",
+  "schema_chars": {
+    "control": 8723,
+    "treatment": 10332
+  },
+  "calls_per_arm": 5,
+  "rules": {
+    "recorded_stage": [
+      [
+        "nodes_within_tested",
+        "lymph_nodes_positive IS NULL OR lymph_nodes_tested IS NULL OR trim(lymph_nodes_positive) = '' OR trim(lymph_nodes_tested) = '' OR CAST(lymph_nodes_positive AS DOUBLE) <= CAST(lymph_nodes_tested AS DOUBLE)"
+      ]
+    ],
+    "stage_check": [
+      [
+        "nodes_consistent",
+        "NOT ( coalesce(edition_code, '') IN ('6', '7') AND lymph_nodes_positive IS NOT NULL AND trim(lymph_nodes_positive) <> '' AND recorded_n_main IS NOT NULL AND recorded_n_main <> 'NX' AND upper(regexp_replace(coalesce(recorded_n, ''), ' ', '')) NOT IN ('N1MI', 'N0(I+)', 'N0(MOL+)') AND derived_n_main IS NOT NULL AND recorded_n_main <> derived_n_main )"
+      ],
+      [
+        "stage_derivable_but_missing",
+        "NOT ( coalesce(edition_code, '') IN ('6', '7') AND lymph_nodes_positive IS NOT NULL AND trim(lymph_nodes_positive) <> '' AND (recorded_n_main IS NULL OR recorded_n_main = 'NX') )"
+      ],
+      [
+        "report_agrees",
+        "(report_t IS NULL OR recorded_t IS NULL OR regexp_extract(upper(recorded_t), 'T(IS|X|[0-4])', 0) = '' OR regexp_extract(upper(recorded_t), 'T(IS|X|[0-4])', 0) = regexp_extract(upper(report_t), 'T(IS|X|[0-4])', 0)) AND (report_n IS NULL OR recorded_n IS NULL OR regexp_extract(upper(recorded_n), 'N(X|[0-3])', 0) = '' OR regexp_extract(upper(recorded_n), 'N(X|[0-3])', 0) = regexp_extract(upper(report_n), 'N(X|[0-3])', 0))"
+      ],
+      [
+        "edition_supported",
+        "coalesce(edition_code, '') IN ('6', '7', '8')"
+      ],
+      [
+        "edition_matches_year",
+        "edition_year_class <> 'out_of_window'"
+      ],
+      [
+        "fault_named",
+        "fault_field IS NULL OR fault_field NOT IN ('node_count', 'pathologic_n')"
+      ],
+      [
+        "fault_unresolved",
+        "fault_field IS NULL OR fault_field <> 'review'"
+      ]
+    ]
+  },
+  "integers": {
+    "raw": 476,
+    "checked": 479,
+    "checked_fallback": 482,
+    "correct_set": [
+      479,
+      482,
+      557,
+      560
+    ],
+    "filter": {
+      "nodes_consistent": 461,
+      "NOT nodes_consistent": 15,
+      "stage_derivable_but_missing": 475,
+      "NOT stage_derivable_but_missing": 1,
+      "report_agrees": 463,
+      "NOT report_agrees": 13,
+      "edition_supported": 359,
+      "NOT edition_supported": 117,
+      "edition_matches_year": 471,
+      "NOT edition_matches_year": 5,
+      "fault_named": 463,
+      "NOT fault_named": 13,
+      "fault_unresolved": 473,
+      "NOT fault_unresolved": 3,
+      "ALL_7": 341
+    }
+  },
+  "integers_how": "each computed once with a read-only SELECT on the live layer on 2026-10-24 before freezing",
+  "canonical_queries": {
+    "raw": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE CAST(lymph_nodes_positive AS DOUBLE) > 0",
+    "checked": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE CAST(positive_nodes_checked AS DOUBLE) > 0",
+    "checked_fallback": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE CAST(COALESCE(NULLIF(positive_nodes_checked,''), lymph_nodes_positive) AS DOUBLE) > 0",
+    "correct_479": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE coalesce(fault_field,'')<>'review' AND (CASE WHEN fault_field='node_count' THEN CAST(report_nodes_positive AS DOUBLE) > 0 ELSE CAST(lymph_nodes_positive AS DOUBLE) > 0 END)",
+    "correct_482": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE (coalesce(fault_field,'')<>'review' AND (CASE WHEN fault_field='node_count' THEN CAST(report_nodes_positive AS DOUBLE) > 0 ELSE CAST(lymph_nodes_positive AS DOUBLE) > 0 END)) OR (fault_field='review' AND CAST(lymph_nodes_positive AS DOUBLE) > 0)",
+    "correct_557": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE coalesce(fault_field,'')<>'review' AND (CASE WHEN fault_field='pathologic_n' THEN CAST(lymph_nodes_positive AS DOUBLE) > 0 ELSE (recorded_n_main IS NOT NULL AND recorded_n_main NOT IN ('N0','NX')) END)",
+    "correct_560": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE (coalesce(fault_field,'')<>'review' AND (CASE WHEN fault_field='pathologic_n' THEN CAST(lymph_nodes_positive AS DOUBLE) > 0 ELSE (recorded_n_main IS NOT NULL AND recorded_n_main NOT IN ('N0','NX')) END)) OR (fault_field='review' AND (recorded_n_main IS NOT NULL AND recorded_n_main NOT IN ('N0','NX')))",
+    "filter": "SELECT count(*) FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE CAST(lymph_nodes_positive AS DOUBLE) > 0 AND (<rule expression>) [or NOT (...); ALL_7 = the 7 stage_check expressions joined by AND]"
+  },
+  "collisions": "correct 479 == checked 479 and correct 482 == checked_fallback 482 (the checked column is the verdict applied); separated by the SQL: CORRECT requires fault_field and not positive_nodes_checked. No filter integer equals a correct, checked or raw integer.",
+  "claim": "treatment CORRECT >= 4/5 with control 0/5, or 5/5 with control <= 1/5",
+  "void_failures_per_arm": 2,
+  "prediction": "treatment mostly FILTER or RAW, CORRECT 0-1 of 5; control RAW or CHECKED, CORRECT 0; claim not met"
+}

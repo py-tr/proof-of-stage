@@ -425,6 +425,9 @@ def main(argv: list[str] | None = None) -> int:
         "vision-scan", help="Pre-registered: Super VL reads the scan images vs Parse + Super"
     )
     sub.add_parser(
+        "agent-probe-3", help="Pre-registered: does an agent use the verdict given the DQ rules"
+    )
+    sub.add_parser(
         "agent-probe-2", help="Pre-registered follow-up: does an agent use the checked column"
     )
     sub.add_parser(
@@ -511,6 +514,11 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.timing import run_timing
 
             sys.stdout.write(json.dumps(asyncio.run(run_timing()), indent=2, default=str))
+            return 0
+        if args.command == "agent-probe-3":
+            from app.engine.agent_probe3 import run_probe3
+
+            sys.stdout.write(json.dumps(asyncio.run(run_probe3()), indent=2, default=str))
             return 0
         if args.command == "agent-probe-2":
             from app.engine.agent_probe2 import run_probe2
