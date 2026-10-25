@@ -466,6 +466,16 @@ function renderFreshness(trace) {
   badge.classList.remove("hidden");
 }
 
+// Short display name for a served model id (the full id is in the cell's title).
+function modelName(id) {
+  const m = String(id || "");
+  const local = m.startsWith("local-runtime/") ? " (on this PC)" : "";
+  for (const [key, name] of [["lightning", "Nemotron Lightning"], ["super", "Nemotron Super VL"], ["ultra", "Nemotron Ultra"], ["bolt", "Nemotron Bolt"], ["omni", "Nemotron Nano Omni"]]) {
+    if (m.includes(key)) return name + local;
+  }
+  return m || "—";
+}
+
 function renderTrace(trace) {
   renderFreshness(trace);
   const box = $("trace");
@@ -474,9 +484,10 @@ function renderTrace(trace) {
     box.append(el("p", { class: "small" }, state.mode === "sample" ? "Sample mode: no model run is shown." : "No reading logged for this case yet."));
     return;
   }
-  const head = el("tr", {}, ...["Step", "Thinking", "Provider", "Tokens", "Seconds", "N", "Positive nodes"].map((h) => el("th", {}, h)));
+  const head = el("tr", {}, ...["Step", "Model", "Thinking", "Provider", "Tokens", "Seconds", "N", "Positive nodes"].map((h) => el("th", {}, h)));
   const rows = trace.rungs.map((r) => el("tr", {},
     el("td", {}, RUNG_NAME[r.rung] || r.rung),
+    el("td", { title: `${show(r.model)} · ${r.provider === "nightshift" ? "named in the signed Nightshift receipt" : "as NVIDIA's API reported serving"}` }, modelName(r.model)),
     el("td", {}, r.thinking),
     el("td", {}, r.provider === "nightshift"
       ? el("span", {}, "Nightshift ", el("code", { title: `receipt ${show(r.receipt_id)} · signature ${show(r.signature)} · cached: ${r.from_cache ? "yes" : "no"}` }, `${show(r.signature)} receipt`))
@@ -486,7 +497,7 @@ function renderTrace(trace) {
     el("td", {}, fieldVerdict(r.fields.N)),
     el("td", {}, fieldVerdict(r.fields.NPOS))));
   box.append(el("table", {}, el("thead", {}, head), el("tbody", {}, ...rows)),
-    el("p", { class: "small" }, `Run ${trace.run_id}. Stored values are the first ones written (append-only), so they can come from an earlier run. Hover a receipt for its id, a token count for the budget check.`));
+    el("p", { class: "small" }, `Run ${trace.run_id}. Stored values are the first ones written (append-only), so they can come from an earlier run. The model is the one that answered, as named in the signed receipt (not the one requested). Hover a receipt for its id, a token count for the budget check.`));
 }
 
 async function loadScanBox(caseId) {
