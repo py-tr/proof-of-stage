@@ -1,0 +1,14 @@
+{
+  "run": "20261025T134720",
+  "filings": 16,
+  "read_cleanly": 2,
+  "record_contradicts_return": 0,
+  "verdicts": {
+    "not read": 14,
+    "record matches return": 1,
+    "the return itself does not add up": 1
+  },
+  "provider_failures": 0,
+  "void": false,
+  "pattern_works_on_second_non_medical_domain": false
+}
