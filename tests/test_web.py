@@ -271,3 +271,23 @@ def test_the_how_it_works_page_is_served() -> None:
     assert page.status_code == 200 and 'id="steps"' in page.text and "/static/how.js" in page.text
     assert client.get("/static/how.js").status_code == 200
     assert 'href="/how"' in client.get("/").text
+
+
+def test_live_reads_are_cached_until_any_write() -> None:
+    from app.web.lineage import MirrorLineage
+
+    class CountingLive(SampleData):
+        mode = "live"
+        calls = 0
+
+        async def cohort(self):  # type: ignore[no-untyped-def]
+            CountingLive.calls += 1
+            return await super().cohort()
+
+    client = TestClient(create_app(CountingLive(), MirrorLineage()))
+    client.get("/api/cohort")
+    client.get("/api/cohort")
+    assert CountingLive.calls == 1
+    client.post("/api/case/TCGA-E2-A572/decision", json={"claim": "not-a-claim"})
+    client.get("/api/cohort")
+    assert CountingLive.calls == 2

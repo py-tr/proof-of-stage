@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,7 @@ from app.web.evidence import challenge, count_rules, headline, recheck, why_chai
 from app.web.lineage import LiveLineage, MirrorLineage, lineage
 from app.zetaris import ZetarisError
 
+LIVE_CACHE_S = 300.0
 STATIC = Path(__file__).parent / "static"
 
 
@@ -66,6 +68,30 @@ def create_app(
 
     app = FastAPI(title="Proof of Stage", docs_url=None, redoc_url=None, lifespan=lifespan)
 
+    # Live reads of the activated layer take about 3.5 s each, so the page's three reads (case,
+    # cohort, queue) are kept for a few minutes. Any write through this app clears them at once,
+    # so a decision shows on the next read. Sample mode is local and is never cached.
+    cache: dict[str, tuple[float, Any]] = {}
+
+    async def _cached(key: str, call):  # type: ignore[no-untyped-def]
+        if source.mode == "sample":
+            return await call()
+        hit = cache.get(key)
+        if hit and time.monotonic() - hit[0] < LIVE_CACHE_S:
+            return hit[1]
+        value = await call()
+        cache[key] = (time.monotonic(), value)
+        return value
+
+    @app.middleware("http")
+    async def _clear_on_write(request, call_next):  # type: ignore[no-untyped-def]
+        if request.method != "GET":
+            cache.clear()
+        response = await call_next(request)
+        if request.method != "GET":
+            cache.clear()
+        return response
+
     async def _guarded(call):  # type: ignore[no-untyped-def]
         try:
             return await call
@@ -91,11 +117,11 @@ def create_app(
 
     @app.get("/api/cohort")
     async def cohort() -> dict[str, Any]:
-        return await _guarded(source.cohort())
+        return await _cached("cohort", lambda: _guarded(source.cohort()))
 
     @app.get("/api/queue")
     async def queue() -> list[dict[str, Any]]:
-        rows = await _guarded(source.queue())
+        rows = await _cached("queue", lambda: _guarded(source.queue()))
         objecting: set[str] = set()
         if source.mode != "sample":  # the second reader is model output: live mode only
             from app.web.secondreader import objecting_cases
@@ -118,7 +144,7 @@ def create_app(
 
     @app.get("/api/case/{case_id}")
     async def case(case_id: str) -> dict[str, Any]:
-        found = await _case(case_id)
+        found = await _cached(f"case:{case_id.upper()}", lambda: _case(case_id))
         check = found["check"]
         edition, site = check.get("edition_code"), check.get("site_key")
         accepted = _rechecked(found)
