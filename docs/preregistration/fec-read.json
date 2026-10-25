@@ -314,5 +314,5 @@
     }
   ],
   "claim": "'the pattern transfers at the read level' only if >= 5 of 12 read cleanly AND >= 3 name exactly one field",
-  "prediction": "[fill]"
+  "prediction": "Written by the main session before the run, without looking at any sampled page: 5-8 of 12 read cleanly (the extraction rules were written without seeing Parse output on a Form 3 page, so some lines or filings will be 'not read'); of those, 2-4 'the filing contradicts the record on [field]', 1-2 'the filing itself does not add up', 0-2 'record matches filing'. Claim line met: a coin flip."
 }
