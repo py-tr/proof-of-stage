@@ -144,7 +144,7 @@ Nightshift settings we used (1.2.3, Windows, including the Super VL opt-in flag)
 | Red-team loop on the Markovian engine | 0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack (disclosed) | `docs/evidence/adversary-chain-v3-results.md` |
 | Three more databases | the rule finds impossible records in each; the reading, as built, met none of four bars | [Pointing it at other data](#pointing-it-at-other-data) |
 
-**All 33 measurements, including every loss: [docs/results.md](docs/results.md).**
+**All 39 measurements, including every loss: [docs/results.md](docs/results.md).**
 
 ## Pointing it at other data
 
