@@ -425,11 +425,17 @@ def main(argv: list[str] | None = None) -> int:
         "vision-scan", help="Pre-registered: Super VL reads the scan images vs Parse + Super"
     )
     sub.add_parser("parse-bench", help="Pre-registered: Nemotron Parse 2.0 vs v1 in the pipeline")
-    sub.add_parser(
-        "local-focus", help="Pre-registered: local first read with an on-PC focus step"
-    )
+    sub.add_parser("local-focus", help="Pre-registered: local first read with an on-PC focus step")
     sub.add_parser(
         "local-r1", help="Pre-registered: local Nemotron Lightning as the first read (on-device)"
+    )
+    fec_read = sub.add_parser(
+        "fec-read", help="Pre-registered: Parse reads 12 impossible FEC paper filings (read level)"
+    )
+    fec_read.add_argument(
+        "--freeze",
+        action="store_true",
+        help="Draw the sample, download the PDFs (no model) and write fec-read.json",
     )
     sub.add_parser(
         "agent-probe-3", help="Pre-registered: does an agent use the verdict given the DQ rules"
@@ -536,6 +542,12 @@ def main(argv: list[str] | None = None) -> int:
             from app.engine.local_r1 import run_local_r1
 
             sys.stdout.write(json.dumps(asyncio.run(run_local_r1()), indent=2, default=str))
+            return 0
+        if args.command == "fec-read":
+            from app.fec.read import freeze, run_fec_read
+
+            out = freeze() if args.freeze else asyncio.run(run_fec_read())
+            sys.stdout.write(json.dumps(out, indent=2, default=str) + "\n")
             return 0
         if args.command == "agent-probe-3":
             from app.engine.agent_probe3 import run_probe3
