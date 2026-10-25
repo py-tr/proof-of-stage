@@ -1,0 +1,4 @@
+TABLE agent_view.node_status: One row per tumour case in the cancer registry, with its node values after the pathology-report check (the only table this account can read)
+  - case_id (varchar(64)): Tumour case these checked values belong to
+  - positive_nodes_checked (varchar(32)): Positive regional node count after the report check, as a whole number: the registry count, except where fault_field is node_count, where the quote-verified report count replaces it, and empty where fault_field is review or no count is recorded
+  - fault_field (varchar(32)): For a node-count contradiction or a missing N, the registry field the quote-verified report evidence points to: node_count (needs a verified report count that differs from the registry count), pathologic_n, or review when the evidence does not settle it
