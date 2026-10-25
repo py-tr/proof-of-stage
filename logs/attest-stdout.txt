@@ -1,0 +1,15 @@
+{
+  "run": "20261025T123148",
+  "cells": 42,
+  "cases": 26,
+  "failed_cases": 0,
+  "void": false,
+  "outcomes": {
+    "reproduced": 42,
+    "differs": 0,
+    "not_re_accepted": 0,
+    "provider_failure": 0
+  },
+  "stored_quote_rechecked_accepted": 42,
+  "claim": "42 of 42 reproduced"
+}

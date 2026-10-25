@@ -1,0 +1,6 @@
+{
+  "pubkey_b64": "+8N1GcLQM9X0U6AZCyF7ULXcXeQlnly1WK29ZSv7Ij0=",
+  "fingerprint": "7a6d14e27e1a",
+  "source": "the public key in every envelope Nightshift returned on this install (2026-10-25); Meterless publishes no key",
+  "algorithm": "Ed25519 over the body as sorted, compact UTF-8 JSON"
+}
