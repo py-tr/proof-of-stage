@@ -1,0 +1,26 @@
+{
+  "run": "20261025T180313",
+  "falls": {
+    "fields": 0,
+    "failures": 0,
+    "objected": 0,
+    "objected_verified": 0,
+    "agreed": 0
+  },
+  "stands": {
+    "fields": 0,
+    "failures": 0,
+    "objected": 0,
+    "objected_verified": 0,
+    "agreed": 0
+  },
+  "unsure": {
+    "fields": 0,
+    "failures": 0,
+    "objected": 0,
+    "objected_verified": 0,
+    "agreed": 0
+  },
+  "claim_met": true,
+  "kill": true
+}

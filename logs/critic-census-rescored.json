@@ -1,0 +1,27 @@
+{
+ "run": "20261025T180313",
+ "falls": {
+  "fields": 12,
+  "failures": 0,
+  "objected": 2,
+  "objected_verified": 1,
+  "agreed": 10
+ },
+ "stands": {
+  "fields": 12,
+  "failures": 0,
+  "objected": 0,
+  "objected_verified": 0,
+  "agreed": 12
+ },
+ "unsure": {
+  "fields": 1,
+  "failures": 0,
+  "objected": 0,
+  "objected_verified": 0,
+  "agreed": 1
+ },
+ "claim_met": false,
+ "kill": false,
+ "note": "Rescored from logs/critic-census.jsonl with the frozen per-field verdicts in critic-census.json: the run's own summary row (logs/critic-census-runs.jsonl) is wrong because each row's 'verdict' key was overwritten by Ultra's own verdict before scoring (a bug in app/engine/critic_census.py found after the run). No call was re-run; the per-field log is unchanged."
+}

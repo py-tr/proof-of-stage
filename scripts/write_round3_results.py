@@ -71,11 +71,12 @@ def shipped_cost() -> None:
 
 
 def critic_census() -> None:
-    s = _last("critic-census-runs.jsonl")
-    if not s:
+    if not (LOGS / "critic-census-rescored.json").exists():
         return
+    s = json.loads((LOGS / "critic-census-rescored.json").read_text(encoding="utf-8"))
     pre = _prereg("critic-census.json")
-    rows = _rows("critic-census.jsonl")
+    review = {(x["case"], x["field"]): x["verdict"] for x in pre["fields"]}
+    rows = [{**r, "verdict": review[(r["case"], r["field"])]} for r in _rows("critic-census.jsonl")]
     f, st, un = s["falls"], s["stands"], s["unsure"]
     lines = [
         "# Ultra, the shipped second reader, on the census-2 hits (pre-registered, run 2026-10-25)",
@@ -94,6 +95,8 @@ def critic_census() -> None:
         "",
         f'Prediction (before the run): "{pre["prediction"]}"',
         "",
+        f"**Scoring note:** {s['note']}",
+        "",
         "## Field by field",
         "",
         "| Case | Field | Registry → reading | Review | Ultra | Verified |",
@@ -107,7 +110,8 @@ def critic_census() -> None:
         "",
         "## What it means, and what it does not",
         "",
-        "- The second reader can only object; an objection sends a case to a person and never changes a value. This measures whether its objections land where the deep read was wrong, on 24 values it had never seen.",
+        "- The finding: Ultra shares the deep read's traps. It agreed with 10 of the 12 readings that fell (the per-part counts and the other-breast readings), and objected on none of the 12 that stood. Its two objections were both right in substance: TCGA-AC-A3EH's N (the report prints pT3 N2; verified) and TCGA-GM-A4E0's N, where it added the sentinel's 1 to Part C's 9 but answered 10, a count, in the N field, so the objection check rejected it as an invalid category. A second model reading the same specimen is not a fix for a per-part sum: the sum has to be code (`docs/evidence/parts-bench-results.md`).",
+        "- The second reader can only object; an objection sends a case to a person and never changes a value. This measures whether its objections land where the deep read was wrong, on 25 values it had never seen.",
         "- A sum of parts sits in no single quote, so an objection about a per-part total may fail the one-quote check even when Ultra is right; both counts are reported.",
         "- The verdicts it is scored against are one lay review (AI-drafted, builder-confirmed). One run, no re-run.",
     ]
