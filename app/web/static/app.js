@@ -84,6 +84,11 @@ async function loadCohort() {
       " · research data, not for clinical use");
     const line = nodePositiveLine(c.node_positive, c.node_positive_snapshot_of);
     if (line) box.append(el("div", { class: "cohort-np" }, line));
+    if (!state.foolSet) {  // live mode opens on the record; sample mode keeps "Try to fool it" open
+      state.foolSet = true;
+      const fool = document.querySelector("details.fool");
+      if (fool && !c.sample) fool.open = false;
+    }
   } catch (error) {
     $("cohort").textContent = `Cohort counts unavailable: ${error.message}`;
   }
@@ -315,6 +320,30 @@ function renderDecide(data) {
   $("decided").replaceChildren(...mine.map((f) => el("div", {}, `Decision row ${f.flag_id}: ${f.reason}`)));
 }
 
+// The layer's answer before and after a decision: node-positive by the verdict and left to a person.
+async function verdictCounts() {
+  try {
+    const np = (await api("/api/cohort")).node_positive;
+    if (!np) return null;
+    const after = Number(np.decided_by_a_person || 0) > 0;
+    return {
+      positive: after ? np.node_positive_after_decisions : np.node_positive_by_verdict,
+      left: after ? np.left_after_decisions : np.left_to_a_person,
+    };
+  } catch (_error) {
+    return null;
+  }
+}
+
+function nextCaseButton() {
+  const open = state.queue.map((q, i) => ({ q, i })).filter(({ q }) => !q.decided_at);
+  if (!open.length) return null;
+  const next = open.find(({ i }) => i > state.index) || open[0];
+  const b = el("button", {}, `Next case that needs a person: ${next.q.case_id}`);
+  b.addEventListener("click", () => openCase(next.i));
+  return b;
+}
+
 async function decide(claim, reasonCode) {
   if (!state.current || state.saving) return;
   const caseId = state.current.check.case_id;
@@ -322,6 +351,7 @@ async function decide(claim, reasonCode) {
   state.saving = true;
   document.querySelectorAll("#decide button, #reject-reasons button").forEach((b) => (b.disabled = true));
   status(`Saving the decision for ${caseId} to Zetaris…`);
+  const before = await verdictCounts();
   try {
     const saved = await api(`/api/case/${caseId}/decision`, {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -329,11 +359,23 @@ async function decide(claim, reasonCode) {
     });
     $("reject-reasons").classList.add("hidden");
     if (saved.saved) {
-      status(`Appended to Zetaris oa_pg.flag_log: ${saved.flag_id} (${CLAIM_TEXT[claim]})`);
-      const item = state.queue[state.index];
-      item.decided_at = saved.created_at;
-      await refreshQueueKeep(caseId);
-      loadCohort();  // the layer's answer now includes this decision
+      const savedLine = `Saved as a new row in Zetaris (oa_pg.flag_log ${saved.flag_id}, ${CLAIM_TEXT[claim]}). The registry was not edited.`;
+      status(savedLine);
+      try {  // display only: a glitch here must never read as "not saved"
+        const item = state.queue[state.index];
+        item.decided_at = saved.created_at;
+        await refreshQueueKeep(caseId);
+        loadCohort();  // the layer's answer now includes this decision
+        const after = await verdictCounts();
+        const moved = before && after
+          ? ` Node-positive by the verdict: ${before.positive} → ${after.positive}. Left to a person: ${before.left} → ${after.left}.`
+          : "";
+        status(savedLine + moved);
+        const next = nextCaseButton();
+        if (next) $("decided").append(el("div", {}, next));
+      } catch (_error) {
+        status(`${savedLine} (Reload the page to refresh the counts.)`);
+      }
     } else {
       status("Sample mode does not write to Zetaris: nothing was saved.");
     }
