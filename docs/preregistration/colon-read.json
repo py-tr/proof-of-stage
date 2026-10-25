@@ -1,0 +1,82 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/colon_read.py": "16f6277cf3881bb0"
+  },
+  "prompt_sha256_16": "d03f3beb643d3d17",
+  "source": "GDC API /cases for TCGA-COAD and TCGA-READ, fetched at freeze time",
+  "population": {
+    "cases_with_n_and_count": 592,
+    "impossible": 10,
+    "impossible_with_report": 8
+  },
+  "cases": [
+    {
+      "case_id": "TCGA-A6-2671",
+      "project": "TCGA-COAD",
+      "recorded_n": "N2",
+      "count": 3,
+      "tested": 27,
+      "edition": "6th"
+    },
+    {
+      "case_id": "TCGA-AA-3672",
+      "project": "TCGA-COAD",
+      "recorded_n": "N1",
+      "count": 4,
+      "tested": 21,
+      "edition": "5th"
+    },
+    {
+      "case_id": "TCGA-AA-A02E",
+      "project": "TCGA-COAD",
+      "recorded_n": "N1",
+      "count": 4,
+      "tested": 16,
+      "edition": "6th"
+    },
+    {
+      "case_id": "TCGA-AD-6964",
+      "project": "TCGA-COAD",
+      "recorded_n": "N2b",
+      "count": 0,
+      "tested": 16,
+      "edition": "7th"
+    },
+    {
+      "case_id": "TCGA-AF-2690",
+      "project": "TCGA-READ",
+      "recorded_n": "N2",
+      "count": 3,
+      "tested": 24,
+      "edition": "6th"
+    },
+    {
+      "case_id": "TCGA-BM-6198",
+      "project": "TCGA-READ",
+      "recorded_n": "N1",
+      "count": 0,
+      "tested": 11,
+      "edition": null
+    },
+    {
+      "case_id": "TCGA-CI-6621",
+      "project": "TCGA-READ",
+      "recorded_n": "N1",
+      "count": 0,
+      "tested": 2,
+      "edition": "7th"
+    },
+    {
+      "case_id": "TCGA-EI-6511",
+      "project": "TCGA-READ",
+      "recorded_n": "N1",
+      "count": 4,
+      "tested": 18,
+      "edition": "7th"
+    }
+  ],
+  "claim": "the report names the contradicted field (verified quote) on >= half read",
+  "void": "more than 3 provider failures",
+  "prediction": "Before the run, by the main session: 5-7 of 8 named (mostly the count field, as in breast where 8 of 21 named the count and 13 the N), 1-3 to a person, 0 provider failures; claim likely met."
+}
