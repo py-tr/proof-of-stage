@@ -1,0 +1,331 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/irs/read.py": "5333d1727eb357f6",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "prompt_sha256_16": "741f60b4bb346f36",
+  "extract": {
+    "url": "https://www.irs.gov/pub/irs-soi/16eofinextractez.zip",
+    "bytes": 11550144,
+    "sha256": "21e625e0abc931e34242067c4f59d86448fe20a1f96e6f624b7f72192d7c0717",
+    "member": "16eofinextractez.dat"
+  },
+  "population": {
+    "rows": 230745,
+    "paper_rows": 112556,
+    "eligible": 1523,
+    "eligible_rule": "elf == N; totrevnue, totexpns, totexcessyr integers; |totrevnue - totexpns - totexcessyr| >= $2; one row per (EIN, tax_pd), first in file order kept; design cases excluded; sorted by (EIN, tax_pd)",
+    "design_cases_excluded": [
+      [
+        "352517049",
+        "201506"
+      ],
+      [
+        "061762420",
+        "201507"
+      ],
+      [
+        "311741739",
+        "201506"
+      ]
+    ]
+  },
+  "seed": 20261025,
+  "sample_size": 16,
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b via Nightshift, text only, pinned, signed receipt, no cache, 4000 thinking budget, one call per filing",
+  "missing_documents": 5,
+  "stop": false,
+  "sample": [
+    {
+      "ein": "462315047",
+      "tax_period": "201512",
+      "record": {
+        "9": "112922",
+        "17": "106990",
+        "18": "5930"
+      },
+      "record_gap": "2",
+      "download": {
+        "status": "no document",
+        "reason": "http_403",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/462/462315047/462315047_201512_990EZ.pdf"
+      }
+    },
+    {
+      "ein": "451733782",
+      "tax_period": "201512",
+      "record": {
+        "9": "151898",
+        "17": "154186",
+        "18": "-2293"
+      },
+      "record_gap": "5",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/451/451733782/451733782_201512_990EZ.pdf",
+        "bytes": 744261,
+        "sha256": "26085ec31a79975bd86db08a6bd744db2757e47bb67053c69dacea1fb5414954",
+        "pages": 15,
+        "page1_text_chars": 4558
+      }
+    },
+    {
+      "ein": "273163951",
+      "tax_period": "201506",
+      "record": {
+        "9": "34050",
+        "17": "5284",
+        "18": "28786"
+      },
+      "record_gap": "-20",
+      "download": {
+        "status": "no document",
+        "reason": "http_403",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/273/273163951/273163951_201506_990EZ.pdf"
+      }
+    },
+    {
+      "ein": "264579813",
+      "tax_period": "201412",
+      "record": {
+        "9": "195607",
+        "17": "174873",
+        "18": "20826"
+      },
+      "record_gap": "-92",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/264/264579813/264579813_201412_990EZ.pdf",
+        "bytes": 424843,
+        "sha256": "b0a6f0f93652bb0a6a2e7dac1a1d9d2d9d56efbd9ec4e6c06db2ee3ecde671e6",
+        "pages": 7,
+        "page1_text_chars": 4652
+      }
+    },
+    {
+      "ein": "841213411",
+      "tax_period": "201412",
+      "record": {
+        "9": "79351",
+        "17": "78105",
+        "18": "1226"
+      },
+      "record_gap": "20",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/841/841213411/841213411_201412_990EZ.pdf",
+        "bytes": 492503,
+        "sha256": "fe09cce3c2f075d030b18b33a0d83e0828e84eecd7deae216b1951642bdc39f9",
+        "pages": 8,
+        "page1_text_chars": 4681
+      }
+    },
+    {
+      "ein": "930495047",
+      "tax_period": "201512",
+      "record": {
+        "9": "7647",
+        "17": "4990",
+        "18": "2659"
+      },
+      "record_gap": "-2",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/930/930495047/930495047_201512_990EZ.pdf",
+        "bytes": 615503,
+        "sha256": "51d3b011931d4384116a4f19994e7e5133a74957da9b31f9dab0d0dd2dcf2da6",
+        "pages": 12,
+        "page1_text_chars": 4457
+      }
+    },
+    {
+      "ein": "582373397",
+      "tax_period": "201512",
+      "record": {
+        "9": "30078",
+        "17": "34511",
+        "18": "-4483"
+      },
+      "record_gap": "50",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/582/582373397/582373397_201512_990EZ.pdf",
+        "bytes": 760820,
+        "sha256": "5a2f57573c3a735867bbed56a2310d6ee40edd18a8ceacad6a6f1a906f4bc82c",
+        "pages": 12,
+        "page1_text_chars": 4638
+      }
+    },
+    {
+      "ein": "465041709",
+      "tax_period": "201412",
+      "record": {
+        "9": "2765",
+        "17": "2773",
+        "18": "0"
+      },
+      "record_gap": "-8",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/465/465041709/465041709_201412_990EZ.pdf",
+        "bytes": 621649,
+        "sha256": "ab8660a0351c146f9ea95f3ea54ee5a14ef0041b3808b98d13f6f5801c401c0a",
+        "pages": 12,
+        "page1_text_chars": 4671
+      }
+    },
+    {
+      "ein": "202280101",
+      "tax_period": "201412",
+      "record": {
+        "9": "29012",
+        "17": "30169",
+        "18": "-1154"
+      },
+      "record_gap": "-3",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/202/202280101/202280101_201412_990EZ.pdf",
+        "bytes": 671828,
+        "sha256": "91874d4a41a9fed769b53b4f6557d162ee90d01fcbf58be46569d77bbe6d6d49",
+        "pages": 12,
+        "page1_text_chars": 4432
+      }
+    },
+    {
+      "ein": "460783293",
+      "tax_period": "201512",
+      "record": {
+        "9": "67545",
+        "17": "73877",
+        "18": "-6322"
+      },
+      "record_gap": "-10",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/460/460783293/460783293_201512_990EZ.pdf",
+        "bytes": 602717,
+        "sha256": "38e642d2c064818f522c076da88c485f8822d7c551a8d80ca984ce0ee84323d3",
+        "pages": 14,
+        "page1_text_chars": 4382
+      }
+    },
+    {
+      "ein": "426076616",
+      "tax_period": "201512",
+      "record": {
+        "9": "1389",
+        "17": "820",
+        "18": "596"
+      },
+      "record_gap": "-27",
+      "download": {
+        "status": "no document",
+        "reason": "http_403",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/426/426076616/426076616_201512_990EZ.pdf"
+      }
+    },
+    {
+      "ein": "237414028",
+      "tax_period": "201512",
+      "record": {
+        "9": "20570",
+        "17": "13276",
+        "18": "7292"
+      },
+      "record_gap": "2",
+      "download": {
+        "status": "no document",
+        "reason": "http_403",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/237/237414028/237414028_201512_990EZ.pdf"
+      }
+    },
+    {
+      "ein": "860973901",
+      "tax_period": "201412",
+      "record": {
+        "9": "0",
+        "17": "493",
+        "18": "-483"
+      },
+      "record_gap": "-10",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/860/860973901/860973901_201412_990EZ.pdf",
+        "bytes": 591541,
+        "sha256": "4a18db9ecfa7f129dca17388625f2cd9705104ce667d938297280a20d0d6fa15",
+        "pages": 12,
+        "page1_text_chars": 4469
+      }
+    },
+    {
+      "ein": "237257998",
+      "tax_period": "201606",
+      "record": {
+        "9": "11056",
+        "17": "5345",
+        "18": "5716"
+      },
+      "record_gap": "-5",
+      "download": {
+        "status": "no document",
+        "reason": "http_403",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/237/237257998/237257998_201606_990EZ.pdf"
+      }
+    },
+    {
+      "ein": "141831763",
+      "tax_period": "201512",
+      "record": {
+        "9": "32450",
+        "17": "2114",
+        "18": "30391"
+      },
+      "record_gap": "-55",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/141/141831763/141831763_201512_990EZ.pdf",
+        "bytes": 223631,
+        "sha256": "7b19e633eaaf98b0d55aedacd0f8d2f3682fb49cc5de046d27255bbe400015d0",
+        "pages": 4,
+        "page1_text_chars": 3957
+      }
+    },
+    {
+      "ein": "383851753",
+      "tax_period": "201412",
+      "record": {
+        "9": "140",
+        "17": "1153",
+        "18": "-1015"
+      },
+      "record_gap": "2",
+      "download": {
+        "status": "ok",
+        "url": "https://990s.foundationcenter.org/990_pdf_archive/383/383851753/383851753_201412_990EZ.pdf",
+        "bytes": 247767,
+        "sha256": "6171a1857a62b8911be188ffd0ffbb2d300f30c58fee8e3c5897544bd91474b7",
+        "pages": 4,
+        "page1_text_chars": 3920
+      }
+    }
+  ],
+  "rules": {
+    "document": "page 1 text layer (pypdfium2); under 500 chars = not read; no OCR fallback",
+    "line_accepted": "amount parses; quote found by app.reader.quotes.locate; amount inside the quote (digits normalised, cents optional)",
+    "verdict_order": [
+      "not read",
+      "record matches return",
+      "the return itself does not add up",
+      "the record contradicts the return on [field]",
+      "other"
+    ],
+    "field_differs": "|return - database| >= $1",
+    "return_adds_up": "|9 - 17 - 18| <= $1",
+    "return_does_not_add_up": "|9 - 17 - 18| >= $2"
+  },
+  "claim": "'the product's pattern works on a second, non-medical domain' only if >= 8 of 16 read cleanly (all three lines accepted) AND >= 3 are 'the record contradicts the return on [field]'",
+  "void": "more than 4 provider failures",
+  "prediction": "[fill]"
+}
