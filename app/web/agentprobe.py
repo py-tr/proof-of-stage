@@ -92,5 +92,7 @@ def _probe4() -> dict[str, Any] | None:
         "exact_six": sum(r.get("code") == "EXACT_SIX" for r in ids),
         "fix_calls": len(fix),
         "refused": len(refused),
-        "refused_query": {**_pick(refused[0]), "guard": refused[0].get("guard")} if refused else None,
+        "refused_query": {**_pick(refused[0]), "guard": refused[0].get("guard")}
+        if refused
+        else None,
     }

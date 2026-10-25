@@ -1,0 +1,21 @@
+name: ci
+
+# A clean clone, no secrets, no network calls beyond pip: the tests, the offline signature check
+# of the committed receipts, and every README headline number recomputed from the committed logs.
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - run: pytest -q
+      - run: python -m app.verify
+      - run: python scripts/check_numbers.py
+      - run: ruff check app scripts tests --extend-ignore E501  # older and frozen files keep long lines

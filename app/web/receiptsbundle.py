@@ -13,10 +13,19 @@ from typing import Any
 from app.verify import BUNDLE, NOT_ESTABLISHED
 
 BUNDLES = {
-    "attest": ("envelopes.jsonl", "Attestation census: every stored value re-read once (42 values, 26 cases)"),
-    "agent-probe-4": ("agent-probe-4-envelopes.jsonl", "Agent probe 4: the agent's queries, including the refused overwrites"),
+    "attest": (
+        "envelopes.jsonl",
+        "Attestation census: every stored value re-read once (42 values, 26 cases)",
+    ),
+    "agent-probe-4": (
+        "agent-probe-4-envelopes.jsonl",
+        "Agent probe 4: the agent's queries, including the refused overwrites",
+    ),
     "hidden-2": ("hidden-2-envelopes.jsonl", "Hidden-error census 2: 300 consistent records"),
-    "colon": ("colon-read-envelopes.jsonl", "Colorectal read (a second cancer type, a published miss)"),
+    "colon": (
+        "colon-read-envelopes.jsonl",
+        "Colorectal read (a second cancer type, a published miss)",
+    ),
     "irs": ("irs-read-envelopes.jsonl", "IRS 990-EZ read (a non-medical domain, a published miss)"),
 }
 _KEEP = ("case", "receipt_id", "served_model", "run", "envelope")
