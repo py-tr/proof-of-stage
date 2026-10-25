@@ -2,3 +2,5 @@
 {"probe": "super-4k", "requested": "nvidia/nemotron-3.5-super-vl-120b-a12b", "budget": 4000, "served": "nvidia/nemotron-3.5-super-vl-120b-a12b", "kind": "cloud", "signature": "verified", "receipt": "rcpt_req_jkhzbdnz", "text": "ready", "seconds": 1.3}
 {"probe": "ultra", "requested": "nvidia/nemotron-3-ultra-550b-a55b", "budget": 0, "served": "nvidia/nemotron-3-ultra-550b-a55b", "kind": "cloud", "signature": "verified", "receipt": "rcpt_req_8tpwmni5", "text": "ready", "seconds": 1.6}
 {"probe": "bolt-cloud", "requested": "nvidia/nemotron-3.5-bolt-e4b", "budget": 0, "served": "nvidia/nemotron-3.5-bolt-e4b", "kind": "cloud", "signature": "verified", "receipt": "rcpt_req_dblp6mof", "text": "ready", "seconds": 0.8}
+{"probe": "local-window-~7k-tokens", "prompt_chars": 37419, "error": "NightshiftError: Nightshift local job errored: no attempt produced a candidate: no slot was dispatched", "seconds": 2.3}
+{"probe": "local-window-~2.5k-tokens", "prompt_chars": 12519, "text": "PELICAN", "seconds": 4.2}
