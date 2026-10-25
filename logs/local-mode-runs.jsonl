@@ -1,0 +1,1 @@
+{"run": "20261025T200828", "records": 20, "failures": 0, "first_read_local": 20, "settled_by_local_first_read": 10, "vs_cloud": {"agree": 21, "disagree": 0, "unconfirmed": 0}, "claim_met": true}
