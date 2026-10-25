@@ -62,7 +62,7 @@ function render(data, trace, sample) {
   // 2. Nemotron reads the report
   const rungs = trace ? trace.rungs : [];
   steps.append(el("li", {}, card("NVIDIA Nemotron through Meterless Nightshift",
-    "Nemotron reads the pathology report, cheapest reasoning first",
+    "Nemotron reads the pathology report, thinking off first",
     sample ? el("p", { class: "small" }, "Sample mode: no model run is shown, and none is replayed.")
       : rungs.length ? flow(...rungs.map((r) => {
           const n = r.fields.N || {}, k = r.fields.NPOS || {};
