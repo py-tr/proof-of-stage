@@ -62,9 +62,23 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):  # type: ignore[no-untyped-def]
-        warming = asyncio.get_running_loop().create_task(rule_source.warm())
+        loop = asyncio.get_running_loop()
+        warming = loop.create_task(rule_source.warm())
+        prewarm = loop.create_task(_prewarm())
         yield
         warming.cancel()
+        prewarm.cancel()
+
+    async def _prewarm() -> None:
+        """Live mode: fill the cache for the first page view (cohort, queue, the demo case)."""
+        if source.mode == "sample":
+            return
+        try:
+            await _cached("cohort", lambda: _guarded(source.cohort()))
+            await _cached("queue", lambda: _guarded(source.queue()))
+            await _cached("case:TCGA-E2-A572", lambda: _build_case("TCGA-E2-A572"))
+        except Exception:  # Zetaris not answering: the page reads live as before
+            return
 
     app = FastAPI(title="Proof of Stage", docs_url=None, redoc_url=None, lifespan=lifespan)
 
@@ -144,7 +158,10 @@ def create_app(
 
     @app.get("/api/case/{case_id}")
     async def case(case_id: str) -> dict[str, Any]:
-        found = await _cached(f"case:{case_id.upper()}", lambda: _case(case_id))
+        return await _cached(f"case:{case_id.upper()}", lambda: _build_case(case_id))
+
+    async def _build_case(case_id: str) -> dict[str, Any]:
+        found = await _case(case_id)
         check = found["check"]
         edition, site = check.get("edition_code"), check.get("site_key")
         accepted = _rechecked(found)
