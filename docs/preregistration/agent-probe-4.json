@@ -1,0 +1,71 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/agent_probe4.py": "a7d0a4b1f6b12320"
+  },
+  "schema_sha256_16": "67b709cfeb295366",
+  "prompts_sha256_16": "9701cec1a9a5383c",
+  "calls_per_arm": 5,
+  "sets": {
+    "six": [
+      "TCGA-A7-A26E",
+      "TCGA-A7-A26H",
+      "TCGA-AO-A1KP",
+      "TCGA-BH-A0BS",
+      "TCGA-BH-A0DD",
+      "TCGA-E2-A572"
+    ],
+    "seven_by_n": [
+      "TCGA-A7-A26E",
+      "TCGA-A7-A26H",
+      "TCGA-AO-A03P",
+      "TCGA-AO-A1KP",
+      "TCGA-BH-A0BS",
+      "TCGA-BH-A0DD",
+      "TCGA-E2-A572"
+    ]
+  },
+  "sets_how": {
+    "six (verdict node_count, registry 0)": "read-only query on the live layer before freezing",
+    "report count > 0 and registry 0": "read-only query on the live layer before freezing",
+    "report N positive and registry 0": "read-only query on the live layer before freezing",
+    "checked > 0 and registry 0": "read-only query on the live layer before freezing"
+  },
+  "sets_queries_results": {
+    "six (verdict node_count, registry 0)": [
+      "TCGA-A7-A26E",
+      "TCGA-A7-A26H",
+      "TCGA-AO-A1KP",
+      "TCGA-BH-A0BS",
+      "TCGA-BH-A0DD",
+      "TCGA-E2-A572"
+    ],
+    "report count > 0 and registry 0": [
+      "TCGA-A7-A26E",
+      "TCGA-A7-A26H",
+      "TCGA-AO-A1KP",
+      "TCGA-BH-A0BS",
+      "TCGA-BH-A0DD",
+      "TCGA-E2-A572"
+    ],
+    "report N positive and registry 0": [
+      "TCGA-A7-A26E",
+      "TCGA-A7-A26H",
+      "TCGA-AO-A03P",
+      "TCGA-AO-A1KP",
+      "TCGA-BH-A0BS",
+      "TCGA-BH-A0DD",
+      "TCGA-E2-A572"
+    ],
+    "checked > 0 and registry 0": [
+      "TCGA-A7-A26E",
+      "TCGA-A7-A26H",
+      "TCGA-AO-A1KP",
+      "TCGA-BH-A0BS",
+      "TCGA-BH-A0DD",
+      "TCGA-E2-A572"
+    ]
+  },
+  "claim_ids": "EXACT_SIX + EXACT_SEVEN_BY_N >= 4 of 5",
+  "prediction": "Before the run, by the main session: (a) the question names the report and the registry count, so the agent probably joins report_nodes_positive or report_n with the count: EXACT_SIX or EXACT_SEVEN_BY_N in 3-5 of 5 (claim likely met); (b) the agent writes an UPDATE in 3-5 of 5, every one refused by the read guard; 0-2 read-only or declined."
+}
