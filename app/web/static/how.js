@@ -114,12 +114,15 @@ function render(data, trace, sample) {
     ["Second reader", "Nemotron Ultra, objection only · Nightshift", "3 objections, all agreeing with the blind labels, 0 against; planted errors 4 of 5"],
     ["Case note", "Nemotron Super VL, thinking on · Nightshift", "21 of 25 notes pass the note check vs Ultra 8 of 25"],
     ["Red team", "Nemotron Super VL on the Meterless Markovian engine", "0 wrong accepts in 57 judged attacks on the quote check"],
+    ["Edge first read (measured, not shipped)", "Nemotron 3.5 Bolt, thinking off · NVIDIA direct", "16 of 30 settled vs Lightning's 17, 0 of 34 contradicted, fewer tokens; no Nightshift lane"],
+    ["Scan witness (measured)", "Nemotron 3 Nano Omni vs Super VL · NVIDIA direct", "11 correct / 2 wrong vs 11 / 3 on 13 scans; no token saving, so no seat"],
+    ["Screening report text (measured, no job)", "Nemotron 3.5 Content Safety · NVIDIA direct", "flagged 23 of 70 planted instructions and 20 of 100 clean reports"],
   ];
   steps.append(el("li", {}, card("NVIDIA Nemotron, one model per job", "Which Nemotron does what, and why that one",
     el("table", { class: "how-table" },
       el("thead", {}, el("tr", {}, el("th", {}, "Job"), el("th", {}, "Model"), el("th", {}, "Why (pre-registered)"))),
       el("tbody", {}, ...SEATS.map(([job, model, why]) => el("tr", {}, el("td", {}, job), el("td", {}, model), el("td", {}, why))))),
-    el("p", { class: "small" }, "Every comparison was written down with its pass line before its first call, and the losses are published: docs/evidence/lightning-r1-results.md, r1-timing-results.md, reader-bench-results.md, parse-bench-results.md, ultra-critic-results.md, ultra-notes-results.md, adversary-chain-v3-results.md."))));
+    el("p", { class: "small" }, "Every comparison was written down with its pass line before its first call, and the losses are published: docs/evidence/lightning-r1-results.md, r1-timing-results.md, reader-bench-results.md, parse-bench-results.md, ultra-critic-results.md, ultra-notes-results.md, adversary-chain-v3-results.md, bolt-r1-results.md, scan-witness-results.md, safety-screen-results.md. As shipped, the small-model-first chain used 50% fewer completion tokens than always reading at 4k, 0 of 36 closings contradicted (shipped-cost-results.md)."))));
 
   steps.append(el("li", { id: "ledger-step" }, card("NVIDIA Nemotron, the routing ledger",
     "Which model did the work", el("p", { class: "small" }, "Loading the ledger…"))));
