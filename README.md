@@ -18,7 +18,7 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 - **No signature, no answer; checkable by anyone:** the reader and the case notes use a model answer only if Nightshift's receipt is signed by our pinned key, names the Nemotron we asked for and was not cached; otherwise it is retried, then refused. All **811** committed receipts verify against that key ([count](docs/evidence/receipt-count.md)); every stored value re-read once, **42 of 42** reproduced ([attestation](docs/evidence/attest-results.md)); changing any one of the attestation receipts' 10,945 signed values breaks the signature (a test, [tamper bench](docs/evidence/tamper-bench.md)).
 - **What only reading finds:** in 358 records the rule calls consistent, **11** where the report gives a different value (Wilson 1.7 to 5.4%). 10 of the 11 reads were drafted by an assistant from excerpts and confirmed by the builder, a lay reader; 1 was the builder's own read; no second person has labelled them ([census](docs/evidence/hidden-2-results.md)).
 
-**Who checked what.** Code: `python scripts/check_numbers.py` recomputes the README's headline numbers from the committed logs, the quote check finds each accepted quote in the report, and `python -m app.verify` checks every committed signature offline. People: every agreement with a person in this README is with the builder's labels, unless a second-labeller row says otherwise.
+**Who checked what.** Code: `python scripts/check_numbers.py` recomputes the README's headline numbers from the committed logs, the quote check finds each accepted quote in the report, and `python -m app.verify` checks every committed signature offline. People: two lay labellers labelled the 25 queued records blind, the builder and an independent second labeller (pre-registered); they agree on 22 of 25 (kappa 0.82, [second labeller](docs/evidence/second-labeller-results.md)). The census readings are the builder's alone.
 
 [Run it, no keys](#run-it) · [How the readers work together](#how-the-readers-work-together) · [Results and losses](#results-live-2026-10-22-to-10-25-every-number-has-its-file) · [Limits](#limits-honest) · [Where to look, by judging criterion](#where-to-look-by-judging-criterion)
 
@@ -28,7 +28,7 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 
 Each reader has one role, and they share one state: the Zetaris layer. The rule, SQL in the layer, proposes the record. The **first read** (Nemotron Lightning, thinking off) may only close a field that agrees with the registry; what stays open goes to the **deep read** (Nemotron Super VL, 4k thinking budget), then the **scan read** (Nemotron Parse and Super). Our code checks every quote and rejects what it cannot find. The Meterless Markovian engine carries a code-written note of what is still open from step to step, and stops when nothing is. A **second reader** (Nemotron Ultra) can only object, with a quote; its objection sends the case to a person (the queue moves it; the layer's verdict and every stored value stay as they are). A **red-team loop** (Super, on the same engine) attacks the quote check: 0 wrong accepts in 57. **A person decides**, as a new row the layer's answer includes.
 
-Against blind labels (one lay labeller, the builder) the product agreed on 18 of 25 and Super alone on 17: level on accuracy. The thinking budget is what changes the answer (Super with thinking off: 9 of 25; at a 4k budget: 17), and the chain spends it only on fields that stay open (on 30 consistent records, half the completion tokens; 0 of 36 first-read closings contradicted, 3 unconfirmed). What the product adds is the checked quote, the signed record and a person. Every model comparison was written down before it ran (deviations disclosed); the losses are published.
+Against blind labels the product agreed on 18 of 25 and Super alone on 17 (the builder's labels), and 19 and 19 (an independent second labeller, pre-registered; the two labellers agree on 22 of 25, kappa 0.82): level on accuracy. The thinking budget is what changes the answer (Super with thinking off: 9 of 25 and 12; at a 4k budget: 17 and 19), and the chain spends it only on fields that stay open (on 30 consistent records, half the completion tokens; 0 of 36 first-read closings contradicted, 3 unconfirmed). What the product adds is the checked quote, the signed record and a person. Every model comparison was written down before it ran (deviations disclosed); the losses are published.
 
 ## Why it matters: agents trust the semantic layer
 
@@ -142,7 +142,7 @@ Nightshift settings we used (1.2.3, Windows, including the Super VL opt-in flag)
 | Result | Value | File |
 |---|---|---|
 | Records that cannot be true as written | 24 of 1,097, found by the cross-field rule; the basic source check passes all 1,097 | `logs/usl-dq-2026-10-23.txt` |
-| The product vs Nemotron alone, on blind labels (one lay labeller, the builder) | product 18 of 25, Super alone 17: level on accuracy; the product adds the checked quote, the signed record and a person | `docs/evidence/baseline-m0-results.md` |
+| The product vs Nemotron alone, on blind labels (two lay labellers, kappa 0.82) | builder's labels: product 18 of 25, Super alone 17; independent second labeller: 19 and 19. Level on accuracy; the product adds the checked quote, the signed record and a person | `docs/evidence/baseline-m0-results.md`, `docs/evidence/second-labeller-results.md` |
 | Hidden errors the rule cannot see | 11 of 358 consistent records (10 drafted by an assistant and confirmed by the builder, a lay reader; 1 the builder's own); in the second census 10 of 18 hits stood | `docs/evidence/hidden-2-results.md` |
 | Which Nemotron does the deep read | Super 32 / 3, Ultra 32 / 4, Lightning 24 / 3 (correct / wrong) | `docs/evidence/reader-bench-results.md` |
 | An agent reading the layer | counted the raw column in every query (476); told to correct a record, it tried to overwrite the registry and our check refused all 5 | `docs/evidence/agent-probe-4-results.md` |
@@ -152,7 +152,7 @@ Nightshift settings we used (1.2.3, Windows, including the Super VL opt-in flag)
 | Red-team loop on the Markovian engine | 0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack (disclosed) | `docs/evidence/adversary-chain-v3-results.md` |
 | Four more databases | the rule finds impossible records in each; the reading, as built, met none of six bars; on ClinicalTrials.gov's typed text the reader named the field the record's arm count rules out on 49 of 59 answered records and the other field on none | [Pointing it at other data](#pointing-it-at-other-data) |
 
-**All 43 measurements, including every loss: [docs/results.md](docs/results.md).**
+**All 44 measurements, including every loss: [docs/results.md](docs/results.md).**
 
 ## Pointing it at other data
 
@@ -172,7 +172,7 @@ What Nightshift 1.2.1 could not do and what 1.2.3 fixed, and our self-grade agai
 ## Limits (honest)
 
 **This submission is wrong if any of these is wrong** (each can be checked from the repository):
-- **Accuracy:** a second labeller puts the product behind Super alone on the 25 queued records. Then that row is the headline (pre-registered: `docs/preregistration/second-labeller.md`).
+- **Accuracy:** a second labeller puts the product behind Super alone on the 25 queued records. Then that row is the headline (pre-registered; scored 2026-10-26: level, 19 and 19, `docs/evidence/second-labeller-results.md`).
 - **What reading finds:** the reports do not say what the 11 census readings say. Then the 11 of 358 comes out (`docs/evidence/hidden-2-results.md` quotes each one).
 - **The quote check:** any accepted value's quote is not word for word in its report. Then the check failed.
 - **Signed records:** any committed receipt fails `python -m app.verify`. Then the signed-record claims come out.
