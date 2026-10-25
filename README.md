@@ -15,7 +15,7 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 **Measured, each pre-registered and run once** (losses included in [Results](#results-live-2026-10-22-to-10-25-every-number-has-its-file)):
 - **Small model first:** as shipped, Nemotron Lightning first and Super only on what stays open used **50% fewer completion tokens** than always reading at 4k on 30 records whose fields agree; of 36 first-read closings the 4k read agreed with 33, contradicted **0**, left 3 unconfirmed ([cost](docs/evidence/shipped-cost-results.md)).
 - **Where the fix lives:** an agent reading the layer counted the raw column every time and tried to overwrite the registry when told to correct it (our query guard refused 5 of 5); with its own Zetaris account that reads only a copy of the checked values, it answered right **5 of 5** ([probe 5](docs/evidence/agent-probe-5-results.md)).
-- **Checkable by anyone:** every stored value re-read once, **42 of 42** reproduced; all 57 signatures verify offline and in your browser, and one changed byte fails ([attestation](docs/evidence/attest-results.md)).
+- **Checkable by anyone:** every stored value re-read once, **42 of 42** reproduced; all 57 signatures verify offline and in your browser; changing any one of their 10,945 signed values breaks the signature ([attestation](docs/evidence/attest-results.md), [tamper bench](docs/evidence/tamper-bench.md)).
 - **What only reading finds:** in 358 records the rule calls consistent, **11** where the report gives a different value (Wilson 1.7 to 5.4%). 10 of the 11 reads were drafted by an assistant from excerpts and confirmed by the builder, a lay reader; 1 was the builder's own read; no second person has labelled them ([census](docs/evidence/hidden-2-results.md)).
 
 **Who checked what.** Code: `python scripts/check_numbers.py` recomputes the README's headline numbers from the committed logs, the quote check finds each accepted quote in the report, and `python -m app.verify` checks every committed signature offline. People: every agreement with a person in this README is with the builder's labels, unless a second-labeller row says otherwise.
@@ -104,7 +104,7 @@ The blind human labels (`docs/evidence/baseline-m0-results.md`) agree with the l
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 384 tests, no network
+pytest -q                                          # 386 tests, no network
 python -m app.verify                               # every committed Nightshift signature, offline
 python scripts/check_numbers.py                    # the README's headline numbers, recomputed from the committed logs
 python -m app.cli serve                            # no .env needed: without Zetaris settings it runs in sample mode (5 bundled cases, no model output replayed); open http://127.0.0.1:8000
@@ -148,7 +148,7 @@ Nightshift settings we used (1.2.3, Windows, including the Super VL opt-in flag)
 | Red-team loop on the Markovian engine | 0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack (disclosed) | `docs/evidence/adversary-chain-v3-results.md` |
 | Four more databases | the rule finds impossible records in each; the reading, as built, met none of six bars; on ClinicalTrials.gov's typed text the reader named the field the record's arm count rules out on 49 of 59 answered records and the other field on none | [Pointing it at other data](#pointing-it-at-other-data) |
 
-**All 42 measurements, including every loss: [docs/results.md](docs/results.md).**
+**All 43 measurements, including every loss: [docs/results.md](docs/results.md).**
 
 ## Pointing it at other data
 
