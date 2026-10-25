@@ -88,3 +88,28 @@ The problem is not medical: a database says X, the source document says Y. Which
 9. Least privilege for an agent needs one more step than expected (probe 5, `docs/evidence/agent-probe-5-results.md`). A role granted only a schema-store view over `stage_check` was refused the view: the reader also needs access to the view's source table, and that table holds the raw count we wanted to keep from the agent. A snapshot table in its own Lightning database worked, but it is not live. A view that grants its own columns, or column-level policies on USL tables, would let an agent account read the checked values live and nothing else. What worked well: Zetaris's own refusal ("User … does not have access to USL …") is clear and names the object.
 10. In a second USL (`attest_audit`), a column named `run` gave the same unnamed "Invalid DDL statement" as item 2; `run_tag` compiled.
 
+
+
+<!-- moved verbatim from the README on 2026-10-25 (third cut) -->
+
+## Pointing it at other data
+
+Built and measured on breast cancer. We then pointed the same rule and the same reading at three more databases, each test pre-registered, run once and published as it came out.
+
+| Database | Impossible by the rule | Source text | Read (bar) | What stopped it |
+|---|---|---|---|---|
+| US Senate campaign filings, 2018 (FEC) | **136 of 3,156** paper filings vs **1 of 1,151** e-filed | handwritten scans | Parse + rules: 4 of 12 (5), and a look showed those 4 were misread; Super VL: 33 of 88 lines agree with the database (80%) | handwriting; on the 4 forms a person checked, the filing's own arithmetic is wrong and the database copies it, to the cent on two |
+| TCGA colorectal cancer | **10 of 592** | the same report corpus as breast | 2 of 6 named a field (3); 2 more not read (provider failures) | a prompt and guard built for breast; one accepted quote prints pN2 |
+| IRS 990-EZ paper returns, 2016 | **1,523** (about 0 e-filed) | OCR text layer | 2 of 16 (8) | OCR splits the digits, so amounts could not be quoted intact |
+
+What held: in every database the rule finds records that cannot be true as written, and they sit in the rows typed in from paper. What did not: the reading, as built. The misses taught us two things. First, a fourth outcome: "the source document itself does not add up". Second, two guard gaps, both disclosed: the FEC rules' label check accepted misread amounts, and on colon TCGA-AF-2690 an N was accepted from a quote that prints pN2 (all 26 stored breast N quotes were checked for the same gap: none). On the handwritten forms the two-reader rule accepted no amount the readers did not agree on. Next candidate, not run: TCGA stomach and esophagus, whose N stage is also set by node counts; the guard would first need their count ranges, since it reads a bare count through breast's.
+
+## Nightshift setup we used
+
+Nightshift setup we used (1.2.3, Windows): Adaptive compute, Self-refine, Answer fusion, Reasoning scaffold, Optimistic streaming and Tier-split **off** (so an answer is one model's own text); the cloud Lightning lane moved from Race to Judge. **Nightshift 1.2.3 switches Super VL off by default** (Meterless measured it unstable: 31 of 94 hosted calls failed); we opted back in with its documented flag `NVIDIA_SUPER_VL = "true"` (a key in the runtime's `state/engine-kv.json`, set while Nightshift is closed), so every read stays on the model all our measurements used. Without it every pinned call is refused with Nightshift's own message naming the flag.
+
+## Cost details
+
+- **The reasoning dial:** on 28 records whose registry fields agree, the evidence chain (Super at the first read, before Lightning took that seat; the shipped chain was not measured for cost) used **40% fewer completion tokens** (56,160 vs 93,419) and 20% less time than reading every record at a 4k budget, and the thinking-off read was contradicted 0 times in 31 (`docs/evidence/dial-sample-results.md`). On the review queue it costs more than always-4k, by construction (a contradiction case always needs the deep read).
+- **Markovian carryover (the red-team chain):** 62,806 measured prompt tokens; 7,243 more (about 10%) would have been sent by a transcript that resends every attack (estimated, chars/4) (`docs/evidence/adversary-chain-results.md`). The evidence chain saves nothing by design (its model never reads the carryover).
+

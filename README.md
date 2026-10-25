@@ -107,14 +107,13 @@ Live mode needs a Zetaris instance and keys in `.env` (see `.env.example`):
 | `python -m app.cli doctor` | checks every dependency; a signed Super VL call through Nightshift |
 | `python -m app.cli serve` | the case page; `/how` walks one record step by step; `/receipts` checks every committed Nightshift signature in your browser (Ed25519), with a one-byte tamper shown failing |
 
-Nightshift setup we used (1.2.3, Windows): Adaptive compute, Self-refine, Answer fusion, Reasoning scaffold, Optimistic streaming and Tier-split **off** (so an answer is one model's own text); the cloud Lightning lane moved from Race to Judge. **Nightshift 1.2.3 switches Super VL off by default** (Meterless measured it unstable: 31 of 94 hosted calls failed); we opted back in with its documented flag `NVIDIA_SUPER_VL = "true"` (a key in the runtime's `state/engine-kv.json`, set while Nightshift is closed), so every read stays on the model all our measurements used. Without it every pinned call is refused with Nightshift's own message naming the flag.
+Nightshift settings we used (1.2.3, Windows, including the Super VL opt-in flag): [`docs/details.md`](docs/details.md#nightshift-setup-we-used).
 
 ## Cost, in one place
 
 - **The chain as shipped, measured (pre-registered):** on 30 records whose registry fields agree, Lightning first (thinking off) and Super at 4k only on what stays open used **50% fewer completion tokens** than always reading at 4k (53,454 vs 107,438) and 42% less time; Lightning settled 17 of 30 alone, and of its 36 closings the 4k read agreed with 33, contradicted **0**, left 3 unconfirmed (`docs/evidence/shipped-cost-results.md`). Tokens, not price: per-token prices differ by model size.
-- **The reasoning dial:** on 28 records whose registry fields agree, the evidence chain (Super at the first read, before Lightning took that seat; the shipped chain was not measured for cost) used **40% fewer completion tokens** (56,160 vs 93,419) and 20% less time than reading every record at a 4k budget, and the thinking-off read was contradicted 0 times in 31 (`docs/evidence/dial-sample-results.md`). On the review queue it costs more than always-4k, by construction (a contradiction case always needs the deep read).
 - **The thinking setting itself:** off answers in about 19 completion tokens and 0.6 s, a 4k budget in about 1,000 tokens; on 42 reports (84 fields), 4k got 30 both-right against 26 with thinking off, and matched unlimited thinking item for item (`docs/evidence/thinking-budget.md`).
-- **Markovian carryover (the red-team chain):** 62,806 measured prompt tokens; 7,243 more (about 10%) would have been sent by a transcript that resends every attack (estimated, chars/4) (`docs/evidence/adversary-chain-results.md`). The evidence chain saves nothing by design (its model never reads the carryover).
+- Earlier cost measurements (the dial test with Super at the first read; the red-team carryover saving): [`docs/details.md`](docs/details.md#cost-details).
 
 ## Results (live, 2026-10-22 to 10-24; every number has its file)
 
@@ -135,15 +134,7 @@ Nightshift setup we used (1.2.3, Windows): Adaptive compute, Self-refine, Answer
 
 ## Pointing it at other data
 
-Built and measured on breast cancer. We then pointed the same rule and the same reading at three more databases, each test pre-registered, run once and published as it came out.
-
-| Database | Impossible by the rule | Source text | Read (bar) | What stopped it |
-|---|---|---|---|---|
-| US Senate campaign filings, 2018 (FEC) | **136 of 3,156** paper filings vs **1 of 1,151** e-filed | handwritten scans | Parse + rules: 4 of 12 (5), and a look showed those 4 were misread; Super VL: 33 of 88 lines agree with the database (80%) | handwriting; on the 4 forms a person checked, the filing's own arithmetic is wrong and the database copies it, to the cent on two |
-| TCGA colorectal cancer | **10 of 592** | the same report corpus as breast | 2 of 6 named a field (3); 2 more not read (provider failures) | a prompt and guard built for breast; one accepted quote prints pN2 |
-| IRS 990-EZ paper returns, 2016 | **1,523** (about 0 e-filed) | OCR text layer | 2 of 16 (8) | OCR splits the digits, so amounts could not be quoted intact |
-
-What held: in every database the rule finds records that cannot be true as written, and they sit in the rows typed in from paper. What did not: the reading, as built. The misses taught us two things. First, a fourth outcome: "the source document itself does not add up". Second, two guard gaps, both disclosed: the FEC rules' label check accepted misread amounts, and on colon TCGA-AF-2690 an N was accepted from a quote that prints pN2 (all 26 stored breast N quotes were checked for the same gap: none). On the handwritten forms the two-reader rule accepted no amount the readers did not agree on. Next candidate, not run: TCGA stomach and esophagus, whose N stage is also set by node counts; the guard would first need their count ranges, since it reads a bare count through breast's.
+The same cross-field rule finds records that cannot be true as written in three more databases: US Senate campaign filings (136 of 3,156 paper filings vs 1 of 1,151 e-filed), IRS 990-EZ paper returns (1,523) and TCGA colorectal cancer (10 of 592). The reading, as built, met none of four pre-registered bars there: handwriting and OCR text, filings whose own arithmetic is wrong, and a prompt and quote check built for breast reports. Two gaps in our quote check surfaced and are disclosed. Table, causes and files: [`docs/details.md`](docs/details.md#pointing-it-at-other-data).
 
 ## Reflection on the Zetaris USL
 
@@ -172,4 +163,4 @@ See `data/README.md`. Code: Apache-2.0 (`LICENSE`); the vendored Meterless Marko
 
 ## How this was built (AI-usage disclosure)
 
-Built solo with AI coding tools: the first commits by Cursor's agent, then Claude Code (Claude Opus 5.5) writing code directly, with independent model reviews (Fable) before each commit; every commit carries its co-author trailer. Pre-registered tests and their failures, including a void run, are in `docs/preregistration/` and `docs/evidence/`; the guard's review rounds (two red-team passes, two judge-panel passes) are in `docs/evidence/guard-floor.md`.
+Built solo with AI coding tools: the first commits by Cursor's agent, then Claude Code (Claude Opus 5.5) writing code directly, with independent model reviews (Fable) before each commit; every commit carries its co-author trailer. Pre-registered tests and their failures, including a void run, are in `docs/preregistration/` and `docs/evidence/`; the guard's review rounds (two red-team passes, two judge-panel passes) are in `docs/evidence/guard-floor.md`. Human judgement, and where an AI helped with it: the blind labels on the 25 queue records and the first hidden-errors read are the builder's own; the second census's reads were drafted by an AI assistant from report excerpts and then reviewed and confirmed by the builder, with the disputed facts checked by code (`docs/evidence/hidden-2-lay-reads.json`). Every decision on the case page is a person's.

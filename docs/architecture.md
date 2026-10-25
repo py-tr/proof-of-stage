@@ -50,7 +50,7 @@ flowchart LR
 - **The rule finds the record** (SQL in the layer, no model): the recorded N category and the record's own node count cannot both be true.
 - **Nemotron may only quote**: each step reads one document and never the carryover. The Markovian engine carries a code-written note of which fields are still open, picks the next step, and stops when nothing is open. Lightning reads first with thinking off, Super VL with a thinking budget reads what stays open, then Parse plus Super VL on the original scan.
 - **The quote check decides what counts**: a value is accepted only if its verbatim quote is in the document and shows that value.
-- **The layer names the field** (`stage_check.fault_field`) and serves the three answers to "how many patients are node-positive?" (`usl demo` step 11).
+- **The layer names the field** (`stage_check.fault_field`) and serves the three answers to "how many patients are node-positive?" (the timed query pack, `docs/zetaris-demo.md`).
 - **A person decides**: each decision is a new append-only row, and the layer's answer includes it.
 - **The second reader** (Nemotron Ultra, shipped, read-only): it can only object, with a quote the check verifies; an objection moves the case to "a person decides" on the queue (display only: the verdict and values are unchanged); served from its logged run.
 - **The red-team loop**: Super, on the same Markovian engine, attacks the quote check with a code-written ledger of its earlier attempts (0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack despite the ledger).
