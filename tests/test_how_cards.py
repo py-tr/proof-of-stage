@@ -19,3 +19,14 @@ def test_attest_card_verifies_the_committed_bundle() -> None:
     assert s["receipts_verified"] == s["receipts"] == 57 and s["passed"]
     assert s["example"]["case"] == "TCGA-E2-A572" and s["example"]["field"] == "NPOS"
     assert "does NOT establish" in s["not_established"]
+
+
+def test_receipt_bundles_serve_every_committed_envelope() -> None:
+    from app.web.receiptsbundle import bundle, bundle_list
+
+    ids = {b["id"] for b in bundle_list() if b["present"]}
+    assert {"attest", "agent-probe-4"} <= ids
+    attest = bundle("attest")
+    assert attest and len(attest["rows"]) == 57 and attest["fingerprint"] == "7a6d14e27e1a"
+    assert all(set(r["envelope"]) >= {"body", "pubkey_b64", "sig_b64"} for r in attest["rows"])
+    assert bundle("../../.env") is None

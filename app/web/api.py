@@ -258,6 +258,27 @@ def create_app(
 
         return {"chains": v3_chains()}
 
+    @app.get("/api/receipts")
+    async def receipts_list() -> dict[str, Any]:
+        """The committed receipt bundles (recorded runs; no model call)."""
+        from app.web.receiptsbundle import bundle_list
+
+        return {"bundles": bundle_list()}
+
+    @app.get("/api/receipts/{key}")
+    async def receipts_bundle(key: str) -> dict[str, Any]:
+        """One bundle's envelopes and the committed public key; the browser checks them."""
+        from app.web.receiptsbundle import bundle
+
+        found = bundle(key)
+        if found is None:
+            raise HTTPException(status_code=404, detail="no such bundle")
+        return found
+
+    @app.get("/receipts")
+    async def receipts_page() -> FileResponse:
+        return FileResponse(STATIC / "receipts.html")
+
     @app.get("/how")
     async def how_it_works() -> FileResponse:
         return FileResponse(STATIC / "how.html")

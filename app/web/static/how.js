@@ -225,7 +225,7 @@ async function loadAttestCard() {
       [`${s.receipts_verified} of ${s.receipts} signatures verified just now, offline, against key ${show(s.fingerprint)}`, s.passed ? "good" : "bad"],
       [s.passed ? "PASS" : `FAIL (${s.failures})`, s.passed ? "good" : "bad"]),
     el("p", { class: "small" }, `${x.case} ${x.field === "NPOS" ? "count" : "N"}: stored ${show(x.stored_value)}, re-read ${show(x.signed_value)} from “${show(x.signed_quote)}” · receipt ${show(x.receipt_id)}`),
-    el("p", { class: "small" }, "Run it yourself: python -m app.verify (no key, no network; one changed byte fails it). " + s.not_established)));
+    el("p", { class: "small" }, "Run it yourself: python -m app.verify (no key, no network; one changed byte fails it), or open /receipts, where your browser checks each signature. " + s.not_established)));
 }
 
 async function load(caseId, sample) {
