@@ -1,0 +1,220 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/critic_census.py": "273426573f45b470",
+    "app/engine/critic_v2.py": "85d362fdf20b3da8",
+    "app/engine/critic.py": "daebc2deb2be8a70",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "fields": [
+    {
+      "case": "TCGA-A2-A1G4",
+      "field": "NPOS",
+      "registry": "2",
+      "reading": "1",
+      "quote": "METASTATIC CARCINOMA TO 1 OF 15 AXILLARY LYMPH MODES",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-A2-A25B",
+      "field": "NPOS",
+      "registry": "2",
+      "reading": "1",
+      "quote": "METASTATIC BREAST CARCINOMA. IS IDENTIFIED IN 1 OF 6 LYMPH NODES EXAMINED",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-AC-A3EH",
+      "field": "N",
+      "registry": "N3",
+      "reading": "N1A",
+      "quote": "Total number of lymph nodes containing metastatic carcinoma: 3",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-AC-A3EH",
+      "field": "NPOS",
+      "registry": "12",
+      "reading": "3",
+      "quote": "Total number of lymph nodes containing metastatic carcinoma: 3",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-AN-A0XV",
+      "field": "N",
+      "registry": "N2",
+      "reading": "N1",
+      "quote": "N Stage: 1",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-AO-A03L",
+      "field": "N",
+      "registry": "N2",
+      "reading": "N1A",
+      "quote": "LEVEL. I: 3/9; LEVEL II: 0/7",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-AO-A03L",
+      "field": "NPOS",
+      "registry": "4",
+      "reading": "3",
+      "quote": "LEVEL. I: 3/9; LEVEL II: 0/7",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-AO-A1KQ",
+      "field": "NPOS",
+      "registry": "2",
+      "reading": "1",
+      "quote": "METASTATIC CARCINONA IN ONE OF EIGHT LYMPH NODES (1/8",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-AR-A254",
+      "field": "NPOS",
+      "registry": "9",
+      "reading": "7",
+      "quote": "Multiple (7 of 28) left axillary lymph nodes are positive for metastatic carcinoma",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-AR-A2LN",
+      "field": "N",
+      "registry": "N0",
+      "reading": "N1A",
+      "quote": "One (of1) axillary sentinel lymph node is. positive for metastatic carcinoma, the largest measuring 2.0 cm",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-AR-A2LN",
+      "field": "NPOS",
+      "registry": "0",
+      "reading": "1",
+      "quote": "One (of1) axillary sentinel lymph node is. positive for metastatic carcinoma, the largest measuring 2.0 cm",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-AR-A5QM",
+      "field": "N",
+      "registry": "N0",
+      "reading": "N2",
+      "quote": "Multiple (4 of 25) right axillary lymph nodes are. positive for metastatic breast carcinoma [AJCC pN2",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-AR-A5QM",
+      "field": "NPOS",
+      "registry": "0",
+      "reading": "4",
+      "quote": "Multiple (4 of 25) right axillary lymph nodes are. positive for metastatic breast carcinoma [AJCC pN2",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-BH-A0B5",
+      "field": "NPOS",
+      "registry": "5",
+      "reading": "6",
+      "quote": "LYMPH NODES POSITIVE: 6",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-BH-A0B7",
+      "field": "NPOS",
+      "registry": "1",
+      "reading": "3",
+      "quote": "LYMPH NODES POSITIVE: 3",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-BH-A0BD",
+      "field": "NPOS",
+      "registry": "2",
+      "reading": "1",
+      "quote": "AXILLARY SENTINEL LYMPH NODE #1 WITH FOCAL METASTATIC ADENOCARCINOMA (1/1",
+      "verdict": "unsure"
+    },
+    {
+      "case": "TCGA-BH-A18H",
+      "field": "N",
+      "registry": "N0",
+      "reading": "N1A",
+      "quote": "METASTATIC CARCINOMA INVOLVES TWO OF TWENTY-FOUR LYMPH NODES (2/24",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-BH-A18H",
+      "field": "NPOS",
+      "registry": "0",
+      "reading": "2",
+      "quote": "METASTATIC CARCINOMA INVOLVES TWO OF TWENTY-FOUR LYMPH NODES (2/24",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-E2-A108",
+      "field": "NPOS",
+      "registry": "4",
+      "reading": "5",
+      "quote": "Lymph node status: Positive 5 /27",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-E2-A154",
+      "field": "N",
+      "registry": "N0",
+      "reading": "N1C",
+      "quote": "Pathological staging (pTN): pT 2 N 1c",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-E2-A154",
+      "field": "NPOS",
+      "registry": "0",
+      "reading": "2",
+      "quote": "Lymph node status: Positive 2/15 Extranodal extension",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-EW-A1IZ",
+      "field": "NPOS",
+      "registry": "5",
+      "reading": "4",
+      "quote": "Number of lymph nodes with macrometastases: 4",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-EW-A1P5",
+      "field": "NPOS",
+      "registry": "3",
+      "reading": "1",
+      "quote": "Number of lymph nodes with macrometastases (>0.2 cm): 1",
+      "verdict": "stands"
+    },
+    {
+      "case": "TCGA-GM-A4E0",
+      "field": "N",
+      "registry": "N3A",
+      "reading": "N2A",
+      "quote": "METASTATIC CARCINOMA IN NINE OF TWENTY-ONE LYMPH NODES",
+      "verdict": "falls"
+    },
+    {
+      "case": "TCGA-GM-A4E0",
+      "field": "NPOS",
+      "registry": "10",
+      "reading": "9",
+      "quote": "METASTATIC CARCINOMA IN NINE OF TWENTY-ONE LYMPH NODES",
+      "verdict": "falls"
+    }
+  ],
+  "counts": {
+    "falls": 12,
+    "stands": 12,
+    "unsure": 1
+  },
+  "claim": "Ultra says 'contradiction' on at least half of the fallen fields and on at most 2 standing fields",
+  "kill": "objections on fallen fields not above objections on standing fields",
+  "prediction": "Before the run, by the main session: Ultra objects on 5-8 of the 12 fallen fields (likely on the bilateral and per-part ones where the report states the total elsewhere) and on 0-2 of the 12 standing fields; verified objections on fallen fewer (3-6) because a sum of parts sits in no single quote; claim likely met; 0-2 provider failures."
+}
