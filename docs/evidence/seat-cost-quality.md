@@ -29,4 +29,12 @@ Lightning holds the first read for settling more records without a contradiction
 | First read Super off, then Super 4k on what stays open | 56,160 | -40% | measured (dial test) |
 | First read Lightning off, then Super 4k on what stays open (as shipped) | about 47,335 | about -49% | **estimate**: Lightning's measured first-read tokens plus the measured deep-read tokens per open record (3,958) times the 10 records Lightning left open |
 
+
+**Measured as shipped** (pre-registered, `docs/evidence/shipped-cost-results.md`, the dial test's 30 records, chain and always-4k control in the same session):
+
+| Setup | Completion tokens | vs always 4k | First-read closings vs the 4k read |
+|---|---|---|---|
+| Always Super 4k (control) | 107,438 | (baseline) | |
+| First read Lightning off, then Super 4k on what stays open | 53,454 | -50% | 33 agree, 0 contradicted, 3 unconfirmed |
+
 Quality on these records: the chain's closed fields agreed with the always-4k read 30 times and contradicted it 0 times (dial test; Lightning: 33 agree, 0 contradicted, 5 unconfirmed). Different model sizes, each where it pays: the small model settles the easy records, the large one reads only what stays open.

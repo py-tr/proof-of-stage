@@ -1,0 +1,880 @@
+{
+ "summary": {
+  "cases": 25,
+  "steps_per_seat": {
+   "first read": 25,
+   "deep read": 25,
+   "scan read": 4
+  },
+  "tokens_per_seat": {
+   "first read": 4649,
+   "deep read": 77787,
+   "scan read": 7586
+  },
+  "second_reader_values": 41,
+  "second_reader_objections": 3,
+  "shipped": {
+   "records": 30,
+   "settled_by_first_read": 17,
+   "steps_per_seat": {
+    "first read": 30,
+    "deep read": 13
+   },
+   "tokens_per_seat": {
+    "first read": 5599,
+    "deep read": 47855
+   }
+  }
+ },
+ "cases": [
+  {
+   "case": "TCGA-3C-AAAU",
+   "run_id": "run-20261023T114200-a1b7f6",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {},
+     "tokens": 804,
+     "receipt_id": "rcpt_req_i1z7yoaj",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "NPOS": "4"
+     },
+     "tokens": 4207,
+     "receipt_id": "rcpt_req_nghx5dfm",
+     "signature": "verified"
+    },
+    {
+     "seat": "scan read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N2A",
+      "NPOS": "4"
+     },
+     "tokens": 4186,
+     "receipt_id": "rcpt_req_pbs2rd0q",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-A1-A0SN",
+   "run_id": "run-20261023T114421-d931bc",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "NPOS": "4"
+     },
+     "tokens": 145,
+     "receipt_id": "rcpt_req_jfvuhtyf",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N2A",
+      "NPOS": "4"
+     },
+     "tokens": 2411,
+     "receipt_id": "rcpt_req_kiza71st",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "objects",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-A2-A0CV",
+   "run_id": "run-20261023T114456-f1482d",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "2"
+     },
+     "tokens": 223,
+     "receipt_id": "rcpt_req_2x8tbil9",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {},
+     "tokens": 4233,
+     "receipt_id": "rcpt_req_40qec2or",
+     "signature": "verified"
+    },
+    {
+     "seat": "scan read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "2"
+     },
+     "tokens": 1905,
+     "receipt_id": "rcpt_req_yokdusbu",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-A2-A0EW",
+   "run_id": "run-20261023T121324-e6da5d",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "NPOS": "4"
+     },
+     "tokens": 212,
+     "receipt_id": "rcpt_req_sqvhkctm",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N2",
+      "NPOS": "4"
+     },
+     "tokens": 4228,
+     "receipt_id": "rcpt_req_rd3chpao",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-A7-A26E",
+   "run_id": "run-20261023T191108-8b1592",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "1"
+     },
+     "tokens": 151,
+     "receipt_id": "rcpt_req_2vfjr0ta",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "1"
+     },
+     "tokens": 4176,
+     "receipt_id": "rcpt_req_gyx573fz",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-A7-A26H",
+   "run_id": "run-20261023T114829-e3f51e",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {},
+     "tokens": 168,
+     "receipt_id": "rcpt_req_lpai9g8h",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "1"
+     },
+     "tokens": 4196,
+     "receipt_id": "rcpt_req_btaatwv5",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AC-A2FK",
+   "run_id": "run-20261023T115256-c9a797",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "NPOS": "3"
+     },
+     "tokens": 200,
+     "receipt_id": "rcpt_req_tchpct14",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "3"
+     },
+     "tokens": 4193,
+     "receipt_id": "rcpt_req_36dn933g",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "objects",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AN-A0XN",
+   "run_id": "run-20261023T115352-9e1b2e",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A"
+     },
+     "tokens": 95,
+     "receipt_id": "rcpt_req_s5nic1ll",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1"
+     },
+     "tokens": 1196,
+     "receipt_id": "rcpt_req_wijilrpg",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AN-A0XO",
+   "run_id": "run-20261023T115419-e9db0d",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1"
+     },
+     "tokens": 85,
+     "receipt_id": "rcpt_req_etwm8gyd",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1"
+     },
+     "tokens": 1515,
+     "receipt_id": "rcpt_req_e1suu8zf",
+     "signature": "verified"
+    },
+    {
+     "seat": "scan read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1"
+     },
+     "tokens": 891,
+     "receipt_id": "rcpt_req_onmn0c4x",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AN-A0XP",
+   "run_id": "run-20261023T115816-24d3eb",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {},
+     "tokens": 102,
+     "receipt_id": "rcpt_req_81lvhohi",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1"
+     },
+     "tokens": 1460,
+     "receipt_id": "rcpt_req_6z2qx9kg",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AN-A0XS",
+   "run_id": "run-20261023T115905-a993fa",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A"
+     },
+     "tokens": 104,
+     "receipt_id": "rcpt_req_8dgkyizo",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A"
+     },
+     "tokens": 3354,
+     "receipt_id": "rcpt_req_zdk874dt",
+     "signature": "verified"
+    },
+    {
+     "seat": "scan read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A"
+     },
+     "tokens": 604,
+     "receipt_id": "rcpt_req_gtc25rks",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AN-A0XT",
+   "run_id": "run-20261023T191241-21b5bf",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A"
+     },
+     "tokens": 104,
+     "receipt_id": "rcpt_req_dfxbbxp8",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A"
+     },
+     "tokens": 675,
+     "receipt_id": "rcpt_req_osl17s0h",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AN-A0XW",
+   "run_id": "run-20261023T120054-2e3904",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A"
+     },
+     "tokens": 109,
+     "receipt_id": "rcpt_req_ujtqqp5p",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1"
+     },
+     "tokens": 622,
+     "receipt_id": "rcpt_req_glpkzphi",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AO-A03P",
+   "run_id": "run-20261023T121528-12d25c",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1MI"
+     },
+     "tokens": 334,
+     "receipt_id": "rcpt_req_6z2f0vdg",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1MI"
+     },
+     "tokens": 4165,
+     "receipt_id": "rcpt_req_219oa1xm",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AO-A1KP",
+   "run_id": "run-20261023T120115-4ce9c9",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "NPOS": "1"
+     },
+     "tokens": 217,
+     "receipt_id": "rcpt_req_z8lgwg6o",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "1"
+     },
+     "tokens": 4229,
+     "receipt_id": "rcpt_req_mtceoa0m",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AQ-A1H2",
+   "run_id": "run-20261023T120324-5e8d99",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N2A",
+      "NPOS": "7"
+     },
+     "tokens": 122,
+     "receipt_id": "rcpt_req_erptz4xg",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N2A",
+      "NPOS": "7"
+     },
+     "tokens": 2229,
+     "receipt_id": "rcpt_req_5avmxkjo",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-AR-A1AT",
+   "run_id": "run-20261023T122006-bbe33c",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N0(I+)"
+     },
+     "tokens": 183,
+     "receipt_id": "rcpt_req_0he0nj7h",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N0(I+)"
+     },
+     "tokens": 4200,
+     "receipt_id": "rcpt_req_1g783swz",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-BH-A0BS",
+   "run_id": "run-20261023T120640-b2e92a",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "2"
+     },
+     "tokens": 153,
+     "receipt_id": "rcpt_req_ut0xkssw",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "2"
+     },
+     "tokens": 1701,
+     "receipt_id": "rcpt_req_7dm5r1r0",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-BH-A0DD",
+   "run_id": "run-20261023T120723-42bd9d",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "1"
+     },
+     "tokens": 163,
+     "receipt_id": "rcpt_req_qy3bzpqa",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1A",
+      "NPOS": "1"
+     },
+     "tokens": 4073,
+     "receipt_id": "rcpt_req_62oijxtu",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-D8-A27L",
+   "run_id": "run-20261023T122456-3728e3",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {},
+     "tokens": 141,
+     "receipt_id": "rcpt_req_zznxxphb",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "NX"
+     },
+     "tokens": 3806,
+     "receipt_id": "rcpt_req_3ciog90y",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree"
+   }
+  },
+  {
+   "case": "TCGA-E2-A1B4",
+   "run_id": "run-20261023T120822-de8a32",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N1MI",
+      "NPOS": "3"
+     },
+     "tokens": 208,
+     "receipt_id": "rcpt_req_8xzaosk2",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N1MI",
+      "NPOS": "3"
+     },
+     "tokens": 4193,
+     "receipt_id": "rcpt_req_w6liksm0",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-E2-A1LI",
+   "run_id": "run-20261023T122729-83e6f3",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N0",
+      "NPOS": "0"
+     },
+     "tokens": 129,
+     "receipt_id": "rcpt_req_cctsj94v",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N0",
+      "NPOS": "0"
+     },
+     "tokens": 3086,
+     "receipt_id": "rcpt_req_lan44gko",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "objects",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-E2-A572",
+   "run_id": "run-20261023T120922-b5d84e",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "NPOS": "8"
+     },
+     "tokens": 149,
+     "receipt_id": "rcpt_req_pxgz0ong",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N2A",
+      "NPOS": "8"
+     },
+     "tokens": 4154,
+     "receipt_id": "rcpt_req_ccc9hb04",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-E9-A3X8",
+   "run_id": "run-20261023T121113-036be0",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "NPOS": "4"
+     },
+     "tokens": 187,
+     "receipt_id": "rcpt_req_9mj3ed9r",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N2A",
+      "NPOS": "4"
+     },
+     "tokens": 1348,
+     "receipt_id": "rcpt_req_hqmz1uko",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  },
+  {
+   "case": "TCGA-EW-A424",
+   "run_id": "run-20261023T121140-65a816",
+   "steps": [
+    {
+     "seat": "first read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 0,
+     "accepted": {
+      "N": "N0",
+      "NPOS": "0"
+     },
+     "tokens": 161,
+     "receipt_id": "rcpt_req_dnope2v9",
+     "signature": "verified"
+    },
+    {
+     "seat": "deep read",
+     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "budget": 4000,
+     "accepted": {
+      "N": "N0",
+      "NPOS": "0"
+     },
+     "tokens": 4137,
+     "receipt_id": "rcpt_req_i8ur9t74",
+     "signature": "verified"
+    }
+   ],
+   "second_reader": {
+    "N": "agree",
+    "NPOS": "agree"
+   }
+  }
+ ]
+}

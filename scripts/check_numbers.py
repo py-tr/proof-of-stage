@@ -74,6 +74,14 @@ def checks(count_tests: bool) -> list[tuple[str, str]]:
     )
     h = last("hidden-errors-runs")
     out.append(("hidden errors 1", f"**{h['records_contradicting_registry']} of {h['records']}**"))
+    sc = last("shipped-cost-runs")
+    saving = round(100 * (1 - sc["ladder_tokens"] / sc["control_tokens"]))
+    out.append(
+        (
+            "shipped chain",
+            f"**{saving}% fewer completion tokens** than always reading at 4k ({sc['ladder_tokens']:,} vs {sc['control_tokens']:,})",
+        )
+    )
     h2 = last("hidden-2-runs")
     out.append(("hidden errors 2", f"298 scored, **{h2['records_contradicting_registry']} hits**"))
     d = last("dial-runs")

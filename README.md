@@ -51,7 +51,7 @@ Diagram with the three loops: [`docs/architecture.md`](docs/architecture.md). Fu
 | Red team | **Super VL** on the Markovian engine, Nightshift | 0 wrong accepts in 57 judged attacks |
 | Not used | Content Safety, Embed, Rerank, Nano | no step needs them; adding them would be model-name collecting |
 
-Cost and quality per seat, and the chain against always reading at 4k: [`docs/evidence/seat-cost-quality.md`](docs/evidence/seat-cost-quality.md).
+Small model first, large model only on what stays open: measured as shipped, **50% fewer completion tokens than always reading at 4k, 0 contradicted** ([`shipped-cost-results.md`](docs/evidence/shipped-cost-results.md)). Cost and quality per seat: [`docs/evidence/seat-cost-quality.md`](docs/evidence/seat-cost-quality.md); which model did each step, with receipts: [`docs/evidence/route-ledger.md`](docs/evidence/route-ledger.md).
 
 **Local, for reports that must not leave the building.** The first read also runs on this PC: local Lightning through Nightshift's Jobs API with "privacy": "local-only", the same prompt and quote check. Pre-registered: 13 of 28 records settled with 0 contradicted and every attempt local; the 4 failures were the longest reports, because on this 16 GB GPU the local lane runs with a 4,096-token window. With code on the PC cutting each report to its node and staging sentences first (the quote check still uses the full report), 28 of 60 settled, 0 failed, 0 disagreements with the cloud, every attempt local ([local](docs/evidence/local-r1-results.md), [focus](docs/evidence/local-focus-results.md)). Cloud Lightning settles more, so it keeps the first read; a larger local window (for example a DGX Spark) would remove the cut, an inference we did not test.
 
@@ -111,6 +111,7 @@ Nightshift setup we used (1.2.3, Windows): Adaptive compute, Self-refine, Answer
 
 ## Cost, in one place
 
+- **The chain as shipped, measured (pre-registered):** on 30 records whose registry fields agree, Lightning first (thinking off) and Super at 4k only on what stays open used **50% fewer completion tokens** than always reading at 4k (53,454 vs 107,438) and 42% less time; Lightning settled 17 of 30 alone, and of its 36 closings the 4k read agreed with 33, contradicted **0**, left 3 unconfirmed (`docs/evidence/shipped-cost-results.md`). Tokens, not price: per-token prices differ by model size.
 - **The reasoning dial:** on 28 records whose registry fields agree, the evidence chain (Super at the first read, before Lightning took that seat; the shipped chain was not measured for cost) used **40% fewer completion tokens** (56,160 vs 93,419) and 20% less time than reading every record at a 4k budget, and the thinking-off read was contradicted 0 times in 31 (`docs/evidence/dial-sample-results.md`). On the review queue it costs more than always-4k, by construction (a contradiction case always needs the deep read).
 - **The thinking setting itself:** off answers in about 19 completion tokens and 0.6 s, a 4k budget in about 1,000 tokens; on 42 reports (84 fields), 4k got 30 both-right against 26 with thinking off, and matched unlimited thinking item for item (`docs/evidence/thinking-budget.md`).
 - **Markovian carryover (the red-team chain):** 62,806 measured prompt tokens; 7,243 more (about 10%) would have been sent by a transcript that resends every attack (estimated, chars/4) (`docs/evidence/adversary-chain-results.md`). The evidence chain saves nothing by design (its model never reads the carryover).
@@ -126,6 +127,7 @@ Nightshift setup we used (1.2.3, Windows): Adaptive compute, Self-refine, Answer
 | An agent reading the layer | counted the raw column in every query (476); told to correct a record, it tried to overwrite the registry and our check refused all 5 | `docs/evidence/agent-probe-4-results.md` |
 | The layer's permissions instead of the prompt | **5 of 5** returned 479 from the checked values with the agent's own Zetaris account; control 476 in 5 of 5 | `docs/evidence/agent-probe-5-results.md` |
 | Every stored value re-read with a signed receipt | **42 of 42 reproduced**; 57 of 57 receipts verified offline and in the browser | `docs/evidence/attest-results.md` |
+| The chain as shipped vs always reading at 4k | **50% fewer completion tokens**, 42% less time; Lightning settled 17 of 30 alone, 0 of its closings contradicted | `docs/evidence/shipped-cost-results.md` |
 | Red-team loop on the Markovian engine | 0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack (disclosed) | `docs/evidence/adversary-chain-v3-results.md` |
 | Three more databases | the rule finds impossible records in each; the reading, as built, met none of four bars | [Pointing it at other data](#pointing-it-at-other-data) |
 

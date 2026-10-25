@@ -1,0 +1,22 @@
+{
+  "run": "20261025T172328",
+  "records": 30,
+  "provider_failures": 0,
+  "void": false,
+  "scored": 30,
+  "settled_at_r1": 17,
+  "fields_closed_at_r1": 36,
+  "fields_needing_r2": 13,
+  "r1_vs_control": {
+    "agree": 33,
+    "disagree": 0,
+    "unconfirmed": 3
+  },
+  "r1_unsafe": false,
+  "ladder_tokens": 53454,
+  "control_tokens": 107438,
+  "ladder_seconds": 852.1,
+  "control_seconds": 1461.4,
+  "tokens_vs_always_4k": -0.502,
+  "claim_met": true
+}
