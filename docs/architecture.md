@@ -40,7 +40,7 @@ flowchart LR
   F3 --> G
   G -- "accepted values (first write wins)" --> PG
   RT -- "attacks" --> G
-  U -- "objection shown to the person" --> P
+  U -- "objection: the case goes to a person" --> P
   SC --> P
   P --> H
   H -- "decision row" --> PG
@@ -52,7 +52,7 @@ flowchart LR
 - **The quote check decides what counts**: a value is accepted only if its verbatim quote is in the document and shows that value.
 - **The layer names the field** (`stage_check.fault_field`) and serves the three answers to "how many patients are node-positive?" (`usl demo` step 11).
 - **A person decides**: each decision is a new append-only row, and the layer's answer includes it.
-- **The second reader** (Nemotron Ultra, shipped, read-only): it can only object, with a quote the check verifies, and the objection is shown to the person; served from its logged run.
+- **The second reader** (Nemotron Ultra, shipped, read-only): it can only object, with a quote the check verifies; an objection moves the case to "a person decides" on the queue (display only: the verdict and values are unchanged); served from its logged run.
 - **The red-team loop**: Super, on the same Markovian engine, attacks the quote check with a code-written ledger of its earlier attempts (0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack despite the ledger).
 - **Trust you can check**: every stored value was re-read once with a signed receipt; the receipts and re-reads are a second USL (`attest_audit`) with 5 DQ rules, and `/receipts` checks every signature in the browser.
 - **An agent reading the layer**: given its own Zetaris account that can read only the checked values, an agent answered from them (probe 5); Zetaris refused that account everything else.

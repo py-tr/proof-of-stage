@@ -96,7 +96,19 @@ def create_app(
     @app.get("/api/queue")
     async def queue() -> list[dict[str, Any]]:
         rows = await _guarded(source.queue())
-        return [{**row, "headline": headline(row)} for row in rows]
+        objecting: set[str] = set()
+        if source.mode != "sample":  # the second reader is model output: live mode only
+            from app.web.secondreader import objecting_cases
+
+            objecting = objecting_cases()
+        return [
+            {
+                **row,
+                "headline": headline(row),
+                "second_reader_objects": str(row.get("case_id")) in objecting,
+            }
+            for row in rows
+        ]
 
     async def _case(case_id: str, fresh: bool = True) -> dict[str, Any]:
         found = await _guarded(source.case(case_id, fresh=fresh))

@@ -92,6 +92,7 @@ async function loadCohort() {
 // ---------- queue ----------
 function rowLabel(item) {
   const vs = `${show(item.recorded_n)} vs ${show(num(item.lymph_nodes_positive))}`;
+  if (item.second_reader_objects && !item.decided_at) return `Second reader objects: a person decides · ${vs}`;
   if (item.fault_field === "node_count") return `Report contradicts the count · ${vs}`;
   if (item.fault_field === "pathologic_n") return item.reason_class === "n_missing_derivable" ? `Stage field missing · ${vs}` : `Report contradicts the stage field · ${vs}`;
   if (item.read === false) return `Not read yet · ${vs}`;
@@ -103,7 +104,8 @@ function renderQueue() {
   const lanes = { named: $("queue-named"), review: $("queue-review"), unread: $("queue-unread"), done: $("queue-done") };
   Object.values(lanes).forEach((lane) => lane.replaceChildren());
   state.queue.forEach((item, position) => {
-    const lane = item.decided_at ? "done" : NAMED(item.fault_field) ? "named" : item.read === false ? "unread" : "review";
+    // A second-reader objection sends the case to a person; the layer's verdict itself is unchanged.
+    const lane = item.decided_at ? "done" : item.second_reader_objects ? "review" : NAMED(item.fault_field) ? "named" : item.read === false ? "unread" : "review";
     const classes = ["row", lane === "review" || lane === "unread" ? "review" : "", lane === "done" ? "done" : "", position === state.index ? "active" : ""].join(" ");
     const row = el("div", { class: classes },
       el("div", { class: "id" }, item.case_id),

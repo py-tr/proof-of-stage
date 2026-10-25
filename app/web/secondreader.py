@@ -61,6 +61,18 @@ def case_reading(case_id: str) -> dict[str, Any] | None:
     }
 
 
+def objecting_cases() -> set[str]:
+    """Cases where Ultra objected with a verified quote: the queue sends them to a person.
+
+    Display only: the layer's verdict (`fault_field`) and every stored value stay as they are.
+    """
+    return {
+        r["case"]
+        for r in _run_rows()
+        if r.get("verdict") == "contradiction" and (r.get("check") or {}).get("verified")
+    }
+
+
 def summary() -> dict[str, Any] | None:
     """The measured result, for /how."""
     if not SCORE.exists():

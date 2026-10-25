@@ -14,7 +14,7 @@ Track 2, The Agent That Can Explain Why. NCI's public breast-cancer registry (TC
 
 ## How the readers work together
 
-Each reader has one role, and they share one state: the Zetaris layer. The rule, SQL in the layer, proposes the record. The **first read** (Nemotron Lightning, thinking off) may only close a field that agrees with the registry; what stays open goes to the **deep read** (Nemotron Super VL, 4k thinking budget), then the **scan read** (Nemotron Parse and Super). Our code checks every quote and rejects what it cannot find. The Meterless Markovian engine carries a code-written note of what is still open from step to step, and stops when nothing is. A **second reader** (Nemotron Ultra) can only object, with a quote; its objection is shown to the person. A **red-team loop** (Super, on the same engine) attacks the quote check: 0 wrong accepts in 57. **A person decides**, as a new row the layer's answer includes.
+Each reader has one role, and they share one state: the Zetaris layer. The rule, SQL in the layer, proposes the record. The **first read** (Nemotron Lightning, thinking off) may only close a field that agrees with the registry; what stays open goes to the **deep read** (Nemotron Super VL, 4k thinking budget), then the **scan read** (Nemotron Parse and Super). Our code checks every quote and rejects what it cannot find. The Meterless Markovian engine carries a code-written note of what is still open from step to step, and stops when nothing is. A **second reader** (Nemotron Ultra) can only object, with a quote; its objection sends the case to a person (the queue moves it; the layer's verdict and every stored value stay as they are). A **red-team loop** (Super, on the same engine) attacks the quote check: 0 wrong accepts in 57. **A person decides**, as a new row the layer's answer includes.
 
 Against blind labels (one lay labeller, the builder) the product agreed on 18 of 25 and Super alone on 17: level on accuracy. What the product adds is the checked quote, the signed record and a person. Reading records the rule calls consistent also finds what a rule cannot see: 11 of 358, each checked by a person ([census](docs/evidence/hidden-2-results.md)). Every model comparison was written down before it ran; the losses are published.
 
@@ -83,7 +83,7 @@ The blind human labels (`docs/evidence/baseline-m0-results.md`) agree with the l
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 378 tests, no network
+pytest -q                                          # 379 tests, no network
 python -m app.verify                               # every committed Nightshift signature, offline
 python scripts/check_numbers.py                    # the README's headline numbers, recomputed from the committed logs
 python -m app.cli serve                            # no .env needed: without Zetaris settings it runs in sample mode (4 bundled cases, no model output replayed)

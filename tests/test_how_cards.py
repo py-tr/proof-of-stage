@@ -38,3 +38,9 @@ def test_probe5_card_reads_the_committed_log() -> None:
     p = _probe5()
     assert p and p["agent_calls"] == 5 and p["agent_correct"] == 5
     assert p["control_raw"] == 5 and "AGENT_FILES.node_status" in p["agent_query"]["sql"]
+
+
+def test_second_reader_objections_send_cases_to_a_person() -> None:
+    from app.web.secondreader import objecting_cases
+
+    assert objecting_cases() == {"TCGA-A1-A0SN", "TCGA-AC-A2FK", "TCGA-E2-A1LI"}
