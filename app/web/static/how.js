@@ -96,6 +96,9 @@ function render(data, trace, sample) {
   steps.append(el("li", { id: "second-step" }, card("NVIDIA Nemotron Ultra, a second reader that can only object",
     "Does a second reader catch what the first one missed?", el("p", { class: "small" }, "Loading the logged run…"))));
 
+  steps.append(el("li", { id: "attest-step" }, card("Nightshift receipts, checked in this page's server",
+    "Can anyone check that the stored values came from Nemotron?", el("p", { class: "small" }, "Checking the signatures…"))));
+
   // 4. The verdict
   steps.append(el("li", { class: c.fault_field === "review" ? "" : "alert" }, card("Zetaris semantic layer", title(c, sample),
     flow([`registry N ${show(c.recorded_n)} · report N ${show(c.report_n)}`, c.fault_field === "pathologic_n" ? "bad" : ""],
@@ -171,7 +174,10 @@ async function loadAgentProbe() {
     sqlBlock(p.checked_query, "Probe 2, with the checked count beside the raw one"),
     el("p", {}, `This one query read the checked column and included those ${p.missed.length} patients, then filled the ${p.person.length} cases the verdict leaves to a person (${ids(p.person)}) back in from the raw count.`),
     ...(p.probe3 ? [el("p", {}, `Probe 3 handed the agent the layer's own data-quality rules, rendered into the schema exactly as LOAD USL returns them. It changed nothing: ${p.probe3.treatment.raw} of ${p.probe3.treatment.calls} calls with the rules and ${p.probe3.control.raw} of ${p.probe3.control.calls} without counted the raw column (476); ${p.probe3.treatment.correct} used the verdict.`)] : []),
-    el("p", { class: "small" }, "A pointer in the description was not enough, a checked column beside the raw one was not either, and neither were the layer's own rules. So the verdict is for the people and tools that read stage_check and the case page; a person decides. Logged runs, not replayed live: docs/evidence/agent-probe-results.md, agent-probe-2-results.md, agent-probe-3-results.md.")));
+    ...(p.probe4 ? [
+      el("p", {}, `Probe 4 asked two new questions. Asked which patients the report shows node-positive while the registry records 0, the agent returned exactly those ${p.missed.length} from the layer in ${p.probe4.exact_six} of ${p.probe4.ids_calls} calls. Told to “correct the record” for TCGA-E2-A572, it wrote an overwrite of the registry in ${p.probe4.fix_calls} of ${p.probe4.fix_calls} calls; our read guard refused all ${p.probe4.refused}, so nothing changed. The product never edits a record: a person's decision is a new row.`),
+      sqlBlock(p.probe4.refused_query, `Probe 4, refused: ${show(p.probe4.refused_query && p.probe4.refused_query.guard)}`)] : []),
+    el("p", { class: "small" }, "A pointer in the description was not enough, a checked column beside the raw one was not either, and neither were the layer's own rules. So the verdict is for the people and tools that read stage_check and the case page; a person decides. Logged runs, not replayed live: docs/evidence/agent-probe-results.md, agent-probe-2-results.md, agent-probe-3-results.md, agent-probe-4-results.md.")));
 }
 
 async function loadSecondReaderCard() {
@@ -204,6 +210,24 @@ async function loadLabelsCard() {
     el("p", { class: "small" }, `Sensitivity: the labeller later confirmed 3 labels as mis-clicks (disclosed); with them corrected the product agrees on ${s.sensitivity.product}, Super alone on ${s.sensitivity.super_4k}. The frozen scores stand. docs/evidence/baseline-m0-results.md, reader-bench-results.md.`)));
 }
 
+async function loadAttestCard() {
+  const box = $("attest-step");
+  if (!box) return;
+  let s = null;
+  try { s = (await api("/api/attest")).attest; } catch (error) { /* shown below */ }
+  const who = "Nightshift receipts, checked in this page's server";
+  const title = "Can anyone check that the stored values came from Nemotron?";
+  if (!s) { box.replaceChildren(card(who, title, el("p", { class: "small" }, "No attestation logged."))); return; }
+  const x = s.example;
+  box.replaceChildren(card(who, title,
+    el("p", {}, `Every stored report value (${s.values}: ${s.fields.N || 0} N and ${s.fields.NPOS || 0} counts on ${s.cases} cases) was re-read once by the shipped steps through Nightshift, and every call's signed envelope was kept. Pre-registered; the originals stay as first written.`),
+    flow([`${s.outcomes.reproduced || 0} of ${s.values} reproduced`, s.outcomes.reproduced === s.values ? "good" : ""],
+      [`${s.receipts_verified} of ${s.receipts} signatures verified just now, offline, against key ${show(s.fingerprint)}`, s.passed ? "good" : "bad"],
+      [s.passed ? "PASS" : `FAIL (${s.failures})`, s.passed ? "good" : "bad"]),
+    el("p", { class: "small" }, `${x.case} ${x.field === "NPOS" ? "count" : "N"}: stored ${show(x.stored_value)}, re-read ${show(x.signed_value)} from “${show(x.signed_quote)}” · receipt ${show(x.receipt_id)}`),
+    el("p", { class: "small" }, "Run it yourself: python -m app.verify (no key, no network; one changed byte fails it). " + s.not_established)));
+}
+
 async function load(caseId, sample) {
   const [data, found] = await Promise.all([api(`/api/case/${caseId}`), api(`/api/case/${caseId}/trace`)]);
   $("open-case").href = `/?case=${caseId}`;
@@ -213,6 +237,7 @@ async function load(caseId, sample) {
   loadAgentProbe();
   loadSecondReaderCard();
   loadLabelsCard();
+  loadAttestCard();
 }
 
 async function loadScoreboard(sample) {

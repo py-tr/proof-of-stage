@@ -244,6 +244,13 @@ def create_app(
 
         return {"probe": probe_story()}
 
+    @app.get("/api/attest")
+    async def attest() -> dict[str, Any]:
+        """The attestation census, its signatures checked offline here (no key, no model)."""
+        from app.web.attestcard import attest_summary
+
+        return {"attest": attest_summary()}
+
     @app.get("/api/redteam")
     async def redteam() -> dict[str, Any]:
         """The pre-registered v3 red-team chains, from the committed logs (no model call)."""

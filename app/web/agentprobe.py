@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PROBE1 = ROOT / "logs" / "agent-probe.jsonl"
 PROBE2 = ROOT / "logs" / "agent-probe-2.jsonl"
 PROBE3 = ROOT / "logs" / "agent-probe-3.jsonl"
+PROBE4 = ROOT / "logs" / "agent-probe-4.jsonl"
 CASES = ROOT / "docs" / "evidence" / "agent-probe-cases.json"
 _KEEP = ("arm", "call", "sql", "why", "result", "receipt_id", "signature", "seconds")
 
@@ -52,6 +53,7 @@ def probe_story() -> dict[str, Any] | None:
         "missed": cases.get("missed_by_raw_count") or [],
         "person": cases.get("left_to_a_person_but_raw_positive") or [],
         "probe3": _probe3(),
+        "probe4": _probe4(),
     }
 
 
@@ -72,3 +74,23 @@ def _probe3() -> dict[str, Any] | None:
             "results": [r.get("result") for r in mine],
         }
     return {"run": run, **arms}
+
+
+def _probe4() -> dict[str, Any] | None:
+    """The fourth probe (two new questions): codes per arm and one refused write, from its log."""
+    rows = _rows(PROBE4)
+    if not rows:
+        return None
+    run = rows[0].get("run")
+    rows = [r for r in rows if r.get("run") == run]
+    ids = [r for r in rows if r.get("arm") == "ids"]
+    fix = [r for r in rows if r.get("arm") == "fix"]
+    refused = [r for r in fix if r.get("code") == "WRITE_ATTEMPTED_REFUSED"]
+    return {
+        "run": run,
+        "ids_calls": len(ids),
+        "exact_six": sum(r.get("code") == "EXACT_SIX" for r in ids),
+        "fix_calls": len(fix),
+        "refused": len(refused),
+        "refused_query": {**_pick(refused[0]), "guard": refused[0].get("guard")} if refused else None,
+    }
