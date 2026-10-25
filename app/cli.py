@@ -476,7 +476,8 @@ def main(argv: list[str] | None = None) -> int:
         help="super: through Nightshift (default); ultra: Nemotron Ultra on NVIDIA direct",
     )
     serve = sub.add_parser("serve", help="Run the case page (SAMPLE_MODE=true: offline sample)")
-    serve.add_argument("--port", type=int, default=8000, help="Port on 127.0.0.1")
+    serve.add_argument("--port", type=int, default=8000, help="Port (default 8000)")
+    serve.add_argument("--host", default="127.0.0.1", help="Bind address (0.0.0.0 inside Docker)")
     sample = sub.add_parser("sample", help="Bundled sample cases for SAMPLE_MODE")
     sample_sub = sample.add_subparsers(dest="sample_command", required=True)
     sample_sub.add_parser("build", help="Rebuild app/web/sample/cases.json from the live USL")
@@ -494,7 +495,7 @@ def main(argv: list[str] | None = None) -> int:
 
             from app.web.api import create_app
 
-            uvicorn.run(create_app(), host="127.0.0.1", port=args.port)
+            uvicorn.run(create_app(), host=args.host, port=args.port)
             return 0
         if args.command == "run" and args.local:
             from app.engine.local_mode import run_local
