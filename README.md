@@ -167,6 +167,13 @@ What Nightshift 1.2.1 could not do and what 1.2.3 fixed, and our self-grade agai
 
 ## Limits (honest)
 
+**This submission is wrong if any of these is wrong** (each can be checked from the repository):
+- **Accuracy:** a second labeller puts the product behind Super alone on the 25 queued records. Then that row is the headline (pre-registered: `docs/preregistration/second-labeller.md`).
+- **What reading finds:** the reports do not say what the 11 census readings say. Then the 11 of 358 comes out (`docs/evidence/hidden-2-results.md` quotes each one).
+- **The quote check:** any accepted value's quote is not word for word in its report. Then the check failed.
+- **Signed records:** any committed receipt fails `python -m app.verify`. Then the signed-record claims come out.
+- **Local:** the local job record does not name Lightning on a local lane. Then the local claim comes out.
+
 - Hosted Nemotron Parse 2.0 returned an empty document on 10-19 and 10-22 (even on NVIDIA's own example); on 10-24 it worked in a retest, then returned 12 of 19 pages empty in the pre-registered comparison (`docs/evidence/parse-bench-results.md`). Parse v1 stays the measured scan reader.
 - Two of six scan boxes missed on a sparse one-page form; the page then shows no box and a person decides.
 - The checks cover N vs the node count in the 6th/7th editions; T, M and stage groups are not audited yet.
