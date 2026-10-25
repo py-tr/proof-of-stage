@@ -1,0 +1,78 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/local_deep.py": "86259d2f9542fbf9",
+    "app/engine/local_whole.py": "325b87c52ea22d78",
+    "app/engine/local_r1.py": "d44be74b08e97187",
+    "app/engine/reader_bench.py": "553dbaf778641355",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "cases": [
+    "TCGA-3C-AAAU",
+    "TCGA-A1-A0SN",
+    "TCGA-A2-A0CV",
+    "TCGA-A2-A0EW",
+    "TCGA-A7-A26E",
+    "TCGA-A7-A26H",
+    "TCGA-AC-A2FK",
+    "TCGA-AN-A0XN",
+    "TCGA-AN-A0XO",
+    "TCGA-AN-A0XP",
+    "TCGA-AN-A0XS",
+    "TCGA-AN-A0XT",
+    "TCGA-AN-A0XW",
+    "TCGA-AO-A03P",
+    "TCGA-AO-A1KP",
+    "TCGA-AQ-A1H2",
+    "TCGA-AR-A1AT",
+    "TCGA-BH-A0BS",
+    "TCGA-BH-A0DD",
+    "TCGA-D8-A27L",
+    "TCGA-E2-A1B4",
+    "TCGA-E2-A1LI",
+    "TCGA-E2-A572",
+    "TCGA-E9-A3X8",
+    "TCGA-EW-A424"
+  ],
+  "labels_sha16": {
+    "builder": "caef98991d916a90",
+    "second": "5ba1405a9ca4b9d4"
+  },
+  "cloud_rows": {
+    "builder": {
+      "cloud_lightning": [
+        24,
+        3
+      ],
+      "super": [
+        32,
+        3
+      ],
+      "ultra": [
+        32,
+        4
+      ]
+    },
+    "second": {
+      "cloud_lightning": [
+        25,
+        2
+      ],
+      "super": [
+        33,
+        2
+      ],
+      "ultra": [
+        33,
+        3
+      ]
+    }
+  },
+  "gate": "one ~13,000-token local job first; void if refused or not answered by local Lightning",
+  "claim": "every read local by the frozen job checklist and answered by local Lightning, and against BOTH labellers local Lightning's wrong accepts are no more than cloud Lightning's (3 builder, 2 second)",
+  "kill": "any read not local or not local Lightning, or 5 or more wrong accepts against either labeller",
+  "void": "the gate fails, or more than 8 of 25 provider failures",
+  "reported_not_claimed": "correct accepts, not accepted, seconds per read",
+  "prediction": "Before the run, by the main session: gate passes; 25 of 25 reads local and answered by local Lightning; against the builder's labels about 20-25 correct and 2-4 wrong accepts (cloud Lightning 24 / 3); against the second labeller about 21-26 correct and 1-3 wrong (cloud 25 / 2); median about 90-150 s per read; 0-3 failures. Claim uncertain (about even odds: it needs wrong accepts at or below cloud Lightning's on both labellers); kill unlikely. Super's 32-33 correct is not expected to be reached."
+}

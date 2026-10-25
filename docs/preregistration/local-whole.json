@@ -1,0 +1,40 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/local_whole.py": "325b87c52ea22d78",
+    "app/engine/local_mode.py": "54fa73dc0392ee9d",
+    "app/engine/local_r1.py": "d44be74b08e97187",
+    "app/engine/rungs.py": "97167dc234356165",
+    "app/engine/run_case.py": "95a161a3c3b78bd6",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "cases": [
+    "TCGA-A1-A0SB",
+    "TCGA-A2-A25F",
+    "TCGA-AC-A2FE",
+    "TCGA-AC-A62X",
+    "TCGA-AO-A12B",
+    "TCGA-AR-A5QQ",
+    "TCGA-BH-A0BD",
+    "TCGA-BH-A0DL",
+    "TCGA-D8-A1JB",
+    "TCGA-E2-A154",
+    "TCGA-E2-A15M",
+    "TCGA-E2-A1II",
+    "TCGA-E2-A573",
+    "TCGA-E2-A574",
+    "TCGA-E9-A1RG",
+    "TCGA-E9-A226",
+    "TCGA-GM-A3XG",
+    "TCGA-LL-A441",
+    "TCGA-LL-A442",
+    "TCGA-Z7-A8R5"
+  ],
+  "referee": "the census-2 cloud closings for the same records (logs/hidden-2.jsonl), as in local-mode",
+  "gate": "one ~13,000-token local job first; void if it is refused or not answered by local Lightning",
+  "claim": "every first read local by the frozen job checklist AND answered by local Lightning, every report sent whole, and 0 local first-read closings that differ from the census's cloud closing",
+  "kill": "any first read not local or not local Lightning, or any disagreement",
+  "void": "the gate fails, or more than 6 of 20 provider failures",
+  "prediction": "Before the run, by the main session: gate passes (local Lightning answers ~13k tokens); 20 of 20 first reads local by the checklist and answered by local Lightning; 20 of 20 reports sent whole (6 longer than 7,000 characters); 0 disagreements with the census's cloud closings; the local first read settles about 8-12 of 20 (report only); 0-2 failures. Claim likely met. Precondition: the Bolt lane is removed, or every read fails the frozen lane check."
+}
