@@ -1,0 +1,1 @@
+{"run": "20261025T181620", "records": 83, "failures": 0, "A": {"fallen": 11, "fixed": 8, "standing": 12, "kept": 8}, "B": {"correct": 12, "wrong": 2, "open": 4}, "C": {"records": 40, "new_disagreements": 0}, "claims_met": {"A": false, "B": false, "C": true}}

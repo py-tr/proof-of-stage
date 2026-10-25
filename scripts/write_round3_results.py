@@ -160,6 +160,8 @@ def parts_bench() -> None:
         "",
         "## What it means, and what it does not",
         "",
+        "- The finding: structure plus code fixes the traps it targets and costs accuracy elsewhere. On the designed-on set it fixed 8 of the 11 readings that fell, including both other-breast readings (TCGA-AR-A5QM, TCGA-BH-A18H: the GDC side dropped the other breast) and 3 of the 5 per-part sums (TCGA-A2-A25B, TCGA-AR-A254, TCGA-GM-A4E0), but it lost 4 standing readings: it added a restated total as a part (TCGA-E2-A154: 2 became 4) or left a field open. On the blind labels it was worse than the shipped deep read (12 correct, 2 wrong, 4 open against 16, 0, 1): one wrong was a single part taken alone (TCGA-AC-A2FK), one an added restatement (TCGA-AO-A03P). On 40 multi-part records the shipped reader agreed on, it caused 0 new disagreements.",
+        "- So the shipped reader stays; the part-aware read is a measured design note: list parts with quotes and add them in code where a report has separate specimens and no stated total, and never add a part that restates a total.",
         "- Set A was designed on (the fix was written after reading these failures), so a pass there is weak evidence; sets B and C carry the claim.",
         "- Not wired into the shipped chain; the shipped reader and its Limits line stand unless a later, separately pre-registered change says otherwise. One run, no re-run.",
     ]
