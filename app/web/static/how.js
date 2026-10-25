@@ -1,4 +1,4 @@
-// How it works: one record, eight numbered steps, every value read from the same API the case
+// How it works: one record, nine numbered steps, every value read from the same API the case
 // page uses (live in live mode; a dated copy and no model output in sample mode). Plain JS; every text is a text node.
 "use strict";
 
@@ -92,6 +92,7 @@ function render(data, trace, sample) {
     "Does an agent that reads the semantic layer use the verdict?", el("p", { class: "small" }, "Loading the logged probes…"))));
 
   // 3d. The second reader (filled in by loadSecondReaderCard)
+  steps.append(el("li", { id: "labels-step" }, card("You, blind", "Against the blind labels", el("p", { class: "small" }, "Loading the scores…"))));
   steps.append(el("li", { id: "second-step" }, card("NVIDIA Nemotron Ultra, a second reader that can only object",
     "Does a second reader catch what the first one missed?", el("p", { class: "small" }, "Loading the logged run…"))));
 
@@ -162,14 +163,15 @@ async function loadAgentProbe() {
   const ids = (list) => list.map((c) => c.case_id).join(", ");
   const e2 = p.missed.find((c) => c.case_id === "TCGA-E2-A572");
   box.replaceChildren(card("NVIDIA Nemotron, as an agent reading the layer", title,
-    el("p", {}, `Two pre-registered probes. Super, through Nightshift, saw only the layer's table and column descriptions and the question “${p.question}”, and wrote one SQL query in 19 of 20 calls; each query ran unchanged on the live layer.`),
+    el("p", {}, `Three pre-registered probes. Super, through Nightshift, saw only the layer's table and column descriptions and the question “${p.question}”, and wrote one SQL query in 29 of 30 calls; each ran unchanged on the live layer unless our read guard refused it.`),
     flow([`${p.read_raw_count} of ${p.queries_written} queries read the raw count column`, "bad"], [`the pointer to the verdict was used ${p.pointer_used} times`, "bad"], [`the checked column was read ${p.read_checked} time`, ""]),
     sqlBlock(p.raw_query, "Probe 1, with the pointer in the descriptions"),
     el("p", {}, `Left out of that answer: ${p.missed.length} patients whose report shows positive nodes while the count column records 0 (${ids(p.missed)})`,
       e2 ? `; TCGA-E2-A572's report says “Positive 8 / 13”.` : "."),
     sqlBlock(p.checked_query, "Probe 2, with the checked count beside the raw one"),
     el("p", {}, `This one query read the checked column and included those ${p.missed.length} patients, then filled the ${p.person.length} cases the verdict leaves to a person (${ids(p.person)}) back in from the raw count.`),
-    el("p", { class: "small" }, "A pointer in the description was not enough, and a checked column beside the raw one was not either. So the verdict is for the people and tools that read stage_check and the case page; a person decides. Logged runs, not replayed live: docs/evidence/agent-probe-results.md, agent-probe-2-results.md.")));
+    ...(p.probe3 ? [el("p", {}, `Probe 3 handed the agent the layer's own data-quality rules, rendered into the schema exactly as LOAD USL returns them. It changed nothing: ${p.probe3.treatment.raw} of ${p.probe3.treatment.calls} calls with the rules and ${p.probe3.control.raw} of ${p.probe3.control.calls} without counted the raw column (476); ${p.probe3.treatment.correct} used the verdict.`)] : []),
+    el("p", { class: "small" }, "A pointer in the description was not enough, a checked column beside the raw one was not either, and neither were the layer's own rules. So the verdict is for the people and tools that read stage_check and the case page; a person decides. Logged runs, not replayed live: docs/evidence/agent-probe-results.md, agent-probe-2-results.md, agent-probe-3-results.md.")));
 }
 
 async function loadSecondReaderCard() {
@@ -186,6 +188,22 @@ async function loadSecondReaderCard() {
     el("p", { class: "small" }, "An objection only sends the case to a person; it never changes a value. Logged run, not replayed live: docs/evidence/ultra-critic-results.md (v1 did not ship because of a scope bug of ours; v2 fixed only that).")));
 }
 
+async function loadLabelsCard() {
+  const box = $("labels-step");
+  if (!box) return;
+  let s = null;
+  try { s = (await api("/api/labels")).labels; } catch (error) { /* shown below */ }
+  const title = "Against the blind labels";
+  if (!s) { box.replaceChildren(card("You, blind", title, el("p", { class: "small" }, "No label scores logged."))); return; }
+  const rb = s.reader_bench;
+  box.replaceChildren(card("You, blind", title,
+    el("p", {}, `A person labelled ${s.of} review-queue records from the reports alone, without seeing any system verdict; the labels were frozen before scoring (sha16 ${s.labels_sha16}).`),
+    flow([`the product agreed on ${s.product} of ${s.of}`, "good"], [`Nemotron Super alone, thinking on: ${s.super_4k}`, ""], [`thinking off: ${s.super_off}`, ""], [`the rule alone: ${s.rule}`, ""]),
+    el("p", {}, "Level with Super on accuracy, within one case. What the product adds is the checked quote, the signed receipt, the audit trail and a person for what it cannot settle."),
+    el("p", { class: "small" }, `The deep-read seat, scored the same way (correct / wrong accepts): Super ${rb.super.correct}/${rb.super.wrong}, Ultra ${rb.ultra.correct}/${rb.ultra.wrong}, Lightning ${rb.lightning.correct}/${rb.lightning.wrong}. Super keeps the seat.`),
+    el("p", { class: "small" }, `Sensitivity: the labeller later confirmed 3 labels as mis-clicks (disclosed); with them corrected the product agrees on ${s.sensitivity.product}, Super alone on ${s.sensitivity.super_4k}. The frozen scores stand. docs/evidence/baseline-m0-results.md, reader-bench-results.md.`)));
+}
+
 async function load(caseId, sample) {
   const [data, found] = await Promise.all([api(`/api/case/${caseId}`), api(`/api/case/${caseId}/trace`)]);
   $("open-case").href = `/?case=${caseId}`;
@@ -194,6 +212,7 @@ async function load(caseId, sample) {
   loadRedTeam();
   loadAgentProbe();
   loadSecondReaderCard();
+  loadLabelsCard();
 }
 
 async function loadScoreboard(sample) {

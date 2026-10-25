@@ -1,4 +1,4 @@
-"""The agent probes on the /how page: two real queries Nemotron wrote, from the logs.
+"""The agent probes on the /how page: real queries Nemotron wrote, from the logs.
 
 Read from logs/agent-probe.jsonl and logs/agent-probe-2.jsonl (written by the pre-registered
 probes) and docs/evidence/agent-probe-cases.json (the 6 patients the raw count misses and the 3
@@ -16,6 +16,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 PROBE1 = ROOT / "logs" / "agent-probe.jsonl"
 PROBE2 = ROOT / "logs" / "agent-probe-2.jsonl"
+PROBE3 = ROOT / "logs" / "agent-probe-3.jsonl"
 CASES = ROOT / "docs" / "evidence" / "agent-probe-cases.json"
 _KEEP = ("arm", "call", "sql", "why", "result", "receipt_id", "signature", "seconds")
 
@@ -50,4 +51,24 @@ def probe_story() -> dict[str, Any] | None:
         "pointer_used": sum("fault_field" in r["sql"].lower() for r in written),
         "missed": cases.get("missed_by_raw_count") or [],
         "person": cases.get("left_to_a_person_but_raw_positive") or [],
+        "probe3": _probe3(),
     }
+
+
+def _probe3() -> dict[str, Any] | None:
+    """The third probe (the layer's own DQ rules in the schema): codes per arm, from its log."""
+    rows = _rows(PROBE3)
+    if not rows:
+        return None
+    run = rows[0].get("run")
+    rows = [r for r in rows if r.get("run") == run]
+    arms = {}
+    for arm in ("control", "treatment"):
+        mine = [r for r in rows if r.get("arm") == arm]
+        arms[arm] = {
+            "calls": len(mine),
+            "correct": sum(r.get("code") == "CORRECT" for r in mine),
+            "raw": sum(r.get("code") == "RAW" for r in mine),
+            "results": [r.get("result") for r in mine],
+        }
+    return {"run": run, **arms}

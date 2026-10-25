@@ -228,6 +228,13 @@ def create_app(
 
         return {"summary": summary()}
 
+    @app.get("/api/labels")
+    async def labels() -> dict[str, Any]:
+        """The scores against the frozen blind labels, from the committed log (no model call)."""
+        from app.web.labelscard import labels_summary
+
+        return {"labels": labels_summary()}
+
     @app.get("/api/agent-probe")
     async def agent_probe() -> dict[str, Any]:
         """The two pre-registered agent probes, from the committed logs (no model call)."""
