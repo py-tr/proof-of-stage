@@ -1,0 +1,5 @@
+{
+  "case_id": "TCGA-E2-A572",
+  "shows": "the report contradicts the count field",
+  "run": "open http://127.0.0.1:8000/?case=TCGA-E2-A572  (or: python -m app.cli run --case TCGA-E2-A572)"
+}

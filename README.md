@@ -89,6 +89,8 @@ This follows NVIDIA's own pattern for Lightning: "plans route up to the frontier
 
 ## Sample inputs and outputs
 
+Four worked examples, one per verdict (count field, stage field, a person decides, the second reader objects): `input_examples/` and the case page's answer for each in `output_examples/` (read from the live layer by `scripts/make_examples.py`; no model call). Project facts for judges, including each sponsor's role and the declared pre-existing components: `metadata.json`.
+
 Three review-queue records, one per verdict, from the live layer (`stage_check`) and the logged evidence runs (`logs/markovian-chunks.jsonl`). Input: the registry record. Output: the guarded reading, its quote and the field the layer names. These steps ran on 2026-10-23, before the first read moved to Lightning, so every step shown is Super VL through Nightshift.
 
 | Case | Input: the registry says | Output: the report reading (quote verified by the guard) | The layer names | Receipts (signed, pinned key) |

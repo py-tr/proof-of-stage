@@ -1,0 +1,5 @@
+{
+  "case_id": "TCGA-A2-A0EW",
+  "shows": "a person decides (the report does not settle it)",
+  "run": "open http://127.0.0.1:8000/?case=TCGA-A2-A0EW  (or: python -m app.cli run --case TCGA-A2-A0EW)"
+}

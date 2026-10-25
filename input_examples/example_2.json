@@ -1,0 +1,5 @@
+{
+  "case_id": "TCGA-AN-A0XN",
+  "shows": "the report contradicts the stage field",
+  "run": "open http://127.0.0.1:8000/?case=TCGA-AN-A0XN  (or: python -m app.cli run --case TCGA-AN-A0XN)"
+}

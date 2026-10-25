@@ -1,0 +1,5 @@
+{
+  "case_id": "TCGA-A1-A0SN",
+  "shows": "the second reader (Ultra) objects, so a person decides",
+  "run": "open http://127.0.0.1:8000/?case=TCGA-A1-A0SN  (or: python -m app.cli run --case TCGA-A1-A0SN)"
+}

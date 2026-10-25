@@ -1,0 +1,74 @@
+{
+  "project": "Proof of Stage",
+  "tagline": "Finds database records that cannot be true as written, quotes the source document showing which field is wrong, and leaves the fix to a person. It never edits a record.",
+  "event": "Open Agent Hackathon 2026 (22-27 October 2026)",
+  "track": "Track 2: The Agent That Can Explain Why",
+  "team": "SoloPlayer (solo)",
+  "members": [
+    "Petr Novák"
+  ],
+  "data": {
+    "source": "NCI Genomic Data Commons, TCGA-BRCA (1,097 cases): clinical fields and pathology report text",
+    "details": "data/README.md"
+  },
+  "sponsor_technology": {
+    "nvidia": {
+      "models_shipped": {
+        "nvidia/nemotron-3.5-lightning-30b-a3b": "first read, thinking off, through Meterless Nightshift; may only close a field that agrees with the registry",
+        "nvidia/nemotron-3.5-super-vl-120b-a12b": "deep read at a 4k thinking budget, case notes and the red team, through Nightshift; page-image reads NVIDIA direct",
+        "nvidia/nemotron-parse": "v1, boxes the evidence line on scanned reports (NVIDIA direct: Nightshift has no Parse lane)",
+        "nvidia/nemotron-3-ultra-550b-a55b": "second reader that may only object, through Nightshift; an objection sends the case to a person"
+      },
+      "measured_not_shipped": [
+        "Nemotron 3.5 Bolt (edge first read)",
+        "Nemotron 3 Nano Omni (scan witness)",
+        "Nemotron 3.5 Content Safety (report screening)"
+      ],
+      "local": "the first read also runs on the builder's PC through Nightshift's Jobs API with local-only privacy (python -m app.cli run --case <id> --local)",
+      "which_model_handled_the_request": "every Nightshift receipt names the winning model and is checked against the requested one; the case page and /how show the model per step; docs/evidence/route-ledger.md",
+      "evidence": [
+        "README.md#nemotron-model-per-step",
+        "docs/evidence/seat-cost-quality.md",
+        "docs/evidence/shipped-cost-results.md",
+        "docs/results.md"
+      ]
+    },
+    "meterless": {
+      "nightshift": "1.2.3, the primary AI provider: pinned model, unique scope per call, Ed25519 receipt verified against a pinned key, cache refused (app/providers/nightshift.py, app/providers/receipts.py)",
+      "engine": "Markovian reference, vendored unmodified (conformance 8 of 8): the per-record evidence chain and a red-team loop (vendor/, app/engine/markovian.py)",
+      "evidence": [
+        "docs/meterless.md",
+        "docs/evidence/attest-results.md",
+        "docs/evidence/tamper-bench.md"
+      ]
+    },
+    "zetaris": {
+      "usl": "stage_audit (8 tables over the NCI GDC REST API, a file store and an append-only Postgres; the cross-field rule, the verdict column and the three answers are SQL in the layer) and attest_audit (signed receipts and re-read results, 5 DQ rules)",
+      "evidence": [
+        "docs/zetaris-demo.md",
+        "README.md#reflection-on-the-zetaris-usl",
+        "app/usl/"
+      ]
+    },
+    "cursor": "the first commits were written by Cursor's agent; later code by Claude Code (see README, How this was built)"
+  },
+  "run": {
+    "sample_mode": "python -m app.cli serve  (no keys, no network; open http://127.0.0.1:8000)",
+    "live_case": "python -m app.cli run --case TCGA-E2-A572",
+    "verify_receipts_offline": "python -m app.verify",
+    "tests": "pytest -q"
+  },
+  "examples": {
+    "inputs": "input_examples/",
+    "outputs": "output_examples/"
+  },
+  "ai_usage": "Built with AI coding tools (Cursor's agent, then Claude Code); see README, How this was built",
+  "pre_existing_components": [
+    "Research and planning notes from before 22 Oct (not code in the repo)",
+    "Spike results from 19-21 Oct, reused and stated in their README rows: the 'unlimited' thinking arm of the thinking-budget table (run 21 Oct) and the 42-report spike set with its truth labels (docs/evidence/thinking-budget.md); the held-out flagging result (docs/evidence/heldout-flagging.md)",
+    "Vendored, unmodified: the Meterless Markovian reference engine (vendor/meterless-markovian, Apache-2.0, NOTICE)",
+    "Public data: NCI GDC TCGA clinical data and pathology reports; FEC and IRS public files",
+    "The repository's first commit is after 22 Oct 00:00 UTC"
+  ],
+  "license": "Apache-2.0"
+}

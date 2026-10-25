@@ -1,0 +1,337 @@
+{
+  "case_id": "TCGA-A2-A0EW",
+  "captured_at": "2026-10-25 22:03 UTC",
+  "source": "live Zetaris USL through the case page API (/api/case); no model was called to write this file",
+  "check": {
+    "case_id": "TCGA-A2-A0EW",
+    "site_key": "breast",
+    "edition_code": "6",
+    "recorded_t": "T1B",
+    "recorded_n": "N3A",
+    "recorded_stage": "Stage IIIC",
+    "recorded_n_main": "N3",
+    "lymph_nodes_positive": "26.0",
+    "lymph_nodes_tested": null,
+    "derived_n": "pNX",
+    "derived_n_main": "NX",
+    "report_t": "T1C",
+    "report_n": "N2A",
+    "report_n_main": "N2",
+    "report_nodes_positive": "4",
+    "reason_class": "n_count_contradiction",
+    "fault_field": "review",
+    "year_of_diagnosis": "2008",
+    "read": true
+  },
+  "extractions": [
+    {
+      "method": "sql_node_count",
+      "field": "N",
+      "value": "pNX",
+      "quote": null,
+      "quote_start": null,
+      "quote_end": null,
+      "model": null,
+      "receipt_id": null,
+      "created_at": null
+    },
+    {
+      "method": "nemotron_reader",
+      "field": "T",
+      "value": "T1C",
+      "quote": "PATHOLOGIC STAGE: pT1c N2 MX (AJCC, 6th ED) (SEE COMMENT",
+      "quote_start": "2105",
+      "quote_end": "2161",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-22 13:17:31"
+    },
+    {
+      "method": "nemotron_reader",
+      "field": "N",
+      "value": "N2A",
+      "quote": "LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E",
+      "quote_start": "1072",
+      "quote_end": "1146",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-22 13:17:31"
+    },
+    {
+      "method": "nemotron_reader",
+      "field": "NPOS",
+      "value": "4",
+      "quote": "LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E",
+      "quote_start": "1072",
+      "quote_end": "1146",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-23 01:31:00"
+    }
+  ],
+  "flags": [
+    {
+      "flag_id": "TCGA-A2-A0EW:T:reader_review:answer_not_json",
+      "rule_id": "reader_review",
+      "field": "T",
+      "recorded_value": null,
+      "derived_value": null,
+      "quote": null,
+      "reason": "answer_not_json",
+      "severity": "review",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-22 14:09:44"
+    },
+    {
+      "flag_id": "TCGA-A2-A0EW:N:reader_review:answer_not_json",
+      "rule_id": "reader_review",
+      "field": "N",
+      "recorded_value": null,
+      "derived_value": null,
+      "quote": null,
+      "reason": "answer_not_json",
+      "severity": "review",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-22 14:09:44"
+    },
+    {
+      "flag_id": "TCGA-A2-A0EW:NPOS:reader_review:answer_not_json",
+      "rule_id": "reader_review",
+      "field": "NPOS",
+      "recorded_value": null,
+      "derived_value": null,
+      "quote": null,
+      "reason": "answer_not_json",
+      "severity": "review",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-22 14:09:44"
+    }
+  ],
+  "accepted": [
+    {
+      "method": "nemotron_reader",
+      "field": "T",
+      "value": "T1C",
+      "quote": "PATHOLOGIC STAGE: pT1c N2 MX (AJCC, 6th ED) (SEE COMMENT",
+      "quote_start": "2105",
+      "quote_end": "2161",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-22 13:17:31",
+      "checks": [
+        {
+          "check": "a valid category",
+          "ok": true
+        },
+        {
+          "check": "a quote long enough to prove something",
+          "ok": true
+        },
+        {
+          "check": "the quote is word for word in the report",
+          "ok": true
+        },
+        {
+          "check": "the quote shows that category (a stage, node count or size)",
+          "ok": true
+        },
+        {
+          "check": "accepted",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "method": "nemotron_reader",
+      "field": "N",
+      "value": "N2A",
+      "quote": "LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E",
+      "quote_start": "1072",
+      "quote_end": "1146",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-22 13:17:31",
+      "checks": [
+        {
+          "check": "a valid category",
+          "ok": true
+        },
+        {
+          "check": "a quote long enough to prove something",
+          "ok": true
+        },
+        {
+          "check": "the quote is word for word in the report",
+          "ok": true
+        },
+        {
+          "check": "the quote shows that category (a stage, node count or size)",
+          "ok": true
+        },
+        {
+          "check": "accepted",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "method": "nemotron_reader",
+      "field": "NPOS",
+      "value": "4",
+      "quote": "LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E",
+      "quote_start": "1072",
+      "quote_end": "1146",
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "receipt_id": null,
+      "created_at": "2026-10-23 01:31:00",
+      "checks": [
+        {
+          "check": "a whole number from 0 to 99",
+          "ok": true
+        },
+        {
+          "check": "a quote long enough to prove something",
+          "ok": true
+        },
+        {
+          "check": "the quote is word for word in the report",
+          "ok": true
+        },
+        {
+          "check": "the number is the positive count inside that quote",
+          "ok": true
+        },
+        {
+          "check": "not below a node fraction the report states",
+          "ok": true
+        },
+        {
+          "check": "equal to the total the report states, if it states one",
+          "ok": true
+        },
+        {
+          "check": "accepted",
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "second_reader_objects": false,
+  "headline": "Needs a person. Recorded N is N3A, which means 10 or more positive nodes. The registry count is 26, but its tested count is missing, so the rule gives pNX. The report says N2A and counts 4, which does not settle it.",
+  "why": [
+    "Rule: the registry says N3A with 26 positive nodes; 26 would be pNX, so both cannot be true",
+    "The report says: \"LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E\"",
+    "Code check: these exact words are in the report",
+    "The report does not settle which field is wrong",
+    "A person decides; the record is never edited"
+  ],
+  "lineage": {
+    "evaluated_by": "Zetaris RUN DQ (SHOW DQ INVALID RECORD)",
+    "mirror_disagrees": false,
+    "table": "lightning.metastore.registry_audit.stage_audit.stage_check",
+    "failed": [
+      {
+        "rule": "nodes_consistent",
+        "expression": "NOT (\n  coalesce(edition_code, '') IN ('6', '7')\n  AND lymph_nodes_positive IS NOT NULL\n  AND trim(lymph_nodes_positive) <> ''\n  AND recorded_n_main IS NOT NULL\n  AND recorded_n_main <> 'NX'\n  AND upper(regexp_replace(coalesce(recorded_n, ''), ' ', '')) NOT IN ('N1MI', 'N0(I+)', 'N0(MOL+)')\n  AND derived_n_main IS NOT NULL\n  AND recorded_n_main <> derived_n_main\n)"
+      },
+      {
+        "rule": "fault_unresolved",
+        "expression": "fault_field IS NULL OR fault_field <> 'review'"
+      }
+    ],
+    "sources": [
+      {
+        "usl_table": "tumour_case",
+        "source": "GDC_REST.brca_cases_raw",
+        "kind": "REST API (NCI GDC), cached"
+      },
+      {
+        "usl_table": "path_report",
+        "source": "REG_FILES.path_reports",
+        "kind": "file store"
+      },
+      {
+        "usl_table": "recorded_stage",
+        "source": "GDC_REST.brca_cases_raw",
+        "kind": "REST API (NCI GDC), cached"
+      },
+      {
+        "usl_table": "staging_rule",
+        "source": "REG_FILES.staging_rules",
+        "kind": "file store"
+      },
+      {
+        "usl_table": "derived_stage",
+        "source": "recorded_stage",
+        "kind": "USL table"
+      },
+      {
+        "usl_table": "derived_stage",
+        "source": "staging_rule",
+        "kind": "USL table"
+      },
+      {
+        "usl_table": "derived_stage",
+        "source": "oa_pg.derived_extraction",
+        "kind": "Postgres, append-only"
+      },
+      {
+        "usl_table": "parse_block",
+        "source": "REG_FILES.parse_blocks",
+        "kind": "file store"
+      },
+      {
+        "usl_table": "flag",
+        "source": "oa_pg.flag_log",
+        "kind": "Postgres, append-only"
+      },
+      {
+        "usl_table": "stage_check",
+        "source": "derived_stage",
+        "kind": "USL table"
+      },
+      {
+        "usl_table": "stage_check",
+        "source": "recorded_stage",
+        "kind": "USL table"
+      },
+      {
+        "usl_table": "stage_check",
+        "source": "tumour_case",
+        "kind": "USL table"
+      }
+    ],
+    "sources_from": "LOAD USL contract (activation queries)"
+  },
+  "rules": {
+    "registry_count": [
+      {
+        "rule_id": "BN1",
+        "site": "breast",
+        "element": "N",
+        "edition": "6,7,8",
+        "condition_text": "No regional nodes were removed or examined",
+        "min_value": "",
+        "max_value": "",
+        "output": "pNX",
+        "cite": "PDQ-B; NCIt C48990"
+      }
+    ],
+    "report_count": [
+      {
+        "rule_id": "BN5",
+        "site": "breast",
+        "element": "N",
+        "edition": "6,7,8",
+        "condition_text": "Four to nine positive axillary nodes with a macrometastasis",
+        "min_value": "4",
+        "max_value": "9",
+        "output": "pN2a",
+        "cite": "PDQ-B; NCIt C49002"
+      }
+    ]
+  }
+}
