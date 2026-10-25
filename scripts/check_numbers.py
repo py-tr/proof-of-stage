@@ -17,7 +17,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-README = (ROOT / "README.md").read_text(encoding="utf-8")
+# The README keeps the headline rows; the full results and details moved to docs/ (2026-10-25).
+README = "\n".join(
+    (ROOT / f).read_text(encoding="utf-8")
+    for f in ("README.md", "docs/results.md", "docs/details.md")
+)
 
 
 def last(name: str) -> dict:
