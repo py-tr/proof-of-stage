@@ -1,0 +1,206 @@
+{
+  "labeller": "the builder (a lay reader, not a pathologist)",
+  "sheet_seed": 20261023,
+  "labels": {
+    "TCGA-A7-A26H": {
+      "field": "node_count",
+      "count": "1",
+      "n": "pN1a",
+      "quote": "Sentinel lymph node, left axilla, biopsy: Metastatic carcinoma in. a single lymph node.\"",
+      "note": "",
+      "at": "2026-10-25T22:46:09.042Z"
+    },
+    "TCGA-3C-AAAU": {
+      "field": "pathologic_n",
+      "count": "4",
+      "n": "",
+      "quote": ". AXILLARY LYMPH NODES: TOTAL: 13. LEVEL I: 4. LEVEL II: 2. LEVEL III: 6. SENTINEL NODE: 1. XIII. POSITIVE LYMPH NODES: TOTAL: 4 of 13. LEVEL I: 2 of 4. LEVEL II: 1 of 2. LEVEL III:0 of 6. SENTINEL NODE: 1 of 1. DEGREE OF INVOLVEMENT: Extensive replacement. EXTRANODAL EXTENSION: Absent. XIV. PECTORAL MUSCLE: No pectoral muscle identified. ADDITIONAL COMMENTS: Invasive carcinoma appears to arise multifocally. A definite second focus is identified in. the lower outer quadrant (B26). Below the nipple, the fibrous scar tissue contains multiple separate foci of invasive. lobular carcinoma. Extensive lymphatic permeation is noted. This report has been reviewed electronically and signed on. Interpreted by: Attending: Case Resident: The diagnosis was rendered by the attending pathologist. Receptor Expression Analysis. INTERPRETATION. Test Performed on: Left breast. Specimen part: B. Slide#: B26. More than 50% of the invasive carcinoma cell nuclei stain with an immunohistochemical stain utilizing an anti-estrogen. receptor antibody. Therefore, this tumor is considered strongly positive for estrogen receptor expression. More than 50% of the invasive carcinoma cell nuclei stain with an immunohistochemical stain utilizing an. anti-progesterone receptor antibody. Therefore, this tumor is considered strongly positive for progesterone receptor expression. Her-2/neu expression has been evaluated using the. HercepTest HercepTest score : 0. No Her-2/neu overexpression is identified in the invasive carcinoma cells. This procedure/addenda has been electronically reviewed and signed on. Interpreted by: Attending: Addendum. ADDENDUM. Molecular Analysis has been ordered on this case, the blocks and slides have been retrieved from the archival files, the. slides and pathology report were re-reviewed for tumor cellularity by the pathologist, and the appropriate block was. selected for testing. This procedure/addenda has been electronically reviewed and signed on. Interpreted by: Attending: Note: Immunochemistry testing performed at. was developed and its performance characteristics determined by the. These tests were interpreted in conjunction with external positive and internal negative cont\ntive controls, unless. FDA. This test is used for clinical purposes only. It should not be regarded as investigational or for research.",
+      "note": "XIII. POSITIVE LYMPH NODES: TOTAL: 4 of 13.",
+      "at": "2026-10-25T22:46:45.847Z"
+    },
+    "TCGA-AN-A0XS": {
+      "field": "pathologic_n",
+      "count": "",
+      "n": "pN1a",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:47:03.198Z"
+    },
+    "TCGA-BH-A0BS": {
+      "field": "review",
+      "count": "2",
+      "n": "pN1a",
+      "quote": "LYMPH NODES POSITIVE: 2. LYMPH NODES EXAMINED: 14.\" / \"PATHOLOGIC: pN1a.",
+      "note": "",
+      "at": "2026-10-25T22:47:49.944Z"
+    },
+    "TCGA-A1-A0SN": {
+      "field": "review",
+      "count": "4",
+      "n": "pN1",
+      "quote": "Number of positive lymph nodes: 4. - Total number sampled: 13.\" / \"AJCC/UICC stage: pT1cN1MX.",
+      "note": "",
+      "at": "2026-10-25T22:48:28.633Z"
+    },
+    "TCGA-A2-A0CV": {
+      "field": "node_count",
+      "count": "2",
+      "n": "pN1a",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:48:48.071Z"
+    },
+    "TCGA-AN-A0XP": {
+      "field": "pathologic_n",
+      "count": "",
+      "n": "pN1",
+      "quote": "T Stage: 2 N Stage: 1 M Stage: 0",
+      "note": "",
+      "at": "2026-10-25T22:49:20.827Z"
+    },
+    "TCGA-AR-A1AT": {
+      "field": "review",
+      "count": "0",
+      "n": "pn0",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:51:42.263Z"
+    },
+    "TCGA-E2-A1B4": {
+      "field": "pathologic_n",
+      "count": "3",
+      "n": "pn1",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:52:08.859Z"
+    },
+    "TCGA-AN-A0XO": {
+      "field": "pathologic_n",
+      "count": "",
+      "n": "pN1",
+      "quote": "N Stage: 1",
+      "note": "",
+      "at": "2026-10-25T22:52:55.756Z"
+    },
+    "TCGA-A2-A0EW": {
+      "field": "review",
+      "count": "4",
+      "n": "pN2",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:53:22.294Z"
+    },
+    "TCGA-EW-A424": {
+      "field": "pathologic_n",
+      "count": "0",
+      "n": "pn0",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:54:46.453Z"
+    },
+    "TCGA-AO-A03P": {
+      "field": "node_count",
+      "count": "1",
+      "n": "",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:55:19.793Z"
+    },
+    "TCGA-AN-A0XN": {
+      "field": "pathologic_n",
+      "count": "",
+      "n": "pn1",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:55:58.268Z"
+    },
+    "TCGA-D8-A27L": {
+      "field": "review",
+      "count": "",
+      "n": "pNX",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:56:19.737Z"
+    },
+    "TCGA-AC-A2FK": {
+      "field": "review",
+      "count": "3",
+      "n": "pNX",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:56:45.795Z"
+    },
+    "TCGA-A7-A26E": {
+      "field": "node_count",
+      "count": "1",
+      "n": "pN1",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:57:09.536Z"
+    },
+    "TCGA-AO-A1KP": {
+      "field": "node_count",
+      "count": "1",
+      "n": "",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:57:30.243Z"
+    },
+    "TCGA-E2-A572": {
+      "field": "node_count",
+      "count": "8",
+      "n": "pN2",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:57:55.194Z"
+    },
+    "TCGA-E2-A1LI": {
+      "field": "review",
+      "count": "0",
+      "n": "pN1",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:58:15.454Z"
+    },
+    "TCGA-AN-A0XW": {
+      "field": "pathologic_n",
+      "count": "",
+      "n": "pN1",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:58:31.977Z"
+    },
+    "TCGA-AQ-A1H2": {
+      "field": "node_count",
+      "count": "7",
+      "n": "pN2",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:58:55.360Z"
+    },
+    "TCGA-BH-A0DD": {
+      "field": "node_count",
+      "count": "1",
+      "n": "pN1",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:59:15.424Z"
+    },
+    "TCGA-AN-A0XT": {
+      "field": "pathologic_n",
+      "count": "",
+      "n": "pn1",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:59:30.916Z"
+    },
+    "TCGA-E9-A3X8": {
+      "field": "review",
+      "count": "4",
+      "n": "",
+      "quote": "",
+      "note": "",
+      "at": "2026-10-25T22:59:48.417Z"
+    }
+  }
+}
