@@ -1,7 +1,7 @@
 {
   "written": "2026-10-25",
   "code_sha256_16": {
-    "app/irs/read.py": "5333d1727eb357f6",
+    "app/irs/read.py": "7e9e55b9942c7c09",
     "app/reader/quotes.py": "8c64510f04be71ad"
   },
   "prompt_sha256_16": "741f60b4bb346f36",
@@ -327,5 +327,6 @@
   },
   "claim": "'the product's pattern works on a second, non-medical domain' only if >= 8 of 16 read cleanly (all three lines accepted) AND >= 3 are 'the record contradicts the return on [field]'",
   "void": "more than 4 provider failures",
-  "prediction": "[fill]"
+  "prediction": "Before the run, by the main session: 6-9 of the 11 documents read cleanly (OCR text layer; split digits and dropped decimals will cost some); of those, 1-4 'the record contradicts the return on [field]', 2-5 'the return itself does not add up', 0-2 'record matches return'. Claim (>=8 clean and >=3 contradicts) unlikely to be met: about one in three.",
+  "refrozen": "2026-10-25 by the main session before any model call: the line label (or the line's printed instruction) became a requirement for accepting a line, so a right amount quoted from a wrong line is not accepted; the sample and the prompt are unchanged."
 }

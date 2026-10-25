@@ -72,11 +72,12 @@ PDF_URL = "https://990s.foundationcenter.org/990_pdf_archive/{a}/{ein}/{ein}_{pe
 LINES = ("9", "17", "18")
 COLUMNS = {"9": "totrevnue", "17": "totexpns", "18": "totexcessyr"}
 FIELD_NAMES = {"9": "total revenue", "17": "total expenses", "18": "excess or deficit"}
-# Recorded per line, never gating: does the quote carry the line's printed label?
+# Gating (added before the first call): the quote must carry the line's printed label or its
+# printed instruction, so a right amount quoted from a wrong line is not accepted.
 LABELS = {
-    "9": re.compile(r"total\s*revenue", re.I),
-    "17": re.compile(r"total\s*expenses", re.I),
-    "18": re.compile(r"excess\s*or\s*\(?\s*deficit", re.I),
+    "9": re.compile(r"total\s*revenue|add\s*lines\s*1(?!\d)", re.I),
+    "17": re.compile(r"total\s*expenses|add\s*lines\s*10\s*thro?u?\s*g?\s*h?\s*16", re.I),
+    "18": re.compile(r"excess\s*or\s*\(?\s*deficit|subtract\s*line\s*17", re.I),
 }
 
 VERDICT_CONTRADICTS = "the record contradicts the return on {field}"
@@ -159,8 +160,8 @@ def amount_in_quote(amount: Decimal, quote: str) -> bool:
 
 def check_line(line: str, answer: Any, page: str) -> dict[str, Any]:
     """One line of the model's answer against the page text: accepted only if the amount parses,
-    the quote is found verbatim (quotes.locate: case, punctuation and whitespace ignored) and the
-    amount is inside the quote."""
+    the quote is found verbatim (quotes.locate: case, punctuation and whitespace ignored), the
+    quote carries the line's label or instruction, and the amount is inside the quote."""
     entry = answer if isinstance(answer, dict) else {}
     amount_text = str(entry.get("amount") or "").strip()
     quote = str(entry.get("quote") or "")
@@ -176,6 +177,8 @@ def check_line(line: str, answer: Any, page: str) -> dict[str, Any]:
         return {**out, "status": "rejected", "reason": "quote_not_in_text"}
     out["span"] = [span.start, span.end]
     out["label_in_quote"] = bool(LABELS[line].search(quote))
+    if not out["label_in_quote"]:
+        return {**out, "status": "rejected", "reason": "label_not_in_quote"}
     if not amount_in_quote(amount, quote):
         return {**out, "status": "rejected", "reason": "amount_not_in_quote"}
     return {**out, "status": "accepted", "reason": ""}

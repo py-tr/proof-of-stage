@@ -92,9 +92,14 @@ def test_check_line_reasons():
     assert check_line("9", {"amount": "", "quote": "x"}, page)["reason"] == "no_amount"
     assert check_line("9", None, page)["reason"] == "no_amount"
     assert check_line("9", {"amount": "abc", "quote": "x"}, page)["reason"] == "amount_unparseable"
-    # a quote without the label is still accepted (label recorded, not gating)
+    # a quote without the line's label or instruction is rejected (gating since before the run)
     bare = check_line("9", {"amount": "45210.00", "quote": "8 ► 9 45,210.00"}, page)
-    assert bare["status"] == "accepted" and bare["label_in_quote"] is False
+    assert bare["status"] == "rejected" and bare["reason"] == "label_not_in_quote"
+    # line 17's instruction does not count as line 9's label
+    from app.irs.read import LABELS
+
+    assert not LABELS["9"].search("Add lines 10 through 16")
+    assert LABELS["17"].search("Add lines 10 throu g h 16")
 
 
 def test_verdict_record_contradicts_return_on_revenue():

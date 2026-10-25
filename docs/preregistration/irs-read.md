@@ -71,3 +71,8 @@ db gap = line 9 - line 17 - line 18 as the extract holds them (whole dollars). T
 ## Prediction (before the run)
 
 In `irs-read.json` (`prediction`), written by the main session before the run.
+
+
+## Re-frozen before the first call (main session, 2026-10-25)
+
+The builder's review made the line label a requirement: a line is accepted only if its quote carries the printed label ("Total revenue", "Total expenses", "Excess or (deficit)") or the line's printed instruction ("Add lines 1 …", "Add lines 10 through 16", "Subtract line 17 …"). Without it, a correct amount quoted from another line would have been accepted. Sample, prompt and verdict rules are unchanged. No model had been called.
