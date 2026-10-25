@@ -115,7 +115,7 @@ function render(data, trace, sample) {
     ["Local first read (--local)", "Nemotron Lightning on this PC · Nightshift Jobs API, local-only", "20 of 20 first reads local, 0 disagreements with the cloud; what stays open goes to the cloud deep read"],
     ["Case note", "Nemotron Super VL, thinking on · Nightshift", "21 of 25 notes pass the note check vs Ultra 8 of 25"],
     ["Red team", "Nemotron Super VL on the Meterless Markovian engine", "0 wrong accepts in 57 judged attacks on the quote check"],
-    ["Edge first read (measured, not shipped)", "Nemotron 3.5 Bolt, thinking off · NVIDIA direct", "16 of 30 settled vs Lightning's 17, 0 of 34 contradicted, fewer tokens; no Nightshift lane"],
+    ["Edge first read (measured, not shipped)", "Nemotron 3.5 Bolt, thinking off · NVIDIA direct", "16 of 30 settled vs Lightning's 17, 0 of 34 contradicted, fewer tokens; now reachable through Nightshift (2026-10-26 release), Lightning keeps the seat by settling more"],
     ["Scan witness (measured)", "Nemotron 3 Nano Omni vs Super VL · NVIDIA direct", "11 correct / 2 wrong vs 11 / 3 on 13 scans; no token saving, so no seat"],
     ["Screening report text (measured, no job)", "Nemotron 3.5 Content Safety · NVIDIA direct", "flagged 23 of 70 planted instructions and 20 of 100 clean reports"],
   ];
