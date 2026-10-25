@@ -83,8 +83,8 @@ def create_app(
         return {
             "mode": source.mode,
             "reader": (
-                "R1 Nemotron Lightning, thinking off; R2 and R3 Nemotron Super, "
-                f"thinking budget {THINKING_BUDGET}"
+                "first read: Nemotron Lightning, thinking off; deep and scan reads: "
+                f"Nemotron Super, thinking budget {THINKING_BUDGET}"
             ),
             "source_note": getattr(source, "source_note", None),
         }
