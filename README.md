@@ -20,7 +20,7 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 
 **Who checked what.** Code: `python scripts/check_numbers.py` recomputes the README's headline numbers from the committed logs, the quote check finds each accepted quote in the report, and `python -m app.verify` checks every committed signature offline. People: every agreement with a person in this README is with the builder's labels, unless a second-labeller row says otherwise.
 
-[Run it, no keys](#run-it) · [How the readers work together](#how-the-readers-work-together) · [Results and losses](#results-live-2026-10-22-to-10-25-every-number-has-its-file) · [Limits](#limits-honest)
+[Run it, no keys](#run-it) · [How the readers work together](#how-the-readers-work-together) · [Results and losses](#results-live-2026-10-22-to-10-25-every-number-has-its-file) · [Limits](#limits-honest) · [Where to look, by judging criterion](#where-to-look-by-judging-criterion)
 
 **A judge's 15 minutes, no keys:** `pip install -e .`, then `python -m app.cli serve` and open http://127.0.0.1:8000. Pick **TCGA-E2-A572** and click "Example: the report's own line": the same quote check accepts the report's N and its count, and the layer names the count field. Then open `/how` (one record step by step, every model's seat, the agent probes) and `/receipts` (every committed signature checked in your browser; one changed byte turns it red). Sample mode bundles registry facts and report text only: model readings, traces and the second reader need live mode, and their logs are in `docs/evidence/`.
 
@@ -187,6 +187,18 @@ What Nightshift 1.2.1 could not do and what 1.2.3 fixed, and our self-grade agai
 - Meterless engine use, stated: in the evidence chain the model never sees the carryover (by design, so no reading anchors the next), so there the engine gives bounded state and the stop rule: the stop rule ends the chain when nothing is open (17 of 30 chains ended after the first read, the 50% token saving above); what it does not add there is carryover compression; in the red-team loop 27 of 60 steps repeated an earlier attack despite the ledger. Nightshift: our self-grade against the provider contract v4 is in `docs/meterless.md`.
 - A sentence planted inside a source document could pass the quote check (the check confirms a quote is in the document). Nemotron Content Safety did not catch this reliably on pathology reports (23 of 70 planted instructions, 20 of 100 clean reports flagged); the cross-field rule, the second reader and a person deciding remain the defences, none measured against planted text.
 - Research data, not for clinical use.
+
+## Where to look, by judging criterion
+
+| Criterion | Where |
+|---|---|
+| Impact | [first screen](#proof-of-stage) (who it is for, what a reviewer is spared), [Why it matters](#why-it-matters-agents-trust-the-semantic-layer), the census in [Results](#results-live-2026-10-22-to-10-25-every-number-has-its-file) |
+| Technical execution | [How it works](#how-it-works), [Run it](#run-it) (CI, tests, offline signature check, numbers check), [`docs/preregistration/`](docs/preregistration/) |
+| Innovation | [How the readers work together](#how-the-readers-work-together), the agent probes in [Why it matters](#why-it-matters-agents-trust-the-semantic-layer) |
+| Demo | [Sample inputs and outputs](#sample-inputs-and-outputs), `input_examples/` and `output_examples/`, the case page and `/how` |
+| Product and UX | the case page (screenshot above), `/receipts` |
+| Sponsor technology | [Nemotron, model per step](#nemotron-model-per-step), [Sponsor technology, in one place](#sponsor-technology-in-one-place), [Reflection on the Zetaris USL](#reflection-on-the-zetaris-usl), [Meterless](#meterless-nightshift-versions-and-the-provider-contract), `metadata.json` |
+| Honesty | [Limits](#limits-honest) (what would prove this wrong), every loss in [`docs/results.md`](docs/results.md) |
 
 ## Data and licences
 
