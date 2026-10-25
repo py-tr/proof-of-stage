@@ -1,0 +1,303 @@
+{
+  "written": "2026-10-25",
+  "cells_sql": "SELECT case_id, field, value, quote FROM oa_pg.derived_extraction WHERE method = 'nemotron_reader' AND field IN ('N', 'NPOS') ORDER BY case_id, field",
+  "cells": [
+    {
+      "case": "TCGA-3C-AAAU",
+      "field": "N",
+      "value": "N2A",
+      "quote": "POSITIVE LYMPH NODES: TOTAL: 4 of 13"
+    },
+    {
+      "case": "TCGA-3C-AAAU",
+      "field": "NPOS",
+      "value": "4",
+      "quote": "POSITIVE LYMPH NODES: TOTAL: 4 of 13"
+    },
+    {
+      "case": "TCGA-A1-A0SN",
+      "field": "N",
+      "value": "N2A",
+      "quote": "Number of positive lymph nodes: 4"
+    },
+    {
+      "case": "TCGA-A1-A0SN",
+      "field": "NPOS",
+      "value": "4",
+      "quote": "Number of positive lymph nodes: 4"
+    },
+    {
+      "case": "TCGA-A2-A0CV",
+      "field": "N",
+      "value": "N1A",
+      "quote": "2/18) POSITIVE EXAMINED LYMPH NODES"
+    },
+    {
+      "case": "TCGA-A2-A0CV",
+      "field": "NPOS",
+      "value": "2",
+      "quote": "2/18) POSITIVE EXAMINED LYMPH NODES"
+    },
+    {
+      "case": "TCGA-A2-A0EW",
+      "field": "N",
+      "value": "N2A",
+      "quote": "LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E"
+    },
+    {
+      "case": "TCGA-A2-A0EW",
+      "field": "NPOS",
+      "value": "4",
+      "quote": "LYMPH NODES FOUR (4) OF FOUR POSITIVE FOR TUMOR BY H&E (SEE PARTS D. AND E"
+    },
+    {
+      "case": "TCGA-A7-A26E",
+      "field": "N",
+      "value": "N1A",
+      "quote": "As per parts A, C and E,. there are 16 1 mmnh nodes. one of which contains metastatic. carcinoma, l. Size of largest metastasis: 3 mm"
+    },
+    {
+      "case": "TCGA-A7-A26E",
+      "field": "NPOS",
+      "value": "1",
+      "quote": "one of which contains metastatic. carcinoma, l"
+    },
+    {
+      "case": "TCGA-A7-A26H",
+      "field": "N",
+      "value": "N1A",
+      "quote": "Metastatic carcinoma is present in one lymph node"
+    },
+    {
+      "case": "TCGA-A7-A26H",
+      "field": "NPOS",
+      "value": "1",
+      "quote": "Metastatic carcinoma is present in one lymph node"
+    },
+    {
+      "case": "TCGA-AC-A2FK",
+      "field": "N",
+      "value": "N1A",
+      "quote": "All three nodes sampled are positive and, therefore, the nodal stage Is at least pN1a"
+    },
+    {
+      "case": "TCGA-AC-A2FK",
+      "field": "NPOS",
+      "value": "3",
+      "quote": "All three nodes sampled are positive and, therefore, the nodal stage Is at least pN1a"
+    },
+    {
+      "case": "TCGA-AN-A0XN",
+      "field": "N",
+      "value": "N1",
+      "quote": "N Stage: 1"
+    },
+    {
+      "case": "TCGA-AN-A0XO",
+      "field": "N",
+      "value": "N1",
+      "quote": "N Stage: 1"
+    },
+    {
+      "case": "TCGA-AN-A0XP",
+      "field": "N",
+      "value": "N1",
+      "quote": "N Stage: 1"
+    },
+    {
+      "case": "TCGA-AN-A0XS",
+      "field": "N",
+      "value": "N1A",
+      "quote": "N Stage: 1a"
+    },
+    {
+      "case": "TCGA-AN-A0XT",
+      "field": "N",
+      "value": "N1A",
+      "quote": "N Stage: 1a"
+    },
+    {
+      "case": "TCGA-AN-A0XW",
+      "field": "N",
+      "value": "N1",
+      "quote": "N Stage: 1"
+    },
+    {
+      "case": "TCGA-AO-A03P",
+      "field": "N",
+      "value": "N1MI",
+      "quote": "PART #1. METASTATIC CARCINOMA IN THE FORM OF MICROSCOPIC CLUSTERS AND SINGLE CELLS. MEASURING LESS THAN 2MM (MICROMETASTASIS). IS IDENTIFIED ON CYTOKERATIN. IMMUNOHISTOCHEMICAL STAINS ONLY"
+    },
+    {
+      "case": "TCGA-AO-A1KP",
+      "field": "N",
+      "value": "N1A",
+      "quote": "ONE LYMPH NODE POSITIVE FOR METASTATIC CARCINOMA (1/1) (SEE NOTE"
+    },
+    {
+      "case": "TCGA-AO-A1KP",
+      "field": "NPOS",
+      "value": "1",
+      "quote": "ONE LYMPH NODE POSITIVE FOR METASTATIC CARCINOMA (1/1"
+    },
+    {
+      "case": "TCGA-AQ-A1H2",
+      "field": "N",
+      "value": "N2A",
+      "quote": "Axillary lymph nodes: Total number with metastasis: 7. Total number examined: 10 (1 from part A, 9 from part B below"
+    },
+    {
+      "case": "TCGA-AQ-A1H2",
+      "field": "NPOS",
+      "value": "7",
+      "quote": "Total number with metastasis: 7"
+    },
+    {
+      "case": "TCGA-AR-A1AT",
+      "field": "N",
+      "value": "N0(I+)",
+      "quote": "A single (of 3) left axillary sentinel lymph node is. positive for isolated tumor cells [AJCC pN0(i+)(sn)], with multiple (5) isolated tumor. cells/clusters, the largest measuring 0.05 mm"
+    },
+    {
+      "case": "TCGA-BH-A0BS",
+      "field": "N",
+      "value": "N1A",
+      "quote": "LYMPH NODES POSITIVE: 2. LYMPH NODES EXAMINED: 14"
+    },
+    {
+      "case": "TCGA-BH-A0BS",
+      "field": "NPOS",
+      "value": "2",
+      "quote": "LYMPH NODES POSITIVE: 2"
+    },
+    {
+      "case": "TCGA-BH-A0DD",
+      "field": "N",
+      "value": "N1A",
+      "quote": "LYMPH NODES POSITIVE: 1. LYMPH NODES EXAMINED: 23"
+    },
+    {
+      "case": "TCGA-BH-A0DD",
+      "field": "NPOS",
+      "value": "1",
+      "quote": "LYMPH NODES POSITIVE: 1"
+    },
+    {
+      "case": "TCGA-BH-A0H6",
+      "field": "N",
+      "value": "NX",
+      "quote": "LYMPH NODES POSITIVE: 0. LYMPH NODES EXAMINED: 0"
+    },
+    {
+      "case": "TCGA-D8-A27L",
+      "field": "N",
+      "value": "NX",
+      "quote": "removed without axillary tissues"
+    },
+    {
+      "case": "TCGA-E2-A1B4",
+      "field": "N",
+      "value": "N1MI",
+      "quote": "Micrometastases are identified in sentinel lymph nodes#1, #2 (AE 1/3 positive) and #4. The largest. tumor metastasis measures 2-mm"
+    },
+    {
+      "case": "TCGA-E2-A1B4",
+      "field": "NPOS",
+      "value": "3",
+      "quote": "Lymph node status: Positive 3/4. Micrometastases"
+    },
+    {
+      "case": "TCGA-E2-A1LI",
+      "field": "N",
+      "value": "N0",
+      "quote": "Lymph nodes: Negative (0/2"
+    },
+    {
+      "case": "TCGA-E2-A1LI",
+      "field": "NPOS",
+      "value": "0",
+      "quote": "Lymph nodes: Negative (0/2"
+    },
+    {
+      "case": "TCGA-E2-A572",
+      "field": "N",
+      "value": "N2A",
+      "quote": "Lymph node status: Positive 8 / 13 Extranodal extension"
+    },
+    {
+      "case": "TCGA-E2-A572",
+      "field": "NPOS",
+      "value": "8",
+      "quote": "Lymph node status: Positive 8 / 13"
+    },
+    {
+      "case": "TCGA-E9-A3X8",
+      "field": "N",
+      "value": "N2A",
+      "quote": "Lymph nodes: 4/8 positive for metastasis (Axillary 4/8"
+    },
+    {
+      "case": "TCGA-E9-A3X8",
+      "field": "NPOS",
+      "value": "4",
+      "quote": "Lymph nodes: 4/8 positive for metastasis (Axillary 4/8"
+    },
+    {
+      "case": "TCGA-EW-A424",
+      "field": "N",
+      "value": "N0",
+      "quote": "Negative for carcinoma in one lymph node examined (0/1"
+    },
+    {
+      "case": "TCGA-EW-A424",
+      "field": "NPOS",
+      "value": "0",
+      "quote": "Negative for carcinoma in one lymph node examined (0/1"
+    }
+  ],
+  "cell_count": 42,
+  "cases": [
+    "TCGA-3C-AAAU",
+    "TCGA-A1-A0SN",
+    "TCGA-A2-A0CV",
+    "TCGA-A2-A0EW",
+    "TCGA-A7-A26E",
+    "TCGA-A7-A26H",
+    "TCGA-AC-A2FK",
+    "TCGA-AN-A0XN",
+    "TCGA-AN-A0XO",
+    "TCGA-AN-A0XP",
+    "TCGA-AN-A0XS",
+    "TCGA-AN-A0XT",
+    "TCGA-AN-A0XW",
+    "TCGA-AO-A03P",
+    "TCGA-AO-A1KP",
+    "TCGA-AQ-A1H2",
+    "TCGA-AR-A1AT",
+    "TCGA-BH-A0BS",
+    "TCGA-BH-A0DD",
+    "TCGA-BH-A0H6",
+    "TCGA-D8-A27L",
+    "TCGA-E2-A1B4",
+    "TCGA-E2-A1LI",
+    "TCGA-E2-A572",
+    "TCGA-E9-A3X8",
+    "TCGA-EW-A424"
+  ],
+  "code_sha256_16": {
+    "app/engine/attest.py": "1976808cf87575c2",
+    "app/providers/envelope_tap.py": "52ceea7510b62d57",
+    "app/usl/attest_store.py": "35a49bde0bd0e910",
+    "app/engine/rungs.py": "97167dc234356165",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "outcomes": [
+    "reproduced",
+    "differs",
+    "not_re_accepted",
+    "provider_failure"
+  ],
+  "void": "more than 5 of 26 cases fail at the provider",
+  "prediction": "about 34-40 of 42 reproduced; 0-3 differ; 0 provider failures"
+}
