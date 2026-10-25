@@ -1,0 +1,1 @@
+REGISTER DATASOURCE TABLE "attestation" FROM oa_pg

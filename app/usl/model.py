@@ -71,6 +71,8 @@ ALLOWED_ROOTS = (
     "GDC_REST",
     "oa_pg.flag_log",
     "oa_pg.derived_extraction",
+    "oa_pg.attest_receipt",
+    "oa_pg.attestation",
 )
 
 EXTRACTION_COLUMNS = (
