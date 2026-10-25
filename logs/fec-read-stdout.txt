@@ -1,0 +1,13 @@
+{
+  "run": "20261025T123400",
+  "filings": 12,
+  "read_cleanly": 4,
+  "name_one_field": 0,
+  "verdicts": {
+    "not read": 8,
+    "the filing itself does not add up": 4
+  },
+  "parse_page_failures": 0,
+  "void": false,
+  "pattern_transfers_at_read_level": false
+}
