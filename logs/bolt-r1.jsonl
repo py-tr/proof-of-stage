@@ -1,0 +1,30 @@
+{"case": "TCGA-BH-A0BQ", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 116, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-BH-A0DS", "run": "20261025T184813", "closed_at_r1": {"N": "N2A"}, "settled_at_r1": false, "tokens": 187, "agreement": {"N": "agree"}}
+{"case": "TCGA-AR-A24O", "run": "20261025T184813", "closed_at_r1": {"N": "N2"}, "settled_at_r1": false, "tokens": 199, "agreement": {"N": "agree"}}
+{"case": "TCGA-GM-A2DD", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 129, "agreement": {"N": "unconfirmed", "NPOS": "unconfirmed"}}
+{"case": "TCGA-D8-A27P", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 120, "agreement": {}}
+{"case": "TCGA-BH-A0AU", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 152, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-OK-A5Q2", "run": "20261025T184813", "closed_at_r1": {"N": "N1A", "NPOS": "2"}, "settled_at_r1": true, "tokens": 177, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-E2-A10B", "run": "20261025T184813", "closed_at_r1": {"N": "N1A", "NPOS": "2"}, "settled_at_r1": true, "tokens": 148, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-A2-A04X", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 142, "agreement": {}}
+{"case": "TCGA-E2-A1BD", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 116, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-A2-A4S3", "run": "20261025T184813", "closed_at_r1": {"N": "N1A", "NPOS": "2"}, "settled_at_r1": true, "tokens": 158, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-E2-A15S", "run": "20261025T184813", "closed_at_r1": {"N": "N1", "NPOS": "1"}, "settled_at_r1": true, "tokens": 144, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-AR-A24R", "run": "20261025T184813", "closed_at_r1": {"N": "N2", "NPOS": "6"}, "settled_at_r1": true, "tokens": 215, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-D8-A1JJ", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 106, "agreement": {}}
+{"case": "TCGA-D8-A1Y3", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 146, "agreement": {}}
+{"case": "TCGA-D8-A140", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 154, "agreement": {}}
+{"case": "TCGA-PE-A5DD", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 136, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-BH-A0DE", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 125, "agreement": {}}
+{"case": "TCGA-OL-A5RU", "run": "20261025T184813", "closed_at_r1": {"N": "N1", "NPOS": "1"}, "settled_at_r1": true, "tokens": 149, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-D8-A27T", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 205, "agreement": {}}
+{"case": "TCGA-A2-A0EV", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 131, "agreement": {}}
+{"case": "TCGA-LL-A7SZ", "run": "20261025T184813", "closed_at_r1": {"N": "N1A", "NPOS": "2"}, "settled_at_r1": true, "tokens": 174, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-E2-A1B1", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 167, "agreement": {}}
+{"case": "TCGA-A2-A04R", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 128, "agreement": {}}
+{"case": "TCGA-AN-A0FN", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 90, "agreement": {}}
+{"case": "TCGA-E9-A1RD", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 158, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-S3-AA12", "run": "20261025T184813", "closed_at_r1": {"N": "N1A", "NPOS": "2"}, "settled_at_r1": true, "tokens": 197, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-E2-A14U", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 138, "agreement": {"N": "agree", "NPOS": "agree"}}
+{"case": "TCGA-AN-A0XL", "run": "20261025T184813", "closed_at_r1": {}, "settled_at_r1": false, "tokens": 91, "agreement": {}}
+{"case": "TCGA-BH-A6R8", "run": "20261025T184813", "closed_at_r1": {"N": "N0", "NPOS": "0"}, "settled_at_r1": true, "tokens": 116, "agreement": {"N": "agree", "NPOS": "agree"}}
