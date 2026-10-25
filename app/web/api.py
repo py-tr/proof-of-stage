@@ -148,10 +148,19 @@ def create_app(
         check = found["check"]
         edition, site = check.get("edition_code"), check.get("site_key")
         accepted = _rechecked(found)
+        objects = False
+        if source.mode != "sample":  # the second reader is model output: live mode only
+            from app.web.secondreader import objecting_cases
+
+            objects = str(check.get("case_id")) in objecting_cases()
+        top = headline(check)
+        if objects:  # display only: the layer's verdict and the values stay as they are
+            top = "Second reader objects: a person decides. " + top
         return {
             **found,
             "accepted": accepted,
-            "headline": headline(check),
+            "second_reader_objects": objects,
+            "headline": top,
             "why": why_chain(check, accepted),
             "lineage": await _guarded(lineage(rule_source, check)),
             "rules": {
