@@ -1,0 +1,22 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/bolt_r1.py": "dea6e2264b89f7d0",
+    "app/engine/rungs.py": "97167dc234356165",
+    "app/engine/run_case.py": "95a161a3c3b78bd6",
+    "app/engine/dial.py": "98a143ddd7e22bbe",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "model": "nvidia/nemotron-3.5-bolt-e4b",
+  "cases_from": "docs/preregistration/dial-cases.json",
+  "referee": "logs/shipped-cost.jsonl control (always-4k Super VL, 2026-10-25)",
+  "lightning_same_records": {
+    "settled": 17,
+    "closings": 36
+  },
+  "claim": "Bolt settles at least 14 of 30 records at the first read with 0 closings contradicted by the 4k read",
+  "kill": "fewer than 12 settled, or any closing contradicted",
+  "void": "more than 5 provider failures",
+  "prediction": "Before the run, by the main session: Bolt settles 10-17 of 30 (a smaller model may abstain or misquote more often than Lightning's 17); 0-2 closings contradicted (claim uncertain: a contradiction kills it); 0-2 failures."
+}
