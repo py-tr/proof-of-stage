@@ -1,0 +1,14 @@
+{
+  "run": "20261025T134109",
+  "cases": 8,
+  "read": 6,
+  "failures": 2,
+  "void": false,
+  "named_a_field": 2,
+  "verdicts": {
+    "a person decides": 4,
+    "not read": 2,
+    "the report contradicts the stage field": 2
+  },
+  "claim_met": false
+}
