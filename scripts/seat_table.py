@@ -89,6 +89,22 @@ def main() -> None:
         f"| First read Super off, then Super 4k on what stays open | {d['ladder_tokens']:,} | {d['ladder_tokens'] / always - 1:+.0%} | measured (dial test) |",
         f"| First read Lightning off, then Super 4k on what stays open (as shipped) | about {shipped:,.0f} | about {shipped / always - 1:+.0%} | **estimate**: Lightning's measured first-read tokens plus the measured deep-read tokens per open record ({per_open:,.0f}) times the {lr['scored'] - lr['lightning_settled']} records Lightning left open |",
         "",
+    ]
+    sc_path = LOGS / "shipped-cost-runs.jsonl"
+    if sc_path.exists():
+        sc = last("shipped-cost-runs.jsonl")
+        v = sc["r1_vs_control"]
+        lines += [
+            "",
+            "**Measured as shipped** (pre-registered, `docs/evidence/shipped-cost-results.md`, the dial test's 30 records, chain and always-4k control in the same session):",
+            "",
+            "| Setup | Completion tokens | vs always 4k | First-read closings vs the 4k read |",
+            "|---|---|---|---|",
+            f"| Always Super 4k (control) | {sc['control_tokens']:,} | (baseline) | |",
+            f"| First read Lightning off, then Super 4k on what stays open | {sc['ladder_tokens']:,} | {sc['ladder_tokens'] / sc['control_tokens'] - 1:+.0%} | {v['agree']} agree, {v['disagree']} contradicted, {v['unconfirmed']} unconfirmed |",
+            "",
+        ]
+    lines += [
         "Quality on these records: the chain's closed fields agreed with the always-4k read 30 times and contradicted it 0 times (dial test; Lightning: 33 agree, 0 contradicted, 5 unconfirmed). Different model sizes, each where it pays: the small model settles the easy records, the large one reads only what stays open.",
     ]
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
