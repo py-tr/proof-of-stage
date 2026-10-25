@@ -17,10 +17,11 @@ Prediction (before the run): "Before the run, by the main session: multi-arm: 24
 
 - On the multi-arm slice the reader never named the wrong field: every verified answer agrees with the record's arm count (0 of 30 wrong).
 - 9 multi-arm answers named the right field but failed our own cue check, which required "randomiz-" and a two-groups word in the same quote. About 5 of them were correct statements the frozen vocabulary did not cover ("randomly assigned … or to the control group", "randomized to 1 of 3 routes", "one of 2 treatment regimens", "randomized and concurrent controlled"); the check correctly refused 2 (assignment by day of presentation, a cluster design, is not randomization; an arm list without a randomization statement). A wider cue list, written after the run, is not a claim and the result stands as frozen.
-- 6 answers were "unclear" or empty.
+- 6 answers were "unclear" or empty, and 1 model answer's quote was not in the text (NCT01093417: two arm descriptions stitched together).
 - One-arm slice: 4 records verified as single-arm studies coded Randomized, so the allocation field is the one the text contradicts (NCT00570141, NCT00773383, NCT01106248, NCT01663714); 6 used within-person randomization (split-face, one eye vs the other, test sites), a design the two coded fields do not describe well.
 
 ## What it means, and what it does not
 
-- On clean typed text the reading did not produce a wrong field (0 of 30 against the arm count), but our quote check as written accepted too few correct answers to meet the bar; the miss is in the check's vocabulary more than in the reading. The rule finds the records in the thousands: 893 with results, 8,261 in all.
+- On clean typed text the reading did not produce a wrong field (0 of 30 against the arm count), but our quote check as written accepted too few correct answers to meet the bar; the miss is split between the check's vocabulary and the reader's own unclear or empty answers (a post-hoc re-score with no cue words, quote located and field agreeing with the arm count, gives 23 of 30, still under the bar; not a claim). The arm list is part of the text the reader sees, so the quote documents the answer rather than discovering it. 893 such records have results; the registry's own count is 8,261.
+- Correction (after a council review): within-person designs (NCT01053000, NCT01848288, NCT02251561) are counted as correct model answers in the multi-arm slice, although the one-arm note above says the two coded fields describe that design poorly.
 - One run, no re-run; the multi-arm verdicts are referred to the arm count, not to a person.

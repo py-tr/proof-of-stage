@@ -6,7 +6,7 @@ Pre-registration: `docs/preregistration/ctgov-read-v2.md` + `ctgov-read-v2.json`
 
 | Measure | Result |
 |---|---|
-| Records | 30 (1 provider failures) |
+| Records | 30 (1 provider failure) |
 | Field named by the reader | model 25, no parsable answer 3, unclear 1 |
 | **Model field named with a verified quote** (bar 24) | **22 of 30** |
 | Allocation field named with a verified quote (bar at most 2) | 0 |
@@ -23,6 +23,6 @@ Prediction (before the run): "Before the run, by the main session: on v1's recor
 - The groups half of the cue check is weak: "or" and any number count as a groups word, so in practice "verified" means a sentence found verbatim in the record that mentions randomization.
 - The arm labels and descriptions are part of the text the reader sees, so on these records the quote documents the answer rather than discovering it.
 - Read by hand after the run: of the 3 model answers turned away, 2 are correct statements the cue list still misses ("comparative study of X to Y", "compared to patients receiving only") and 1 quotes only the arm descriptions (correctly rejected). The claim is not met.
-- 3 answers had no parsable field and 1 call failed (a Nightshift 502); none was re-run.
-- Across v1 and v2 the reader named the allocation field, the wrong one, on 0 of 60 multi-arm records.
+- 3 answers had no parsable field and 1 call failed (a Nightshift 502); none was re-run. The envelopes keep only each answer's hash and length, so the cause of the unparsable answers cannot be recovered; across both runs 3 of the 9 coincide with the 4k thinking budget being used up.
+- Across v1 and v2 the reader named the allocation field, the wrong one, on 0 of 59 answered multi-arm records (60 drawn, one 502); it named the model field on 49.
 - For multi-arm records the arm count alone already points at the model field; the quote adds documentary proof, not new information.
