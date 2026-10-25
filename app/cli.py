@@ -392,6 +392,11 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--case", required=True, help="Case id, e.g. TCGA-A2-A0CV")
     run.add_argument("--store", action="store_true", help="Append closed fields to Zetaris")
     run.add_argument(
+        "--local",
+        action="store_true",
+        help="First read on this PC (local Lightning, local-only privacy, focus step); never stores",
+    )
+    run.add_argument(
         "--provider",
         choices=("nightshift", "nvidia"),
         default="nightshift",
@@ -490,6 +495,12 @@ def main(argv: list[str] | None = None) -> int:
             from app.web.api import create_app
 
             uvicorn.run(create_app(), host="127.0.0.1", port=args.port)
+            return 0
+        if args.command == "run" and args.local:
+            from app.engine.local_mode import run_local
+
+            result = asyncio.run(run_local(args.case.strip().upper()))
+            sys.stdout.write(json.dumps(result, indent=2, default=str) + "\n")
             return 0
         if args.command == "run":
             from app.engine.run_case import run_case, summary

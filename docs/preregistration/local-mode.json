@@ -1,0 +1,39 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/local_mode.py": "54fa73dc0392ee9d",
+    "app/engine/local_focus.py": "2fa6c47668efa0dd",
+    "app/engine/local_r1.py": "d44be74b08e97187",
+    "app/engine/rungs.py": "97167dc234356165",
+    "app/engine/run_case.py": "95a161a3c3b78bd6",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "seed": 20261025,
+  "cases": [
+    "TCGA-A2-A1G6",
+    "TCGA-A7-A26J",
+    "TCGA-A7-A425",
+    "TCGA-A7-A56D",
+    "TCGA-AN-A0AL",
+    "TCGA-AO-A03U",
+    "TCGA-AR-A2LK",
+    "TCGA-BH-A0AZ",
+    "TCGA-E2-A14N",
+    "TCGA-E2-A15L",
+    "TCGA-E2-A15R",
+    "TCGA-E2-A1IN",
+    "TCGA-E2-A1LG",
+    "TCGA-E9-A1N9",
+    "TCGA-E9-A1R7",
+    "TCGA-E9-A22D",
+    "TCGA-E9-A244",
+    "TCGA-EW-A1P5",
+    "TCGA-S3-AA10",
+    "TCGA-Z7-A8R6"
+  ],
+  "referee": "the census-2 cloud closings for the same records (logs/hidden-2.jsonl)",
+  "claim": "every first read local by the job checklist, and 0 local first-read closings that differ from the census's cloud closing",
+  "kill": "any first read not local, or any disagreement",
+  "prediction": "Before the run, by the main session: 20 of 20 first reads local by the checklist; 0 disagreements with the census's cloud closings (as in the focus test, 0 of 57); the local first read settles about 7-11 of 20 (report only); 0-2 failures. Claim likely met."
+}
