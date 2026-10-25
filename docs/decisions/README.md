@@ -1,6 +1,6 @@
 # Decision records
 
-Seven decisions that shape what Proof of Stage does, each with the evidence it rests on. Short on purpose: context, decision, evidence, what it costs.
+Eight decisions that shape what Proof of Stage does, each with the evidence it rests on. Short on purpose: context, decision, evidence, what it costs.
 
 | # | Decision |
 |---|---|
@@ -11,3 +11,4 @@ Seven decisions that shape what Proof of Stage does, each with the evidence it r
 | [0005](0005-first-write-wins.md) | First write wins |
 | [0006](0006-thinking-off-then-4k.md) | Thinking off first, then a 4k budget |
 | [0007](0007-impossible-means-the-count-rule.md) | "Impossible" means the paraphrased count rule says so |
+| [0008](0008-one-meterless-engine.md) | One Meterless engine, Markovian; no memory on a read |
