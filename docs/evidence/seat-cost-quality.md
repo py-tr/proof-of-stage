@@ -27,7 +27,7 @@ Lightning holds the first read for settling more records without a contradiction
 |---|---|---|---|
 | Always Super 4k | 93,419 | (baseline) | measured |
 | First read Super off, then Super 4k on what stays open | 56,160 | -40% | measured (dial test) |
-| First read Lightning off, then Super 4k on what stays open (as shipped) | about 47,335 | about -49% | **estimate**: Lightning's measured first-read tokens plus the measured deep-read tokens per open record (3,958) times the 10 records Lightning left open |
+| First read Lightning off, then Super 4k on what stays open (as shipped) | about 47,335 | about -49% | **estimate, superseded by the measured −50% as shipped (`docs/evidence/shipped-cost-results.md`)**: Lightning's measured first-read tokens plus the measured deep-read tokens per open record (3,958) times the 10 records Lightning left open |
 
 
 **Measured as shipped** (pre-registered, `docs/evidence/shipped-cost-results.md`, the dial test's 30 records, chain and always-4k control in the same session):

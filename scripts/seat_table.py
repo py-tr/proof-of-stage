@@ -87,7 +87,7 @@ def main() -> None:
         "|---|---|---|---|",
         f"| Always Super 4k | {always:,} | (baseline) | measured |",
         f"| First read Super off, then Super 4k on what stays open | {d['ladder_tokens']:,} | {d['ladder_tokens'] / always - 1:+.0%} | measured (dial test) |",
-        f"| First read Lightning off, then Super 4k on what stays open (as shipped) | about {shipped:,.0f} | about {shipped / always - 1:+.0%} | **estimate**: Lightning's measured first-read tokens plus the measured deep-read tokens per open record ({per_open:,.0f}) times the {lr['scored'] - lr['lightning_settled']} records Lightning left open |",
+        f"| First read Lightning off, then Super 4k on what stays open (as shipped) | about {shipped:,.0f} | about {shipped / always - 1:+.0%} | **estimate, superseded by the measured −50% as shipped (`docs/evidence/shipped-cost-results.md`)**: Lightning's measured first-read tokens plus the measured deep-read tokens per open record ({per_open:,.0f}) times the {lr['scored'] - lr['lightning_settled']} records Lightning left open |",
         "",
     ]
     sc_path = LOGS / "shipped-cost-runs.jsonl"
