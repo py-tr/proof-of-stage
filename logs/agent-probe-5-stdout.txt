@@ -1,0 +1,11 @@
+{
+  "run": "20261025T161503",
+  "agent": {
+    "CORRECT": 5
+  },
+  "control": {
+    "RAW": 5
+  },
+  "claim_met": true,
+  "control_replicates": true
+}

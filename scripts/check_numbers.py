@@ -61,6 +61,13 @@ def checks(count_tests: bool) -> list[tuple[str, str]]:
             f"{b['B0_rule_alone']['agree']}",
         )
     )
+    p5 = last("agent-probe-5-runs")
+    out.append(
+        (
+            "probe 5",
+            f"**{p5['agent'].get('CORRECT', 0)} of 5** returned 479 from the checked values",
+        )
+    )
     h = last("hidden-errors-runs")
     out.append(("hidden errors 1", f"**{h['records_contradicting_registry']} of {h['records']}**"))
     d = last("dial-runs")

@@ -21,6 +21,10 @@ BUNDLES = {
         "agent-probe-4-envelopes.jsonl",
         "Agent probe 4: the agent's queries, including the refused overwrites",
     ),
+    "agent-probe-5": (
+        "agent-probe-5-envelopes.jsonl",
+        "Agent probe 5: the agent's own Zetaris account reads only the checked values",
+    ),
     "hidden-2": ("hidden-2-envelopes.jsonl", "Hidden-error census 2: 300 consistent records"),
     "colon": (
         "colon-read-envelopes.jsonl",

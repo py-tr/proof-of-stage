@@ -30,3 +30,11 @@ def test_receipt_bundles_serve_every_committed_envelope() -> None:
     assert attest and len(attest["rows"]) == 57 and attest["fingerprint"] == "7a6d14e27e1a"
     assert all(set(r["envelope"]) >= {"body", "pubkey_b64", "sig_b64"} for r in attest["rows"])
     assert bundle("../../.env") is None
+
+
+def test_probe5_card_reads_the_committed_log() -> None:
+    from app.web.agentprobe import _probe5
+
+    p = _probe5()
+    assert p and p["agent_calls"] == 5 and p["agent_correct"] == 5
+    assert p["control_raw"] == 5 and "AGENT_FILES.node_status" in p["agent_query"]["sql"]

@@ -18,6 +18,7 @@ PROBE1 = ROOT / "logs" / "agent-probe.jsonl"
 PROBE2 = ROOT / "logs" / "agent-probe-2.jsonl"
 PROBE3 = ROOT / "logs" / "agent-probe-3.jsonl"
 PROBE4 = ROOT / "logs" / "agent-probe-4.jsonl"
+PROBE5 = ROOT / "logs" / "agent-probe-5.jsonl"
 CASES = ROOT / "docs" / "evidence" / "agent-probe-cases.json"
 _KEEP = ("arm", "call", "sql", "why", "result", "receipt_id", "signature", "seconds")
 
@@ -54,6 +55,7 @@ def probe_story() -> dict[str, Any] | None:
         "person": cases.get("left_to_a_person_but_raw_positive") or [],
         "probe3": _probe3(),
         "probe4": _probe4(),
+        "probe5": _probe5(),
     }
 
 
@@ -95,4 +97,23 @@ def _probe4() -> dict[str, Any] | None:
         "refused_query": {**_pick(refused[0]), "guard": refused[0].get("guard")}
         if refused
         else None,
+    }
+
+
+def _probe5() -> dict[str, Any] | None:
+    """The fifth probe (its own Zetaris account, checked values only): codes per arm, one query."""
+    rows = _rows(PROBE5)
+    if not rows:
+        return None
+    run = rows[0].get("run")
+    rows = [r for r in rows if r.get("run") == run]
+    agent = [r for r in rows if r.get("arm") == "agent"]
+    control = [r for r in rows if r.get("arm") == "control"]
+    return {
+        "run": run,
+        "agent_calls": len(agent),
+        "agent_correct": sum(r.get("code") == "CORRECT" for r in agent),
+        "control_calls": len(control),
+        "control_raw": sum(r.get("code") == "RAW" for r in control),
+        "agent_query": _pick(next((r for r in agent if r.get("code") == "CORRECT"), None)),
     }
