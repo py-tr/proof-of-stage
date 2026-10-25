@@ -4,7 +4,7 @@
 >
 > Proof of Stage finds database records that cannot be true as written, quotes the source document showing which field is wrong, and leaves the fix to a person. It never edits a record.
 
-For cancer-registry reviewers and research-data teams: it narrows 1,097 records to the 25 that cannot be true as written, and for 21 of them quotes the sentence of the report that names the field it contradicts. Track 2, The Agent That Can Explain Why. NCI's public breast-cancer registry (TCGA-BRCA, 1,097 records). Zetaris proves, Nemotron quotes, a second Nemotron only objects, code checks, Meterless Nightshift signs, a person decides.
+For cancer-registry reviewers and research-data teams: it narrows 1,097 records to the 25 that need a look (24 that cannot be true as written, 1 missing its N), and for 21 of them quotes the sentence of the report that names the field it contradicts. Track 2, The Agent That Can Explain Why. NCI's public breast-cancer registry (TCGA-BRCA, 1,097 records). Zetaris proves, Nemotron quotes, a second Nemotron only objects, code checks, Meterless Nightshift signs, a person decides.
 
 **[One record.](#sample-inputs-and-outputs)** TCGA-E2-A572: count field 0, stage N2. Nemotron may only quote the report, "Lymph node status: Positive 8 / 13"; code confirms the words show 8; the report contradicts the count; a person decides.
 
