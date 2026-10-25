@@ -1,0 +1,504 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/fec/read_vl.py": "a237548a459b20b8",
+    "app/fec/read.py": "9da74dc6d28dd107"
+  },
+  "prompt_sha256_16": "a0527e0d6ef833c4",
+  "seed": 20261026,
+  "sample_size": 24,
+  "excluded": {
+    "v1_sample": [
+      "1169553",
+      "1188691",
+      "1193884",
+      "1202879",
+      "1227521",
+      "1229754",
+      "1231036",
+      "1231288",
+      "1236339",
+      "1254843",
+      "1314003",
+      "1542282"
+    ],
+    "design_pages": [
+      "1202879",
+      "1231036",
+      "1227521"
+    ],
+    "negative_file_numbers": 3
+  },
+  "pages_1_based": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "models": {
+    "page_finding": "nvidia/nemotron-parse (v1, NVIDIA direct), the v1 rule",
+    "reading": "nvidia/nemotron-3.5-super-vl-120b-a12b (NVIDIA direct; Nightshift 1.2.3 refuses pinned image requests), 4k thinking budget, one call per filing"
+  },
+  "download_failures": 0,
+  "sample": [
+    {
+      "filing_id": "1189362",
+      "committee_name": "TOPHER BRENNAN FOR SENATE",
+      "report": "Q3 2017-09-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/483/201710200200360483/201710200200360483.pdf",
+      "record": {
+        "beginning": "2279.0",
+        "receipts": "2938.86",
+        "disbursements": "3376.75",
+        "close": "2323.11"
+      },
+      "record_gap": "-482.00",
+      "download": {
+        "status": "ok",
+        "bytes": 185438,
+        "sha256": "c399e4c54e304506bd76cda3dabc18caf701473a41c9f0fffbedd447bbced7b5",
+        "pages": 9
+      }
+    },
+    {
+      "filing_id": "1208030",
+      "committee_name": "BISHOP FOR US SENATE",
+      "report": "YE 2017-12-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/222/201802080200158222/201802080200158222.pdf",
+      "record": {
+        "beginning": "17622.0",
+        "receipts": "6377.47",
+        "disbursements": "21274.49",
+        "close": "1575.68"
+      },
+      "record_gap": "1149.30",
+      "download": {
+        "status": "ok",
+        "bytes": 1246883,
+        "sha256": "b7e1e45deb713f2eb7180e101ce83c70e124ac081edb532df645e9e7acfa33c9",
+        "pages": 25
+      }
+    },
+    {
+      "filing_id": "1189698",
+      "committee_name": "MACGOVERN FOR US SENATE",
+      "report": "Q3 2017-09-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/774/201710240200375774/201710240200375774.pdf",
+      "record": {
+        "beginning": "144.0",
+        "receipts": "60.0",
+        "disbursements": "227.02",
+        "close": "3.85"
+      },
+      "record_gap": "-26.87",
+      "download": {
+        "status": "ok",
+        "bytes": 222221,
+        "sha256": "db11872199e427e01b960b9afa5e8efb8bf1bedd508574abfa5d1c7f5901aa33",
+        "pages": 10
+      }
+    },
+    {
+      "filing_id": "1255192",
+      "committee_name": "GIBSON FOR FREEDOM COMMITTEE",
+      "report": "12P 2018-07-18",
+      "pdf_url": "https://docquery.fec.gov/pdf/984/201808070200671984/201808070200671984.pdf",
+      "record": {
+        "beginning": "1957.0",
+        "receipts": "405.0",
+        "disbursements": "257.0",
+        "close": "2362.0"
+      },
+      "record_gap": "-257.00",
+      "download": {
+        "status": "ok",
+        "bytes": 517443,
+        "sha256": "b27350c667b071b4af14fd9e6d37476c50d2bff7c0d44e533d4fe1f475c5622e",
+        "pages": 14
+      }
+    },
+    {
+      "filing_id": "1251267",
+      "committee_name": "TUTORA FOR SENATE",
+      "report": "TER 2018-05-05",
+      "pdf_url": "https://docquery.fec.gov/pdf/529/201807180200572529/201807180200572529.pdf",
+      "record": {
+        "beginning": "4200.0",
+        "receipts": "3000.0",
+        "disbursements": "4200.0",
+        "close": "0.0"
+      },
+      "record_gap": "3000.00",
+      "download": {
+        "status": "ok",
+        "bytes": 584155,
+        "sha256": "767aa19d53fb732a1d4e0e1f439dc81bcf37a474d5874b04c13f396a1d7e0924",
+        "pages": 14
+      }
+    },
+    {
+      "filing_id": "1279332",
+      "committee_name": "CRUMPTON FOR ALABAMA",
+      "report": "Q3 2018-09-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/796/201810190300239796/201810190300239796.pdf",
+      "record": {
+        "beginning": "5.0",
+        "receipts": "0.0",
+        "disbursements": "0.6",
+        "close": "57.76"
+      },
+      "record_gap": "-53.36",
+      "download": {
+        "status": "ok",
+        "bytes": 478118,
+        "sha256": "ad71f856eeb5d53ff6a2b87486762ffb158ef9e268b231e226424145ee124b31",
+        "pages": 13
+      }
+    },
+    {
+      "filing_id": "1180282",
+      "committee_name": "JOHN COYNE FOR US SENATE",
+      "report": "Q2 2017-06-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/365/201708160200246365/201708160200246365.pdf",
+      "record": {
+        "beginning": "56.0",
+        "receipts": "75.0",
+        "disbursements": "129.5",
+        "close": "56.95"
+      },
+      "record_gap": "-55.45",
+      "download": {
+        "status": "ok",
+        "bytes": 275075,
+        "sha256": "f3c8c8560aa5e4c07a42bce82690d602d1dcef89a82eaa7931cdbf14205e0dce",
+        "pages": 11
+      }
+    },
+    {
+      "filing_id": "1159748",
+      "committee_name": "JACK ROONEY FOR UNITED STATES SENATE COMMITTEE",
+      "report": "Q1 2017-03-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/178/201704180200114178/201704180200114178.pdf",
+      "record": {
+        "beginning": "150.0",
+        "receipts": "200.0",
+        "disbursements": "50.02",
+        "close": "150.32"
+      },
+      "record_gap": "149.66",
+      "download": {
+        "status": "ok",
+        "bytes": 157748,
+        "sha256": "45ef23f40c4a0138856095e0a38eb8cf682faed730b8264f97fa0947dfbf1bd1",
+        "pages": 7
+      }
+    },
+    {
+      "filing_id": "1314674",
+      "committee_name": "JOSEPH VODVARKA'S PENNSYLVANIA SENATORIAL CANDIDACY COMMITTEE",
+      "report": "YE 2018-12-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/883/201902040300264883/201902040300264883.pdf",
+      "record": {
+        "beginning": "176.0",
+        "receipts": "48.88",
+        "disbursements": "0.88",
+        "close": "176.65"
+      },
+      "record_gap": "47.35",
+      "download": {
+        "status": "ok",
+        "bytes": 282401,
+        "sha256": "237e2018f52444b24a32be137066e0b4a20dd9a0775240641d3d857185da065a",
+        "pages": 6
+      }
+    },
+    {
+      "filing_id": "1240673",
+      "committee_name": "CEAN STEVENS FOR US SENATE",
+      "report": "TER 2018-06-10",
+      "pdf_url": "https://docquery.fec.gov/pdf/708/201806210200467708/201806210200467708.pdf",
+      "record": {
+        "beginning": "929.0",
+        "receipts": "0.08",
+        "disbursements": "930.02",
+        "close": "929.94"
+      },
+      "record_gap": "-930.88",
+      "download": {
+        "status": "ok",
+        "bytes": 233535,
+        "sha256": "0bc3c9597377537e95930c46eb9dfb252a555f42719caa2b61fabe78625e6e9e",
+        "pages": 8
+      }
+    },
+    {
+      "filing_id": "1230585",
+      "committee_name": "COMMITTEE TO ELECT DON RIVERS FOR UNITED STATES SENATE",
+      "report": "Q1 2018-03-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/182/201805090200366182/201805090200366182.pdf",
+      "record": {
+        "beginning": "300.0",
+        "receipts": "10351.04",
+        "disbursements": "10526.9",
+        "close": "300.0"
+      },
+      "record_gap": "-175.86",
+      "download": {
+        "status": "ok",
+        "bytes": 365437,
+        "sha256": "544044cdbe3db7281c8472b84243e1fa89a34e95c0f6f5bffa7a764958da4810",
+        "pages": 7
+      }
+    },
+    {
+      "filing_id": "1231045",
+      "committee_name": "BARKLEY FOR SENATE",
+      "report": "Q1 2018-03-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/379/201804300200362379/201804300200362379.pdf",
+      "record": {
+        "beginning": "-9.0",
+        "receipts": "0.0",
+        "disbursements": "0.0",
+        "close": "0.0"
+      },
+      "record_gap": "-9.00",
+      "download": {
+        "status": "ok",
+        "bytes": 616921,
+        "sha256": "f9bbe187dacd5f550551b66abd1187c480b79f759448365274d2f35e33eed6b4",
+        "pages": 13
+      }
+    },
+    {
+      "filing_id": "1207080",
+      "committee_name": " RICHARD BURR COMMITTEE; THE",
+      "report": "YE 2017-12-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/206/201802020200109206/201802020200109206.pdf",
+      "record": {
+        "beginning": "273623.0",
+        "receipts": "16966.87",
+        "disbursements": "199062.29",
+        "close": "270683.93"
+      },
+      "record_gap": "-179156.35",
+      "download": {
+        "status": "ok",
+        "bytes": 1646702,
+        "sha256": "e5db3a714f37cd4d0cd7f59d2b5d45375a93ab2ac94268818a266d6b7263c112",
+        "pages": 32
+      }
+    },
+    {
+      "filing_id": "1211909",
+      "committee_name": "EDWARD KIMBROUGH FOR US SENATE COMMITTEE-TEXAS",
+      "report": "12P 2018-02-14",
+      "pdf_url": "https://docquery.fec.gov/pdf/897/201802270200172897/201802270200172897.pdf",
+      "record": {
+        "beginning": "100.0",
+        "receipts": "985.0",
+        "disbursements": "575.0",
+        "close": "309.19"
+      },
+      "record_gap": "200.81",
+      "download": {
+        "status": "ok",
+        "bytes": 272698,
+        "sha256": "2b917fdad657440a4c7eb534ba0e0b3e93c36cfd852f213cc145a1c6de8fdd9c",
+        "pages": 7
+      }
+    },
+    {
+      "filing_id": "1256270",
+      "committee_name": "COMMITTEE TO ELECT TOM PALZER US SENATE",
+      "report": "12P 2018-07-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/205/201808080200672205/201808080200672205.pdf",
+      "record": {
+        "beginning": "0.0",
+        "receipts": "11.1",
+        "disbursements": "112.1",
+        "close": "0.0"
+      },
+      "record_gap": "-101.00",
+      "download": {
+        "status": "ok",
+        "bytes": 2218567,
+        "sha256": "0c4e5497a3a2999bb1eac734d5d25bf000efff03da55806d730545cd3ed4b2f4",
+        "pages": 47
+      }
+    },
+    {
+      "filing_id": "1199569",
+      "committee_name": "LARRY MARVIN FOR US SENATE",
+      "report": "YE 2017-12-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/931/201801180200002931/201801180200002931.pdf",
+      "record": {
+        "beginning": "5821.0",
+        "receipts": "5006.0",
+        "disbursements": "2456.76",
+        "close": "5821.83"
+      },
+      "record_gap": "2548.41",
+      "download": {
+        "status": "ok",
+        "bytes": 750848,
+        "sha256": "a74795b80b9c51fe28880f4d17419a0843de1ee2a53627b438d98689151a3b1b",
+        "pages": 13
+      }
+    },
+    {
+      "filing_id": "1231290",
+      "committee_name": "COMMITTEE TO ELECT BO COPLEY",
+      "report": "Q1 2018-03-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/591/201805110200366591/201805110200366591.pdf",
+      "record": {
+        "beginning": "6846.0",
+        "receipts": "6887.5",
+        "disbursements": "9807.9",
+        "close": "6846.72"
+      },
+      "record_gap": "-2921.12",
+      "download": {
+        "status": "ok",
+        "bytes": 1441297,
+        "sha256": "571c606667e64a3851d3c6594c98921afbad4c565f8e32e34d148519565de65e",
+        "pages": 22
+      }
+    },
+    {
+      "filing_id": "1252442",
+      "committee_name": "COMMITTEE TO ELECT JASON SHELTON",
+      "report": "Q2 2018-06-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/984/201807200200637984/201807200200637984.pdf",
+      "record": {
+        "beginning": "0.0",
+        "receipts": "75313.91",
+        "disbursements": "721872.29",
+        "close": "3126.62"
+      },
+      "record_gap": "-649685.00",
+      "download": {
+        "status": "ok",
+        "bytes": 2558215,
+        "sha256": "f62ec321ca3d88bc0df759541850cea66d466fcc7fd686347233430b78ecee39",
+        "pages": 44
+      }
+    },
+    {
+      "filing_id": "1273911",
+      "committee_name": "JOSEPH VODVARKA'S PENNSYLVANIA SENATORIAL CANDIDACY COMMITTEE",
+      "report": "Q3 2018-09-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/020/201810150300236020/201810150300236020.pdf",
+      "record": {
+        "beginning": "176.0",
+        "receipts": "48.88",
+        "disbursements": "0.88",
+        "close": "17665.0"
+      },
+      "record_gap": "-17441.00",
+      "download": {
+        "status": "ok",
+        "bytes": 265035,
+        "sha256": "db45b1e303d7a5147156ffd8429236dab147882f639531d8f69bff5f47242a00",
+        "pages": 6
+      }
+    },
+    {
+      "filing_id": "1206861",
+      "committee_name": "SCHATZ FOR SENATE",
+      "report": "YE 2017-12-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/063/201802010200075063/201802010200075063.pdf",
+      "record": {
+        "beginning": "2478839.0",
+        "receipts": "80164.78",
+        "disbursements": "881147.76",
+        "close": "2470889.08"
+      },
+      "record_gap": "-793033.06",
+      "download": {
+        "status": "ok",
+        "bytes": 7305172,
+        "sha256": "a21810661ff7c0de00fffd4769dc181bcb41bdb129109b67c612e3bfcca1fe09",
+        "pages": 141
+      }
+    },
+    {
+      "filing_id": "1160680",
+      "committee_name": "ROGER THONEY FOR CONGRESS",
+      "report": "Q1 2017-03-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/494/201704190200116494/201704190200116494.pdf",
+      "record": {
+        "beginning": "2123.0",
+        "receipts": "0.0",
+        "disbursements": "40.05",
+        "close": "2119.58"
+      },
+      "record_gap": "-36.63",
+      "download": {
+        "status": "ok",
+        "bytes": 512618,
+        "sha256": "2fe9aae38ac247c28d21b10f8063dabd8d945b633873dbdf58eaf097577f97e0",
+        "pages": 23
+      }
+    },
+    {
+      "filing_id": "1185338",
+      "committee_name": "FRIENDS OF PIPER",
+      "report": "Q3 2017-09-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/038/201710100300176038/201710100300176038.pdf",
+      "record": {
+        "beginning": "10.0",
+        "receipts": "0.0",
+        "disbursements": "0.0",
+        "close": "0.0"
+      },
+      "record_gap": "10.00",
+      "download": {
+        "status": "ok",
+        "bytes": 648246,
+        "sha256": "fdc41339603dde3f217d473c14f40a1c1f7c2fee5ecc5ce34dbcfe7a9479726b",
+        "pages": 13
+      }
+    },
+    {
+      "filing_id": "1252547",
+      "committee_name": "COURTLAND SYKES FOR SENATE",
+      "report": "Q2 2018-06-30",
+      "pdf_url": "https://docquery.fec.gov/pdf/821/201807200200637821/201807200200637821.pdf",
+      "record": {
+        "beginning": "163.0",
+        "receipts": "12799.0",
+        "disbursements": "9944.77",
+        "close": "4169.0"
+      },
+      "record_gap": "-1151.77",
+      "download": {
+        "status": "ok",
+        "bytes": 1536404,
+        "sha256": "653677c91c96199ce0fbbc95123779162e01cb6f2b1badebd1786a4a194db4c2",
+        "pages": 28
+      }
+    },
+    {
+      "filing_id": "1208090",
+      "committee_name": "ELECT BOB CARR US SENATOR COMMITTEE",
+      "report": "YE 2017-12-31",
+      "pdf_url": "https://docquery.fec.gov/pdf/011/201802080200159011/201802080200159011.pdf",
+      "record": {
+        "beginning": "0.0",
+        "receipts": "4042.92",
+        "disbursements": "4039.57",
+        "close": "25.55"
+      },
+      "record_gap": "-22.20",
+      "download": {
+        "status": "ok",
+        "bytes": 880811,
+        "sha256": "648c9874c133a1e82684bad005e403ee286d78ac13b179598a2f39653e754900",
+        "pages": 15
+      }
+    }
+  ],
+  "claim": "'Super VL reads the handwritten cash summary' only if >= 16 of 24 filings are read and Super VL agrees with the FEC database on >= 80% of the lines it read",
+  "void": "more than 6 filings fail at the provider",
+  "prediction": "Before the run, by the main session: 18-22 of 24 read (page finding as in v1, ~10 of 12); Super VL agrees with the database on ~80-90% of read lines; 10-15 filings with all four lines agreeing, nearly all of which do not add up (the committee's own arithmetic); 3-6 single-line disagreements. Claim met: likely but not certain."
+}
