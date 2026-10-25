@@ -17,3 +17,6 @@ data/state/
 data/fec/raw/
 data/fec/pdf/
 data/irs/
+
+# local regression output (contains local paths)
+logs/regression-*.txt
