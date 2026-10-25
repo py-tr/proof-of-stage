@@ -14,7 +14,7 @@ from app.reports.ingest import CORPUS_URL, read_reports_csv
 from app.web.data import SAMPLE_FILE, LiveData
 
 MODEL_COLUMNS = ("report_t", "report_n", "report_n_main", "report_nodes_positive", "fault_field")
-DEFAULT_CASES = ("TCGA-A2-A0CV", "TCGA-AN-A0XO", "TCGA-A7-A26E", "TCGA-3C-AAAU")
+DEFAULT_CASES = ("TCGA-E2-A572", "TCGA-A2-A0CV", "TCGA-AN-A0XO", "TCGA-A7-A26E", "TCGA-3C-AAAU")
 SOURCE_NOTE = (
     "Registry facts: NCI Genomic Data Commons (TCGA-BRCA), open access. Report text: "
     f"TCGA-Reports (Kefeli et al.), MIT licence, {CORPUS_URL}. Research data, not for "

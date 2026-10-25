@@ -25,16 +25,16 @@
       <h3 class="lane">Decided</h3>
       <div id="queue-done"></div>
       <p class="small legend">
-        <span class="sw red"></span> evidence names a field ·
-        <span class="sw grey"></span> machine won't decide ·
-        <span class="sw green"></span> you decided
+        <span class="sw red"></span> the report contradicts a field ·
+        <span class="sw grey"></span> a person decides ·
+        <span class="sw green"></span> decided
       </p>
     </aside>
 
     <div class="main">
       <section id="verdict-band" class="verdict-band">
         <div class="verdict-text">
-          <div class="verdict-kicker">The semantic layer names</div>
+          <div class="verdict-kicker">The semantic layer's verdict</div>
           <h1 id="verdict-title" class="verdict-title">Pick a case</h1>
           <p id="headline" class="headline"></p>
           <ol id="why" class="why hidden"></ol>
@@ -104,6 +104,7 @@
               <input id="f-value" placeholder="value, e.g. 4 or N2a">
               <textarea id="f-quote" rows="3" placeholder="a quote: type one, or select text in the report"></textarea>
               <button id="f-run">Check</button>
+              <button id="f-example" type="button" class="hidden">Example: the report's own line</button>
             </div>
             <div id="f-out" class="fool-out"></div>
           </details>

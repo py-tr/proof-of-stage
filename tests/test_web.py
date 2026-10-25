@@ -291,3 +291,22 @@ def test_live_reads_are_cached_until_any_write() -> None:
     client.post("/api/case/TCGA-E2-A572/decision", json={"claim": "not-a-claim"})
     client.get("/api/cohort")
     assert CountingLive.calls == 2
+
+
+def test_sample_mode_hero_example_names_the_count_field() -> None:
+    client = _client()
+    first = client.post(
+        "/api/case/TCGA-E2-A572/challenge",
+        json={"field": "N", "value": "N2", "quote": "Pathological staging (pTN): pT 2 N 2", "known": {}},
+    ).json()
+    assert first["status"] == "accepted"
+    out = client.post(
+        "/api/case/TCGA-E2-A572/challenge",
+        json={
+            "field": "NPOS",
+            "value": "8",
+            "quote": "Lymph node status: Positive 8 / 13",
+            "known": {"report_n_main": first["used"]["report_n_main"]},
+        },
+    ).json()
+    assert out["status"] == "accepted" and out["fault_field_if_accepted"] == "node_count"

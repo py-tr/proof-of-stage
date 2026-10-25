@@ -209,6 +209,7 @@ function verdictTitle(c) {
 function renderPanel(data) {
   const c = data.check;
   $("headline").textContent = data.headline;
+  showExample();
   const why = $("why");
   why.replaceChildren(...(data.why || []).map((step) => el("li", {}, step)));
   why.classList.toggle("hidden", !(data.why || []).length);
@@ -293,7 +294,7 @@ function renderRejected(data) {
 const CLAIM_TEXT = {
   node_count: "The report contradicts the count",
   pathologic_n: "The report contradicts the stage field",
-  neither: "Neither: the flag is wrong",
+  neither: "Neither: the report supports the record as it is",
   unsure: "Not sure",
 };
 
@@ -351,6 +352,30 @@ async function refreshQueueKeep(caseId) {
 }
 
 // ---------- try to fool it ----------
+// One worked example a first-time visitor can click (the line a reviewer would quote).
+const EXAMPLES = {
+  "TCGA-E2-A572": [
+    { field: "N", value: "N2", quote: "Pathological staging (pTN): pT 2 N 2" },
+    { field: "NPOS", value: "8", quote: "Lymph node status: Positive 8 / 13" },
+  ],
+};
+
+function showExample() {
+  const ex = state.current && EXAMPLES[state.current.check.case_id];
+  $("f-example").classList.toggle("hidden", !ex);
+}
+
+async function runExample() {
+  const steps = state.current && EXAMPLES[state.current.check.case_id];
+  if (!steps) return;
+  for (const ex of steps) {  // the report's N first, then its count: each checked by the same guard
+    $("f-field").value = ex.field;
+    $("f-value").value = ex.value;
+    $("f-quote").value = ex.quote;
+    await challenge();
+  }
+}
+
 // ---------- how it was read (latest ladder run) ----------
 const RUNG_NAME = { R1: "First read", R2: "Deep read", R3: "Scan read" };
 
@@ -632,6 +657,7 @@ async function openCase(position, options = {}) {
 function wire() {
   document.querySelectorAll(".reasons button").forEach((b) => b.addEventListener("click", () => decide("neither", b.dataset.r)));
   $("f-run").addEventListener("click", challenge);
+  $("f-example").addEventListener("click", runExample);
   $("note-run").addEventListener("click", writeNote);
   $("report-text").addEventListener("mouseup", () => {
     const picked = String(window.getSelection() || "").trim();
