@@ -1,0 +1,26 @@
+# ClinicalTrials.gov: records coded both Randomized and Single Group (pre-registered, run 2026-10-25)
+
+Pre-registration: `docs/preregistration/ctgov-read.md` + `ctgov-read.json` (frozen before the first call). Run 20261025T194808, log `logs/ctgov-read.jsonl`, summary `logs/ctgov-read-runs.jsonl`, envelopes `docs/evidence/attest/ctgov-read-envelopes.jsonl`. Population at freeze: 893 records with results coded Allocation = Randomized and Interventional Model = Single Group, which the registry's own definitions say cannot both be true. Nemotron Super VL through Nightshift (signed) named the field the record's own text contradicts, with one verbatim quote; code checked the quote is in the text and carries the cue for its verdict.
+
+## Result
+
+| Slice | Records | Model field named, verified | Allocation field named, verified | Unclear or not verified |
+|---|---|---|---|---|
+| Multi-arm (referee: the structured arm count says the model field is wrong) | 30 | **14** | **0** | 16 |
+| One-arm (no automatic referee; reported as found) | 26 | 6 | 4 | 16 |
+
+0 provider failures. **Claim** (multi-arm: model field on at least 24 of 30, allocation on at most 2): **not met**; **kill fired** (fewer than 18).
+
+Prediction (before the run): "Before the run, by the main session: multi-arm: 24-29 of 30 name the model field with a verified quote (claim likely met; misses from background mentions or crossover wording), 0-2 allocation; one-arm slice: mostly 'model' or 'unclear' (randomization of order or dose cohorts in one group), few 'allocation'; 0-3 provider failures."
+
+## Why most misses happened (read after the run, not pre-registered)
+
+- On the multi-arm slice the reader never named the wrong field: every verified answer agrees with the record's arm count (0 of 30 wrong).
+- 9 multi-arm answers named the right field but failed our own cue check, which required "randomiz-" and a two-groups word in the same quote. About 5 of them were correct statements the frozen vocabulary did not cover ("randomly assigned … or to the control group", "randomized to 1 of 3 routes", "one of 2 treatment regimens", "randomized and concurrent controlled"); the check correctly refused 2 (assignment by day of presentation, a cluster design, is not randomization; an arm list without a randomization statement). A wider cue list, written after the run, is not a claim and the result stands as frozen.
+- 6 answers were "unclear" or empty.
+- One-arm slice: 4 records verified as single-arm studies coded Randomized, so the allocation field is the one the text contradicts (NCT00570141, NCT00773383, NCT01106248, NCT01663714); 6 used within-person randomization (split-face, one eye vs the other, test sites), a design the two coded fields do not describe well.
+
+## What it means, and what it does not
+
+- On clean typed text the reading did not produce a wrong field (0 of 30 against the arm count), but our quote check as written accepted too few correct answers to meet the bar; the miss is in the check's vocabulary more than in the reading. The rule finds the records in the thousands: 893 with results, 8,261 in all.
+- One run, no re-run; the multi-arm verdicts are referred to the arm count, not to a person.

@@ -1,0 +1,1 @@
+{"run": "20261025T194808", "records": 56, "failures": 0, "multi_arm": {"records": 30, "model_verified": 14, "allocation_verified": 0, "unclear_or_unverified": 16}, "one_arm": {"records": 26, "model_verified": 6, "allocation_verified": 4, "unclear_or_unverified": 16}, "void": false, "claim_met": false, "kill": true}

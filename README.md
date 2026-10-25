@@ -142,13 +142,13 @@ Nightshift settings we used (1.2.3, Windows, including the Super VL opt-in flag)
 | Every stored value re-read with a signed receipt | **42 of 42 reproduced**; 57 of 57 receipts verified offline and in the browser | `docs/evidence/attest-results.md` |
 | The chain as shipped vs always reading at 4k | **50% fewer completion tokens**, 42% less time; Lightning settled 17 of 30 alone, 0 of its closings contradicted | `docs/evidence/shipped-cost-results.md` |
 | Red-team loop on the Markovian engine | 0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack (disclosed) | `docs/evidence/adversary-chain-v3-results.md` |
-| Three more databases | the rule finds impossible records in each; the reading, as built, met none of four bars | [Pointing it at other data](#pointing-it-at-other-data) |
+| Four more databases | the rule finds impossible records in each; the reading, as built, met none of five bars (on ClinicalTrials.gov's typed text: 0 wrong fields, 14 of 30 verified) | [Pointing it at other data](#pointing-it-at-other-data) |
 
-**All 39 measurements, including every loss: [docs/results.md](docs/results.md).**
+**All 40 measurements, including every loss: [docs/results.md](docs/results.md).**
 
 ## Pointing it at other data
 
-The same cross-field rule finds records that cannot be true as written in three more databases: US Senate campaign filings (136 of 3,156 paper filings vs 1 of 1,151 e-filed), IRS 990-EZ paper returns (1,523) and TCGA colorectal cancer (10 of 592). The reading, as built, met none of four pre-registered bars there: handwriting and OCR text, filings whose own arithmetic is wrong, and a prompt and quote check built for breast reports. Two gaps in our quote check surfaced and are disclosed. Table, causes and files: [`docs/details.md`](docs/details.md#pointing-it-at-other-data).
+The same cross-field rule finds records that cannot be true as written in four more databases: US Senate campaign filings (136 of 3,156 paper filings vs 1 of 1,151 e-filed), IRS 990-EZ paper returns (1,523), TCGA colorectal cancer (10 of 592) and ClinicalTrials.gov, where 8,261 trials are coded both Randomized and Single Group, which the registry's own definitions rule out. The reading, as built, met none of five pre-registered bars. On the first three the text was handwritten or OCR, the filings' own arithmetic was wrong, or the prompt was built for breast reports; on ClinicalTrials.gov's typed text the reader named the right field on 14 of 30 multi-arm records with a verified quote and the wrong field on none, and our quote check's vocabulary turned away about 5 correct answers ([ClinicalTrials.gov](docs/evidence/ctgov-read-results.md)). Two gaps in our quote check surfaced and are disclosed. Table, causes and files: [`docs/details.md`](docs/details.md#pointing-it-at-other-data).
 
 ## Reflection on the Zetaris USL
 
