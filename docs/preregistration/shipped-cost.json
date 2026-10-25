@@ -1,0 +1,15 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/shipped_cost.py": "461d5e8fe36fd2d4",
+    "app/engine/dial.py": "98a143ddd7e22bbe",
+    "app/engine/rungs.py": "97167dc234356165",
+    "app/engine/run_case.py": "95a161a3c3b78bd6",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "cases_from": "docs/preregistration/dial-cases.json (the dial test's 30 frozen records)",
+  "claim": "shipped chain completion tokens <= 60% of always-4k, and its first-read closings contradicted by the 4k read in at most 10%",
+  "void": "more than 10 provider failures",
+  "prediction": "Before the run, by the main session: chain tokens about 45-55% below always-4k (the estimate was about -49%), claim met; Lightning settles about 15-19 of 30 at the first read; 0-1 first-read closings contradicted; 0-3 provider failures."
+}
