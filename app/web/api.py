@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from app import config
 from app.reader.reader import FIELDS, NODES_POSITIVE, THINKING_BUDGET
 from app.web.data import LiveData, SampleData
-from app.web.evidence import challenge, count_rules, headline, recheck
+from app.web.evidence import challenge, count_rules, headline, recheck, why_chain
 from app.web.lineage import LiveLineage, MirrorLineage, lineage
 from app.zetaris import ZetarisError
 
@@ -109,10 +109,12 @@ def create_app(
         found = await _case(case_id)
         check = found["check"]
         edition, site = check.get("edition_code"), check.get("site_key")
+        accepted = _rechecked(found)
         return {
             **found,
-            "accepted": _rechecked(found),
+            "accepted": accepted,
             "headline": headline(check),
+            "why": why_chain(check, accepted),
             "lineage": await _guarded(lineage(rule_source, check)),
             "rules": {
                 "registry_count": count_rules(

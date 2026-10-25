@@ -207,6 +207,9 @@ function verdictTitle(c) {
 function renderPanel(data) {
   const c = data.check;
   $("headline").textContent = data.headline;
+  const why = $("why");
+  why.replaceChildren(...(data.why || []).map((step) => el("li", {}, step)));
+  why.classList.toggle("hidden", !(data.why || []).length);
   const [title, kind] = verdictTitle(c);
   $("verdict-title").textContent = title;
   $("verdict-band").className = `verdict-band ${kind === "named" ? "" : kind}`;

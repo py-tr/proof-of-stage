@@ -154,6 +154,39 @@ def headline(check: dict[str, Any]) -> str:
     return f"{rec}. {reg}. They agree."
 
 
+def why_chain(check: dict[str, Any], accepted: list[dict[str, Any]]) -> list[str]:
+    """The case as five short steps: rule, the report's words, the code check, the field, a person.
+
+    Built only from layer values and the stored, re-checked quote (never a model's prose); an
+    empty list when the registry fields agree."""
+    fault = check.get("fault_field")
+    if not fault and check.get("reason_class") not in (
+        "n_count_contradiction",
+        "n_missing_derivable",
+    ):
+        return []
+    recorded = check.get("recorded_n") or "missing"
+    count = _count(check.get("lymph_nodes_positive"))
+    derived = check.get("derived_n")
+    rule = f"Rule: the registry says {recorded} with {count} positive nodes" + (
+        f"; {count} would be {derived}, so both cannot be true" if derived else ""
+    )
+    quoted = next(
+        (a for a in accepted if a.get("quote") and a.get("field") in (NODES_POSITIVE, "N")), None
+    )
+    if quoted is None:
+        return [rule, "No checked quote from the report yet", "A person decides"]
+    words = f'The report says: "{quoted["quote"].strip()}"'
+    checked = "Code check: these exact words are in the report"
+    if fault == FAULT_NODE_COUNT:
+        field = "So the report contradicts the count field"
+    elif fault == FAULT_PATHOLOGIC_N:
+        field = "So the report contradicts the stage field (N)"
+    else:
+        field = "The report does not settle which field is wrong"
+    return [rule, words, checked, field, "A person decides; the record is never edited"]
+
+
 # The guard's checks in the order it runs them: (rejection reason, what passing means).
 COUNT_CHECKS = (
     ("invalid_count", "a whole number from 0 to 99"),

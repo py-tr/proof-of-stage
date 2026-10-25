@@ -137,3 +137,8 @@ mark strong { font-weight: 800; text-decoration: underline; }
 .panel .strip { grid-template-columns: repeat(2, 1fr); }
 mark.t { opacity: .45; }
 @media (max-width: 1100px) { .grid, .verdict-band, .below { grid-template-columns: 1fr; } .queue { position: static; max-height: none; } }
+
+/* the case in five steps, under the headline */
+.why { margin: 0.4rem 0 0.6rem 1.1rem; padding: 0; font-size: 0.92rem; line-height: 1.45; }
+.why li { margin: 0.1rem 0; }
+.why.hidden { display: none; }
