@@ -83,6 +83,25 @@ function render(data, trace, sample) {
     accepted.length ? flow(...accepted.map((x) => [`${x.field === "NPOS" ? "positive nodes" : "N"} ${x.value} ✓`, "good"])) : null,
     ...rejected.slice(0, 3).map((t) => el("p", { class: "small" }, t)))));
 
+  // 4. The verdict
+  steps.append(el("li", { class: c.fault_field === "review" ? "" : "alert" }, card("Zetaris semantic layer", title(c, sample),
+    flow([`registry N ${show(c.recorded_n)} · report N ${show(c.report_n)}`, c.fault_field === "pathologic_n" ? "bad" : ""],
+      [`registry count ${show(num(c.lymph_nodes_positive))} · report count ${show(num(c.report_nodes_positive))}`, c.fault_field === "node_count" ? "bad" : ""]),
+    el("p", { class: "small" }, data.headline))));
+
+  // 5. A person decides
+  steps.append(el("li", {}, card("You", "A person decides",
+    el("p", {}, "Agree with the named field, name the other one, or say neither, on the case page. ",
+      el("a", { href: `/?case=${c.case_id}` }, "Decide on this case →")),
+    el("p", { class: "small" }, "Each decision is a new append-only row in Zetaris; the record itself is never edited."))));
+
+  // 6. The second reader (filled in by loadSecondReaderCard): it can only object, and an objection sends the case to a person
+  steps.append(el("li", { id: "second-step" }, card("NVIDIA Nemotron Ultra, a second reader that can only object",
+    "Does a second reader catch what the first one missed?", el("p", { class: "small" }, "Loading the logged run…"))));
+
+
+  // What we measured: the pre-registered evidence behind each step
+  steps.append(el("li", { class: "small how-divider" }, el("h2", {}, "What we measured")));
   // 3b. The guard under attack (filled in by loadRedTeam)
   steps.append(el("li", { id: "redteam-step" }, card("NVIDIA Nemotron, attacking the guard",
     "Nemotron tries to make the guard accept a wrong count", el("p", { class: "small" }, "Loading the logged chain…"))));
@@ -108,23 +127,9 @@ function render(data, trace, sample) {
 
   // 3d. The second reader (filled in by loadSecondReaderCard)
   steps.append(el("li", { id: "labels-step" }, card("You, blind", "Against the blind labels", el("p", { class: "small" }, "Loading the scores…"))));
-  steps.append(el("li", { id: "second-step" }, card("NVIDIA Nemotron Ultra, a second reader that can only object",
-    "Does a second reader catch what the first one missed?", el("p", { class: "small" }, "Loading the logged run…"))));
-
   steps.append(el("li", { id: "attest-step" }, card("Nightshift receipts, checked in this page's server",
     "Can anyone check that the stored values came from Nemotron?", el("p", { class: "small" }, "Checking the signatures…"))));
 
-  // 4. The verdict
-  steps.append(el("li", { class: c.fault_field === "review" ? "" : "alert" }, card("Zetaris semantic layer", title(c, sample),
-    flow([`registry N ${show(c.recorded_n)} · report N ${show(c.report_n)}`, c.fault_field === "pathologic_n" ? "bad" : ""],
-      [`registry count ${show(num(c.lymph_nodes_positive))} · report count ${show(num(c.report_nodes_positive))}`, c.fault_field === "node_count" ? "bad" : ""]),
-    el("p", { class: "small" }, data.headline))));
-
-  // 5. A person decides
-  steps.append(el("li", {}, card("You", "A person decides",
-    el("p", {}, "Agree with the named field, name the other one, or say neither, on the case page. ",
-      el("a", { href: `/?case=${c.case_id}` }, "Decide on this case →")),
-    el("p", { class: "small" }, "Each decision is a new append-only row in Zetaris; the record itself is never edited."))));
 }
 
 const VERDICT = {
