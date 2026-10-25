@@ -112,7 +112,7 @@ function render(data, trace, sample) {
     ["Deep read", "Nemotron Super VL, 4k thinking budget · Nightshift", "32 correct / 3 wrong vs Ultra 32 / 4 and Lightning 24 / 3 on the blind labels"],
     ["Scan read", "Nemotron Parse v1 (NVIDIA direct) + Super VL", "Parse v1 6 of 12 vs Parse 2.0 1 of 12 in the pipeline (2.0 returned empty pages)"],
     ["Second reader", "Nemotron Ultra, objection only · Nightshift", "3 objections, all agreeing with the blind labels, 0 against; planted errors 4 of 5; on the census hits it objected to 2 of 12 fallen field readings (it shares the reader's traps)"],
-    ["Local first read (--local)", "Nemotron Lightning on this PC · Nightshift Jobs API, local-only", "20 of 20 first reads local, 0 disagreements with the cloud; what stays open goes to the cloud deep read"],
+    ["Local first read (--local)", "Nemotron Lightning on this PC · Nightshift Jobs API, local-only", "20 of 20 local, 0 disagreements with the cloud; after the Nightshift 2026-10-26 release, 20 of 20 on whole reports (none cut), 0 disagreements; what stays open goes to the cloud deep read"],
     ["Case note", "Nemotron Super VL, thinking on · Nightshift", "21 of 25 notes pass the note check vs Ultra 8 of 25"],
     ["Red team", "Nemotron Super VL on the Meterless Markovian engine", "0 wrong accepts in 57 judged attacks on the quote check"],
     ["Edge first read (measured, not shipped)", "Nemotron 3.5 Bolt, thinking off · NVIDIA direct", "16 of 30 settled vs Lightning's 17, 0 of 34 contradicted, fewer tokens; now reachable through Nightshift (2026-10-26 release), Lightning keeps the seat by settling more"],

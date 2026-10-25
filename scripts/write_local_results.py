@@ -58,6 +58,8 @@ def local_whole() -> None:
         "## What it means, and what it does not",
         "",
         "- Only the first read is local; what it does not settle goes to the cloud deep read as shipped.",
+        "- A first attempt crashed after 7 of 20 records on a bug in our scoring code (a record with no census closing); no result was computed, its 7 rows are kept in `logs/local-whole-crashed.jsonl` (7 of 7 local and whole, 0 disagreements), and the fix is disclosed in the pre-registration's addendum.",
+        "- The local first read settled fewer records than predicted (6 against 8-12): the settled count is report only.",
         "- The window grew after the sponsor's release and a lane restart; we did not change any setting (`logs/probe-nightshift-update-2026-10-26.txt`).",
         "- The referee is the census's cloud chain on the same records, not a fresh paired run. One run, no re-run.",
         "- The Bolt lane was removed before the run; with it on, local jobs resolved two lanes and the frozen checklist failed.",

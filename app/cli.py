@@ -394,7 +394,7 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument(
         "--local",
         action="store_true",
-        help="First read on this PC (local Lightning, local-only privacy, focus step); never stores",
+        help="First read on this PC (local Lightning, local-only privacy, whole report); never stores",
     )
     run.add_argument(
         "--provider",
@@ -498,9 +498,10 @@ def main(argv: list[str] | None = None) -> int:
             uvicorn.run(create_app(), host=args.host, port=args.port)
             return 0
         if args.command == "run" and args.local:
-            from app.engine.local_mode import run_local
+            # the whole report (docs/evidence/local-whole-results.md); local_mode.py keeps the cut
+            from app.engine.local_whole import run_whole
 
-            result = asyncio.run(run_local(args.case.strip().upper()))
+            result = asyncio.run(run_whole(args.case.strip().upper()))
             sys.stdout.write(json.dumps(result, indent=2, default=str) + "\n")
             return 0
         if args.command == "run":

@@ -24,7 +24,7 @@
         "Nemotron 3 Nano Omni (scan witness)",
         "Nemotron 3.5 Content Safety (report screening)"
       ],
-      "local": "the first read also runs on the builder's PC through Nightshift's Jobs API with local-only privacy (python -m app.cli run --case <id> --local)",
+      "local": "the first read also runs on the builder's PC through Nightshift's Jobs API with local-only privacy, on whole reports since the 2026-10-26 Nightshift release (python -m app.cli run --case <id> --local; docs/evidence/local-whole-results.md)",
       "which_model_handled_the_request": "every Nightshift receipt names the winning model and is checked against the requested one; the case page and /how show the model per step; docs/evidence/route-ledger.md",
       "evidence": [
         "README.md#nemotron-model-per-step",
