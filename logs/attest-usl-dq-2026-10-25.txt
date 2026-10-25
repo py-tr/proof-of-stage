@@ -1,0 +1,6 @@
+# RUN DQ on lightning.metastore.registry_audit.attest_audit, 2026-10-25T16:33Z (python scripts/attest_usl.py dq)
+receipt_signed       receipt      total   57  valid   57  invalid    0
+receipt_nemotron     receipt      total   57  valid   57  invalid    0
+receipt_not_cached   receipt      total   57  valid   57  invalid    0
+attested             attestation  total   42  valid   42  invalid    0
+reproduced           attestation  total   42  valid   42  invalid    0
