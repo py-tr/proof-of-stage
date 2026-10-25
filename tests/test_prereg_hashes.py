@@ -57,8 +57,7 @@ def test_every_frozen_file_matches_or_is_listed_as_superseded():
 
 def test_frozen_labels_hash():
     # line endings normalised as for the code hashes: a Windows checkout writes CRLF
-    data = (PREREG / "ground-truth-labels.json").read_bytes().replace(b"
-", b"
-")
+    raw = (PREREG / "ground-truth-labels.json").read_bytes()
+    data = raw.replace(b"\r\n", b"\n")
     frozen = (PREREG / "ground-truth-labels.sha16").read_text(encoding="utf-8").strip()
     assert hashlib.sha256(data).hexdigest()[:16] == frozen
