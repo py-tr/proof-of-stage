@@ -18,3 +18,8 @@ Every accuracy number against the blind labels rests on one lay labeller, who is
 ## Deadline
 
 Labels must be frozen by Mon 2026-10-26 16:00 Prague, or this test is reported as not run.
+
+## Addendum (2026-10-25, before any second label exists): timing and a short use of the case page
+
+- The labeller times each case (start to label saved) on the blind sheet; the median is reported.
+- Only after all 25 blind labels are exported and frozen, the labeller opens the case page on 5 cases chosen by the builder in advance (TCGA-E2-A572, TCGA-A2-A0CV, TCGA-AO-A03P, TCGA-A1-A0SN, TCGA-BH-A0BS), times how long each takes to confirm or override, and answers three questions in their own words: what would you act on, what is missing, would you use it. Reported verbatim, with no time-saved claim (n = 1, a lay person, after seeing the reports).

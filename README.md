@@ -22,6 +22,8 @@ Against blind labels (one lay labeller, the builder) the product agreed on 18 of
 
 Agents now read data through semantic layers, which say what a column means, not whether a record is true. Anything counting node-positive patients from the count column leaves TCGA-E2-A572 out, with nothing in the chain noticing; our agent probes measured exactly that (476 instead of 479), and probe 5 measured the fix in the layer's permissions. The problem is not medical: a database says X, the source document says Y; cancer staging on NCI's public data is the worked, measured example. More: [docs/details.md](docs/details.md).
 
+**What a reviewer is spared** (measured on the local report corpus, no time claimed): of 1,097 records, 25 need a look; for 21 of them the case page shows the quoted sentence that settles the field (the 41 stored quotes on these cases have a median of 7 words) instead of the full report, a median of 738 words for these 25 (456 across all reports). Reading every record also finds what a rule cannot see: 11 of 358 records the rule passes, confirmed by the builder (a lay reader).
+
 ## A second record, on the scan
 
 TCGA-A2-A0CV: the registry says N1a and 4 positive nodes; 4 nodes would be N2a, so both cannot be true. Nemotron reads the report and quotes "(2/18) POSITIVE EXAMINED LYMPH NODES"; the guard confirms the quote and that 2 is the positive count inside it; the semantic layer names **the node-count field**. On the original scan, Nemotron Parse boxes the line "METASTASIS IN TWO OF EIGHTEEN (2/18)". This is the live result; in offline sample mode the same case shows the contradiction and lets you play the reader (no model output is bundled or replayed).
