@@ -6,6 +6,10 @@
 const $ = (id) => document.getElementById(id);
 const show = (v) => (v === null || v === undefined || v === "" ? "—" : String(v));
 const enc = new TextEncoder();
+// Served by the app: /api/receipts…; exported to GitHub Pages: ./data/… (scripts/export_receipts.py).
+const STATIC = document.body.dataset.static === "1";
+const LIST_URL = STATIC ? "./data/index.json" : "/api/receipts";
+const bundleUrl = (key) => (STATIC ? `./data/${encodeURIComponent(key)}.json` : `/api/receipts/${encodeURIComponent(key)}`);
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -121,7 +125,7 @@ async function checkEdit() {
 
 async function loadBundle(key) {
   $("rows").textContent = "Checking…";
-  const data = await api(`/api/receipts/${encodeURIComponent(key)}`);
+  const data = await api(bundleUrl(key));
   const pinnedFp = data.fingerprint;
   const computedFp = await fingerprint(data.pubkey_b64);
   const results = [];
@@ -163,7 +167,7 @@ async function loadBundle(key) {
 async function start() {
   $("check-edit").addEventListener("click", checkEdit);
   try { await makeVerifier(); } catch (error) { $("summary").replaceChildren(el("p", { class: "rx-bad" }, error.message)); return; }
-  const { bundles } = await api("/api/receipts");
+  const { bundles } = await api(LIST_URL);
   const select = $("bundle");
   for (const b of bundles.filter((x) => x.present)) select.append(el("option", { value: b.id }, b.label));
   const wanted = new URLSearchParams(location.search).get("bundle");
