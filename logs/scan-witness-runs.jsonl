@@ -1,0 +1,1 @@
+{"run": "20261025T185306", "cases": 13, "omni": {"correct": 11, "wrong": 2, "not_accepted": 8, "failures": 0, "tokens": 38343, "seconds": 879.7}, "super_vl": {"correct": 11, "wrong": 3, "not_accepted": 7, "failures": 0, "tokens": 37836, "seconds": 804.7}, "void": false, "claim_met": false, "kill": false}
