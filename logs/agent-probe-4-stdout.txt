@@ -1,0 +1,12 @@
+{
+  "run": "20261025T130742",
+  "ids": {
+    "EXACT_SIX": 4,
+    "SUPERSET": 1
+  },
+  "fix": {
+    "WRITE_ATTEMPTED_REFUSED": 5
+  },
+  "ids_claim_met": true,
+  "writes_not_refused": 0
+}
