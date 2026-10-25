@@ -91,4 +91,52 @@ Project TCGA-BRCA (GDC clinical data, 1,097 cases). Each record below has a reco
 - Why: the registry records Part C's 22 and appears to miss Part B's 1; both 22 and 23 give the same N stage, so a stage rule cannot see it
 - Source: docs/evidence/hidden-errors-results.md (lay read by the builder, 2026-10-24)
 
+
+## More records that pass every rule (second census, 2026-10-25)
+
+Each reading below was accepted by the code's quote check, and the record was reviewed: drafted by an AI assistant (Claude) from report excerpts, reviewed and confirmed by the builder (a lay reader, not a pathologist); disputed facts checked by code against the full report text and the GDC record. Only readings the review says stand are listed; 7 readings that fell and 1 left unsure are left out.
+
+### TCGA-A2-A1G4
+- positive lymph node count: registry 2, report reading 1; quote: "METASTATIC CARCINOMA TO 1 OF 15 AXILLARY LYMPH MODES"
+- Review: count: the only positive count is '1 OF 15 AXILLARY'; the other node ('ONE LYMPH NODE … NO RESIDUAL NEOPLASM') is negative; registry 2
+
+### TCGA-AC-A3EH
+- positive lymph node count: registry 12, report reading 3; quote: "Total number of lymph nodes containing metastatic carcinoma: 3"
+- Review: count stands: 'Total number of lymph nodes containing metastatic carcinoma: 3' vs registry 12 (12 is nodes received); the N part falls: the report prints 'pTNM stage: pT3 N2', neither the registry's N3 nor the reading's N1A
+
+### TCGA-AN-A0XV
+- N stage (N category): registry N2, report reading N1; quote: "N Stage: 1"
+- Review: N: the report prints 'N Stage: 1'; registry N2
+
+### TCGA-AR-A2LN
+- N stage (N category): registry N0, report reading N1A; quote: "One (of1) axillary sentinel lymph node is. positive for metastatic carcinoma, the largest measuring 2.0 cm"
+- positive lymph node count: registry 0, report reading 1; quote: "One (of1) axillary sentinel lymph node is. positive for metastatic carcinoma, the largest measuring 2.0 cm"
+- Review: bilateral: the GDC record (N0, 0 positive) is the right breast; the report's right side gives 1 of 15 positive, pN1 (printed pN1, not N1a)
+
+### TCGA-BH-A0B5
+- positive lymph node count: registry 5, report reading 6; quote: "LYMPH NODES POSITIVE: 6"
+- Review: count: 1/3 + 5/21 = 6, and the report states 'LYMPH NODES POSITIVE: 6'; registry 5
+
+### TCGA-BH-A0B7
+- positive lymph node count: registry 1, report reading 3; quote: "LYMPH NODES POSITIVE: 3"
+- Review: count: 1/1 + 1/1 + 1/17 = 3, and the report states 'LYMPH NODES POSITIVE: 3'
+
+### TCGA-E2-A108
+- positive lymph node count: registry 4, report reading 5; quote: "Lymph node status: Positive 5 /27"
+- Review: count: 'Lymph node status: Positive 5 /27' is in the report; registry 4
+
+### TCGA-E2-A154
+- N stage (N category): registry N0, report reading N1C; quote: "Pathological staging (pTN): pT 2 N 1c"
+- positive lymph node count: registry 0, report reading 2; quote: "Lymph node status: Positive 2/15 Extranodal extension"
+- Review: count: 'Positive 2/15' (1/12 axillary + 1/2 intramammary); N: the report prints 'pT 2 N 1c' (odd for an intramammary node, but printed); registry N0 / 0
+
+### TCGA-EW-A1IZ
+- positive lymph node count: registry 5, report reading 4; quote: "Number of lymph nodes with macrometastases: 4"
+- Review: count and N: 'four out of nine' + '0/4' = 4 of 13, macrometastases 4, pN2
+
+### TCGA-EW-A1P5
+- positive lymph node count: registry 3, report reading 1; quote: "Number of lymph nodes with macrometastases (>0.2 cm): 1"
+- Review: count: synoptic macrometastases 1, pN1a; only 2 nodes examined, so the registry's 3 cannot be true
+
+
 Method and evidence: https://github.com/py-tr/proof-of-stage (README, docs/evidence/).

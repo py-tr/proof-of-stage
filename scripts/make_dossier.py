@@ -43,6 +43,41 @@ def _n(value: object) -> str:
     return text[:-2] if text.endswith(".0") else text
 
 
+FIELD_NAME = {"NPOS": "positive lymph node count", "N": "N stage (N category)"}
+
+
+def census2_section() -> list[str]:
+    """The standing hits of the second hidden-errors census (reads AI-drafted, builder-confirmed)."""
+    reads_path = ROOT / "docs" / "evidence" / "hidden-2-lay-reads.json"
+    log = ROOT / "logs" / "hidden-2.jsonl"
+    if not reads_path.exists() or not log.exists():
+        return []
+    reads = json.loads(reads_path.read_text(encoding="utf-8"))
+    rows = [json.loads(x) for x in log.read_text(encoding="utf-8").splitlines() if x.strip()]
+    out = [
+        "",
+        "## More records that pass every rule (second census, 2026-10-25)",
+        "",
+        "Each reading below was accepted by the code's quote check, and the record was reviewed: "
+        + reads.get("provenance", "")
+        + ". Only readings the review says stand are listed; 7 readings that fell and 1 left unsure are left out.",
+        "",
+    ]
+    for r in rows:
+        read = (reads.get("reads") or {}).get(r["case"]) or {}
+        if read.get("read") != "stands":
+            continue
+        out.append(f"### {r['case']}")
+        for field, c in (r.get("contradicts_registry") or {}).items():
+            if (r["case"], field) == ("TCGA-AC-A3EH", "N"):
+                continue  # this field's reading fell: the report prints N2, neither value
+            out.append(
+                f'- {FIELD_NAME.get(field, field)}: registry {c["registry"]}, report reading {c["report"]}; quote: "{c["quote"]}"'
+            )
+        out += [f"- Review: {read.get('note', '')}", ""]
+    return out
+
+
 async def main() -> None:
     scores = json.loads(SCORES.read_text(encoding="utf-8"))["baseline_all"]["per_case"]
     labels = json.loads(LABELS.read_text(encoding="utf-8"))["labels"]
@@ -144,6 +179,10 @@ async def main() -> None:
         f"- Report: {A25D['report']}",
         f"- Why: {A25D['why']}",
         f"- Source: {A25D['found_by']}",
+        "",
+    ]
+    lines += census2_section()
+    lines += [
         "",
         "Method and evidence: https://github.com/py-tr/proof-of-stage (README, docs/evidence/).",
     ]
