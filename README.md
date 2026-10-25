@@ -10,6 +10,12 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 
 **One question, three answers.** How many patients had cancer in the lymph nodes? On the 663 records where both fields apply: stage field 336, count field 328, quote-checked reading 333, with 2 left to a person. Only a cross-field rule finds the 24 of 1,097 that cannot be true as written.
 
+**Measured, each pre-registered and run once** (losses included in [Results](#results-live-2026-10-22-to-10-24-every-number-has-its-file)):
+- **Small model first:** as shipped, Nemotron Lightning first and Super only on what stays open used **50% fewer completion tokens** than always reading at 4k, **0 of 36** first-read closings contradicted ([cost](docs/evidence/shipped-cost-results.md)).
+- **Where the fix lives:** an agent reading the layer counted the raw column every time and tried to overwrite the registry when told to correct it (refused 5 of 5); with its own Zetaris account that reads only checked values, it answered right **5 of 5** ([probe 5](docs/evidence/agent-probe-5-results.md)).
+- **Checkable by anyone:** every stored value re-read once, **42 of 42** reproduced; all 57 signatures verify offline and in your browser, and one changed byte fails ([attestation](docs/evidence/attest-results.md)).
+- **What only reading finds:** in 358 records the rule calls consistent, **11** where the report gives a different value, confirmed by the builder, a lay reader ([census](docs/evidence/hidden-2-results.md)).
+
 [Run it, no keys](#run-it) · [How the readers work together](#how-the-readers-work-together) · [Results and losses](#results-live-2026-10-22-to-10-24-every-number-has-its-file) · [Limits](#limits-honest)
 
 **A judge's 15 minutes, no keys:** `pip install -e .`, then `python -m app.cli serve` and open http://127.0.0.1:8000. Pick **TCGA-E2-A572** and click "Example: the report's own line": the same quote check accepts the report's N and its count, and the layer names the count field. Then open `/how` (one record step by step, every model's seat, the agent probes) and `/receipts` (every committed signature checked in your browser; one changed byte turns it red). Sample mode bundles registry facts and report text only: model readings, traces and the second reader need live mode, and their logs are in `docs/evidence/`.
@@ -92,7 +98,7 @@ The blind human labels (`docs/evidence/baseline-m0-results.md`) agree with the l
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 380 tests, no network
+pytest -q                                          # 381 tests, no network
 python -m app.verify                               # every committed Nightshift signature, offline
 python scripts/check_numbers.py                    # the README's headline numbers, recomputed from the committed logs
 python -m app.cli serve                            # no .env needed: without Zetaris settings it runs in sample mode (5 bundled cases, no model output replayed); open http://127.0.0.1:8000
