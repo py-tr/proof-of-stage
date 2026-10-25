@@ -2,7 +2,7 @@
   "written": "2026-10-25",
   "code_sha256_16": {
     "app/engine/local_deep.py": "86259d2f9542fbf9",
-    "app/engine/local_whole.py": "325b87c52ea22d78",
+    "app/engine/local_whole.py": "4166caafd7d254ac",
     "app/engine/local_r1.py": "d44be74b08e97187",
     "app/engine/reader_bench.py": "553dbaf778641355",
     "app/reader/reader.py": "85568555713e3dd4",

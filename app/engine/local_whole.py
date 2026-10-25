@@ -216,6 +216,13 @@ def frozen() -> dict[str, Any]:
     return record
 
 
+def verdict(field: str, local: str, cloud: str | None) -> str:
+    """A local closing against the census's cloud closing; no cloud closing is "unconfirmed"."""
+    if cloud is None:
+        return "unconfirmed"
+    return "agree" if _comparable(field, local) == _comparable(field, cloud) else "disagree"
+
+
 async def run_local_whole() -> dict[str, Any]:
     record = frozen()
     tag = datetime.now(UTC).strftime("%Y%m%dT%H%M%S")
@@ -236,12 +243,7 @@ async def run_local_whole() -> dict[str, Any]:
         if "provider_failure" not in row:
             local = {n: v["value"] for n, v in row["closed"].items() if v["rung"] == R1}
             row["vs_cloud"] = {
-                n: (
-                    "agree"
-                    if _comparable(n, v) == _comparable(n, ref.get(case_id, {}).get(n))
-                    else ("disagree" if ref.get(case_id, {}).get(n) is not None else "unconfirmed")
-                )
-                for n, v in local.items()
+                n: verdict(n, v, ref.get(case_id, {}).get(n)) for n, v in local.items()
             }
         rows.append(row)
         with LOG.open("a", encoding="utf-8") as fh:

@@ -1,0 +1,22 @@
+# nvidia-smi sample taken during the 'OSPREY' local probe (2026-10-26 ~00:45 Prague): utilization %, memory used, 1 s apart, call started at about sample 3.
+# Not tied to a job id; saved after the fact from the session's temp file.
+14 %, 6216 MiB
+20 %, 6216 MiB
+25 %, 6216 MiB
+27 %, 6210 MiB
+34 %, 2087 MiB
+53 %, 2089 MiB
+13 %, 2197 MiB
+10 %, 10267 MiB
+10 %, 10316 MiB
+11 %, 10309 MiB
+10 %, 10263 MiB
+11 %, 10274 MiB
+18 %, 10323 MiB
+11 %, 10327 MiB
+10 %, 10306 MiB
+10 %, 10302 MiB
+13 %, 10302 MiB
+14 %, 10278 MiB
+39 %, 10255 MiB
+51 %, 10262 MiB

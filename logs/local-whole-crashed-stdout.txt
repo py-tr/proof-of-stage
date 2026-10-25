@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\Makrela\Documents\Work\Hackathons\genai-nvidia\scripts\local_whole_run.py", line 23, in <module>
+    print(json.dumps(asyncio.run(local_whole.run_local_whole()), indent=2, default=str))
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Makrela\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 194, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Makrela\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Makrela\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Makrela\Documents\Work\Hackathons\genai-nvidia\app\engine\local_whole.py", line 241, in run_local_whole
+    if _comparable(n, v) == _comparable(n, ref.get(case_id, {}).get(n))
+                            ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Makrela\Documents\Work\Hackathons\genai-nvidia\app\engine\rungs.py", line 129, in _comparable
+    return str(int(float(value)))
+                   ~~~~~^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'NoneType'

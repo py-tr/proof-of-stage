@@ -31,3 +31,7 @@
 ## Prediction
 
 In the json, written before the run.
+
+## Addendum (2026-10-26, before any call of this test)
+
+This test reuses the gate and the model check from `app/engine/local_whole.py`. That module was fixed after its own first run crashed on a scoring bug (see `local-whole.md`, addendum), so this pre-registration is re-frozen with the new hash. This test's code, cases, bar, kill, void and prediction are unchanged, and it has made no call.

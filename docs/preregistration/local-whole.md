@@ -32,3 +32,7 @@
 ## Prediction
 
 In the json, written before the run.
+
+## Addendum (2026-10-26, after a crash, before the full run)
+
+The first run (20261025T232913) crashed after 7 of 20 records on a bug in our scoring code: a record whose census has no cloud closing for a field (TCGA-BH-A0DL has none) made the comparison read a missing value instead of recording "unconfirmed", as the claim's text intends. No result was computed. Its 7 logged rows are kept unchanged in `logs/local-whole-crashed.jsonl` (all 7 first reads local and answered by local Lightning, all 7 reports whole, the longest 13,003 characters; 4 closings agree with the census, 0 disagree). The fix: a missing census value is "unconfirmed" (`verdict()` in `app/engine/local_whole.py`). The pre-registration is re-frozen with the fixed code's hash; the records, bar, kill, void and prediction are unchanged. The full run is made once.
