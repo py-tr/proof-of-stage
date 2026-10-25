@@ -97,7 +97,7 @@ The blind human labels (`docs/evidence/baseline-m0-results.md`) agree with the l
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 381 tests, no network
+pytest -q                                          # 384 tests, no network
 python -m app.verify                               # every committed Nightshift signature, offline
 python scripts/check_numbers.py                    # the README's headline numbers, recomputed from the committed logs
 python -m app.cli serve                            # no .env needed: without Zetaris settings it runs in sample mode (5 bundled cases, no model output replayed); open http://127.0.0.1:8000
