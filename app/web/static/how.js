@@ -87,6 +87,21 @@ function render(data, trace, sample) {
   steps.append(el("li", { id: "redteam-step" }, card("NVIDIA Nemotron, attacking the guard",
     "Nemotron tries to make the guard accept a wrong count", el("p", { class: "small" }, "Loading the logged chain…"))));
 
+  // 3b2. Each Nemotron's seat and the pre-registered result that earned it (README "Nemotron, model per step")
+  const SEATS = [
+    ["First read", "Nemotron Lightning, thinking off · Nightshift", "settled 18 of 28 records vs Super's 15; 0 of 38 closings contradicted, 5 unconfirmed (not faster: claim removed)"],
+    ["Deep read", "Nemotron Super VL, 4k thinking budget · Nightshift", "32 correct / 3 wrong vs Ultra 32 / 4 and Lightning 24 / 3 on the blind labels"],
+    ["Scan read", "Nemotron Parse v1 (NVIDIA direct) + Super VL", "Parse v1 6 of 12 vs Parse 2.0 1 of 12 in the pipeline (2.0 returned empty pages)"],
+    ["Second reader", "Nemotron Ultra, objection only · Nightshift", "3 objections, all agreeing with the blind labels, 0 against; planted errors 4 of 5"],
+    ["Case note", "Nemotron Super VL, thinking on · Nightshift", "21 of 25 notes pass the note check vs Ultra 8 of 25"],
+    ["Red team", "Nemotron Super VL on the Meterless Markovian engine", "0 wrong accepts in 57 judged attacks on the quote check"],
+  ];
+  steps.append(el("li", {}, card("NVIDIA Nemotron, one model per job", "Which Nemotron does what, and why that one",
+    el("table", { class: "how-table" },
+      el("thead", {}, el("tr", {}, el("th", {}, "Job"), el("th", {}, "Model"), el("th", {}, "Why (pre-registered)"))),
+      el("tbody", {}, ...SEATS.map(([job, model, why]) => el("tr", {}, el("td", {}, job), el("td", {}, model), el("td", {}, why))))),
+    el("p", { class: "small" }, "Every comparison was written down with its pass line before its first call, and the losses are published: docs/evidence/lightning-r1-results.md, r1-timing-results.md, reader-bench-results.md, parse-bench-results.md, ultra-critic-results.md, ultra-notes-results.md, adversary-chain-v3-results.md."))));
+
   // 3c. Nemotron as an agent reading the layer (filled in by loadAgentProbe)
   steps.append(el("li", { id: "agent-step", class: "alert" }, card("NVIDIA Nemotron, as an agent reading the layer",
     "Does an agent that reads the semantic layer use the verdict?", el("p", { class: "small" }, "Loading the logged probes…"))));
