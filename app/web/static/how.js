@@ -111,7 +111,8 @@ function render(data, trace, sample) {
     ["First read", "Nemotron Lightning, thinking off · Nightshift", "settled 18 of 28 records vs Super's 15; 0 of 38 closings contradicted, 5 unconfirmed (not faster: claim removed)"],
     ["Deep read", "Nemotron Super VL, 4k thinking budget · Nightshift", "32 correct / 3 wrong vs Ultra 32 / 4 and Lightning 24 / 3 on the blind labels"],
     ["Scan read", "Nemotron Parse v1 (NVIDIA direct) + Super VL", "Parse v1 6 of 12 vs Parse 2.0 1 of 12 in the pipeline (2.0 returned empty pages)"],
-    ["Second reader", "Nemotron Ultra, objection only · Nightshift", "3 objections, all agreeing with the blind labels, 0 against; planted errors 4 of 5"],
+    ["Second reader", "Nemotron Ultra, objection only · Nightshift", "3 objections, all agreeing with the blind labels, 0 against; planted errors 4 of 5; on the census hits it caught 2 of 12 readings that fell (it shares the reader's traps)"],
+    ["Local first read (--local)", "Nemotron Lightning on this PC · Nightshift Jobs API, local-only", "20 of 20 first reads local, 0 disagreements with the cloud; what stays open goes to the cloud deep read"],
     ["Case note", "Nemotron Super VL, thinking on · Nightshift", "21 of 25 notes pass the note check vs Ultra 8 of 25"],
     ["Red team", "Nemotron Super VL on the Meterless Markovian engine", "0 wrong accepts in 57 judged attacks on the quote check"],
     ["Edge first read (measured, not shipped)", "Nemotron 3.5 Bolt, thinking off · NVIDIA direct", "16 of 30 settled vs Lightning's 17, 0 of 34 contradicted, fewer tokens; no Nightshift lane"],
@@ -122,7 +123,7 @@ function render(data, trace, sample) {
     el("table", { class: "how-table" },
       el("thead", {}, el("tr", {}, el("th", {}, "Job"), el("th", {}, "Model"), el("th", {}, "Why (pre-registered)"))),
       el("tbody", {}, ...SEATS.map(([job, model, why]) => el("tr", {}, el("td", {}, job), el("td", {}, model), el("td", {}, why))))),
-    el("p", { class: "small" }, "Every comparison was written down with its pass line before its first call, and the losses are published: docs/evidence/lightning-r1-results.md, r1-timing-results.md, reader-bench-results.md, parse-bench-results.md, ultra-critic-results.md, ultra-notes-results.md, adversary-chain-v3-results.md, bolt-r1-results.md, scan-witness-results.md, safety-screen-results.md. As shipped, the small-model-first chain used 50% fewer completion tokens than always reading at 4k, 0 of 36 closings contradicted (shipped-cost-results.md)."))));
+    el("p", { class: "small" }, "Every comparison was written down with its pass line before its first call (deviations disclosed), and the losses are published: docs/evidence/lightning-r1-results.md, r1-timing-results.md, reader-bench-results.md, parse-bench-results.md, ultra-critic-results.md, ultra-notes-results.md, adversary-chain-v3-results.md, bolt-r1-results.md, scan-witness-results.md, safety-screen-results.md, local-mode-results.md. As shipped, the small-model-first chain used 50% fewer completion tokens than always reading at 4k, 0 of 36 closings contradicted (shipped-cost-results.md)."))));
 
   steps.append(el("li", { id: "ledger-step" }, card("NVIDIA Nemotron, the routing ledger",
     "Which model did the work", el("p", { class: "small" }, "Loading the ledger…"))));
