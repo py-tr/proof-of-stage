@@ -1,18 +1,36 @@
 # Proof of Stage
 
-> An auditor for data typed in from documents: it finds records that cannot be true as written, quotes the source document that shows which field is wrong, and lets a person decide. It never edits a record.
+> **The column says zero. The report says eight.**
+>
+> Proof of Stage finds database records that cannot be true as written, quotes the source document that shows which field is wrong, and leaves the fix to a person. It never edits a record.
 
-**Open Agent Hackathon 2026 · Track 2: "The Agent That Can Explain Why"** · worked on NCI's public cancer data (TCGA-BRCA, 1,097 cases) · Zetaris semantic layer · NVIDIA Nemotron · Meterless Nightshift and Markovian engine
+Track 2 "The Agent That Can Explain Why" · NCI's public breast-cancer registry (TCGA-BRCA, 1,097 records) · Zetaris · NVIDIA Nemotron · Meterless
 
-**One question, three answers** (live from the semantic layer, `usl demo` step 11, `docs/zetaris-demo.md`): *how many patients are node-positive?*
+**One question, three answers.** How many patients had cancer in the lymph nodes? Asked of our Zetaris layer, on the 663 records where both columns apply:
+
+| Read from | Answer |
+|---|---|
+| the stage field (N category) | **336** |
+| the positive-node count field | **328** |
+| the quote-checked reading: where the two disagree, the field the report contradicts is set aside | **333**, and 2 left to a person |
+
+TCGA-E2-A572 has 0 in the count field; its report says "Lymph node status: Positive 8 / 13". The source check passes on all 1,097 records; only a cross-field rule finds the 24 that cannot be true as written.
+
+**How:** a SQL rule in the layer finds the record; Nemotron may only quote the report; a code check confirms the exact words are there; a person decides. Against blind labels from one lay labeller (the builder): the product 18 of 25, Nemotron Super alone 17, level on accuracy. Every model comparison was written down before it ran; the losses are published.
+
+[See TCGA-E2-A572](#what-a-judge-sees-in-one-case) · [Run it](#run-it) · [Results, including the tests we lost](#results-live-2026-10-22-to-10-24-every-number-has-its-file) · [Limits](#limits-honest)
+
+## In detail: the three answers and how they are decided
+
+Live from the semantic layer (`usl demo` step 11, `docs/zetaris-demo.md`):
 
 | Read from | Node-positive |
 |---|---|
 | the registry's N category column | **336** |
 | the registry's positive-node count column | **328** |
-| the verdict (`stage_check.fault_field`): where the two columns disagree, the field the pathology report contradicts is set aside; where they agree, they stand | **333**, and 2 left to a person |
+| the quote-checked reading (the verdict column, `stage_check.fault_field`): where the two columns disagree, the field the pathology report contradicts is set aside; where they agree, they stand | **333**, and 2 left to a person |
 
-The two columns disagree on 10 of 663 records where both apply, and the basic source-level check (positive nodes never exceed nodes examined) passes on all 1,097: the errors are visible only across fields. One of the 10, TCGA-E2-A572, is recorded with 0 positive nodes; its report says "Lymph node status: Positive 8 / 13". The 333 is the quote-backed reading, not ground truth: the report decides only the 10 disagreements (8 settled, 2 to a person), and those readings were scored against blind human labels: 8 of the 10 agree; on TCGA-BH-A0BS and TCGA-E2-A1LI the label leaves the decision to a person, and the Ultra second reader also objects to E2-A1LI's reading (`docs/evidence/baseline-m0-results.md`, `docs/evidence/ultra-critic-results.md`). On those 10 records the latest ladder runs (20 rungs, every one a signed Nightshift receipt) reproduce all 18 stored report values (each with its receipt: `docs/evidence/nightshift-provenance.md`).
+The two columns disagree on 10 of 663 records where both apply, and the basic source-level check (positive nodes never exceed nodes examined) passes on all 1,097: the errors are visible only across fields. One of the 10, TCGA-E2-A572, is recorded with 0 positive nodes; its report says "Lymph node status: Positive 8 / 13". The 333 is the quote-backed reading, not ground truth: the report decides only the 10 disagreements (8 settled, 2 to a person), and those readings were scored against blind labels from one lay labeller (the builder): 8 of the 10 agree; on TCGA-BH-A0BS and TCGA-E2-A1LI the label leaves the decision to a person, and the Ultra second reader also objects to E2-A1LI's reading (`docs/evidence/baseline-m0-results.md`, `docs/evidence/ultra-critic-results.md`). The stored values were first written by earlier NVIDIA-direct reads without receipts; on those 10 records the latest ladder runs (20 rungs, each with a Nightshift receipt whose signature was checked at run time against a pinned key) reproduce all 18 stored report values (each with its receipt: `docs/evidence/nightshift-provenance.md`).
 
 **How it decides**
 1. **The semantic layer proves the record is impossible.** A SQL rule in the Zetaris USL, over three live sources (the NCI GDC API, a file store, Postgres): the recorded N category and the record's own node count cannot both be true (24 of 1,097, plus 1 missing N the count could fill).
@@ -21,12 +39,12 @@ The two columns disagree on 10 of 663 records where both apply, and the basic so
 4. **The semantic layer names the field** the report contradicts (node count, N category, or a person decides), and **a person decides**. Every write is append-only.
 
 **Measured, pre-registered where marked** (each number links to its file):
-- The verdict names a field for **21 of the 25** queue records (24 impossible + 1 missing N; 8 node count, 13 N category); 4 go to a person ([Results](#results-live-2026-10-2223-every-number-has-its-file)).
+- The verdict names a field for **21 of the 25** queue records (24 impossible + 1 missing N; 8 node count, 13 N category); 4 go to a person ([Results](#results-live-2026-10-22-to-10-24-every-number-has-its-file)).
 - **Red team (pre-registered):** Nemotron as a Markovian attacker, 0 wrong accepts in 57 judged attacks ([v3](docs/evidence/adversary-chain-v3-results.md)).
 - **Reasoning dial (pre-registered):** thinking off first, then 4k, used 40% fewer tokens than always 4k; 0 of 31 cheap closings contradicted ([dial](docs/evidence/dial-sample-results.md)).
-- **Model per step (pre-registered):** Lightning took the first rung from Super (18 vs 15 of 28 settled, 0 of 38 contradicted; a controlled same-session re-run confirmed it settles more (16–17 vs 13–14 of 28 in each of 3 trials, 0 contradicted) but showed it is **not faster** (median 2.17 s vs 1.92 s per read) and uses more tokens, [timing](docs/evidence/r1-timing-results.md), [Lightning](docs/evidence/lightning-r1-results.md)); Ultra lost the case-note seat to Super (8 vs 21 of 25, [Ultra](docs/evidence/ultra-notes-results.md)).
+- **Model per step (pre-registered):** Lightning took the first rung from Super (18 vs 15 of 28 settled; of 38 closings 33 confirmed, 0 contradicted, 5 unconfirmed; a controlled same-session re-run confirmed it settles more (16–17 vs 13–14 of 28 in each of 3 trials, 0 contradicted) but showed it is **not faster** (median 2.17 s vs 1.92 s per read) and uses more tokens, [timing](docs/evidence/r1-timing-results.md), [Lightning](docs/evidence/lightning-r1-results.md)); Ultra lost the case-note seat to Super (8 vs 21 of 25, [Ultra](docs/evidence/ultra-notes-results.md)).
 - **An agent reading the layer (pre-registered, 3 probes, 30 calls):** given only the descriptions, Super wrote a query in 19 of 20 calls and all 19 read the raw count column: 14 returned 476, leaving out the 6 patients the verdict corrects; 3 returned 0 because the descriptions did not say counts are stored as "4.0"; 1 was refused by our read guard; the last one, the only query that also read the checked column, included them but filled the 3 cases left to a person back in from the raw count (482, not 479). A pointer to the verdict changed nothing (0 of 5 with it, 0 of 5 without), and neither did the layer's own data-quality rules rendered into the schema as `LOAD USL` returns them: all 10 queries of the third probe, with and without the rules, counted the raw column and returned 476 ([probe 1](docs/evidence/agent-probe-results.md), [probe 2](docs/evidence/agent-probe-2-results.md), [probe 3](docs/evidence/agent-probe-3-results.md)). So the product writes the verdict into the layer and answers the question itself.
-- **Nemotron alone vs the product, against blind human labels (pre-registered):** the product agreed with the label on **18 of 25** cases, Super alone with 4k thinking on 17, Super with thinking off on 9, the count rule alone on 7. On accuracy the product and Super-with-thinking are within one case; what the product adds is a guard-checked quote and an append-only record for every value (Super alone also ran through Nightshift with signed receipts) ([baseline](docs/evidence/baseline-m0-results.md); one lay labeller, a standard close to the product's own logic, both disclosed before scoring).
+- **Nemotron alone vs the product, against blind labels from one lay labeller, the builder (pre-registered):** the product agreed with the label on **18 of 25** cases, Super alone with 4k thinking on 17, Super with thinking off on 9, the count rule alone on 7. On accuracy the product and Super-with-thinking are within one case; what the product adds is a guard-checked quote and an append-only record for every value (Super alone also ran through Nightshift with signed receipts) ([baseline](docs/evidence/baseline-m0-results.md); one lay labeller, a standard close to the product's own logic, both disclosed before scoring).
 
 Architecture diagram: [`docs/architecture.md`](docs/architecture.md).
 
