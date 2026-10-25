@@ -33,3 +33,7 @@ After scoring, the labeller confirmed three mis-clicks: TCGA-AN-A0XO's N was mea
 | B0, the rule alone | 7 | 9 | 7 / 22 | 9 / 22 |
 
 The gap stays one case, the kill line stays not met and the prediction's order holds. With the corrections, AN-A0XN and AN-A0XW leave the list of disagreements above, which leaves 5.
+
+## Exploratory, computed after the fact (2026-10-25, from `logs/label-scores.json` per case, no new call)
+
+The product and Super at 4k give the same answer on 22 of the 25 cases. The 3 where they differ are all labelled "a person decides": the product matches the label on 2 (TCGA-AO-A03P, TCGA-AR-A1AT), Super on 1 (TCGA-E2-A1LI). This is the same one-case gap, on the builder's labels; not a claim.

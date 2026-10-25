@@ -31,3 +31,7 @@ The claim (at least 4 of 5 agent calls return 479) was **met**, and the control 
   - The table is a snapshot (`scripts/agent_view_snapshot.py`, CSV sha16 `a24c459579150519`), not live.
   - One model, one question, n = 5 per arm.
   - The role, user and grants were set up by the builder in the Zetaris GUI; their names are in the pre-registration.
+
+## Across all probes: the agent alone (added 2026-10-25, counted from the committed run logs, no new call)
+
+The same question, "How many patients are node-positive?", answered by Super alone over the described layer in probes 1, 2 and 3 and probe 5's admin control: **35 calls, 0 returned the checked count (479)**. Results: 476 (the raw count column) in 29, 0 in 3, no result in 2 (one SQL error, one refused), 482 in 1. Logs: `logs/agent-probe-runs.jsonl` (10 calls), `logs/agent-probe-2-runs.jsonl` (10), `logs/agent-probe-3-runs.jsonl` (10), `logs/agent-probe-5-runs.jsonl` (control, 5). Every raw-count answer leaves out the 6 patients whose report says node-positive while the count column records 0 (listed in `agent-probe-results.md`). Inside the permission design (its own account, checked values only): 479 in 5 of 5, right by construction.
