@@ -1,0 +1,239 @@
+{
+  "scored_at": "2026-10-25 23:02 UTC",
+  "second_labels_sha16": "5ba1405a9ca4b9d4",
+  "first_labels_sha16": "caef98991d916a90",
+  "answers_from": "logs/label-scores.json per_case (recorded when the first labels were scored)",
+  "labellers": {
+    "cases": 25,
+    "agree": 22,
+    "kappa": 0.821
+  },
+  "vs_second": {
+    "labelled": 25,
+    "product_A0": {
+      "agree": 19,
+      "of": 25
+    },
+    "rule_alone_B0": {
+      "agree": 9,
+      "of": 25
+    },
+    "super_alone_off": {
+      "agree": 12,
+      "of": 25
+    },
+    "super_alone_4k": {
+      "agree": 19,
+      "of": 25
+    }
+  },
+  "vs_both_agree": {
+    "labelled": 22,
+    "product_A0": {
+      "agree": 17,
+      "of": 22
+    },
+    "rule_alone_B0": {
+      "agree": 7,
+      "of": 22
+    },
+    "super_alone_off": {
+      "agree": 9,
+      "of": 22
+    },
+    "super_alone_4k": {
+      "agree": 17,
+      "of": 22
+    }
+  },
+  "reader_bench_vs_second": {
+    "lightning": {
+      "fields": {
+        "N": {
+          "correct": 14,
+          "wrong": 2,
+          "not_accepted": 5,
+          "scored": 21
+        },
+        "NPOS": {
+          "correct": 11,
+          "wrong": 0,
+          "not_accepted": 7,
+          "scored": 18
+        }
+      },
+      "correct": 25,
+      "wrong": 2,
+      "provider_failures": 0,
+      "completion_tokens": 101184
+    },
+    "super": {
+      "fields": {
+        "N": {
+          "correct": 17,
+          "wrong": 2,
+          "not_accepted": 2,
+          "scored": 21
+        },
+        "NPOS": {
+          "correct": 16,
+          "wrong": 0,
+          "not_accepted": 2,
+          "scored": 18
+        }
+      },
+      "correct": 33,
+      "wrong": 2,
+      "provider_failures": 1,
+      "completion_tokens": 77212
+    },
+    "ultra": {
+      "fields": {
+        "N": {
+          "correct": 17,
+          "wrong": 3,
+          "not_accepted": 1,
+          "scored": 21
+        },
+        "NPOS": {
+          "correct": 16,
+          "wrong": 0,
+          "not_accepted": 2,
+          "scored": 18
+        }
+      },
+      "correct": 33,
+      "wrong": 3,
+      "provider_failures": 0,
+      "completion_tokens": 47654
+    },
+    "deep_read_seat": "super"
+  },
+  "per_case": {
+    "TCGA-3C-AAAU": {
+      "first": "pathologic_n",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-A1-A0SN": {
+      "first": "review",
+      "second": "review",
+      "A0": "pathologic_n"
+    },
+    "TCGA-A2-A0CV": {
+      "first": "node_count",
+      "second": "node_count",
+      "A0": "node_count"
+    },
+    "TCGA-A2-A0EW": {
+      "first": "review",
+      "second": "review",
+      "A0": "review"
+    },
+    "TCGA-A7-A26E": {
+      "first": "node_count",
+      "second": "node_count",
+      "A0": "node_count"
+    },
+    "TCGA-A7-A26H": {
+      "first": "node_count",
+      "second": "node_count",
+      "A0": "node_count"
+    },
+    "TCGA-AC-A2FK": {
+      "first": "review",
+      "second": "review",
+      "A0": "pathologic_n"
+    },
+    "TCGA-AN-A0XN": {
+      "first": "node_count",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-AN-A0XO": {
+      "first": "pathologic_n",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-AN-A0XP": {
+      "first": "pathologic_n",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-AN-A0XS": {
+      "first": "pathologic_n",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-AN-A0XT": {
+      "first": "pathologic_n",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-AN-A0XW": {
+      "first": "node_count",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-AO-A03P": {
+      "first": "review",
+      "second": "node_count",
+      "A0": "review"
+    },
+    "TCGA-AO-A1KP": {
+      "first": "node_count",
+      "second": "node_count",
+      "A0": "node_count"
+    },
+    "TCGA-AQ-A1H2": {
+      "first": "node_count",
+      "second": "node_count",
+      "A0": "node_count"
+    },
+    "TCGA-AR-A1AT": {
+      "first": "review",
+      "second": "review",
+      "A0": "review"
+    },
+    "TCGA-BH-A0BS": {
+      "first": "review",
+      "second": "review",
+      "A0": "node_count"
+    },
+    "TCGA-BH-A0DD": {
+      "first": "node_count",
+      "second": "node_count",
+      "A0": "node_count"
+    },
+    "TCGA-D8-A27L": {
+      "first": "review",
+      "second": "review",
+      "A0": "review"
+    },
+    "TCGA-E2-A1B4": {
+      "first": "pathologic_n",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    },
+    "TCGA-E2-A1LI": {
+      "first": "review",
+      "second": "review",
+      "A0": "pathologic_n"
+    },
+    "TCGA-E2-A572": {
+      "first": "node_count",
+      "second": "node_count",
+      "A0": "node_count"
+    },
+    "TCGA-E9-A3X8": {
+      "first": "review",
+      "second": "review",
+      "A0": "pathologic_n"
+    },
+    "TCGA-EW-A424": {
+      "first": "pathologic_n",
+      "second": "pathologic_n",
+      "A0": "pathologic_n"
+    }
+  }
+}
