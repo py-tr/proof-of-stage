@@ -186,7 +186,7 @@ function renderStrip(data) {
     step("stage_check.fault_field", verdict, NAMED(c.fault_field) ? "named by the USL" : c.fault_field === "review" ? "a person decides" : "", NAMED(c.fault_field) ? "verdict" : "verdict review"));
   const failed = data.lineage.failed.map((f) => f.rule);
   const foot = el("div", { class: "strip-foot" }, "Data-quality rules failed: ",
-    failed.length ? failed.map((r, i) => el("span", {}, i ? ", " : "", el("code", {}, r))) : "none",
+    ...(failed.length ? failed.map((r, i) => el("span", {}, i ? ", " : "", el("code", {}, r))) : ["none"]),
     ` · evaluated by ${data.lineage.evaluated_by}`,
     data.lineage.mirror_disagrees ? " · note: the Python mirror disagrees with Zetaris on this case" : "");
   const details = el("details", {}, el("summary", {}, `rule text and where each USL table comes from (${data.lineage.sources_from})`));

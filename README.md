@@ -10,6 +10,8 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 
 **One question, three answers.** How many patients had cancer in the lymph nodes? On the 663 records where both fields apply: stage field 336, count field 328, quote-checked reading 333, with 2 left to a person. Only a cross-field rule finds the 24 of 1,097 that cannot be true as written.
 
+![The case page for TCGA-E2-A572: the layer's verdict "The report contradicts the count", the quoted line "Lymph node status: Positive 8 / 13", and the reviewer's three choices](docs/img/case-e2-a572.png)
+
 **Measured, each pre-registered and run once** (losses included in [Results](#results-live-2026-10-22-to-10-25-every-number-has-its-file)):
 - **Small model first:** as shipped, Nemotron Lightning first and Super only on what stays open used **50% fewer completion tokens** than always reading at 4k on 30 records whose fields agree; of 36 first-read closings the 4k read agreed with 33, contradicted **0**, left 3 unconfirmed ([cost](docs/evidence/shipped-cost-results.md)).
 - **Where the fix lives:** an agent reading the layer counted the raw column every time and tried to overwrite the registry when told to correct it (our query guard refused 5 of 5); with its own Zetaris account that reads only a copy of the checked values, it answered right **5 of 5** ([probe 5](docs/evidence/agent-probe-5-results.md)).
@@ -33,6 +35,9 @@ Against blind labels (one lay labeller, the builder) the product agreed on 18 of
 Agents now read data through semantic layers, which say what a column means, not whether a record is true. Anything counting node-positive patients from the count column leaves TCGA-E2-A572 out, with nothing in the chain noticing; our agent probes measured exactly that (476 instead of 479), and probe 5 measured the fix in the layer's permissions. The problem is not medical: a database says X, the source document says Y; cancer staging on NCI's public data is the worked, measured example. More: [docs/details.md](docs/details.md).
 
 **What a reviewer is spared** (measured on the local report corpus, no time claimed): of 1,097 records, 25 need a look; for 21 of them the case page shows the quoted sentence that settles the field (the 41 stored quotes on these cases have a median of 7 words) instead of the full report, a median of 738 words for these 25 (456 across all reports). For scale (an estimate, not a timed study): the builder's blind labels of the 25 queue reports were saved over 52.8 minutes, a median of 119 seconds between labels; at that pace, reading all 1,097 reports would take about 36 hours.
+
+
+![The /how card: an agent reading the layer counted the raw column; with its own Zetaris account it answered from the checked values](docs/img/how-agent-card.png)
 
 ## A second record, on the scan
 
@@ -156,6 +161,9 @@ The rule pattern carried over: a cross-field rule, written for each dataset, fin
 ## Meterless: Nightshift versions and the provider contract
 
 What Nightshift 1.2.1 could not do and what 1.2.3 fixed, and our self-grade against the provider contract v4: [docs/meterless.md](docs/meterless.md).
+
+
+![/receipts: 57 of 57 signatures checked in the browser; one changed byte and the signature fails](docs/img/receipts-tamper.png)
 
 ## Limits (honest)
 
