@@ -25,3 +25,14 @@ Prediction (before the run): "Before the run, by the main session: multi-arm: 24
 - On clean typed text the reading did not produce a wrong field (0 of 30 against the arm count), but our quote check as written accepted too few correct answers to meet the bar; the miss is split between the check's vocabulary and the reader's own unclear or empty answers (a post-hoc re-score with no cue words, quote located and field agreeing with the arm count, gives 23 of 30, still under the bar; not a claim). The arm list is part of the text the reader sees, so the quote documents the answer rather than discovering it. 893 such records have results; the registry's own count is 8,261.
 - Correction (after a council review): within-person designs (NCT01053000, NCT01848288, NCT02251561) are counted as correct model answers in the multi-arm slice, although the one-arm note above says the two coded fields describe that design poorly.
 - One run, no re-run; the multi-arm verdicts are referred to the arm count, not to a person.
+
+## Found after the run, confirmed by the builder (2026-10-25, not pre-registered)
+
+A council review of the one-arm slice pointed to 2 records listed with one arm where the reader named the model field with a verified quote describing two groups. The builder (a lay reader) read both records and confirmed that each text describes two or more groups, so the record's Single Group field is the one its own text contradicts. These are the only records in this test where the quote carries information the structured fields lack.
+
+| Record | Arms listed | Verified quote |
+|---|---|---|
+| NCT00073008 | 1 ("lapatinib") | "Randomized, open-label, parallel group, 2-stage study to evaluate and compare 2 dose schedules (1500 mg once daily and 500 mg twice daily) of oral lapatinib." |
+| NCT00391469 | 1 ("control treatment", no description) | "In this study we will randomize 1,200 cardiac arrest patients … to hypothermia … or to standard of care following ROSC." |
+
+Reported as found: the one-arm slice had no automatic referee and these two were picked out after the run, so they are examples, not a rate.
