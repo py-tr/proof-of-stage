@@ -1,0 +1,11 @@
+{
+  "run": "20261025T202433",
+  "records": 30,
+  "failures": 1,
+  "model_verified": 22,
+  "allocation_verified": 0,
+  "model_verified_under_v1_check": 19,
+  "void": false,
+  "claim_met": false,
+  "kill": false
+}
