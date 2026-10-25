@@ -22,6 +22,7 @@ DEMO_DOC = ROOT / "docs" / "zetaris-demo.md"
 SNAPSHOT = ROOT / "app" / "web" / "sample" / "node_positive_snapshot.json"
 _SNAPSHOT_COLUMNS = ("case_id", "recorded_n", "lymph_nodes_positive")
 SQL_DIR = ROOT / "app" / "usl" / "sql"
+ATTEST_FQN = "lightning.metastore.registry_audit.attest_audit"
 SAMPLE_ROWS = 5
 # the setup files that identify and onboard each source, in the order `usl setup` runs them
 ONBOARDING = (
@@ -131,6 +132,26 @@ def steps() -> list[Step]:
             "WHEN report_n_main <> 'N0' THEN 'yes' ELSE 'no' END AS node_positive_by_report "
             f"FROM {check} WHERE {_BOTH_APPLY} AND {_DISAGREE} ORDER BY fault_field, case_id",
             sample=20,
+        ),
+        Step(
+            "Every stored value re-read, with a signed receipt the layer checks",
+            "the second USL attest_audit: each receipt signed by the pinned key, answered by a "
+            "Nemotron, not cached; each attestation backed by a verified receipt and reproduced "
+            "(the same checks as its 5 DQ rules, `python scripts/attest_usl.py dq`)",
+            "SELECT 'receipt' AS usl_table, count(*) AS rows, "
+            "sum(CASE WHEN signature_state = 'verified' AND signer_fingerprint = '7a6d14e27e1a' "
+            "THEN 1 ELSE 0 END) AS signed_or_attested, "
+            "sum(CASE WHEN served_model LIKE 'nvidia/nemotron%' "
+            "OR served_model LIKE 'local-runtime/nemotron%' THEN 1 ELSE 0 END) AS nemotron_or_reproduced, "
+            "sum(CASE WHEN cache_status IS NULL OR cache_status IN ('miss', 'bypass') "
+            "THEN 1 ELSE 0 END) AS not_cached "
+            f"FROM {ATTEST_FQN}.receipt UNION ALL "
+            "SELECT 'attestation', count(*), "
+            "sum(CASE WHEN receipt_signature_state = 'verified' "
+            "AND receipt_signer_fingerprint = '7a6d14e27e1a' THEN 1 ELSE 0 END), "
+            "sum(CASE WHEN outcome = 'reproduced' THEN 1 ELSE 0 END), NULL "
+            f"FROM {ATTEST_FQN}.attestation",
+            sample=2,
         ),
     ]
     return out
