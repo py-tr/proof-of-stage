@@ -121,6 +121,9 @@ function render(data, trace, sample) {
       el("tbody", {}, ...SEATS.map(([job, model, why]) => el("tr", {}, el("td", {}, job), el("td", {}, model), el("td", {}, why))))),
     el("p", { class: "small" }, "Every comparison was written down with its pass line before its first call, and the losses are published: docs/evidence/lightning-r1-results.md, r1-timing-results.md, reader-bench-results.md, parse-bench-results.md, ultra-critic-results.md, ultra-notes-results.md, adversary-chain-v3-results.md."))));
 
+  steps.append(el("li", { id: "ledger-step" }, card("NVIDIA Nemotron, the routing ledger",
+    "Which model did the work", el("p", { class: "small" }, "Loading the ledger…"))));
+
   // 3c. Nemotron as an agent reading the layer (filled in by loadAgentProbe)
   steps.append(el("li", { id: "agent-step", class: "alert" }, card("NVIDIA Nemotron, as an agent reading the layer",
     "Does an agent that reads the semantic layer use the verdict?", el("p", { class: "small" }, "Loading the logged probes…"))));
@@ -251,6 +254,21 @@ async function loadAttestCard() {
     el("p", { class: "small" }, "Run it yourself: python -m app.verify (no key, no network; one changed byte fails it), or open /receipts, where your browser checks each signature. " + s.not_established)));
 }
 
+async function loadLedger() {
+  const box = $("ledger-step");
+  if (!box) return;
+  let L = null;
+  try { L = (await api("/api/route-ledger")).ledger; } catch (error) { /* shown below */ }
+  const who = "NVIDIA Nemotron, the routing ledger", title = "Which model did the work";
+  if (!L) { box.replaceChildren(card(who, title, el("p", { class: "small" }, "No ledger generated."))); return; }
+  const fmt = (o) => Object.entries(o || {}).map(([k, v]) => `${k} ${Number(v).toLocaleString("en")}`).join(", ");
+  const S = L.shipped;
+  box.replaceChildren(card(who, title,
+    ...(S ? [el("p", {}, `As shipped (the cost test's ${S.records} records): ${S.settled_by_first_read} settled by the first read alone (Nemotron Lightning, thinking off); the rest went on to Super. Completion tokens per seat: ${fmt(S.tokens_per_seat)}.`)] : []),
+    el("p", {}, `The 25 hard queue cases (latest runs, 2026-10-23, when the first read was still Super): completion tokens per seat: ${fmt(L.tokens_per_seat)}; the second reader re-read ${L.second_reader_values} stored values and objected ${L.second_reader_objections} times.`),
+    el("p", { class: "small" }, "Every step's receipt id is in docs/evidence/route-ledger.md (scripts/route_ledger.py, from committed logs; no model call).")));
+}
+
 async function load(caseId, sample) {
   const [data, found] = await Promise.all([api(`/api/case/${caseId}`), api(`/api/case/${caseId}/trace`)]);
   $("open-case").href = `/?case=${caseId}`;
@@ -261,6 +279,7 @@ async function load(caseId, sample) {
   loadSecondReaderCard();
   loadLabelsCard();
   loadAttestCard();
+  loadLedger();
 }
 
 async function loadScoreboard(sample) {

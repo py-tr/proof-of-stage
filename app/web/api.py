@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -21,6 +22,7 @@ from app.web.lineage import LiveLineage, MirrorLineage, lineage
 from app.zetaris import ZetarisError
 
 LIVE_CACHE_S = 300.0
+ROOT_DIR = Path(__file__).resolve().parents[2]
 STATIC = Path(__file__).parent / "static"
 
 
@@ -321,6 +323,14 @@ def create_app(
         from app.web.redteam import v3_chains
 
         return {"chains": v3_chains()}
+
+    @app.get("/api/route-ledger")
+    async def route_ledger() -> dict[str, Any]:
+        """Which Nemotron did what (scripts/route_ledger.py output, committed; no model call)."""
+        path = ROOT_DIR / "docs" / "evidence" / "route-ledger.json"
+        if not path.exists():
+            return {"ledger": None}
+        return {"ledger": json.loads(path.read_text(encoding="utf-8"))["summary"]}
 
     @app.get("/api/receipts")
     async def receipts_list() -> dict[str, Any]:

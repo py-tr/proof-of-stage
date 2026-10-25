@@ -19,6 +19,7 @@ LOGS = ROOT / "logs"
 OUT_MD = ROOT / "docs" / "evidence" / "route-ledger.md"
 OUT_JSON = ROOT / "docs" / "evidence" / "route-ledger.json"
 SEAT = {"R1": "first read", "R2": "deep read", "R3": "scan read"}
+SHIPPED: dict = {}
 
 
 def _lines(path: Path) -> list[dict]:
@@ -57,6 +58,14 @@ def shipped_section() -> list[str]:
     per_seat = "; ".join(
         f"{k}: {steps[k]} steps, {tokens[k]:,} completion tokens ({', '.join(sorted(models[k]))})"
         for k in steps
+    )
+    SHIPPED.update(
+        {
+            "records": len(cases),
+            "settled_by_first_read": alone,
+            "steps_per_seat": dict(steps),
+            "tokens_per_seat": dict(tokens),
+        }
     )
     return [
         "## As shipped: the shipped-cost run (pre-registered, 2026-10-25, the dial test's 30 records)",
@@ -135,6 +144,8 @@ def main() -> None:
         "second_reader_values": sum(len(c) for c in critic.values()),
         "second_reader_objections": objections,
     }
+    shipped_section()
+    summary["shipped"] = SHIPPED or None
     OUT_JSON.write_text(
         json.dumps({"summary": summary, "cases": cases}, indent=1, ensure_ascii=False),
         encoding="utf-8",
