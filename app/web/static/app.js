@@ -92,10 +92,10 @@ async function loadCohort() {
 // ---------- queue ----------
 function rowLabel(item) {
   const vs = `${show(item.recorded_n)} vs ${show(num(item.lymph_nodes_positive))}`;
-  if (item.fault_field === "node_count") return `Count field · ${vs}`;
-  if (item.fault_field === "pathologic_n") return item.reason_class === "n_missing_derivable" ? `N missing · ${vs}` : `N field · ${vs}`;
+  if (item.fault_field === "node_count") return `Report contradicts the count · ${vs}`;
+  if (item.fault_field === "pathologic_n") return item.reason_class === "n_missing_derivable" ? `Stage field missing · ${vs}` : `Report contradicts the stage field · ${vs}`;
   if (item.read === false) return `Not read yet · ${vs}`;
-  if (item.fault_field === "review") return `Needs a person · ${vs}`;
+  if (item.fault_field === "review") return `A person decides · ${vs}`;
   return `Contradiction · ${vs}`;
 }
 
@@ -195,12 +195,12 @@ function renderStrip(data) {
 // The band's title: which field the evidence names, in plain words.
 function verdictTitle(c) {
   if (state.mode === "sample" && !c.fault_field) return ["Play the reader", "review"];
-  if (c.fault_field === "node_count") return ["The node-count field is wrong", "named"];
+  if (c.fault_field === "node_count") return ["The report contradicts the count", "named"];
   if (c.fault_field === "pathologic_n") {
-    return [c.reason_class === "n_missing_derivable" ? "The N field should be filled in" : "The N field is wrong", "named"];
+    return [c.reason_class === "n_missing_derivable" ? "The report gives the missing stage field" : "The report contradicts the stage field", "named"];
   }
   if (c.fault_field === "review" && c.read === false) return ["Not read yet", "review"];
-  if (c.fault_field === "review") return ["A person decides: the evidence does not settle it", "review"];
+  if (c.fault_field === "review") return ["A person decides: the report does not settle it", "review"];
   return ["The registry fields agree", "agree"];
 }
 
@@ -287,7 +287,7 @@ function renderRejected(data) {
 // ---------- decisions ----------
 const CLAIM_TEXT = {
   node_count: "The count field is wrong",
-  pathologic_n: "The N field is wrong",
+  pathologic_n: "The report contradicts the stage field",
   neither: "Neither: the flag is wrong",
   unsure: "Not sure",
 };
@@ -347,7 +347,7 @@ async function refreshQueueKeep(caseId) {
 
 // ---------- try to fool it ----------
 // ---------- how it was read (latest ladder run) ----------
-const RUNG_NAME = { R1: "R1 fast read", R2: "R2 deep read", R3: "R3 the scan" };
+const RUNG_NAME = { R1: "First read", R2: "Deep read", R3: "Scan read" };
 
 function fieldVerdict(f) {
   if (!f) return "—";
@@ -399,10 +399,10 @@ function renderTrace(trace) {
   const box = $("trace");
   box.replaceChildren();
   if (!trace) {
-    box.append(el("p", { class: "small" }, state.mode === "sample" ? "Sample mode: no model run is shown." : "No ladder run logged for this case yet."));
+    box.append(el("p", { class: "small" }, state.mode === "sample" ? "Sample mode: no model run is shown." : "No reading logged for this case yet."));
     return;
   }
-  const head = el("tr", {}, ...["Rung", "Thinking", "Provider", "Tokens", "Seconds", "N", "Positive nodes"].map((h) => el("th", {}, h)));
+  const head = el("tr", {}, ...["Step", "Thinking", "Provider", "Tokens", "Seconds", "N", "Positive nodes"].map((h) => el("th", {}, h)));
   const rows = trace.rungs.map((r) => el("tr", {},
     el("td", {}, RUNG_NAME[r.rung] || r.rung),
     el("td", {}, r.thinking),
@@ -491,7 +491,7 @@ async function loadTrace(caseId) {
     const found = await api(`/api/case/${caseId}/trace`);
     if (state.current && state.current.check.case_id === caseId) renderTrace(found.trace);
   } catch (error) {
-    $("trace").textContent = `Could not load the ladder run: ${error.message}`;
+    $("trace").textContent = `Could not load the reading: ${error.message}`;
   }
 }
 
@@ -582,7 +582,7 @@ async function challenge() {
         if (verdict.used.report_n_main) state.known.report_n_main = verdict.used.report_n_main;
         if (verdict.used.report_nodes_positive) state.known.report_nodes_positive = verdict.used.report_nodes_positive;
         const f = verdict.fault_field_if_accepted;
-        const text = f === "node_count" ? "the count field" : f === "pathologic_n" ? "the N field" : f === "review" ? "no field yet: a person decides (add the other answer to settle it)" : "nothing (no contradiction here)";
+        const text = f === "node_count" ? "the count field" : f === "pathologic_n" ? "the stage field (N)" : f === "review" ? "no field yet: a person decides (add the other answer to settle it)" : "nothing (no contradiction here)";
         out.append(el("div", {}, `With your readings so far (N ${show(verdict.used.report_n_main)}, count ${show(verdict.used.report_nodes_positive)}) the USL rule would name: `, el("b", {}, text)));
       }
       const spans = acceptedSpans(state.current.accepted || []);

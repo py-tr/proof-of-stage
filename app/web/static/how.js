@@ -5,7 +5,7 @@
 const $ = (id) => document.getElementById(id);
 const show = (v) => (v === null || v === undefined || v === "" ? "—" : String(v));
 const num = (v) => (v === null || v === undefined || v === "" || !Number.isFinite(Number(v)) ? null : Number(v));
-const RUNG = { R1: "fast read", R2: "deep read", R3: "the scan" };
+const RUNG = { R1: "first read", R2: "deep read", R3: "scan read" };
 const REASON = {
   quote_not_in_report: "its quote is not in the report",
   quote_does_not_support: "its quote does not show that value",
@@ -38,9 +38,9 @@ function flow(...items) {
 
 function title(c, sample) {
   if (sample && !c.fault_field) return "In sample mode you play the reader";
-  if (c.fault_field === "node_count") return "The node-count field is wrong";
-  if (c.fault_field === "pathologic_n") return c.reason_class === "n_missing_derivable" ? "The N field should be filled in" : "The N field is wrong";
-  if (c.fault_field === "review") return "A person decides: the evidence does not settle it";
+  if (c.fault_field === "node_count") return "The report contradicts the count";
+  if (c.fault_field === "pathologic_n") return c.reason_class === "n_missing_derivable" ? "The report gives the missing stage field" : "The report contradicts the stage field";
+  if (c.fault_field === "review") return "A person decides: the report does not settle it";
   return "The registry fields agree";
 }
 
@@ -69,7 +69,7 @@ function render(data, trace, sample) {
           const both = n.status === "accepted" && k.status === "accepted";
           return [`${RUNG[r.rung] || r.rung} · thinking ${r.thinking} · ${show(r.seconds)} s · ${both ? `${n.value}, ${k.value}` : "rejected or open"}`, both ? "good" : "bad"];
         }))
-      : el("p", { class: "small" }, "No ladder run logged for this case yet."),
+      : el("p", { class: "small" }, "No reading logged for this case yet."),
     rungs.length ? el("p", { class: "small" }, `Every read: ${[...new Set(rungs.map((r) => r.provider))].join(", ")}; ${rungs.filter((r) => r.signature === "verified").length} of ${rungs.length} with a verified signed receipt.`) : null)));
 
   // 3. The guard
