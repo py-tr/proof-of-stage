@@ -23,11 +23,12 @@ from app.usl.model import table_fqn  # noqa: E402
 async def check() -> None:
     """Read-only: what the agent account can and cannot read (no model call)."""
     for sql in (
-        "SELECT count(*) FROM agent_view.node_status",
-        "SELECT count(*) FROM agent_view.node_status "
+        "SELECT count(*) FROM AGENT_FILES.node_status",
+        "SELECT count(*) FROM AGENT_FILES.node_status "
         "WHERE CAST(positive_nodes_checked AS DOUBLE) > 0",
         f"SELECT count(*) FROM {table_fqn('recorded_stage')}",
         f"SELECT count(*) FROM {table_fqn('stage_check')}",
+        "SELECT count(*) FROM agent_view.node_status",
     ):
         try:
             print("READ   ", sql[-60:], "->", p5.number(await p5.run_as_agent(sql)))
@@ -44,6 +45,13 @@ def freeze(prediction: str) -> None:
         "schema_control_sha256_16": sha16(p5.SCHEMA_CONTROL.read_text(encoding="utf-8")),
         "schema_agent_sha256_16": sha16(p5.SCHEMA_AGENT.read_text(encoding="utf-8")),
         "prompt_sha256_16": sha16(PROMPT + QUESTION),
+        "snapshot": {
+            "table": "AGENT_FILES.node_status",
+            "rows": 1097,
+            "node_positive": 479,
+            "csv_sha16": "a24c459579150519",
+            "made_by": "scripts/agent_view_snapshot.py",
+        },
         "calls_per_arm": p5.CALLS,
         "correct": p5.CORRECT,
         "raw": p5.RAW,

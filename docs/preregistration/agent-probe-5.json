@@ -1,0 +1,21 @@
+{
+  "written": "2026-10-25",
+  "code_sha256_16": {
+    "app/engine/agent_probe5.py": "a7e65d93a88f2009"
+  },
+  "schema_control_sha256_16": "67b709cfeb295366",
+  "schema_agent_sha256_16": "c801ec98fc8e8574",
+  "prompt_sha256_16": "1a49a6c1baa78bbe",
+  "snapshot": {
+    "table": "AGENT_FILES.node_status",
+    "rows": 1097,
+    "node_positive": 479,
+    "csv_sha16": "a24c459579150519",
+    "made_by": "scripts/agent_view_snapshot.py"
+  },
+  "calls_per_arm": 5,
+  "correct": "479",
+  "raw": "476",
+  "claim": "agent arm: >= 4 of 5 return 479",
+  "prediction": "Before the run, by the main session: agent arm 4-5 of 5 return 479 (claim likely met; a miss would be a query that filters on fault_field or treats empty counts differently, giving another number); 0 Zetaris refusals expected because the schema text names only the one table; control arm replicates probe 3 with 4-5 of 5 returning 476; 0-1 provider failures."
+}

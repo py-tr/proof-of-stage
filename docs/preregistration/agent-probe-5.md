@@ -9,11 +9,12 @@ Probes 1–3 asked an agent reading the layer "How many patients are node-positi
 ## Design
 
 - **Zetaris setup (done before freezing; the builder ran the grants in the Zetaris GUI):**
-  - A schema-store view `agent_view.node_status` = `SELECT case_id, positive_nodes_checked, fault_field FROM stage_audit.stage_check`.
-  - Role `agent_reader`, granted `SELECT ON VIEW TABLE agent_view.node_status` only.
+  - A first try with a schema-store view over `stage_check` failed the check. Zetaris requires the view's reader to have access to its source table, and `stage_check` also holds the raw count.
+  - So the agent role reads one table only: `AGENT_FILES.node_status`, in its own Lightning database. It is a dated copy of `case_id, positive_nodes_checked, fault_field` from the live layer (`scripts/agent_view_snapshot.py`; 1,097 rows, 479 with a positive checked count; CSV sha16 in the json).
+  - Role `agent_reader`, granted SELECT on that table only.
   - A separate user in that role, with its own API key (`ZETARIS_AGENT_API_KEY`, local `.env` only).
-  - `python scripts/agent_probe5_run.py check` records, before freezing, that the account reads the view (479 node-positive of 1,097) and is refused on the audit tables.
-- **Treatment ("agent"):** its schema text is `agent-schema-p5-view.txt`, the view, with the layer's own descriptions of the two checked columns. The query goes to Zetaris unchanged under the agent account. A write is never sent. A query on any other object is refused by Zetaris, and that refusal is a result.
+  - `python scripts/agent_probe5_run.py check` records, before freezing, that the account reads the table (479 node-positive of 1,097) and is refused on the audit tables and on the view.
+- **Treatment ("agent"):** its schema text is `agent-schema-p5-view.txt`, that table, with the layer's own descriptions of the two checked columns. The query goes to Zetaris unchanged under the agent account. A write is never sent. A query on any other object is refused by Zetaris, and that refusal is a result.
 - **Control:** replicates probe 3's control arm: the admin account, today's schema text (`agent-schema-p3-control.txt`), and our read guard.
 - **Agent, prompt, question:**
   - Super VL through Nightshift, pinned, signed, no cache, 4k thinking budget.

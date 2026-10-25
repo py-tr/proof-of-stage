@@ -3,9 +3,11 @@
 Pre-registered in docs/preregistration/agent-probe-5.md (prompt, question, both schema texts and
 this code frozen in agent-probe-5.json before the first call). Probes 1-3 asked "How many patients
 are node-positive?" and every query the agent wrote counted the raw count column (476). Here the
-treatment agent queries Zetaris with its own account, whose role `agent_reader` is granted SELECT
-on one view only, `agent_view.node_status` (case_id, positive_nodes_checked, fault_field): the
-checked values. Its schema text is that view and nothing else. The control replicates probe 3's
+treatment agent queries Zetaris with its own account, whose role `agent_reader` can read one table
+only, `AGENT_FILES.node_status`: a dated copy of the checked values (case_id,
+positive_nodes_checked, fault_field) from the live layer (scripts/agent_view_snapshot.py; a view
+was not enough, since a view's reader needs its source table, which also holds the raw count).
+Its schema text is that table and nothing else. The control replicates probe 3's
 control arm (admin account, today's schema text, our read guard).
 
 Same agent: Super VL through Nightshift, pinned, signed, no cache, 4k thinking budget, prompt and
@@ -42,7 +44,9 @@ ENVELOPES = ROOT / "docs" / "evidence" / "attest" / "agent-probe-5-envelopes.jso
 CALLS = 5
 CORRECT, RAW = "479", "476"
 FROZEN_FILES = ("app/engine/agent_probe5.py",)
-DENIED = re.compile(r"permission|privilege|not authori[sz]ed|access denied|denied|forbidden", re.I)
+DENIED = re.compile(
+    r"does not have access|permission|privilege|not authori[sz]ed|denied|forbidden", re.I
+)
 
 
 def frozen() -> dict[str, Any]:

@@ -1,0 +1,5 @@
+READ    SELECT count(*) FROM AGENT_FILES.node_status -> 1097
+READ    node_status WHERE CAST(positive_nodes_checked AS DOUBLE) > 0 -> 479
+REFUSED ightning.metastore.registry_audit.stage_audit.recorded_stage -> User 'AGENT@ZETARIS.COM' does not have access to USL: `metastore`.`registry_audit`.recorded_stage
+REFUSED M lightning.metastore.registry_audit.stage_audit.stage_check -> User 'AGENT@ZETARIS.COM' does not have access to USL: `metastore`.`registry_audit`.stage_check
+REFUSED SELECT count(*) FROM agent_view.node_status -> User 'AGENT@ZETARIS.COM' does not have access to USL: `metastore`.`registry_audit`.stage_check
