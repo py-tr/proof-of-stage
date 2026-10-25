@@ -289,7 +289,7 @@ function renderRejected(data) {
 
 // ---------- decisions ----------
 const CLAIM_TEXT = {
-  node_count: "The count field is wrong",
+  node_count: "The report contradicts the count",
   pathologic_n: "The report contradicts the stage field",
   neither: "Neither: the flag is wrong",
   unsure: "Not sure",
