@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Receipt Explorer</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./how.css">
+  <link rel="stylesheet" href="./receipts.css">
+</head>
+<body data-static="1">
+  <header class="top">
+    <div class="brand">Proof of Stage <span class="tag">receipt explorer</span></div>
+    <select id="bundle" class="how-case" aria-label="Bundle"></select>
+    <a class="howlink" href="https://github.com/py-tr/proof-of-stage">The repository</a>
+  </header>
+  <main class="how">
+    <p class="rx-banner">Recorded receipts from pre-registered runs. <b>Nothing on this page calls a model.</b> Your browser checks every signature itself (Ed25519), against the public key committed in the repository, so you do not have to trust this server.</p>
+    <section class="step-card" id="summary"><p class="small">Loading…</p></section>
+    <section class="step-card" id="tamper"><div class="who">Tamper test</div><h2>Change one byte, and the signature fails</h2><p class="small">Loading…</p></section>
+    <section class="step-card" id="table-card"><div class="who">Every receipt in this bundle</div><h2>What each signature covers</h2><div id="rows" class="small">Loading…</div></section>
+    <section class="step-card" id="edit-card">
+      <div class="who">Try it yourself</div>
+      <h2>Edit a signed body and check it again</h2>
+      <p class="small">Pick a receipt in the table (“edit”), change anything in its signed body below, and check. The original signature only fits the original bytes.</p>
+      <textarea id="edit" class="rx-edit" spellcheck="false" aria-label="Signed body"></textarea>
+      <p><button id="check-edit" type="button">Check this body</button> <span id="edit-result" class="small"></span></p>
+    </section>
+    <p class="small how-foot" id="not-established"></p>
+  </main>
+  <script src="./receipts.js"></script>
+</body>
+</html>

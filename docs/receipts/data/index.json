@@ -1,0 +1,34 @@
+{
+ "bundles": [
+  {
+   "id": "attest",
+   "label": "Attestation census: every stored value re-read once (42 values, 26 cases)",
+   "present": true
+  },
+  {
+   "id": "agent-probe-4",
+   "label": "Agent probe 4: the agent's queries, including the refused overwrites",
+   "present": true
+  },
+  {
+   "id": "agent-probe-5",
+   "label": "Agent probe 5: the agent's own Zetaris account reads only the checked values",
+   "present": true
+  },
+  {
+   "id": "hidden-2",
+   "label": "Hidden-error census 2: 300 consistent records",
+   "present": true
+  },
+  {
+   "id": "colon",
+   "label": "Colorectal read (a second cancer type, a published miss)",
+   "present": true
+  },
+  {
+   "id": "irs",
+   "label": "IRS 990-EZ read (a non-medical domain, a published miss)",
+   "present": true
+  }
+ ]
+}

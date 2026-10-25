@@ -70,6 +70,8 @@ def checks(count_tests: bool) -> list[tuple[str, str]]:
     )
     h = last("hidden-errors-runs")
     out.append(("hidden errors 1", f"**{h['records_contradicting_registry']} of {h['records']}**"))
+    h2 = last("hidden-2-runs")
+    out.append(("hidden errors 2", f"298 scored, **{h2['records_contradicting_registry']} hits**"))
     d = last("dial-runs")
     out += [
         ("dial", f"**{d['settled_at_r1']} settled by the thinking-off read alone**"),

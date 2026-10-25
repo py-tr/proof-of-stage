@@ -1,0 +1,78 @@
+{
+ "provenance": "drafted by an AI assistant (Claude) from report excerpts, reviewed and confirmed by the builder (a lay reader, not a pathologist); disputed facts checked by code against the full report text and the GDC record",
+ "reviewed": "2026-10-25",
+ "reads": {
+  "TCGA-A2-A1G4": {
+   "read": "stands",
+   "note": "count: the only positive count is '1 OF 15 AXILLARY'; the other node ('ONE LYMPH NODE … NO RESIDUAL NEOPLASM') is negative; registry 2"
+  },
+  "TCGA-A2-A25B": {
+   "read": "falls",
+   "note": "per-part count: Part A sentinel 'ONE OF TWO' plus Part C '1 OF 6' = 2, the registry's value; the reading took Part C only"
+  },
+  "TCGA-AC-A3EH": {
+   "read": "stands",
+   "note": "count stands: 'Total number of lymph nodes containing metastatic carcinoma: 3' vs registry 12 (12 is nodes received); the N part falls: the report prints 'pTNM stage: pT3 N2', neither the registry's N3 nor the reading's N1A"
+  },
+  "TCGA-AN-A0XV": {
+   "read": "stands",
+   "note": "N: the report prints 'N Stage: 1'; registry N2"
+  },
+  "TCGA-AO-A03L": {
+   "read": "falls",
+   "note": "per-part count: Part 1 sentinel positive plus Part 2 'LEVEL I: 3/9' = 4, which fits the registry's N2"
+  },
+  "TCGA-AO-A1KQ": {
+   "read": "falls",
+   "note": "per-part count: Part 1 sentinel (1/1) plus Part 2 (1/8) = 2, the registry's value"
+  },
+  "TCGA-AR-A254": {
+   "read": "falls",
+   "note": "per-part count: sentinels '2 of 2' plus dissection '7 of 28' = 9, the registry's value"
+  },
+  "TCGA-AR-A2LN": {
+   "read": "stands",
+   "note": "bilateral: the GDC record (N0, 0 positive) is the right breast; the report's right side gives 1 of 15 positive, pN1 (printed pN1, not N1a)"
+  },
+  "TCGA-AR-A5QM": {
+   "read": "falls",
+   "note": "bilateral, wrong breast: the GDC N0/0 record is the left breast, which matches the report's left side (pN0(i+)); the reading took the right side"
+  },
+  "TCGA-BH-A0B5": {
+   "read": "stands",
+   "note": "count: 1/3 + 5/21 = 6, and the report states 'LYMPH NODES POSITIVE: 6'; registry 5"
+  },
+  "TCGA-BH-A0B7": {
+   "read": "stands",
+   "note": "count: 1/1 + 1/1 + 1/17 = 3, and the report states 'LYMPH NODES POSITIVE: 3'"
+  },
+  "TCGA-BH-A0BD": {
+   "read": "unsure",
+   "note": "only sentinel #1 (1/1) mentions nodes; no other part or total; registry 2"
+  },
+  "TCGA-BH-A18H": {
+   "read": "falls",
+   "note": "bilateral, wrong breast: the GDC N0/0 record is the right breast, which matches the report's right side (0 positive, pN0); the left breast has its own record (N1a)"
+  },
+  "TCGA-E2-A108": {
+   "read": "stands",
+   "note": "count: 'Lymph node status: Positive 5 /27' is in the report; registry 4"
+  },
+  "TCGA-E2-A154": {
+   "read": "stands",
+   "note": "count: 'Positive 2/15' (1/12 axillary + 1/2 intramammary); N: the report prints 'pT 2 N 1c' (odd for an intramammary node, but printed); registry N0 / 0"
+  },
+  "TCGA-EW-A1IZ": {
+   "read": "stands",
+   "note": "count and N: 'four out of nine' + '0/4' = 4 of 13, macrometastases 4, pN2"
+  },
+  "TCGA-EW-A1P5": {
+   "read": "stands",
+   "note": "count: synoptic macrometastases 1, pN1a; only 2 nodes examined, so the registry's 3 cannot be true"
+  },
+  "TCGA-GM-A4E0": {
+   "read": "falls",
+   "note": "per-part count: sentinel A one positive plus Part C 'NINE OF TWENTY-ONE' = 10, N3a, the registry's values"
+  }
+ }
+}
