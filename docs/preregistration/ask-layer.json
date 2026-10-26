@@ -1,0 +1,74 @@
+{
+  "written": "2026-10-26",
+  "code_sha256_16": {
+    "app/agent/ask.py": "63d6945a2c27a0d2",
+    "app/agent/ask_eval.py": "56c547a55aee96ba"
+  },
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "questions": [
+    {
+      "q": "How many patients are node-positive according to the layer's checked answer?",
+      "kind": "number",
+      "want": 333
+    },
+    {
+      "q": "How many patients are node-positive by the stage field?",
+      "kind": "number",
+      "want": 336
+    },
+    {
+      "q": "How many patients are node-positive by the count field?",
+      "kind": "number",
+      "want": 328
+    },
+    {
+      "q": "How many records does the layer's checked answer leave to a person?",
+      "kind": "number",
+      "want": 2
+    },
+    {
+      "q": "How many records cannot be true as written?",
+      "kind": "number",
+      "want": 24
+    },
+    {
+      "q": "How many records are in the review queue?",
+      "kind": "number",
+      "want": 25
+    },
+    {
+      "q": "Which field does the report contradict for TCGA-E2-A572?",
+      "kind": "field",
+      "want": "node_count"
+    },
+    {
+      "q": "How many positive lymph nodes does the pathology report state for TCGA-E2-A572?",
+      "kind": "number",
+      "want": 8
+    },
+    {
+      "q": "Which field does the report contradict for TCGA-AN-A0XN?",
+      "kind": "field",
+      "want": "pathologic_n"
+    },
+    {
+      "q": "For TCGA-A2-A0EW, which field is wrong according to the layer?",
+      "kind": "field",
+      "want": "review"
+    },
+    {
+      "q": "How many positive lymph nodes does the registry record for TCGA-A2-A0CV?",
+      "kind": "number",
+      "want": 4
+    },
+    {
+      "q": "Which field does the report contradict for TCGA-A7-A26H?",
+      "kind": "field",
+      "want": "node_count"
+    }
+  ],
+  "claim": "at least 10 of 12 shown answers right, and every model response carries a verified signed Nightshift receipt naming Lightning",
+  "kill": "fewer than 8 of 12 right, or any response not signed by the pinned key or not answered by Lightning",
+  "void": "more than 3 provider failures",
+  "prediction": "Before the run, by the main session (after two development questions, one answered without a tool before the fixes): 10-12 of 12 right; 0-1 refused (an unsupported number or a skipped tool); every response signed by Lightning; about 20-30 tool calls; 0 provider failures. Field questions are the likeliest misses (the answer may name both fields). Claim likely met."
+}

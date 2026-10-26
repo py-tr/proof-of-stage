@@ -1,6 +1,6 @@
 # Proof of Stage
 
-![tests](https://img.shields.io/badge/tests-386%20passing-brightgreen) ![receipts](https://img.shields.io/badge/Nightshift%20receipts-811%2F811%20verified-blue) ![data](https://img.shields.io/badge/data-NCI%20TCGA--BRCA%2C%20real-informational) ![labels](https://img.shields.io/badge/blind%20labellers-2%2C%20kappa%200.82-informational) ![nemotron](https://img.shields.io/badge/Nemotron-4%20seats%20measured-76b900) ![track](https://img.shields.io/badge/Track%202-The%20Agent%20That%20Can%20Explain%20Why-lightgrey)
+![tests](https://img.shields.io/badge/tests-389%20passing-brightgreen) ![receipts](https://img.shields.io/badge/Nightshift%20receipts-811%2F811%20verified-blue) ![data](https://img.shields.io/badge/data-NCI%20TCGA--BRCA%2C%20real-informational) ![labels](https://img.shields.io/badge/blind%20labellers-2%2C%20kappa%200.82-informational) ![nemotron](https://img.shields.io/badge/Nemotron-4%20seats%20measured-76b900) ![track](https://img.shields.io/badge/Track%202-The%20Agent%20That%20Can%20Explain%20Why-lightgrey)
 
 > **The column says zero. The report says eight.**
 >
@@ -136,7 +136,7 @@ With Docker (sample mode, no keys): `docker build -t proof-of-stage .` then `doc
 ```bash
 python -m venv .venv && .venv\Scripts\activate   # Unix: source .venv/bin/activate
 pip install -e .
-pytest -q                                          # 386 tests, no network
+pytest -q                                          # 389 tests, no network
 python -m app.verify                               # every committed Nightshift signature, offline
 python scripts/check_numbers.py                    # the README's headline numbers, recomputed from the committed logs
 python -m app.cli serve                            # no .env needed: without Zetaris settings it runs in sample mode (5 bundled cases, no model output replayed); open http://127.0.0.1:8000
