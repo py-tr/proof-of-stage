@@ -1,0 +1,43 @@
+{
+  "written": "2026-10-26",
+  "code_sha256_16": {
+    "app/engine/local_off.py": "62d0fb648601e8d9",
+    "app/engine/local_deep.py": "86259d2f9542fbf9",
+    "app/engine/local_whole.py": "4166caafd7d254ac",
+    "app/engine/local_r1.py": "d44be74b08e97187",
+    "app/engine/reader_bench.py": "553dbaf778641355",
+    "app/reader/reader.py": "85568555713e3dd4",
+    "app/reader/quotes.py": "8c64510f04be71ad"
+  },
+  "cases": [
+    "TCGA-A7-A26H",
+    "TCGA-AC-A2FK",
+    "TCGA-AN-A0XN",
+    "TCGA-AN-A0XO",
+    "TCGA-AN-A0XP",
+    "TCGA-AN-A0XS",
+    "TCGA-AN-A0XT",
+    "TCGA-AN-A0XW",
+    "TCGA-AO-A03P",
+    "TCGA-AO-A1KP",
+    "TCGA-AQ-A1H2",
+    "TCGA-AR-A1AT",
+    "TCGA-BH-A0BS",
+    "TCGA-BH-A0DD",
+    "TCGA-D8-A27L",
+    "TCGA-E2-A1B4",
+    "TCGA-E2-A1LI",
+    "TCGA-E2-A572",
+    "TCGA-E9-A3X8",
+    "TCGA-EW-A424"
+  ],
+  "labels_sha16": {
+    "builder": "caef98991d916a90",
+    "second": "5ba1405a9ca4b9d4"
+  },
+  "claim": "every read local by the frozen job checklist and answered by local Lightning, and wrong accepts at most 3 against the builder's labels and at most 2 against the second labeller (cloud Lightning's 4k bench counts on all 25)",
+  "kill": "any read not local or not local Lightning, or 5 or more wrong accepts against either labeller",
+  "void": "more than 6 of 20 provider failures",
+  "reported_not_claimed": "correct accepts, not accepted, seconds per read",
+  "prediction": "Before the run, by the main session (after the 5-case demonstration: 6 accepted, all right, 4 rejected): 20 of 20 reads local and answered by local Lightning; against the builder's labels about 15-25 correct accepts and 0-2 wrong; against the second labeller about 15-25 correct and 0-2 wrong; roughly 40% of values not accepted (sent onward in the shipped chain); about 12-20 s per read; 0-1 failures. Claim likely met; kill unlikely."
+}
