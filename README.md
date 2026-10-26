@@ -8,7 +8,7 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 
 **[One record.](#sample-inputs-and-outputs)** TCGA-E2-A572: count field 0, stage N2. Nemotron may only quote the report, "Lymph node status: Positive 8 / 13"; code confirms the words show 8; the report contradicts the count; a person decides.
 
-**One question, three answers.** How many patients had cancer in the lymph nodes? On the 663 records where both fields apply: stage field 336, count field 328, quote-checked reading 333, with 2 left to a person. Only a cross-field rule finds the 24 of 1,097 that cannot be true as written.
+**One question, three answers.** How many patients had cancer in the lymph nodes? On the 663 records where both fields apply: stage field 336, count field 328, quote-checked reading 333, with 2 left to a person. Counting from the count column alone drops 6 patients whose report says node-positive (TCGA-E2-A572 among them). Only a cross-field rule finds the 24 of 1,097 that cannot be true as written.
 
 ![The case page for TCGA-E2-A572: the layer's verdict "The report contradicts the count", the quoted line "Lymph node status: Positive 8 / 13", and the reviewer's three choices](docs/img/case-e2-a572.png)
 
@@ -28,7 +28,7 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 
 Each reader has one role, and they share one state: the Zetaris layer. The rule, SQL in the layer, proposes the record. The **first read** (Nemotron Lightning, thinking off) may only close a field that agrees with the registry; what stays open goes to the **deep read** (Nemotron Super VL, 4k thinking budget), then the **scan read** (Nemotron Parse and Super). Our code checks every quote and rejects what it cannot find. The Meterless Markovian engine carries a code-written note of what is still open from step to step, and stops when nothing is. A **second reader** (Nemotron Ultra) can only object, with a quote; its objection sends the case to a person (the queue moves it; the layer's verdict and every stored value stay as they are). A **red-team loop** (Super, on the same engine) attacks the quote check: 0 wrong accepts in 57. **A person decides**, as a new row the layer's answer includes.
 
-Against blind labels the product agreed on 18 of 25 and Super alone on 17 (the builder's labels), and 19 and 19 (an independent second labeller, pre-registered; the two labellers agree on 22 of 25, kappa 0.82): level on accuracy. The thinking budget is what changes the answer (Super with thinking off: 9 of 25 and 12; at a 4k budget: 17 and 19), and the chain spends it only on fields that stay open (on 30 consistent records, half the completion tokens; 0 of 36 first-read closings contradicted, 3 unconfirmed). What the product adds is the checked quote, the signed record and a person. Every model comparison was written down before it ran (deviations disclosed); the losses are published.
+Against blind labels the product agreed on 18 of 25 and Super alone on 17 (the builder's labels), and 19 and 19 (an independent second labeller, pre-registered; the two labellers agree on 22 of 25, kappa 0.82); on the 22 both agree on, 17 and 17: level on accuracy. The thinking budget is what changes the answer (Super with thinking off: 9 of 25 and 12; at a 4k budget: 17 and 19), and the chain spends it only on fields that stay open (on 30 consistent records, half the completion tokens; 0 of 36 first-read closings contradicted, 3 unconfirmed). What the product adds is the checked quote, the signed record and a person. Every model comparison was written down before it ran (deviations disclosed); the losses are published.
 
 ## Why it matters: agents trust the semantic layer
 
@@ -181,7 +181,7 @@ What Nightshift 1.2.1 could not do and what 1.2.3 fixed, and our self-grade agai
 - Hosted Nemotron Parse 2.0 returned an empty document on 10-19 and 10-22 (even on NVIDIA's own example); on 10-24 it worked in a retest, then returned 12 of 19 pages empty in the pre-registered comparison (`docs/evidence/parse-bench-results.md`). Parse v1 stays the measured scan reader.
 - Two of six scan boxes missed on a sparse one-page form; the page then shows no box and a person decides.
 - The checks cover N vs the node count in the 6th/7th editions; T, M and stage groups are not audited yet.
-- The evidence chain reads the report text from the local corpus copy and the scan from the local Parse cache (the same text the USL serves); moving those reads onto the USL tables is planned.
+- The evidence chain reads the report text from the local corpus copy and the scan from the local Parse cache; on 65 frozen cases the local text is identical, string for string, to what the USL's `path_report` table serves ([check](docs/evidence/usl-text-equality.md), no model call). Moving those reads onto the USL tables is planned.
 - Append-only storage: the first value written for (case, method, field) stays, even if a later read is better; later reads are logged as `kept-earlier`.
 - "Impossible" means impossible under our paraphrased count rules (data/README.md), not the AJCC manual itself; edition windows overlap (6th 2002–2010, 7th 2009–2018).
 - The GDC REST table is cached (refreshed by `usl setup`); report text and scans are not committed (licences and size).
