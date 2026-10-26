@@ -10,13 +10,26 @@ Measured on 1.2.3, Super VL pinned, the reader prompt on full reports (`logs/nig
 
 Still direct: Nemotron Parse on the scan images (no Nightshift lane for Parse); Super VL reading page images (on 1.2.3 pinned image requests are refused with `no_vision_model`, because the vision gate filters the automatic pool before the pin and every NVIDIA vision row is experimental; the same requests worked on 1.2.1; reported to Meterless, `logs/capability-retest-2026-10-24.jsonl`); and the finished red-team run v2, pre-registered on NVIDIA direct because 1.2.1 could not carry its budget (`docs/evidence/adversary-chain-results.md`).
 
+## The 2026-10-26 release: re-checked within hours
+
+All probes are logged in `logs/probe-nightshift-update-2026-10-26.txt`; the regression is in the same folder.
+
+- **Signing key:** unchanged (fingerprint `7a6d14e27e1a`).
+- **Pinned calls:** Lightning (thinking off), Super VL (4k budget), Ultra and Bolt E4B were each served exactly as requested, with verified signed receipts.
+- **Bolt:** now reachable through Nightshift. Measured earlier on NVIDIA direct, it had no lane then; Lightning keeps the first read by the seat rule.
+- **Automatic routing:** `meterless/text` routes again, to the local Lightning lane, with a verified signature. On 1.2.3 it found no lane.
+- **Local window:** after a restart of the local lane, the window is 16,384 tokens (`ctx_per_slot` in Nightshift's lane config). Before, it was 4,096, which forced cutting long reports. A pre-registered run then read every report whole on this PC: 20 of 20, 0 disagreements (`docs/evidence/local-whole-results.md`).
+- **Local thinking:** a local attempt with thinking on ends after roughly 70-90 seconds with an empty response, before a thinking read of a report finishes. Thinking-off reads finish in seconds. There is no setting for this in the config files, so a local deep read stays untested (`docs/evidence/local-deep-results.md`, void).
+- **Still refused:** image requests pinned to Super VL ("no configured vision-capable model admits them"). The app says this edition has no Vision duty yet, so scans stay NVIDIA direct.
+- **A side effect we caught:** with a second local lane (Bolt) on the race row, local jobs resolved two lanes and our own lane check refused them. We removed that lane.
+
 ## Meterless Runtime as a provider: where we stand (provider contract v4)
 
 Graded against the levels in Meterless' own "Grade my provider integration" prompt (meterless.ai/engines.html). Run `python -m app.cli doctor` to see each check live.
 
 | Level | What the contract asks | Us | Where |
 |---|---|---|---|
-| L0 Text | `meterless/*` routing modes on `/v1/chat/completions`, the real bearer token, 401/403 shown as unauthorized | partly: health reads `/v1/models` (online / unauthorized / offline); `doctor` sends a plain request on `meterless/text`, which returned a string on 1.2.1 (routed to a local Lightning lane); on our 1.2.3 setup it at first found no lane (an opted-in Super VL stays out of automatic routing and no other lane was on Race); in the 2026-10-25 regression `doctor` routed `meterless/text` to the local Lightning lane with a verified signature (`logs/regression-20261025T145759.txt`). The product's calls name their model explicitly (Lightning, Super VL or Ultra) and require it in the signed receipt (on 1.2.1 one explicit request for another model was won by Super VL and refused by that check) | `app/providers/nightshift.py`, `app/cli.py` |
+| L0 Text | `meterless/*` routing modes on `/v1/chat/completions`, the real bearer token, 401/403 shown as unauthorized | yes on the 2026-10-26 release (`meterless/text` routed to local Lightning, signature verified); earlier: health reads `/v1/models` (online / unauthorized / offline); `doctor` sends a plain request on `meterless/text`, which returned a string on 1.2.1 (routed to a local Lightning lane); on our 1.2.3 setup it at first found no lane (an opted-in Super VL stays out of automatic routing and no other lane was on Race); in the 2026-10-25 regression `doctor` routed `meterless/text` to the local Lightning lane with a verified signature (`logs/regression-20261025T145759.txt`). The product's calls name their model explicitly (Lightning, Super VL or Ultra) and require it in the signed receipt (on 1.2.1 one explicit request for another model was won by Super VL and refused by that check) | `app/providers/nightshift.py`, `app/cli.py` |
 | L1 Discovery | `/v1/models` and `/v1/meterless/classes` (both shapes), unknown `meterless/*` ids kept | yes: `nightshift.discover()`; doctor prints the text class state and confirms Super VL is a cloud lane | `app/providers/nightshift.py` |
 | Errors | the server's message first, then its `fix[]`; a 429 retries after 2, 4 and 8 s | yes | `app/providers/nightshift.py` |
 | Local-only | local-only work never reaches a cloud provider | yes: Jobs API with `privacy: local-only`, every resolved lane checked | `nightshift.local_job` |
