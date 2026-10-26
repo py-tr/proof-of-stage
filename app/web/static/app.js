@@ -162,7 +162,14 @@ function renderReport(text, spans) {
     pre.append(mark);
     if (!first || covering.some((s) => s.cls === "x")) first = mark;
   }
-  if (first) first.scrollIntoView({ block: "center", behavior: "smooth" });
+  if (first) scrollInReport(first);
+}
+
+// Centre a highlighted quote inside the report box only; the page itself does not move.
+function scrollInReport(mark) {
+  const box = $("report-text");
+  const delta = mark.getBoundingClientRect().top - box.getBoundingClientRect().top;
+  box.scrollBy({ top: delta - box.clientHeight / 2 + mark.offsetHeight / 2, behavior: "smooth" });
 }
 
 function acceptedSpans(accepted) {
@@ -732,7 +739,7 @@ function wire() {
     cell.addEventListener("mouseenter", () => {
       const found = marks();
       found.forEach((m) => m.classList.add("glow"));
-      if (found.length) found[0].scrollIntoView({ block: "center", behavior: "smooth" });
+      if (found.length) scrollInReport(found[0]);
     });
     cell.addEventListener("mouseleave", () => marks().forEach((m) => m.classList.remove("glow")));
   });
