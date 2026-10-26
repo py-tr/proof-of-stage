@@ -749,8 +749,9 @@ function wire() {
     const reasonsOpen = !$("reject-reasons").classList.contains("hidden");
     if (key === "j") openCase(state.index + 1);
     else if (key === "k") openCase(state.index - 1);
-    else if (["1", "2", "3", "4"].includes(key) && reasonsOpen) decide("neither", ["addendum", "misread", "rule", "other"][Number(key) - 1]);
-    else if (["1", "2", "3"].includes(key) && state.claims) decide(state.claims[Number(key) - 1]);
+    // A number key only selects a button; a decision is saved by a click or Enter, never by a stray key.
+    else if (["1", "2", "3", "4"].includes(key) && reasonsOpen) document.querySelectorAll("#reject-reasons button")[Number(key) - 1]?.focus();
+    else if (["1", "2", "3"].includes(key) && state.claims) document.querySelectorAll("#decide button")[Number(key) - 1]?.focus();
   });
 }
 
