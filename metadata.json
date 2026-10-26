@@ -34,12 +34,13 @@
       ]
     },
     "meterless": {
-      "nightshift": "1.2.3, the primary AI provider: pinned model, unique scope per call, Ed25519 receipt verified against a pinned key, cache refused (app/providers/nightshift.py, app/providers/receipts.py)",
+      "nightshift": "1.2.3, re-verified on the 2026-10-26 release; the primary AI provider: pinned model, unique scope per call, Ed25519 receipt verified against a pinned key, cache refused (app/providers/nightshift.py, app/providers/receipts.py)",
       "engine": "Markovian reference, vendored unmodified (conformance 8 of 8): the per-record evidence chain and a red-team loop (vendor/, app/engine/markovian.py)",
       "evidence": [
         "docs/meterless.md",
         "docs/evidence/attest-results.md",
-        "docs/evidence/tamper-bench.md"
+        "docs/evidence/tamper-bench.md",
+        "docs/evidence/receipt-count.md"
       ]
     },
     "zetaris": {
