@@ -328,6 +328,40 @@ def create_app(
 
         return {"flip": {"case": case_id, "run": row.get("run"), "off": arm(row.get("off") or {}), "budget_4k": arm(row.get("4k") or {})}}
 
+    @app.get("/api/ask-log")
+    async def ask_log() -> dict[str, Any]:
+        """Ask the layer: the two pre-registered runs from the committed logs (no model call)."""
+
+        def rows(name: str) -> list[dict[str, Any]]:
+            path = ROOT_DIR / "logs" / name
+            if not path.exists():
+                return []
+            return [json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x.strip()]
+
+        def brief(r: dict[str, Any]) -> dict[str, Any]:
+            steps = r.get("steps") or []
+            shown = r.get("answer")
+            said = next((s.get("answer") for s in steps if s.get("answer")), None)
+            return {
+                "q": r.get("q"),
+                "want": r.get("want"),
+                "right": r.get("right"),
+                "refused": r.get("refused"),
+                "unsupported": r.get("unsupported"),
+                "tools": [c.get("name") for s in steps for c in s.get("tool_calls") or []],
+                "answer": shown if shown else said,
+                "receipts": [s.get("receipt_id") for s in steps],
+                "model": steps[0].get("model") if steps else None,
+                "run": r.get("run"),
+            }
+
+        v1 = rows("ask-layer.jsonl")
+        v2 = rows("ask-layer-v2.jsonl")
+        pick1 = [brief(r) for r in v1 if not r.get("right")]
+        pick2 = [brief(r) for r in v2 if r.get("q", "").startswith(("How many positive lymph nodes does the pathology report state for TCGA-AQ-A1H2", "How many records does the layer flag"))]
+        return {"v1": {"right": sum(bool(r.get("right")) for r in v1), "of": len(v1), "misses": pick1},
+                "v2": {"right": sum(bool(r.get("right")) for r in v2), "of": len(v2), "examples": pick2}}
+
     @app.get("/api/attest")
     async def attest() -> dict[str, Any]:
         """The attestation census, its signatures checked offline here (no key, no model)."""

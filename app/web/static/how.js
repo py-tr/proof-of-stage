@@ -138,6 +138,9 @@ function render(data, trace, sample) {
       el("tbody", {}, ...SEATS.map(([job, model, why]) => el("tr", {}, el("td", {}, job), el("td", {}, model), el("td", {}, why))))),
     el("p", { class: "small" }, "Every comparison was written down with its pass line before its first call (deviations disclosed), and the losses are published: docs/evidence/lightning-r1-results.md, r1-timing-results.md, reader-bench-results.md, parse-bench-results.md, ultra-critic-results.md, ultra-notes-results.md, adversary-chain-v3-results.md, bolt-r1-results.md, scan-witness-results.md, safety-screen-results.md, local-mode-results.md. As shipped, the small-model-first chain used 50% fewer completion tokens than always reading at 4k on 30 records whose fields agree; of 36 closings 33 agreed, 0 contradicted, 3 unconfirmed (shipped-cost-results.md)."))));
 
+  steps.append(el("li", { id: "ask-step" }, card("NVIDIA Nemotron, tool calls: Ask the layer",
+    "Lightning answers by calling read-only Zetaris tools", el("p", { class: "small" }, "Loading the logged runs…"))));
+
   steps.append(el("li", { id: "ledger-step" }, card("NVIDIA Nemotron, the routing ledger",
     "Which model did the work", el("p", { class: "small" }, "Loading the ledger…"))));
 
@@ -212,6 +215,28 @@ async function loadBudgetFlip() {
       el("thead", {}, el("tr", {}, el("th", {}, "Thinking"), el("th", {}, "Field Super names"), el("th", {}, "Its quote"), el("th", {}, "Completion tokens"), el("th", {}, "Receipt"))),
       el("tbody", {}, row("off", f.off, "bad"), row("4k budget", f.budget_4k, ""))),
     el("p", { class: "small" }, `Logged run ${f.run}, not replayed. The chain spends the 4k budget only where a field stays open; on this record the first read leaves both fields open, so the deep read runs. docs/evidence/baseline-m0-results.md.`)));
+}
+
+async function loadAskLog() {
+  const box = $("ask-step");
+  if (!box) return;
+  let a = null;
+  try { a = await api("/api/ask-log"); } catch (error) { /* shown below */ }
+  const who = "NVIDIA Nemotron, tool calls: Ask the layer", title = "Lightning answers by calling read-only Zetaris tools";
+  if (!a || !a.v1.of) { box.replaceChildren(card(who, title, el("p", { class: "small" }, "No logged run found."))); return; }
+  const plain = (s) => String(s || "").replace(/\*\*/g, "");
+  const row = (r) => el("tr", {}, el("td", {}, r.q), el("td", {}, (r.tools || []).join(", ") || "—"),
+    el("td", { class: r.right ? "" : "bad" }, r.refused ? `refused: ${(r.unsupported || []).join(", ") || "no tool read"} (“${plain(r.answer)}”)` : (plain(r.answer) || "—")));
+  const table = (rows) => el("table", { class: "how-table" },
+    el("thead", {}, el("tr", {}, el("th", {}, "Question"), el("th", {}, "Tool called"), el("th", {}, "Shown answer"))),
+    el("tbody", {}, ...rows.map(row)));
+  box.replaceChildren(card(who, title,
+    el("p", {}, "Every response is signed by Nightshift and names Lightning. The answer is shown only if every number and case id in it comes from a tool result."),
+    el("p", {}, el("b", {}, `v1: ${a.v1.right} of ${a.v1.of}`), " (bar 10, not met). The misses:"),
+    table(a.v1.misses),
+    el("p", {}, el("b", {}, `v2: ${a.v2.right} of ${a.v2.of}`), " on new questions, after two checks added in code: on a case question, code selects the case tool, and a number must come from that case's record. Examples:"),
+    table(a.v2.examples),
+    el("p", { class: "small" }, `Logged runs ${a.v1.misses[0]?.run || ""} and ${a.v2.examples[0]?.run || ""}, not replayed. docs/evidence/ask-layer-results.md, ask-layer-v2-results.md.`)));
 }
 
 async function loadAgentProbe() {
@@ -312,6 +337,7 @@ async function load(caseId, sample) {
   loadRedTeam();
   loadAgentProbe();
   loadBudgetFlip();
+  loadAskLog();
   loadSecondReaderCard();
   loadLabelsCard();
   loadAttestCard();
