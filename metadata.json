@@ -14,7 +14,7 @@
   "sponsor_technology": {
     "nvidia": {
       "models_shipped": {
-        "nvidia/nemotron-3.5-lightning-30b-a3b": "first read, thinking off, through Meterless Nightshift; may only close a field that agrees with the registry",
+        "nvidia/nemotron-3.5-lightning-30b-a3b": "first read, thinking off, through Meterless Nightshift; may only close a field that agrees with the registry; also 'Ask the layer': tool calls over read-only Zetaris tools (docs/evidence/ask-layer-v2-results.md)",
         "nvidia/nemotron-3.5-super-vl-120b-a12b": "deep read at a 4k thinking budget, case notes and the red team, through Nightshift; page-image reads NVIDIA direct",
         "nvidia/nemotron-parse": "v1, boxes the evidence line on scanned reports (NVIDIA direct: Nightshift has no Parse lane)",
         "nvidia/nemotron-3-ultra-550b-a55b": "second reader that may only object, through Nightshift; an objection sends the case to a person"
