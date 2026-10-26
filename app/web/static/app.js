@@ -75,15 +75,23 @@ async function loadCohort() {
     const named = sum((g) => g.reason_class === "n_count_contradiction" && NAMED(g.fault_field));
     const missing = sum((g) => g.reason_class === "n_missing_derivable");
     const box = $("cohort");
+    const stat = (cls, ...kids) => el("span", { class: `stat ${cls}` }, ...kids);
     box.replaceChildren(
-      c.sample ? el("b", {}, `Sample: ${total} bundled cases. `) : el("span", {}, el("b", {}, `${total}`), ` TCGA-BRCA cases, ${c.reports} reports · `),
-      el("b", {}, `${contra}`), " where the recorded N and the node count cannot both be true",
-      c.sample ? "" : el("span", {}, " · the report names the field in ", el("b", {}, `${named}`)),
-      missing ? ` · ${missing} missing N the count could fill` : "",
-      unread ? ` · ${unread} not read yet` : "",
-      " · research data, not for clinical use");
-    const line = nodePositiveLine(c.node_positive, c.node_positive_snapshot_of);
-    if (line) box.append(el("div", { class: "cohort-np" }, line));
+      c.sample ? stat("", el("b", {}, `${total}`), " bundled sample cases") : stat("", el("b", {}, total.toLocaleString("en-US")), " TCGA-BRCA records"),
+      stat("warn", el("b", {}, `${contra}`), " cannot both be true"),
+      c.sample ? "" : stat("", "field named in ", el("b", {}, `${named}`)),
+      missing ? stat("", el("b", {}, `${missing}`), " missing N") : "",
+      unread ? stat("", el("b", {}, `${unread}`), " not read yet") : "");
+    // the full sentences stay available on hover
+    box.title = `${total} TCGA-BRCA cases, ${c.reports} reports; ${contra} where the recorded N and the node count cannot both be true; research data, not for clinical use.`;
+    const np = c.node_positive;
+    if (np) {
+      box.append(stat("np", "node-positive: ", el("b", {}, `${np.node_positive_by_n_column}`), " by N · ", el("b", {}, `${np.node_positive_by_count_column}`), " by count · checked ", el("b", { class: "good" }, `${np.node_positive_by_verdict}`)));
+      box.title += " " + nodePositiveLine(np, c.node_positive_snapshot_of);
+      const after = decided(np);
+      if (after) box.append(stat("", after.trim()));
+    }
+    box.append(el("span", { class: "stat note" }, "research data, not for clinical use"));
     if (!state.foolSet) {  // live mode opens on the record; sample mode keeps "Try to fool it" open
       state.foolSet = true;
       const fool = document.querySelector("details.fool");
@@ -421,9 +429,11 @@ async function runExample() {
 // ---------- how it was read (latest ladder run) ----------
 const RUNG_NAME = { R1: "First read", R2: "Deep read", R3: "Scan read" };
 
+// Short reasons for the narrow trace table; the full sentence is in the rejected-readings list.
+const GUARD_SHORT = { quote_not_in_report: "quote not verbatim", quote_does_not_support: "quote doesn't show it", quote_too_short: "quote too short", model_abstained: "abstained" };
 function fieldVerdict(f) {
   if (!f) return "—";
-  return f.status === "accepted" ? `${f.value} ✓` : `${f.value ?? "no value"} ✗ ${why(f.reason)}`;
+  return f.status === "accepted" ? `${f.value} ✓` : `${f.value ?? "no value"} ✗ ${GUARD_SHORT[f.reason] || why(f.reason)}`;
 }
 
 // Stored report values are the first ones written; does the latest ladder run still read them?

@@ -23,3 +23,29 @@
 .steps > li.how-divider { display: block; margin: 20px 0 6px; counter-increment: none; }
 .steps > li.how-divider h2 { font-size: 18px; margin: 0; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
 .how-table td.bad { background: var(--red-bg); color: var(--red); font-weight: 700; }
+
+/* theme v3: wider, larger, calmer */
+.how { max-width: 1180px; padding: 26px 24px 60px; }
+.how-case { font-size: 14px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
+.steps > li { grid-template-columns: 48px minmax(0, 1fr); gap: 14px; margin-bottom: 14px; }
+.steps > li::before { width: 34px; height: 34px; font-size: 15px; font-weight: 600; }
+.step-card { border-radius: 10px; padding: 18px 22px; }
+.step-card .who { font-size: 12px; letter-spacing: .08em; font-weight: 600; }
+.step-card h2 { font-size: 20px; margin: 4px 0 10px; letter-spacing: -.1px; }
+.step-card p, .step-card li { font-size: 15px; }
+.flow { gap: 8px; margin: 10px 0; }
+.flow span { font-size: 14px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--line); }
+.flow span.bad { border-color: #e9b9af; } .flow span.good { background: #edf5e7; border-color: #bfd6ad; }
+.how-quote { font-size: 14px; padding: 2px 5px; }
+.how-table { display: table; font-size: 14px; }
+.how-table th { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.how-table th, .how-table td { padding: 8px 8px; }
+.how-table .how-quote { font-size: 13px; }
+.scoreboard { border-left-width: 5px; border-radius: 10px; padding: 16px 20px; font-size: 16px; }
+.how-sql { font-size: 13px; background: #faf9f5; border: 1px solid var(--line); }
+.steps > li.how-divider h2 { font-size: 14px; letter-spacing: .1em; }
+.rx-banner { border-left-width: 5px; border-radius: 10px; padding: 14px 20px; font-size: 16px; }
+.rx-ok, .rx-bad { font-size: 1.05em; }
+.rx-diff { font-size: 14px; background: #faf9f5; border: 1px solid var(--line); }
+.how-table td.how-quote { background: transparent; color: var(--ink); }
+#tamper .rx-ok, #tamper .rx-bad { font-size: 1.5em; }
