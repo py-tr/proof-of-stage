@@ -1,0 +1,9 @@
+# python -m app.cli doctor, 2026-10-26 (Nightshift 2026-10-26 release, local Lightning lane started)
+PASS  config: all variables set
+PASS  nightshift health: online
+PASS  nightshift chat: model='nvidia/nemotron-3.5-super-vl-120b-a12b' kind='cloud' egress='nvidia' sources=['messages'] receipt_id='rcpt_req_qb6vpim9' signature=verified signer=7a6d14e27e1a key=pinned (NS_RECEIPT_PUBKEY)
+PASS  nightshift discovery: state=online models=87 modes=18 text='ready' ready=['nemotron-3-5-super-vl-12-2', 'nemotron-3-5-lightning-3-2'] super_vl_cloud=True
+PASS  nightshift meterless/text: routed='local-runtime/nemotron-3.5-lightning-30b-a3b' kind='local' signature=verified
+PASS  nightshift local-job: text='ready'
+PASS  nvidia chat: text='ready' model='private/nvidia/nemotron-3.5-super-120b-a12b'
+PASS  zetaris ping: rows=1 columns=['1']

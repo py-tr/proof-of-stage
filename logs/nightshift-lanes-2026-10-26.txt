@@ -1,0 +1,5 @@
+# Nightshift lanes.toml, local lanes only: id and ctx_per_slot (2026-10-26, after the release and a lane restart). Other keys omitted.
+id = "nemotron-3-5-lightning-3" ctx_per_slot=262144
+id = "nemotron-3-5-super-vl-12" ctx_per_slot=1048576
+id = "nemotron-3-5-super-vl-12-2" ctx_per_slot=1048576
+id = "nemotron-3-5-lightning-3-2" ctx_per_slot=16384
