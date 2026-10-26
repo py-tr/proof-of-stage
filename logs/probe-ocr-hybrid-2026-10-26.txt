@@ -1,0 +1,4 @@
+create 200 {"id":"job_mvp5ppg42o","status":"queued","created_at":"2026-10-26T11:11:54.387Z","estimated_start":"2026-10-26T11:11:54.387Z"}
+job job_mvp5ppg42o errored 1.1 s; attachments on record: [{"kind": "image", "name": "page-0.png", "bytes": 258322}]
+GET /jobs/job_mvp5ppg42o/ocr 200 {"object":"ocr_status","job_id":"job_mvp5ppg42o","coverage":{"eligible":1,"extracted":0,"skipped":0,"manual":0,"pending":0,"failed":1,"pages":0,"review_pages":0,"text_chars":0},"unextracted":[],"items":[{"v":1,"ocr_id":"ocr_4d2bede247759b7f8c93","job_id":"job_mvp5ppg42o","seq":0,"artifact_id":"page-0.png","source_sha256":"70a20946249860ee2d9070b8629cce137560eed3bcd90e5860233137caff5531","source_kind":"image","mime":"image/png","bytes":193723,"status":"failed","reason":"ocr_unavailable","stale":false,"runs":2,"requested":{"priority":"job","reason":"done","pages":"all","auto":true,"at":"2026-10-
+GET /jobs/job_mvp5ppg42o/ocr/status 404 {"error":{"message":"not_found"}}
