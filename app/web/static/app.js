@@ -481,7 +481,9 @@ function renderTrace(trace) {
   const box = $("trace");
   box.replaceChildren();
   if (!trace) {
-    box.append(el("p", { class: "small" }, state.mode === "sample" ? "Sample mode: no model run is shown." : "No reading logged for this case yet."));
+    box.append(el("p", { class: "small" }, state.mode === "sample"
+      ? el("span", {}, "Sample mode: no model run is shown and no model answer is replayed. Which Nemotron handled each recorded request, with its signed receipt checked in your browser: ", el("a", { href: "/receipts" }, "/receipts"), ".")
+      : "No reading logged for this case yet."));
     return;
   }
   const head = el("tr", {}, ...["Step", "Model", "Thinking", "Provider", "Tokens", "Seconds", "N", "Positive nodes"].map((h) => el("th", {}, h)));
