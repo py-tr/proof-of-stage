@@ -180,7 +180,7 @@ Nightshift settings we used (1.2.3, re-verified on the 2026-10-26 release; Windo
 | Red-team loop on the Markovian engine | 0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack (disclosed) | `docs/evidence/adversary-chain-v3-results.md` |
 | Four more databases | the rule finds impossible records in each; the reading, as built, met none of six bars; on ClinicalTrials.gov's typed text the reader named the field the record's arm count rules out on 49 of 59 answered records and the other field on none | [Pointing it at other data](#pointing-it-at-other-data) |
 
-**All 47 measurements, including every loss: [docs/results.md](docs/results.md).**
+**All 48 measurements, including every loss: [docs/results.md](docs/results.md).**
 
 ## Pointing it at other data
 
