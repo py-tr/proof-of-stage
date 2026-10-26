@@ -1,0 +1,76 @@
+{
+  "written": "2026-10-26",
+  "code_sha256_16": {
+    "app/agent/ask.py": "63d6945a2c27a0d2",
+    "app/agent/ask_v2.py": "45903933ce1a3f7b",
+    "app/agent/ask_eval.py": "56c547a55aee96ba",
+    "app/agent/ask_v2_eval.py": "b7f65bc37e9d9315"
+  },
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "questions": [
+    {
+      "q": "Which field does the report contradict for TCGA-3C-AAAU?",
+      "kind": "field",
+      "want": "pathologic_n"
+    },
+    {
+      "q": "Which field does the report contradict for TCGA-A7-A26E?",
+      "kind": "field",
+      "want": "node_count"
+    },
+    {
+      "q": "For TCGA-AR-A1AT, which field is wrong according to the layer?",
+      "kind": "field",
+      "want": "review"
+    },
+    {
+      "q": "How many positive lymph nodes does the pathology report state for TCGA-AQ-A1H2?",
+      "kind": "number",
+      "want": 7
+    },
+    {
+      "q": "How many positive lymph nodes does the pathology report state for TCGA-BH-A0BS?",
+      "kind": "number",
+      "want": 2
+    },
+    {
+      "q": "How many positive lymph nodes does the registry record for TCGA-AC-A2FK?",
+      "kind": "number",
+      "want": 3
+    },
+    {
+      "q": "How many positive lymph nodes does the registry record for TCGA-E9-A3X8?",
+      "kind": "number",
+      "want": 4
+    },
+    {
+      "q": "Which field does the report contradict for TCGA-BH-A0DD?",
+      "kind": "field",
+      "want": "node_count"
+    },
+    {
+      "q": "Which field does the report contradict for TCGA-EW-A424?",
+      "kind": "field",
+      "want": "pathologic_n"
+    },
+    {
+      "q": "On how many records do both the stage field and the count field apply?",
+      "kind": "number",
+      "want": 663
+    },
+    {
+      "q": "How many records does the layer flag for review?",
+      "kind": "number",
+      "want": 25
+    },
+    {
+      "q": "Where both fields apply, how many node-positive patients does the layer's checked answer count?",
+      "kind": "number",
+      "want": 333
+    }
+  ],
+  "claim": "at least 10 of 12 shown answers right, and every model response carries a verified signed Nightshift receipt naming Lightning",
+  "kill": "fewer than 8 of 12 right, or any response not signed by the pinned key or not answered by Lightning",
+  "void": "more than 3 provider failures",
+  "prediction": "Before the run, by the main session (after v1's 9 of 12 and one unscored gate call that passed): 10-12 of 12 right; 0-1 refused; every response signed by Lightning; case questions now forced to read the case; field questions remain the likeliest misses (an answer may name both fields, or misreport 'a person decides'). Claim likely met."
+}
