@@ -1,0 +1,3 @@
+{"case": "TCGA-AN-A0XO", "report_chars": 489, "max_tokens": 15318, "status": "errored", "seconds": 145.1, "lanes": ["nemotron-3-5-lightning-3-2"], "error": "no attempt produced a candidate: 1 \u00d7 local"}
+{"case": "TCGA-AN-A0XP", "report_chars": 489, "max_tokens": 15318, "status": "errored", "seconds": 145.1, "lanes": ["nemotron-3-5-lightning-3-2"], "error": "no attempt produced a candidate: 1 \u00d7 local"}
+{"case": "TCGA-AN-A0XS", "report_chars": 489, "max_tokens": 15318, "status": "errored", "seconds": 149.2, "lanes": ["nemotron-3-5-lightning-3-2"], "error": "no attempt produced a candidate: 1 \u00d7 local"}
