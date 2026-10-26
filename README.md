@@ -1,5 +1,7 @@
 # Proof of Stage
 
+![tests](https://img.shields.io/badge/tests-386%20passing-brightgreen) ![receipts](https://img.shields.io/badge/Nightshift%20receipts-811%2F811%20verified-blue) ![data](https://img.shields.io/badge/data-NCI%20TCGA--BRCA%2C%20real-informational) ![labels](https://img.shields.io/badge/blind%20labellers-2%2C%20kappa%200.82-informational) ![nemotron](https://img.shields.io/badge/Nemotron-4%20seats%20measured-76b900) ![track](https://img.shields.io/badge/Track%202-The%20Agent%20That%20Can%20Explain%20Why-lightgrey)
+
 > **The column says zero. The report says eight.**
 >
 > Proof of Stage is an evidence-backed auditing agent for records typed in from documents. **Every verdict carries its why:** the rule that flags the record, the verbatim sentence from the source document, the code check that found those words, the field they contradict, and a signed receipt naming the Nemotron that read it. It never edits a record; a person decides.
