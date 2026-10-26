@@ -54,7 +54,13 @@ async def main() -> None:
         else:
             differ += 1
             diffs.append((cid, f"lengths {len(usl)} vs {len(loc)}"))
-    result = {"cases": len(cases), "exact": exact, "same_after_line_endings": normalised, "differ": differ, "missing": missing}
+    result = {
+        "cases": len(cases),
+        "exact": exact,
+        "same_after_line_endings": normalised,
+        "differ": differ,
+        "missing": missing,
+    }
     lines = [
         "# The chain's report text against the Zetaris layer's (no model call)",
         "",

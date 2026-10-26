@@ -317,16 +317,30 @@ def create_app(
         case_id = "TCGA-E2-A572"
         path = ROOT_DIR / "logs" / "baseline-m0.jsonl"
         row = next(
-            (json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x.strip() and json.loads(x).get("case") == case_id),
+            (
+                json.loads(x)
+                for x in path.read_text(encoding="utf-8").splitlines()
+                if x.strip() and json.loads(x).get("case") == case_id
+            ),
             None,
         )
         if not row:
             return {"flip": None}
 
         def arm(a: dict[str, Any]) -> dict[str, Any]:
-            return {k: a.get(k) for k in ("fault", "quote", "completion_tokens", "seconds", "model", "signature")}
+            return {
+                k: a.get(k)
+                for k in ("fault", "quote", "completion_tokens", "seconds", "model", "signature")
+            }
 
-        return {"flip": {"case": case_id, "run": row.get("run"), "off": arm(row.get("off") or {}), "budget_4k": arm(row.get("4k") or {})}}
+        return {
+            "flip": {
+                "case": case_id,
+                "run": row.get("run"),
+                "off": arm(row.get("off") or {}),
+                "budget_4k": arm(row.get("4k") or {}),
+            }
+        }
 
     @app.get("/api/ask-log")
     async def ask_log() -> dict[str, Any]:
@@ -336,7 +350,9 @@ def create_app(
             path = ROOT_DIR / "logs" / name
             if not path.exists():
                 return []
-            return [json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x.strip()]
+            return [
+                json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x.strip()
+            ]
 
         def brief(r: dict[str, Any]) -> dict[str, Any]:
             steps = r.get("steps") or []
@@ -358,9 +374,24 @@ def create_app(
         v1 = rows("ask-layer.jsonl")
         v2 = rows("ask-layer-v2.jsonl")
         pick1 = [brief(r) for r in v1 if not r.get("right")]
-        pick2 = [brief(r) for r in v2 if r.get("q", "").startswith(("How many positive lymph nodes does the pathology report state for TCGA-AQ-A1H2", "How many records does the layer flag"))]
-        return {"v1": {"right": sum(bool(r.get("right")) for r in v1), "of": len(v1), "misses": pick1},
-                "v2": {"right": sum(bool(r.get("right")) for r in v2), "of": len(v2), "examples": pick2}}
+        pick2 = [
+            brief(r)
+            for r in v2
+            if r.get("q", "").startswith(
+                (
+                    "How many positive lymph nodes does the pathology report state for TCGA-AQ-A1H2",
+                    "How many records does the layer flag",
+                )
+            )
+        ]
+        return {
+            "v1": {"right": sum(bool(r.get("right")) for r in v1), "of": len(v1), "misses": pick1},
+            "v2": {
+                "right": sum(bool(r.get("right")) for r in v2),
+                "of": len(v2),
+                "examples": pick2,
+            },
+        }
 
     @app.get("/api/attest")
     async def attest() -> dict[str, Any]:

@@ -64,7 +64,7 @@ def local_whole() -> None:
         "- The referee is the census's cloud chain on the same records, not a fresh paired run. One run, no re-run.",
         "- The Bolt lane was removed before the run; with it on, local jobs resolved two lanes and the frozen checklist failed.",
         "- Lengths are in characters; token counts in the probes were estimates (characters / 5).",
-        "- What \"local\" rests on: Nightshift's own job record (privacy, lanes, model, egress). Local reads carry no Ed25519 signature, and the local checklist does not check context sources.",
+        '- What "local" rests on: Nightshift\'s own job record (privacy, lanes, model, egress). Local reads carry no Ed25519 signature, and the local checklist does not check context sources.',
         "- Correction to the pre-registration's wording: it cites rising GPU memory in the probe log; that sample was observed in the session and saved afterwards to `logs/probe-gpu-sample-2026-10-26.txt`, not tied to a job id.",
     ]
     (EV / "local-whole-results.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

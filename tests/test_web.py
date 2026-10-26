@@ -297,7 +297,12 @@ def test_sample_mode_hero_example_names_the_count_field() -> None:
     client = _client()
     first = client.post(
         "/api/case/TCGA-E2-A572/challenge",
-        json={"field": "N", "value": "N2", "quote": "Pathological staging (pTN): pT 2 N 2", "known": {}},
+        json={
+            "field": "N",
+            "value": "N2",
+            "quote": "Pathological staging (pTN): pT 2 N 2",
+            "known": {},
+        },
     ).json()
     assert first["status"] == "accepted"
     out = client.post(

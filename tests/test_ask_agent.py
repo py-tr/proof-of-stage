@@ -13,7 +13,9 @@ def test_unsupported_flags_numbers_and_ids_not_in_evidence() -> None:
 def test_right_scores_numbers_and_fields_lexically() -> None:
     assert right({"kind": "number", "want": 333}, "The checked answer is 333.")
     assert not right({"kind": "number", "want": 333}, "It is 3333.")
-    assert right({"kind": "field", "want": "node_count"}, "It contradicts the positive lymph node count.")
+    assert right(
+        {"kind": "field", "want": "node_count"}, "It contradicts the positive lymph node count."
+    )
     assert right({"kind": "field", "want": "pathologic_n"}, "The report contradicts the N stage.")
     assert right({"kind": "field", "want": "review"}, "A person decides.")
     assert not right({"kind": "number", "want": 2}, None)

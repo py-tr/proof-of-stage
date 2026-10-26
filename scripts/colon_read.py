@@ -12,6 +12,11 @@ from app.engine import colon_read  # noqa: E402
 if __name__ == "__main__":
     if "--freeze" in sys.argv:
         r = colon_read.freeze()
-        print(json.dumps({"population": r["population"], "cases": [c["case_id"] for c in r["cases"]]}, indent=1))
+        print(
+            json.dumps(
+                {"population": r["population"], "cases": [c["case_id"] for c in r["cases"]]},
+                indent=1,
+            )
+        )
     else:
         print(json.dumps(asyncio.run(colon_read.run_colon_read()), indent=2, default=str))

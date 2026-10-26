@@ -109,11 +109,26 @@ def probe(name: str, url: str, headers: dict, payload: dict, note: str) -> dict:
     LOG.parent.mkdir(parents=True, exist_ok=True)
     with LOG.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(row, ensure_ascii=False) + "\n")
-    shown = {k: row.get(k) for k in ("probe", "status", "seconds", "model", "finish_reason",
-                                     "content_chars", "reasoning_chars", "has_close_think", "error")}
+    shown = {
+        k: row.get(k)
+        for k in (
+            "probe",
+            "status",
+            "seconds",
+            "model",
+            "finish_reason",
+            "content_chars",
+            "reasoning_chars",
+            "has_close_think",
+            "error",
+        )
+    }
     print(json.dumps(shown, ensure_ascii=False))
     if row.get("status", 200) >= 400 or "body" in row or "body_text" in row:
-        print("   body:", json.dumps(row.get("body") or row.get("body_text"), ensure_ascii=False)[:800])
+        print(
+            "   body:",
+            json.dumps(row.get("body") or row.get("body_text"), ensure_ascii=False)[:800],
+        )
     else:
         print("   answer:", (row.get("content") or "")[:300].replace("\n", " "))
     return row
@@ -122,35 +137,82 @@ def probe(name: str, url: str, headers: dict, payload: dict, note: str) -> dict:
 def images() -> None:
     ns = config.getenv("METERLESS_BASE_URL").rstrip("/") + "/chat/completions"
     off = {"enable_thinking": False}
-    tiny = [{"role": "user", "content": [
-        {"type": "text", "text": "What text is written in this image? Answer with the text only."},
-        {"type": "image_url", "image_url": {"url": _tiny_png()}}]}]
-    probe("img-tiny-ns", ns, _ns_headers(120000),
-          {"model": config.NS_SUPER_VL, "messages": tiny, "max_tokens": 4000,
-           "chat_template_kwargs": off},
-          "tiny PNG, pinned Super VL via Nightshift, thinking off, ttfb header 120 s")
+    tiny = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "What text is written in this image? Answer with the text only.",
+                },
+                {"type": "image_url", "image_url": {"url": _tiny_png()}},
+            ],
+        }
+    ]
+    probe(
+        "img-tiny-ns",
+        ns,
+        _ns_headers(120000),
+        {
+            "model": config.NS_SUPER_VL,
+            "messages": tiny,
+            "max_tokens": 4000,
+            "chat_template_kwargs": off,
+        },
+        "tiny PNG, pinned Super VL via Nightshift, thinking off, ttfb header 120 s",
+    )
     scan = Image.open(SCAN)
-    page = [{"role": "user", "content": [
-        {"type": "text", "text": "This is page 1 of a pathology report scan. Quote the line that "
-                                 "states the lymph node status, exactly as printed."},
-        {"type": "image_url", "image_url": {"url": _data_uri(scan, "JPEG")}}]}]
-    probe("img-scan-ns", ns, _ns_headers(120000),
-          {"model": config.NS_SUPER_VL, "messages": page, "max_tokens": 4000,
-           "chat_template_kwargs": off},
-          "TCGA-A2-A0CV page-0 as JPEG, pinned Super VL via Nightshift, thinking off, ttfb 120 s")
+    page = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "This is page 1 of a pathology report scan. Quote the line that "
+                    "states the lymph node status, exactly as printed.",
+                },
+                {"type": "image_url", "image_url": {"url": _data_uri(scan, "JPEG")}},
+            ],
+        }
+    ]
+    probe(
+        "img-scan-ns",
+        ns,
+        _ns_headers(120000),
+        {
+            "model": config.NS_SUPER_VL,
+            "messages": page,
+            "max_tokens": 4000,
+            "chat_template_kwargs": off,
+        },
+        "TCGA-A2-A0CV page-0 as JPEG, pinned Super VL via Nightshift, thinking off, ttfb 120 s",
+    )
 
 
 def ultra_budget() -> None:
     ns = config.getenv("METERLESS_BASE_URL").rstrip("/") + "/chat/completions"
-    q = [{"role": "user", "content": "A report says 3 of 14 lymph nodes are positive. "
-                                     "How many nodes were examined? Answer with one number."}]
+    q = [
+        {
+            "role": "user",
+            "content": "A report says 3 of 14 lymph nodes are positive. "
+            "How many nodes were examined? Answer with one number.",
+        }
+    ]
     kw = {"enable_thinking": True, "reasoning_budget": 1024}
-    probe("ultra-budget-direct", NVIDIA_URL, _nv_headers(),
-          {"model": config.NV_ULTRA, "messages": q, "max_tokens": 3000, "chat_template_kwargs": kw},
-          "Ultra direct, chat_template_kwargs reasoning_budget 1024")
-    probe("ultra-budget-ns", ns, _ns_headers(120000),
-          {"model": config.NV_ULTRA, "messages": q, "max_tokens": 3000, "chat_template_kwargs": kw},
-          "Ultra via Nightshift, same kwargs; raw content kept to check </think> claim")
+    probe(
+        "ultra-budget-direct",
+        NVIDIA_URL,
+        _nv_headers(),
+        {"model": config.NV_ULTRA, "messages": q, "max_tokens": 3000, "chat_template_kwargs": kw},
+        "Ultra direct, chat_template_kwargs reasoning_budget 1024",
+    )
+    probe(
+        "ultra-budget-ns",
+        ns,
+        _ns_headers(120000),
+        {"model": config.NV_ULTRA, "messages": q, "max_tokens": 3000, "chat_template_kwargs": kw},
+        "Ultra via Nightshift, same kwargs; raw content kept to check </think> claim",
+    )
 
 
 if __name__ == "__main__":
