@@ -115,6 +115,9 @@ function render(data, trace, sample) {
         el("tr", {}, el("td", {}, "Right field, an independent second labeller (kappa 0.82)"), el("td", {}, "12"), el("td", {}, "19")))),
     el("p", { class: "small" }, "Every answer's signed Nightshift receipt names Super and shows it was not cached; in the product, the quote check then decides what is kept. The chain spends the budget only on fields that stay open: on 30 consistent records, half the completion tokens of always reading at 4k. Pre-registered: docs/evidence/baseline-m0-results.md, second-labeller-results.md, shipped-cost-results.md."))));
 
+  steps.append(el("li", { id: "flip-step" }, card("NVIDIA Nemotron, the thinking budget on one record",
+    "The same report, thinking off and at 4k", el("p", { class: "small" }, "Loading the logged answers…"))));
+
   // 3b2. Each Nemotron's seat and the pre-registered result that earned it (README "Nemotron, model per step")
   const SEATS = [
     ["First read", "Nemotron Lightning, thinking off · Nightshift", "settled 18 of 28 records vs Super's 15; 0 of 38 closings contradicted, 5 unconfirmed (not faster: claim removed)"],
@@ -190,6 +193,24 @@ function sqlBlock(q, label) {
   return el("div", { class: "how-sqlwrap" },
     el("div", { class: "small" }, `${label} · returned `, el("b", {}, show(q.result)), ` · ${show(q.seconds)} s · Nightshift receipt ${show(q.receipt_id)} (${show(q.signature)})`),
     el("pre", { class: "how-sql" }, q.sql || ""));
+}
+
+async function loadBudgetFlip() {
+  const box = $("flip-step");
+  if (!box) return;
+  let f = null;
+  try { f = (await api("/api/budget-flip")).flip; } catch (error) { /* shown below */ }
+  const who = "NVIDIA Nemotron, the thinking budget on one record", title = "The same report, thinking off and at 4k";
+  if (!f) { box.replaceChildren(card(who, title, el("p", { class: "small" }, "Live mode only: sample mode shows no model answer."))); return; }
+  const NAME = { node_count: "the count field", pathologic_n: "the stage field", review: "a person decides" };
+  const row = (label, a, cls) => el("tr", {}, el("td", {}, label), el("td", { class: cls }, NAME[a.fault] || String(a.fault)),
+    el("td", {}, a.quote ? `“${a.quote}”` : "—"), el("td", {}, String(a.completion_tokens ?? "—")), el("td", {}, String(a.signature ?? "—")));
+  box.replaceChildren(card(who, title,
+    el("p", {}, `${f.case}, Super VL alone through Nightshift (no quote check), the pre-registered baseline run. Both blind labellers say the report contradicts the count field.`),
+    el("table", { class: "how-table" },
+      el("thead", {}, el("tr", {}, el("th", {}, "Thinking"), el("th", {}, "Field Super names"), el("th", {}, "Its quote"), el("th", {}, "Completion tokens"), el("th", {}, "Receipt"))),
+      el("tbody", {}, row("off", f.off, "bad"), row("4k budget", f.budget_4k, ""))),
+    el("p", { class: "small" }, `Logged run ${f.run}, not replayed. The chain spends the 4k budget only where a field stays open; on this record the first read leaves both fields open, so the deep read runs. docs/evidence/baseline-m0-results.md.`)));
 }
 
 async function loadAgentProbe() {
@@ -289,6 +310,7 @@ async function load(caseId, sample) {
   render(data, found.trace, sample);
   loadRedTeam();
   loadAgentProbe();
+  loadBudgetFlip();
   loadSecondReaderCard();
   loadLabelsCard();
   loadAttestCard();

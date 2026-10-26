@@ -22,3 +22,4 @@
 .how-sql { font: 11.5px/1.45 var(--mono); white-space: pre-wrap; word-break: break-word; background: var(--grey-bg); border-radius: 6px; padding: 8px 10px; margin: 4px 0 0; }
 .steps > li.how-divider { display: block; margin: 20px 0 6px; counter-increment: none; }
 .steps > li.how-divider h2 { font-size: 18px; margin: 0; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.how-table td.bad { background: var(--red-bg); color: var(--red); font-weight: 700; }

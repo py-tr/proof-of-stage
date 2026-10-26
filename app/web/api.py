@@ -310,6 +310,26 @@ def create_app(
 
         return {"probe": probe_story()}
 
+    @app.get("/api/budget-flip")
+    async def budget_flip() -> dict[str, Any]:
+        """One record, Super alone thinking off vs 4k, from the committed baseline log (no model
+        call). Live mode only: sample mode never shows a model answer."""
+        if config.sample_mode():
+            return {"flip": None}
+        case_id = "TCGA-E2-A572"
+        path = ROOT_DIR / "logs" / "baseline-m0.jsonl"
+        row = next(
+            (json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x.strip() and json.loads(x).get("case") == case_id),
+            None,
+        )
+        if not row:
+            return {"flip": None}
+
+        def arm(a: dict[str, Any]) -> dict[str, Any]:
+            return {k: a.get(k) for k in ("fault", "quote", "completion_tokens", "seconds", "model", "signature")}
+
+        return {"flip": {"case": case_id, "run": row.get("run"), "off": arm(row.get("off") or {}), "budget_4k": arm(row.get("4k") or {})}}
+
     @app.get("/api/attest")
     async def attest() -> dict[str, Any]:
         """The attestation census, its signatures checked offline here (no key, no model)."""
