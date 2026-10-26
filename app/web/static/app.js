@@ -436,7 +436,7 @@ async function runExample() {
 const RUNG_NAME = { R1: "First read", R2: "Deep read", R3: "Scan read" };
 
 // Short reasons for the narrow trace table; the full sentence is in the rejected-readings list.
-const GUARD_SHORT = { quote_not_in_report: "quote not verbatim", quote_does_not_support: "quote doesn't show it", quote_too_short: "quote too short", model_abstained: "abstained" };
+const GUARD_SHORT = { quote_not_in_report: "quote not verbatim", quote_does_not_support: "quote doesn't show it", quote_too_short: "quote too short", model_abstained: "abstained", count_not_in_quote: "number not in its quote", count_not_report_total: "not the report's total", count_below_report: "report states more" };
 function fieldVerdict(f) {
   if (!f) return "—";
   return f.status === "accepted" ? `${f.value} ✓` : `${f.value ?? "no value"} ✗ ${GUARD_SHORT[f.reason] || why(f.reason)}`;
