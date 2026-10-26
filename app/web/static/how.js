@@ -106,6 +106,15 @@ function render(data, trace, sample) {
   steps.append(el("li", { id: "redteam-step" }, card("NVIDIA Nemotron, attacking the guard",
     "Nemotron tries to make the guard accept a wrong count", el("p", { class: "small" }, "Loading the logged chain…"))));
 
+  // 3b1. The thinking budget: the Nemotron result itself (baseline-m0-results.md, second-labeller-results.md)
+  steps.append(el("li", {}, card("NVIDIA Nemotron, the thinking budget", "Super's thinking budget changes the answer",
+    el("table", { class: "how-table" },
+      el("thead", {}, el("tr", {}, el("th", {}, "Super VL alone through Nightshift (no quote check), 25 queued records"), el("th", {}, "Thinking off"), el("th", {}, "4k budget"))),
+      el("tbody", {},
+        el("tr", {}, el("td", {}, "Right field, the builder's blind labels"), el("td", {}, "9"), el("td", {}, "17")),
+        el("tr", {}, el("td", {}, "Right field, an independent second labeller (kappa 0.82)"), el("td", {}, "12"), el("td", {}, "19")))),
+    el("p", { class: "small" }, "Every answer's signed Nightshift receipt names Super and shows it was not cached; in the product, the quote check then decides what is kept. The chain spends the budget only on fields that stay open: on 30 consistent records, half the completion tokens of always reading at 4k. Pre-registered: docs/evidence/baseline-m0-results.md, second-labeller-results.md, shipped-cost-results.md."))));
+
   // 3b2. Each Nemotron's seat and the pre-registered result that earned it (README "Nemotron, model per step")
   const SEATS = [
     ["First read", "Nemotron Lightning, thinking off · Nightshift", "settled 18 of 28 records vs Super's 15; 0 of 38 closings contradicted, 5 unconfirmed (not faster: claim removed)"],

@@ -58,6 +58,8 @@ Diagram with the three loops: [`docs/architecture.md`](docs/architecture.md). Fu
 
 ## Nemotron, model per step
 
+**Nemotron's thinking budget changes the answer.** On the 25 records the rule queues, Super VL alone through Nightshift (no quote check) names the right field on 9 with thinking off and 17 at a 4k budget (the builder's blind labels), and 12 and 19 against an independent second labeller (kappa 0.82); every answer's signed receipt names Super and shows it was not cached. In the product, the quote check then decides what is kept ([baseline](docs/evidence/baseline-m0-results.md), [second labeller](docs/evidence/second-labeller-results.md)). The chain spends that budget only on fields that stay open, and gives every other job to the narrowest Nemotron that does it:
+
 | Job | Model | Why that one (pre-registered, losses published) |
 |---|---|---|
 | First read, thinking off | **Nemotron 3.5 Lightning** (30B, 3B active), Nightshift | settled 18 of 28 records vs Super's 15; of its 38 closings 33 confirmed by Super, 0 contradicted, 5 unconfirmed; not faster, so no speed claim |
