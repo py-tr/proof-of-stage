@@ -226,3 +226,22 @@ mark { padding: 1px 2px; } mark.c, mark.n { color: var(--ink); font-weight: 600;
 .cohort .stat b { font-size: 17px; }
 .why { color: #3b4558; }
 .freshness, .second-reader { display: inline-block; margin-right: 6px; }
+
+/* ---------- top bar: name, three links, status; nothing else ---------- */
+.top { gap: 28px; padding: 14px 28px; }
+.top .brand { text-decoration: none; color: var(--ink); font-size: 18px; font-weight: 700; }
+.top .nav { display: flex; gap: 4px; }
+.top .nav a { text-decoration: none; color: #3b4558; font-size: 15px; font-weight: 500; padding: 6px 12px; border-radius: 6px; }
+.top .nav a:hover { background: var(--grey-bg); color: var(--ink); }
+.top .nav a.on { color: var(--ink); font-weight: 650; box-shadow: inset 0 -2px 0 var(--ink); border-radius: 0; }
+.top .mode { margin-left: auto; border: 0; background: none; color: var(--muted); font-size: 13.5px; padding: 0; }
+.top .mode::before { content: "●"; margin-right: 6px; color: var(--grey); }
+.top .mode.live { background: none; color: var(--green); }
+.top .mode.live::before { color: var(--green); }
+/* cohort numbers now head the queue */
+.queue .cohort { display: block; margin: 4px 0 6px; }
+.queue .cohort .stat { display: block; white-space: normal; font-size: 13px; margin: 2px 0; }
+.queue .cohort .stat b { font-size: 15px; }
+.queue .disclaimer { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+.toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin: 0 0 16px; }
+.toolbar label { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }

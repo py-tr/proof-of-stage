@@ -12,11 +12,11 @@
 </head>
 <body>
   <header class="top">
-    <div class="brand">Proof of Stage <span class="tag">receipt explorer</span></div>
-    <select id="bundle" class="how-case" aria-label="Bundle"></select>
-    <a class="howlink" href="/how">How it works</a>
+    <a class="brand" href="/">Proof of Stage</a>
+    <nav class="nav"><a href="/">Case</a><a href="/how">How it works</a><a href="/receipts" class="on">Receipts</a></nav>
   </header>
   <main class="how">
+    <div class="toolbar">Receipt explorer · <label>Bundle <select id="bundle" class="how-case" aria-label="Bundle"></select></label></div>
     <p class="rx-banner">Recorded receipts from pre-registered runs. <b>Nothing on this page calls a model.</b> Your browser checks every signature itself (Ed25519), against the public key committed in the repository, so you do not have to trust this server.</p>
     <section class="step-card" id="summary"><p class="small">Loading…</p></section>
     <section class="step-card" id="tamper"><div class="who">Tamper test</div><h2>Change one byte, and the signature fails</h2><p class="small">Loading…</p></section>

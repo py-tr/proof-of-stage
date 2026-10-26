@@ -363,7 +363,8 @@ async function start() {
     const mode = await api("/api/mode");
     const sample = mode.mode === "sample";
     loadScoreboard(sample);
-    $("mode").textContent = sample ? "SAMPLE MODE" : "LIVE · Zetaris USL";
+    $("mode").textContent = sample ? "Sample mode" : "Live";
+    $("mode").title = sample ? "Sample mode" : "Live: Zetaris USL";
     $("mode").classList.toggle("live", !sample);
     const queue = await api("/api/queue");
     const select = $("how-case");

@@ -11,13 +11,12 @@
 </head>
 <body>
   <header class="top">
-    <div class="brand">Proof of Stage <span class="tag">how one record is checked, step by step</span></div>
-    <select id="how-case" class="how-case" aria-label="Case"></select>
-    <a class="howlink" id="open-case" href="/">Open this case</a>
-    <a class="howlink" href="/receipts">Check the receipts</a>
+    <a class="brand" href="/">Proof of Stage</a>
+    <nav class="nav"><a href="/">Case</a><a href="/how" class="on">How it works</a><a href="/receipts">Receipts</a></nav>
     <div id="mode" class="mode">…</div>
   </header>
   <main class="how">
+    <div class="toolbar">How one record is checked, step by step · <label>Case <select id="how-case" class="how-case" aria-label="Case"></select></label> <a class="howlink" id="open-case" href="/">Open this case</a></div>
     <p id="scoreboard" class="scoreboard hidden"></p>
     <ol id="steps" class="steps"><li class="small">Loading…</li></ol>
     <p class="small how-foot">In live mode every value on this page comes from the Zetaris semantic layer and the logged runs; in sample mode the counts are a dated copy of the live layer. In both modes the model cards show logged runs, labelled as such: nothing on this page calls a model or replays a run as live. Nothing is typed in by hand, except the "one model per job" and "thinking budget" tables, which restate the numbers in the evidence files they list.</p>

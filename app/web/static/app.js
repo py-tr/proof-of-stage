@@ -755,7 +755,8 @@ async function start() {
     state.reader = mode.reader;
     state.sourceNote = mode.source_note;
     const badge = $("mode");
-    badge.textContent = state.mode === "sample" ? "SAMPLE MODE · rules live · model reads off" : "LIVE · Zetaris USL stage_audit";
+    badge.textContent = state.mode === "sample" ? "Sample mode" : "Live";
+    badge.title = state.mode === "sample" ? "Sample mode: rules live, model reads off" : "Live: Zetaris USL stage_audit";
     badge.classList.toggle("live", state.mode === "live");
     status(state.mode === "sample" ? "Loading the bundled sample…" : "Waiting for Zetaris stage_check…");
     state.queue = await api("/api/queue");
