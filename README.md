@@ -23,6 +23,7 @@ For cancer-registry reviewers and research-data teams. Track 2, The Agent That C
 | Second reader | Ultra | may only object, with a quote; an objection sends the case to a person (3 objections, all matching the labels) |
 | Scan read | Parse v1 (NVIDIA direct) + Super VL | boxes the evidence line on the scanned page |
 | On this PC | Lightning, local | the first read on whole reports: 20 of 20 local, 0 disagreements with the cloud |
+| Ask the layer | Lightning, tool calls | answers questions about the audit by calling read-only Zetaris tools; code refuses numbers that are not in the case's own record: 12 of 12 on new questions (v2, after v1's 9 of 12) |
 
 Together, against always reading with Super at 4k on 30 records whose fields agree: **50% fewer completion tokens**; of 36 first-read closings, 33 agreed, 0 contradicted, 3 unconfirmed ([cost](docs/evidence/shipped-cost-results.md), [seats](docs/evidence/seat-cost-quality.md), [local](docs/evidence/local-whole-results.md)). Bolt, Nano Omni and Content Safety were measured and left out.
 
@@ -180,7 +181,7 @@ Nightshift settings we used (1.2.3, re-verified on the 2026-10-26 release; Windo
 | Red-team loop on the Markovian engine | 0 wrong accepts in 57 judged attacks; 27 of 60 steps repeated an earlier attack (disclosed) | `docs/evidence/adversary-chain-v3-results.md` |
 | Four more databases | the rule finds impossible records in each; the reading, as built, met none of six bars; on ClinicalTrials.gov's typed text the reader named the field the record's arm count rules out on 49 of 59 answered records and the other field on none | [Pointing it at other data](#pointing-it-at-other-data) |
 
-**All 48 measurements, including every loss: [docs/results.md](docs/results.md).**
+**All 49 measurements, including every loss: [docs/results.md](docs/results.md).**
 
 ## Pointing it at other data
 

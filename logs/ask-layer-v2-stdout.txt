@@ -1,0 +1,12 @@
+{
+  "run": "20261026T105547",
+  "questions": 12,
+  "right": 12,
+  "refused": 0,
+  "failures": 0,
+  "all_signed_lightning": true,
+  "tool_calls": 12,
+  "void": false,
+  "kill": false,
+  "claim_met": true
+}
