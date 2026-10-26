@@ -208,3 +208,21 @@ mark { padding: 1px 2px; } mark.c, mark.n { color: var(--ink); font-weight: 600;
 .tag { display: block; margin: 1px 0 0; }
 .keys { white-space: nowrap; }
 .trace code { white-space: nowrap; }
+
+/* ---------- clean pass: one focal point, the rest folded ---------- */
+.verdict-compare .compare th:nth-child(3), .verdict-compare .compare td:nth-child(3) { display: none; }
+.verdict-compare .compare thead th { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
+.verdict-compare .compare td { font-size: 28px; padding: 16px 18px; }
+.rules-more { margin-top: 12px; font-size: 13.5px; color: var(--muted); }
+.rules-more summary { cursor: pointer; font-weight: 600; color: var(--soft, #3b4558); }
+.panel details.block > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 8px; }
+.panel details.block > summary::-webkit-details-marker { display: none; }
+.panel details.block > summary::before { content: "▸"; color: var(--muted); font-size: 13px; }
+.panel details.block[open] > summary::before { content: "▾"; }
+.panel details.block > summary h3 { display: inline; margin: 0; }
+.panel details.block > summary h3 small { display: block; font-size: 12.5px; margin-top: 2px; }
+.panel details.block[open] > summary { margin-bottom: 10px; }
+.cohort .stat { font-size: 14px; }
+.cohort .stat b { font-size: 17px; }
+.why { color: #3b4558; }
+.freshness, .second-reader { display: inline-block; margin-right: 6px; }

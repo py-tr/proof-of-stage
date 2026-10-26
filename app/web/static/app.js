@@ -79,19 +79,16 @@ async function loadCohort() {
     box.replaceChildren(
       c.sample ? stat("", el("b", {}, `${total}`), " bundled sample cases") : stat("", el("b", {}, total.toLocaleString("en-US")), " TCGA-BRCA records"),
       stat("warn", el("b", {}, `${contra}`), " cannot both be true"),
-      c.sample ? "" : stat("", "field named in ", el("b", {}, `${named}`)),
-      missing ? stat("", el("b", {}, `${missing}`), " missing N") : "",
       unread ? stat("", el("b", {}, `${unread}`), " not read yet") : "");
     // the full sentences stay available on hover
-    box.title = `${total} TCGA-BRCA cases, ${c.reports} reports; ${contra} where the recorded N and the node count cannot both be true; research data, not for clinical use.`;
+    box.title = `${total} TCGA-BRCA cases, ${c.reports} reports; ${contra} where the recorded N and the node count cannot both be true${c.sample ? "" : `; the report names the field in ${named}`}${missing ? `; ${missing} missing N the count could fill` : ""}; research data, not for clinical use.`;
     const np = c.node_positive;
     if (np) {
-      box.append(stat("np", "node-positive: ", el("b", {}, `${np.node_positive_by_n_column}`), " by N · ", el("b", {}, `${np.node_positive_by_count_column}`), " by count · checked ", el("b", { class: "good" }, `${np.node_positive_by_verdict}`)));
+      box.append(stat("np", "node-positive: ", el("b", {}, `${np.node_positive_by_n_column}`), " or ", el("b", {}, `${np.node_positive_by_count_column}`), " by column · ", el("b", { class: "good" }, `${np.node_positive_by_verdict}`), " checked"));
       box.title += " " + nodePositiveLine(np, c.node_positive_snapshot_of);
       const after = decided(np);
       if (after) box.append(stat("", after.trim()));
     }
-    box.append(el("span", { class: "stat note" }, "research data, not for clinical use"));
     if (!state.foolSet) {  // live mode opens on the record; sample mode keeps "Try to fool it" open
       state.foolSet = true;
       const fool = document.querySelector("details.fool");
@@ -226,6 +223,8 @@ function renderPanel(data) {
   const why = $("why");
   why.replaceChildren(...(data.why || []).map((step) => el("li", {}, step)));
   why.classList.toggle("hidden", !(data.why || []).length);
+  // the five steps say what the headline says; show the headline only when there are no steps
+  $("headline").classList.toggle("hidden", Boolean((data.why || []).length));
   const [title, kind] = verdictTitle(c);
   $("verdict-title").textContent = title;
   $("verdict-band").className = `verdict-band ${kind === "named" ? "" : kind}`;
