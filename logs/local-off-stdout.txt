@@ -1,0 +1,47 @@
+{
+  "run": "20261026T011732",
+  "cases": 20,
+  "failures": 0,
+  "every_read_local": false,
+  "reads_local": 19,
+  "vs_builder": {
+    "fields": {
+      "N": {
+        "correct": 5,
+        "wrong": 1,
+        "not_accepted": 11,
+        "scored": 17
+      },
+      "NPOS": {
+        "correct": 7,
+        "wrong": 1,
+        "not_accepted": 4,
+        "scored": 12
+      }
+    },
+    "correct": 12,
+    "wrong": 2
+  },
+  "vs_second": {
+    "fields": {
+      "N": {
+        "correct": 6,
+        "wrong": 0,
+        "not_accepted": 11,
+        "scored": 17
+      },
+      "NPOS": {
+        "correct": 7,
+        "wrong": 1,
+        "not_accepted": 5,
+        "scored": 13
+      }
+    },
+    "correct": 13,
+    "wrong": 1
+  },
+  "median_seconds": 12.3,
+  "void": false,
+  "kill": true,
+  "claim_met": false
+}
