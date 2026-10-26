@@ -1,0 +1,17 @@
+{"case": "TCGA-3C-AAAU", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-A1-A0SN", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-A2-A0CV", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-A2-A0EW", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-A7-A26E", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-A7-A26H", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AC-A2FK", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AN-A0XN", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AN-A0XO", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AN-A0XP", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AN-A0XS", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AN-A0XT", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AN-A0XW", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AO-A03P", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AO-A1KP", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AQ-A1H2", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
+{"case": "TCGA-AR-A1AT", "run": "20261025T235715", "error": "RuntimeError: local job errored"}
