@@ -18,3 +18,6 @@
 {"probe": "super-reasoning-returned", "status": 200, "message_keys": ["content", "role"], "content_has_think_tags": false, "content_chars": 1, "content_tail": "8", "reasoning_field_chars": 0, "reasoning_head": null, "served": "nvidia/nemotron-3.5-super-vl-120b-a12b"}
 {"probe": "include_reasoning", "status": 200, "keys": ["content", "role"], "think_tags": false, "content_chars": 1, "reasoning_chars": 0}
 {"probe": "reasoning_format_raw", "status": 200, "keys": ["content", "role"], "think_tags": false, "content_chars": 1, "reasoning_chars": 0}
+{"probe": "first-read-thinking-off-recheck", "text": "ready", "checks_ok": true, "seconds": 2.3}
+{"probe": "think-1024-short", "setting": "Lightning thinking budget 1024 (Nightshift Preferences)", "report_chars": 489, "status": "errored", "seconds": 147.1, "error": "no attempt produced a candidate: 1 \u00d7 local"}
+{"probe": "think-1024-typical", "setting": "Lightning thinking budget 1024 (Nightshift Preferences)", "report_chars": 4840, "status": "errored", "seconds": 147.1, "error": "no attempt produced a candidate: 1 \u00d7 local"}
