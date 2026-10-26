@@ -2,21 +2,41 @@
 
 > **The column says zero. The report says eight.**
 >
-> Proof of Stage finds database records that cannot be true as written, quotes the source document showing which field is wrong, and leaves the fix to a person. It never edits a record.
+> Proof of Stage is an evidence-backed auditing agent for records typed in from documents. **Every verdict carries its why:** the rule that flags the record, the verbatim sentence from the source document, the code check that found those words, the field they contradict, and a signed receipt naming the Nemotron that read it. It never edits a record; a person decides.
 
-For cancer-registry reviewers and research-data teams: it narrows 1,097 records to the 25 the rule can prove need a look (24 that cannot be true as written, 1 missing its N), and for 21 of them quotes the sentence of the report that names the field it contradicts. Track 2, The Agent That Can Explain Why. NCI's public breast-cancer registry (TCGA-BRCA, 1,097 records). Zetaris proves, Nemotron quotes, a second Nemotron only objects, code checks, Meterless Nightshift signs, a person decides.
+For cancer-registry reviewers and research-data teams. Track 2, The Agent That Can Explain Why. On NCI's public breast-cancer registry (TCGA-BRCA, 1,097 real records, not written by us), a cross-field rule in a Zetaris semantic layer flags the 24 records that cannot be true as written (plus 1 missing its N: 25 to review), and for 21 of those 25 the report's own sentence names the wrong field.
 
 **[One record.](#sample-inputs-and-outputs)** TCGA-E2-A572: count field 0, stage N2. Nemotron may only quote the report, "Lymph node status: Positive 8 / 13"; code confirms the words show 8; the report contradicts the count; a person decides.
 
-**One question, three answers.** How many patients had cancer in the lymph nodes? On the 663 records where both fields apply: stage field 336, count field 328, quote-checked reading 333, with 2 left to a person. Counting from the count column alone drops 6 patients whose report says node-positive (TCGA-E2-A572 among them). Only a cross-field rule finds the 24 of 1,097 that cannot be true as written.
+**One question, three answers.** How many patients had cancer in the lymph nodes? On the 663 records where both fields apply: stage field 336, count field 328, and **333, the checked answer** (quote-checked readings; 2 left to a person). Counting from the count column alone drops 6 patients whose report says node-positive (TCGA-E2-A572 among them). Only a cross-field rule finds the 24 of 1,097 that cannot be true as written.
 
 ![The case page for TCGA-E2-A572: the layer's verdict "The report contradicts the count", the quoted line "Lymph node status: Positive 8 / 13", and the reviewer's three choices](docs/img/case-e2-a572.png)
 
-**Measured (pre-registered unless marked)** (losses included in [Results](#results-live-2026-10-22-to-10-26-every-number-has-its-file)):
-- **Each Nemotron has the narrowest job it was measured to do well; none is asked to just answer:** Lightning may only close a field that agrees with the registry (18 of 28 settled vs Super's 15, 0 contradicted), Super reads only what stays open, Ultra may only object (3 objections, all right; it lost the deep read and the notes; on the census it objected to 2 of 12 fallen field readings and 0 of 12 standing ones), Parse only boxes the line. The first read also runs on this PC, on whole reports (20 of 20 local, 0 disagreements, [local](docs/evidence/local-whole-results.md)). Together, against always reading with Super at 4k on 30 records whose fields agree: **50% fewer completion tokens**; of 36 first-read closings 33 agreed, 0 contradicted, 3 unconfirmed ([cost](docs/evidence/shipped-cost-results.md), [seats](docs/evidence/seat-cost-quality.md)).
-- **Where the fix lives:** asked how many patients are node-positive, an agent reading the layer never returned the checked count in 35 calls: it counted the raw column and left out the 6 patients whose report says node-positive. Told to correct a record, it wrote an overwrite of the registry 5 of 5 times (our query guard refused all 5); with its own Zetaris account that reads only a copy of the checked values, it answered right **5 of 5** ([probe 5](docs/evidence/agent-probe-5-results.md)).
-- **No signature, no answer; checkable by anyone:** the reader and the case notes use a model answer only if Nightshift's receipt is signed by our pinned key, names the Nemotron we asked for and was not cached; otherwise it is retried, then refused (the local first read carries Nightshift's job record instead, unsigned). All **811** committed receipts verify against that key ([count](docs/evidence/receipt-count.md)); every stored value re-read once, **42 of 42** reproduced ([attestation](docs/evidence/attest-results.md)); changing any one of the attestation receipts' 10,945 signed values breaks the signature (a test, [tamper bench](docs/evidence/tamper-bench.md)).
-- **What only reading finds:** in 358 records the rule calls consistent, **11** where the report gives a different value (Wilson 1.7 to 5.4%). 10 of the 11 reads were drafted by an assistant from excerpts and confirmed by the builder, a lay reader; 1 was the builder's own read; no second person has labelled them ([census](docs/evidence/hidden-2-results.md)).
+**One Nemotron per job, each measured against the alternative** (pre-registered; every call through Meterless Nightshift, and its signed receipt names the model that answered):
+
+| Job | Nemotron | Measured |
+|---|---|---|
+| First read | Lightning, thinking off | may only close a field that agrees with the registry: 18 of 28 records settled vs Super's 15, 0 contradicted |
+| Deep read | Super VL, 4k thinking budget | the budget changes the answer: Super alone names the right field on 9 → 17 of 25 (builder's labels) and 12 → 19 (second labeller) from thinking off to 4k |
+| Second reader | Ultra | may only object, with a quote; an objection sends the case to a person (3 objections, all matching the labels) |
+| Scan read | Parse v1 (NVIDIA direct) + Super VL | boxes the evidence line on the scanned page |
+| On this PC | Lightning, local | the first read on whole reports: 20 of 20 local, 0 disagreements with the cloud |
+
+Together, against always reading with Super at 4k on 30 records whose fields agree: **50% fewer completion tokens**; of 36 first-read closings, 33 agreed, 0 contradicted, 3 unconfirmed ([cost](docs/evidence/shipped-cost-results.md), [seats](docs/evidence/seat-cost-quality.md), [local](docs/evidence/local-whole-results.md)). Bolt, Nano Omni and Content Safety were measured and left out.
+
+**Super alone vs Proof of Stage** (the same Nemotron; what the agent adds):
+
+| On the 25 queued records | Super alone, 4k | Proof of Stage |
+|---|---|---|
+| Right field, two blind lay labellers (kappa 0.82) | 17 and 19 of 25 | 18 and 19 of 25: level |
+| A value is kept only with a verbatim quote that code finds in the report | no | yes |
+| A person decides; the record is never edited | no | yes |
+| Super as an agent over the layer returns the checked count | 0 of 35 with raw access (it counts the raw column) | 5 of 5 with an account that reads only a separate table of checked values |
+
+**Also measured** (losses in [Results](#results-live-2026-10-22-to-10-26-every-number-has-its-file)):
+- **No signature, no answer:** the reader and the case notes keep a model answer only if Nightshift's receipt is signed by our pinned key, names the Nemotron we asked for and was not cached; otherwise it is retried, then refused (the local first read carries an unsigned Nightshift job record instead). All **811** committed receipts verify ([count](docs/evidence/receipt-count.md)); every stored value re-read once, **42 of 42** reproduced ([attestation](docs/evidence/attest-results.md)); changing any one of 10,945 signed values breaks the signature (a test, [tamper bench](docs/evidence/tamper-bench.md)).
+- **Where the fix lives:** told to correct a record, the agent wrote an overwrite of the registry 5 of 5 times; our query guard refused all 5 ([probes](docs/evidence/agent-probe-5-results.md)).
+- **What only reading finds:** in 358 records the rule calls consistent, **11** where the report gives a different value (Wilson 1.7 to 5.4%); lay-read, not expert-reviewed: 10 of the 11 reads were drafted by an assistant from excerpts and confirmed by the builder, 1 was the builder's own ([census](docs/evidence/hidden-2-results.md)).
 
 **Who checked what.** Code: `python scripts/check_numbers.py` recomputes the README's headline numbers from the committed logs, the quote check finds each accepted quote in the report, and `python -m app.verify` checks every committed signature offline. People: two lay labellers labelled the 25 queued records blind, the builder and an independent second labeller (pre-registered); they agree on 22 of 25 (kappa 0.82, [second labeller](docs/evidence/second-labeller-results.md)). The census readings are the builder's alone.
 
@@ -26,7 +46,7 @@ For cancer-registry reviewers and research-data teams: it narrows 1,097 records 
 
 ## How the readers work together
 
-Each reader has one role, and they share one state: the Zetaris layer. The rule, SQL in the layer, proposes the record. The **first read** (Nemotron Lightning, thinking off) may only close a field that agrees with the registry; what stays open goes to the **deep read** (Nemotron Super VL, 4k thinking budget), then the **scan read** (Nemotron Parse and Super). Our code checks every quote and rejects what it cannot find. The Meterless Markovian engine carries a code-written note of what is still open from step to step, and stops when nothing is. A **second reader** (Nemotron Ultra) can only object, with a quote; its objection sends the case to a person (the queue moves it; the layer's verdict and every stored value stay as they are). A **red-team loop** (Super, on the same engine) attacks the quote check: 0 wrong accepts in 57. **A person decides**, as a new row the layer's answer includes.
+A multi-step evidence agent: each reader has one role, and they share one state, the Zetaris layer. The rule, SQL in the layer, proposes the record. The **first read** (Nemotron Lightning, thinking off) may only close a field that agrees with the registry; what stays open goes to the **deep read** (Nemotron Super VL, 4k thinking budget), then the **scan read** (Nemotron Parse and Super). Our code checks every quote and rejects what it cannot find. The Meterless Markovian engine carries a code-written note of what is still open from step to step, and stops when nothing is. A **second reader** (Nemotron Ultra) can only object, with a quote; its objection sends the case to a person (the queue moves it; the layer's verdict and every stored value stay as they are). A **red-team loop** (Super, on the same engine) attacks the quote check: 0 wrong accepts in 57. **A person decides**, as a new row the layer's answer includes.
 
 Against blind labels the product agreed on 18 of 25 and Super alone on 17 (the builder's labels), and 19 and 19 (an independent second labeller, pre-registered; the two labellers agree on 22 of 25, kappa 0.82); on the 22 both agree on, 17 and 17: level on accuracy. The thinking budget is what changes the answer (Super with thinking off: 9 of 25 and 12; at a 4k budget: 17 and 19), and the chain spends it only on fields that stay open (on 30 consistent records, half the completion tokens; 0 of 36 first-read closings contradicted, 3 unconfirmed). What the product adds is the checked quote, the signed record and a person. Every model comparison was written down before it ran (deviations disclosed); the losses are published.
 
@@ -104,6 +124,10 @@ Three review-queue records, one per verdict, from the live layer (`stage_check`)
 The blind human labels (`docs/evidence/baseline-m0-results.md`) agree with the layer on all three. Run any of them yourself in live mode with `python -m app.cli run --case <id>` (it appends a new evidence run to the logs; stored values are never overwritten). Sample mode bundles five cases with no model output and lets you play the reader.
 
 ## Run it
+
+**Dependencies.** Sample mode: Python 3.12+ and the packages in `pyproject.toml` (or `requirements.txt` for the case page alone); no keys, no network. Live mode adds: a Zetaris instance and keys, Meterless Nightshift running locally (the NVIDIA key is entered in Nightshift), Node.js 22.7+ for the Markovian engine's sidecar, and for the optional local first read a GPU with the local Lightning lane. Docker: the image below runs sample mode.
+
+**API (the case page's own, read-only):** `GET /api/case/{id}` (verdict, the five-step why, accepted quotes), `GET /api/case/{id}/trace` (each step's model, thinking setting, tokens and receipt id), `GET /api/queue`, `GET /api/cohort` (the three answers), `GET /api/receipts`; `output_examples/` holds four saved answers. The agent's step trace is also in `logs/` and `docs/evidence/route-ledger.md`.
 
 With Docker (sample mode, no keys): `docker build -t proof-of-stage .` then `docker run --rm -p 8000:8000 proof-of-stage` and open http://localhost:8000. Live mode adds `--env-file .env`.
 
