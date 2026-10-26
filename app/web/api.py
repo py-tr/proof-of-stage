@@ -313,9 +313,7 @@ def create_app(
     @app.get("/api/budget-flip")
     async def budget_flip() -> dict[str, Any]:
         """One record, Super alone thinking off vs 4k, from the committed baseline log (no model
-        call). Live mode only: sample mode never shows a model answer."""
-        if config.sample_mode():
-            return {"flip": None}
+        call). Shown in both modes, like the other logged-run cards, labelled as a logged run."""
         case_id = "TCGA-E2-A572"
         path = ROOT_DIR / "logs" / "baseline-m0.jsonl"
         row = next(

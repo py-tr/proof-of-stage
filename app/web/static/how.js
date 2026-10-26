@@ -1,5 +1,5 @@
 // How it works: one record, nine numbered steps, every value read from the same API the case
-// page uses (live in live mode; a dated copy and no model output in sample mode). Plain JS; every text is a text node.
+// page uses (live in live mode; a dated copy in sample mode; logged runs labelled as logged in both). Plain JS; every text is a text node.
 "use strict";
 
 const $ = (id) => document.getElementById(id);
@@ -201,7 +201,7 @@ async function loadBudgetFlip() {
   let f = null;
   try { f = (await api("/api/budget-flip")).flip; } catch (error) { /* shown below */ }
   const who = "NVIDIA Nemotron, the thinking budget on one record", title = "The same report, thinking off and at 4k";
-  if (!f) { box.replaceChildren(card(who, title, el("p", { class: "small" }, "Live mode only: sample mode shows no model answer."))); return; }
+  if (!f) { box.replaceChildren(card(who, title, el("p", { class: "small" }, "No logged baseline run found."))); return; }
   const NAME = { node_count: "the count field", pathologic_n: "the stage field", review: "a person decides" };
   const row = (label, a, cls) => el("tr", {}, el("td", {}, label), el("td", { class: cls }, NAME[a.fault] || String(a.fault)),
     el("td", {}, a.quote ? `“${a.quote}”` : "—"), el("td", {}, String(a.completion_tokens ?? "—")), el("td", {}, String(a.signature ?? "—")));
