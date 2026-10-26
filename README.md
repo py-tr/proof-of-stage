@@ -14,7 +14,7 @@ For cancer-registry reviewers and research-data teams. Track 2, The Agent That C
 
 ![The case page for TCGA-E2-A572: the layer's verdict "The report contradicts the count", the quoted line "Lymph node status: Positive 8 / 13", and the reviewer's three choices](docs/img/case-e2-a572.png)
 
-**One Nemotron per job, each measured against the alternative** (pre-registered; every call through Meterless Nightshift, and its signed receipt names the model that answered):
+**One Nemotron per job, each measured against the alternative** (pre-registered; every text call through Meterless Nightshift, and its signed receipt names the model that answered; Parse is called on NVIDIA directly):
 
 | Job | Nemotron | Measured |
 |---|---|---|
@@ -24,6 +24,8 @@ For cancer-registry reviewers and research-data teams. Track 2, The Agent That C
 | Scan read | Parse v1 (NVIDIA direct) + Super VL | boxes the evidence line on the scanned page |
 | On this PC | Lightning, local | the first read on whole reports: 20 of 20 local, 0 disagreements with the cloud |
 | Ask the layer | Lightning, tool calls | answers questions about the audit by calling read-only Zetaris tools; on a case question code selects the case tool and refuses numbers that are not in that case's record; Lightning reported the record faithfully on 12 of 12 new questions (v2, after v1's 9 of 12, where it sometimes picked the wrong tool) |
+| Case note | Super VL, thinking on | writes a plain note of the case, checked against its facts before it is shown: 21 of 25 notes pass, Ultra 8 of 25 |
+| Red team | Super VL on the Markovian engine | attacks the quote check: 0 wrong accepts in 57 judged attacks |
 
 Together, against always reading with Super at 4k on 30 records whose fields agree: **50% fewer completion tokens**; of 36 first-read closings, 33 agreed, 0 contradicted, 3 unconfirmed ([cost](docs/evidence/shipped-cost-results.md), [seats](docs/evidence/seat-cost-quality.md), [local](docs/evidence/local-whole-results.md)). Bolt, Nano Omni and Content Safety were measured and left out.
 
