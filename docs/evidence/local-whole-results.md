@@ -14,7 +14,7 @@ Pre-registration: `docs/preregistration/local-whole.md` + `local-whole.json` (fr
 | Records settled by the local first read (report only) | 6 of 20 |
 | **Claim** | **met** |
 
-Prediction (before the run): "Before the run, by the main session: gate passes (local Lightning answers ~13k tokens); 20 of 20 first reads local by the checklist and answered by local Lightning; 20 of 20 reports sent whole (6 longer than 7,000 characters); 0 disagreements with the census's cloud closings; the local first read settles about 8-12 of 20 (report only); 0-2 failures. Claim likely met. Precondition: the Bolt lane is removed, or every read fails the frozen lane check."
+Prediction (before the run): "Before the run, by the coding agent: gate passes (local Lightning answers ~13k tokens); 20 of 20 first reads local by the checklist and answered by local Lightning; 20 of 20 reports sent whole (6 longer than 7,000 characters); 0 disagreements with the census's cloud closings; the local first read settles about 8-12 of 20 (report only); 0-2 failures. Claim likely met. Precondition: the Bolt lane is removed, or every read fails the frozen lane check."
 
 ## What it means, and what it does not
 

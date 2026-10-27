@@ -1,9 +1,9 @@
-# Parse bbox spike: results (2026-10-22 ~17:00 Prague)
+# Parse bbox spike: results (2026-10-22 ~15:00 UTC)
 
 Pre-registration: PREREG.md (kill line: ≥2 of 3 cases pass both "located" and "box right").
 
 ## Platform findings
-- **Hosted `nvidia/nemotron-parse-2.0` is broken on our key:** HTTP 200 with EMPTY content until max_tokens, even on NVIDIA's own documented example image (usage prompt_tokens=6: the image is dropped). Context is 4,096 tokens in total (a 4,096 max_tokens request is a 400). Logged in data/attempts.jsonl, probe1-3.py.
+- **Hosted `nvidia/nemotron-parse-2.0` returned empty output on our key that day (it worked on 10-24; see Corrections below):** HTTP 200 with EMPTY content until max_tokens, even on NVIDIA's own documented example image (usage prompt_tokens=6: the image is dropped). Context is 4,096 tokens in total (a 4,096 max_tokens request is a 400). Logged in data/attempts.jsonl, probe1-3.py.
 - **Hosted `nvidia/nemotron-parse` (v1) works:** `<img src="data:image/jpeg;base64,…" />` as the message content, `tools`/`tool_choice` = `markdown_bbox`; the answer is in `tool_calls[0].function.arguments` as `[[{"bbox": {xmin,ymin,xmax,ymax}, "text", "type"}, …]]` (0–1 coordinates). 1.0–2.7 s per page; 11 pages, 0 failures.
 
 ## Result against the pre-registered kill line: FAIL (0 of 3 pass both)
@@ -22,7 +22,7 @@ Pre-registration: PREREG.md (kill line: ≥2 of 3 cases pass both "located" and 
 Parse → Super reads Parse's text → the guard checks Super's quote against Parse's text → the box comes from the Parse block holding the quote; pages padded to 1024×1280.
 
 ---
-# Variant v2 results (2026-10-22 ~17:40 Prague): PASS, 4 of 6 (kill line ≥4 of 6)
+# Variant v2 results (2026-10-22 ~15:40 UTC): PASS, 4 of 6 (kill line ≥4 of 6)
 Pipeline: page padded to 1024×1280 → `nvidia/nemotron-parse` blocks → Super (production reader, 4k thinking) reads the joined Parse text → guard → box = the Parse block(s) holding the accepted span. Overlays: data/v2/overlay/. Every call: data/v2/attempts.jsonl.
 
 | Case | Guard located the quote in Parse text | Box on the right line (by eye) | Pass |
@@ -41,7 +41,7 @@ Pipeline: page padded to 1024×1280 → `nvidia/nemotron-parse` blocks → Super
 
 ## Corrections 2026-10-24
 - **2 of the 4 v2 passes are design cases.** TCGA-A2-A0CV and TCGA-A7-A26E were in v1, whose failure the v2 pipeline was designed from; on the 4 cases new to v2, 2 passed.
-- **Parse 2.0 now works.** It returned empty output on 10-19 and 10-22; on 10-24 the same documented example, byte for byte, returned 3,219 characters of boxed markdown, and an A2-A0CV page returned 4,280 (`logs/capability-retest-2026-10-24.jsonl`). The endpoint changed on NVIDIA's side. Our inference above ("prompt_tokens=6: the image is dropped") was wrong: the working v1 also reports 5 or 6 prompt tokens per page. v1 stays the measured reader.
+- **Parse 2.0 now works.** It returned empty output on 10-19 (a pre-window probe, declared) and 10-22; on 10-24 the same documented example, byte for byte, returned 3,219 characters of boxed markdown, and an A2-A0CV page returned 4,280 (`logs/capability-retest-2026-10-24.jsonl`). The endpoint changed on NVIDIA's side. Our inference above ("prompt_tokens=6: the image is dropped") was wrong: the working v1 also reports 5 or 6 prompt tokens per page. v1 stays the measured reader.
 - **The box offset may be ours.** We pad pages to 1024×1280; NVIDIA's documentation uses 1648×2048. Not tested; the offset is not shown to be Parse's.
 
-*Copied from the project's research notes (2026-10-22). Raw call logs and spike scripts stay in those notes and are not part of this repository.*
+*Written up on 2026-10-22 from the spike's notes. The spike scripts and raw call logs are not committed.*

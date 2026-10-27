@@ -13,7 +13,7 @@ Pre-registration: `docs/preregistration/shipped-cost.md` + `shipped-cost.json` (
 | Seconds: chain vs always-4k | 852.1 vs 1461.4 |
 | **Claim** (tokens at most 60% of always-4k; at most 10% of closings contradicted) | **met** |
 
-Prediction (before the run): "Before the run, by the main session: chain tokens about 45-55% below always-4k (the estimate was about -49%), claim met; Lightning settles about 15-19 of 30 at the first read; 0-1 first-read closings contradicted; 0-3 provider failures."
+Prediction (before the run): "Before the run, by the coding agent: chain tokens about 45-55% below always-4k (the estimate was about -49%), claim met; Lightning settles about 15-19 of 30 at the first read; 0-1 first-read closings contradicted; 0-3 provider failures."
 
 ## What it means, and what it does not
 

@@ -4,7 +4,7 @@
 
 > **The column says zero. The report says eight.**
 >
-> Proof of Stage is an evidence-backed auditing agent for records typed in from documents. **Every verdict carries its why:** the rule that flags the record, the verbatim sentence from the source document, the code check that found those words, the field they contradict, and a signed receipt naming the Nemotron that read it. It never edits a record; a person decides.
+> Proof of Stage is an evidence-backed auditing agent for records typed in from documents. **Every verdict carries its why:** the rule that flags the record, the verbatim sentence from the source document, the code check that found those words, the field they contradict, and, for every stored value, a signed Nightshift receipt naming the Nemotron that read it. It never edits a record; a person decides.
 
 For cancer-registry reviewers and research-data teams. Track 2, The Agent That Can Explain Why. On NCI's public breast-cancer registry (TCGA-BRCA, 1,097 real records, not written by us), a cross-field rule in a Zetaris semantic layer flags the 24 records that cannot be true as written (plus 1 missing its N: 25 to review), and for 21 of those 25 the report's own sentence names the wrong field.
 
@@ -14,7 +14,7 @@ For cancer-registry reviewers and research-data teams. Track 2, The Agent That C
 
 ![The case page for TCGA-E2-A572: the layer's verdict "The report contradicts the count", the quoted line "Lymph node status: Positive 8 / 13", and the reviewer's three choices](docs/img/case-e2-a572.png)
 
-**One Nemotron per job, each measured against the alternative** (pre-registered; every text call through Meterless Nightshift, and its signed receipt names the model that answered; Parse is called on NVIDIA directly):
+**One Nemotron per job, each measured against the alternative** (pre-registered; every cloud text call through Meterless Nightshift, and its signed receipt names the model that answered; Parse and Super VL page-image reads go to NVIDIA directly):
 
 | Job | Nemotron | Measured |
 |---|---|---|
@@ -94,7 +94,7 @@ Diagram with the three loops: [`docs/architecture.md`](docs/architecture.md). Fu
 | Case note | **Super VL**, thinking on, Nightshift | 21 of 25 notes pass the note check vs Ultra 8 of 25 |
 | Red team | **Super VL** on the Markovian engine, Nightshift | 0 wrong accepts in 57 judged attacks |
 | Also measured, not shipped | part-aware deep read (Super VL), scan witness (**Nano Omni**), edge first read (**Bolt**), report screening (**Content Safety**) | each pre-registered; Bolt met its claim (16 of 30 settled vs Lightning's 17, 0 contradicted, fewer tokens); it had no Nightshift lane then, the 2026-10-26 Nightshift release serves it pinned and signed (probe), and Lightning keeps the first read by settling more; the others missed their seat rules. Numbers: [results](docs/results.md) |
-| Not used | Embed, Rerank, Nano 3 (text) | no step needs them; adding them would be model-name collecting |
+| Not used | Embed, Rerank, Nano 3 (text) | no step needs them, so they are not used |
 
 This follows NVIDIA's own pattern for Lightning: "plans route up to the frontier, execution routes down to Lightning", which it describes as the model for "tool calls, result validation, and subagent delegation" ([NVIDIA technical blog, 2026-08-11](https://developer.nvidia.com/blog/nvidia-nemotron-3-5-lightning-delivers-fast-accurate-specialized-task-execution-for-long-running-agents/)). Here the routing is code, not a model: Lightning validates what agrees with the registry, and only what stays open routes up to Super. Small model first, large model only on what stays open: measured as shipped, **50% fewer completion tokens than always reading at 4k** on 30 records whose fields agree (33 agreed, 0 contradicted, 3 unconfirmed) ([`shipped-cost-results.md`](docs/evidence/shipped-cost-results.md)). The people who check the output make the evaluation set: the blind labels and the census reviews are exported to `docs/evidence/eval-set/`, and each case-page decision joins them (none recorded yet: the first is made on camera), and `python scripts/eval_set.py score <log>` re-scores any logged reader on it in one command (it reproduces the deep-read bench exactly); no training. Cost and quality per seat: [`docs/evidence/seat-cost-quality.md`](docs/evidence/seat-cost-quality.md); which model did each step, with receipts: [`docs/evidence/route-ledger.md`](docs/evidence/route-ledger.md).
 
@@ -111,7 +111,7 @@ This follows NVIDIA's own pattern for Lightning: "plans route up to the frontier
 
 Cursor is a build tool, not a sponsor; how it was used is in [How this was built](#how-this-was-built-ai-usage-disclosure).
 
-**What is unique in how we used them:** the semantic layer does the proving and the model only quotes: Nemotron never decides a record, the SQL rule finds it, code checks the quote, the layer names the field and a person decides. Nightshift is used as a verifiable provider (signed, pinned, cache refused), not only a router. The Markovian engine runs an evidence chain whose model never sees the carryover, plus a red-team chain against our own guard. And each model choice was pre-registered and measured, including the ones that lost.
+**What is distinctive in how we used them:** the semantic layer does the proving and the model only quotes: Nemotron never decides a record, the SQL rule finds it, code checks the quote, the layer names the field and a person decides. Nightshift is used as a verifiable provider (signed, pinned, cache refused), not only a router. The Markovian engine runs an evidence chain whose model never sees the carryover, plus a red-team chain against our own guard. And each model choice was pre-registered and measured, including the ones that lost.
 
 **Exceptions, stated:** Nemotron Parse and Super VL reading page images go to NVIDIA direct, because Nightshift has no Parse lane and 1.2.3 and the 2026-10-26 release refuse pinned image requests with `no_vision_model`: its vision gate filters the automatic pool before the pin is applied, and every NVIDIA vision row is experimental, so never in that pool. The same requests worked on 1.2.1; reported to Meterless (`docs/evidence/nightshift-limits.md`, `logs/capability-retest-2026-10-24.jsonl`).
 
@@ -166,10 +166,10 @@ Nightshift settings we used (1.2.3, re-verified on the 2026-10-26 release; Windo
 ## Cost, in one place
 
 - **The chain as shipped, measured (pre-registered):** on 30 records whose registry fields agree, Lightning first (thinking off) and Super at 4k only on what stays open used **50% fewer completion tokens** than always reading at 4k (53,454 vs 107,438) and 42% less time; Lightning settled 17 of 30 alone, and of its 36 closings the 4k read agreed with 33, contradicted **0**, left 3 unconfirmed (`docs/evidence/shipped-cost-results.md`). Tokens, not price: per-token prices differ by model size.
-- **The thinking setting itself:** off answers in about 19 completion tokens and 0.6 s, a 4k budget in about 1,000 tokens; on 42 reports (84 fields), 4k got 30 both-right against 26 with thinking off, and matched unlimited thinking item for item (`docs/evidence/thinking-budget.md`).
+- **The thinking setting itself:** off answers in about 19 completion tokens and 0.6 s, a 4k budget in about 1,000 tokens; on 42 easier extraction reports (84 fields; a spike set from before the build window, declared in `metadata.json`), 4k got 30 both-right against 26 with thinking off, and matched unlimited thinking item for item (`docs/evidence/thinking-budget.md`).
 - Earlier cost measurements (the dial test with Super at the first read; the red-team carryover saving): [`docs/details.md`](docs/details.md#cost-details).
 
-## Results (live, 2026-10-22 to 10-26; every number has its file)
+## Results (live, 2026-10-22 to 10-26, except the rows marked as spikes; every number has its file)
 
 | Result | Value | File |
 |---|---|---|
@@ -210,7 +210,7 @@ What Nightshift 1.2.1 could not do, what 1.2.3 fixed, what the 2026-10-26 releas
 - **Signed records:** any committed receipt fails `python -m app.verify`. Then the signed-record claims come out.
 - **Local:** the local job record does not name Lightning on a local lane. Then the local claim comes out.
 
-- Hosted Nemotron Parse 2.0 returned an empty document on 10-19 and 10-22 (even on NVIDIA's own example); on 10-24 it worked in a retest, then returned 12 of 19 pages empty in the pre-registered comparison (`docs/evidence/parse-bench-results.md`). Parse v1 stays the measured scan reader.
+- Hosted Nemotron Parse 2.0 returned an empty document on 10-19 (a pre-window probe) and 10-22 (even on NVIDIA's own example); on 10-24 it worked in a retest, then returned 12 of 19 pages empty in the pre-registered comparison (`docs/evidence/parse-bench-results.md`). Parse v1 stays the measured scan reader.
 - Two of six scan boxes missed on a sparse one-page form; the page then shows no box and a person decides.
 - The checks cover N vs the node count in the 6th/7th editions; T, M and stage groups are not audited yet.
 - The evidence chain reads the report text from the local corpus copy and the scan from the local Parse cache; on 65 frozen cases the local text is identical, string for string, to what the USL's `path_report` table serves ([check](docs/evidence/usl-text-equality.md), no model call). Moving those reads onto the USL tables is planned.
@@ -240,6 +240,8 @@ See `data/README.md`. Code: Apache-2.0 (`LICENSE`); the vendored Meterless Marko
 
 ## How this was built (AI-usage disclosure)
 
-Built solo with AI coding tools: the first commits by Cursor's agent, then Claude Code (Claude Opus 5.5) writing code directly, with independent model reviews (Fable) before each commit; every commit carries its co-author trailer.
+Built solo with AI coding tools: the first commits by Cursor's agent, then Claude Code (Claude Opus 5.5) writing code directly, with independent reviews by a second AI model (Fable) before major commits; every commit carries its co-author trailer.
 
-**How Cursor was used.** Cursor's agent wrote the first commits on 2026-10-22 under the rules in [`AGENTS.md`](AGENTS.md) (no secrets in code, an answer accepted only with a verbatim quote, the Nightshift receipt verified on every call). After that, Cursor was the review workspace: with the repository open, Grok in Cursor's Ask mode scored the repo as a judge would, red-teamed the README's claims and cross-checked dataset facts. Its findings were checked against the data before any was adopted (for example the commit "README honesty pass after a red-team review (Grok in Cursor)"), and the ones the data did not support were rejected. Pre-registered tests and their failures, including a void run, are in `docs/preregistration/` and `docs/evidence/`; the guard's review rounds (two red-team passes, two judge-panel passes) are in `docs/evidence/guard-floor.md`. Human judgement, and where an AI helped with it: the blind labels on the 25 queue records and the first hidden-errors read are the builder's own; the second census's reads were drafted by an AI assistant from report excerpts and then reviewed and confirmed by the builder, with the disputed facts checked by code (`docs/evidence/hidden-2-lay-reads.json`). Every decision on the case page is a person's.
+**How Cursor was used.** Cursor's agent wrote the first commits on 2026-10-22 under the rules in [`AGENTS.md`](AGENTS.md) (no secrets in code, an answer accepted only with a verbatim quote, the Nightshift receipt verified on every call). After that, Cursor was the review workspace: with the repository open, Grok in Cursor's Ask mode reviewed the repo for weak claims, red-teamed the README's claims and cross-checked dataset facts. Its findings were checked against the data before any was adopted (for example the commit "README honesty pass after a red-team review (Grok in Cursor)"), and the ones the data did not support were rejected. Pre-registered tests and their failures, including a void run, are in `docs/preregistration/` and `docs/evidence/`; the guard's review rounds (two red-team passes, two further AI review passes) are in `docs/evidence/guard-floor.md`. Human judgement, and where an AI helped with it: the blind labels on the 25 queue records and the first hidden-errors read are the builder's own; the second census's reads were drafted by an AI assistant from report excerpts and then reviewed and confirmed by the builder, with the disputed facts checked by code (`docs/evidence/hidden-2-lay-reads.json`). Every decision on the case page is a person's.
+
+**Review vocabulary in the history.** Commit messages and some pre-registrations say "judge", "NVIDIA judge", "Track 2 judge", "judges round 3", "council 13", "sponsor fixes", "Grok judge pass" or "Fable round". These are review passes the builder ran with AI models (Grok in Cursor, Fable, and multi-model "councils"), each prompted to critique the repo from one point of view, such as a track judge, a sponsor's engineer or a red-teamer, against the published rubric. None of them was an event judge or anyone from a sponsor. Questions put to Meterless (about Nightshift's behaviour and the engine requirement) are cited where they are used. In pre-registrations, "the coding agent" and "the main session" mean Claude Code, and "the builder" is the person. Notes cited as `open-agent/research/…` or "the project knowledge base" are the builder's private planning notes and are not published. Pre-registrations and commit messages are kept exactly as written, because results cite commit hashes and frozen files.

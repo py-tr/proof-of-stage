@@ -1,4 +1,4 @@
-"""Zetaris retests from the 2026-10-24 claims audit (open-agent/research/claims-audit-2026-10-24.md).
+"""Zetaris retests from the 2026-10-24 claims audit (the builder's private notes).
 
 Every write goes to a throwaway namespace (lightning.metastore.retest_scratch), which is dropped at
 the end; the only statements on stage_audit are read-only (RUN DQ, SELECT). Each statement's

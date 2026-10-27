@@ -1,4 +1,4 @@
-"""Capability retests from the 2026-10-24 claims audit (open-agent/research/claims-audit-2026-10-24.md).
+"""Capability retests from the 2026-10-24 claims audit (the builder's private notes).
 
 Each probe is ONE raw POST with no client retries, so a failure keeps its status and body.
 Everything the server returned is logged to logs/capability-retest-2026-10-24.jsonl (answer text

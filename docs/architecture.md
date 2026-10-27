@@ -1,6 +1,6 @@
 # Architecture
 
-How one record is checked, from the sources to a person's decision. Every arrow that touches a model goes through Meterless Nightshift with a signed receipt, except Nemotron Parse on the scanned pages (NVIDIA direct; Nightshift has no Parse lane). The readers share one state, the Zetaris layer, and three loops run around it: the evidence chain, the red-team loop, and the second reader.
+How one record is checked, from the sources to a person's decision. Every cloud text call goes through Meterless Nightshift with a signed receipt. Nemotron Parse on the scanned pages and Super VL reading page images go to NVIDIA direct (Nightshift has no Parse lane and refuses pinned image requests), and the opt-in local first read carries an unsigned Nightshift job record. The readers share one state, the Zetaris layer, and three loops run around it: the evidence chain, the red-team loop, and the second reader.
 
 ```mermaid
 flowchart LR

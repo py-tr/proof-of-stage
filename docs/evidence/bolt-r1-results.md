@@ -11,7 +11,7 @@ Pre-registration: `docs/preregistration/bolt-r1.md` + `bolt-r1.json` (frozen bef
 
 0 provider failures. **Claim** (at least 14 settled, 0 contradicted): **met**.
 
-Prediction (before the run): "Before the run, by the main session: Bolt settles 10-17 of 30 (a smaller model may abstain or misquote more often than Lightning's 17); 0-2 closings contradicted (claim uncertain: a contradiction kills it); 0-2 failures."
+Prediction (before the run): "Before the run, by the coding agent: Bolt settles 10-17 of 30 (a smaller model may abstain or misquote more often than Lightning's 17); 0-2 closings contradicted (claim uncertain: a contradiction kills it); 0-2 failures."
 
 ## What it means, and what it does not
 

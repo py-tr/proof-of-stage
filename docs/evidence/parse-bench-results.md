@@ -17,7 +17,7 @@ Pre-registration: `docs/preregistration/parse-bench.md` + `parse-bench.json` (co
 
 ## What it means, and what it does not
 
-- Hosted Parse 2.0 is not stable yet: the first 7 pages came back normally (stop, about 2 s), then every page from the 8th on came back empty at the token limit (about 6 s each), the behaviour seen on 10-19 and 10-22. Same image preparation throughout, so the cause is on the service side; it works some of the time.
+- Hosted Parse 2.0 was intermittent in our runs: the first 7 pages came back normally (stop, about 2 s), then every page from the 8th on came back empty at the token limit (about 6 s each), the behaviour seen on 10-19 (a pre-window probe) and 10-22. Same image preparation throughout, so the cause is on the service side; it works some of the time.
 - v1's boxes on cases not used in design: 6 of 10 on the right line. The 4 misses: the one-page summary form (AN-A0XN, AN-A0XP; boxes a line above or below, the failure mode the design spike found) and TCGA-BH-A0DD (both boxes one line low on a multi-page report).
-- Judge: the builder (the coding agent), scoring the shuffled packet twice before reading the map; the second pass is not independent of the first. The user's pass can only remove passes (any split is a non-pass) and so cannot change the decision.
+- Scored by the coding agent (Claude Code), twice, on the shuffled packet before reading the map; the second pass is not independent of the first. The builder's own pass can only remove passes (any split is a non-pass) and so cannot change the decision.
 - Not tested: 2.0 at NVIDIA's documented larger canvas, or 2.0 on a day the service is stable. No re-run.

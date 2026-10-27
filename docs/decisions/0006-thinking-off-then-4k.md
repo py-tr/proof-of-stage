@@ -1,6 +1,6 @@
 # 0006: Thinking off first, then a 4k budget
 
-**Context.** Super's thinking costs tokens and seconds. Measured on 42 reports: thinking off got 26/42 with both fields right at a median of 19 completion tokens; a 4k budget got 30/42 and gave the same answers as unlimited thinking, item for item (`docs/evidence/thinking-budget.md`).
+**Context.** Super's thinking costs tokens and seconds. Measured on 42 easier extraction reports (a pre-window spike set, declared): thinking off got 26/42 with both fields right at a median of 19 completion tokens; a 4k budget got 30/42 and gave the same answers as unlimited thinking, item for item (`docs/evidence/thinking-budget.md`).
 
 **Decision.** R1 reads with thinking off and may only clear a field (an accepted value that agrees with the registry and is self-consistent under the count rule), never accuse one. Whatever stays open goes to R2 with a 4k budget, then R3 the scan.
 

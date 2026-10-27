@@ -15,7 +15,7 @@ Pre-registration: `docs/preregistration/hidden-2.md` + `hidden-2.json` (commit 3
 | Records fully settled (both fields closed) | 208 of 298 |
 | The read of each hit (provenance below) | stands 10, falls 7, unsure 1, not yet read 0 |
 
-Prediction (before the run): "Before the run, by the main session: 1-6 records with a hit among ~295 scored (the first census found 1 of 60); most hits on the count field within the same N category; 0-5 provider failures; at least half the hits stand after a lay read."
+Prediction (before the run): "Before the run, by the coding agent: 1-6 records with a hit among ~295 scored (the first census found 1 of 60); most hits on the count field within the same N category; 0-5 provider failures; at least half the hits stand after a lay read."
 
 Against the prediction: hits outside 1-6 (18: did not hold); provider failures 2 (held against 0-5); standing hits 10 of 18 (held against at least half).
 

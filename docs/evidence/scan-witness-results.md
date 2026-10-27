@@ -11,7 +11,7 @@ Pre-registration: `docs/preregistration/scan-witness.md` + `scan-witness.json` (
 
 **Claim** (Omni wrong at most Super VL's, correct at least Super VL's minus 2, **and fewer completion tokens**): **not met**, on the token clause only (38,343 vs 37,836: both spent most of their 4k budget). Kill not fired.
 
-Prediction (before the run): "Before the run, by the main session: Super VL about 12-16 correct, 1-3 wrong on the 13 scans; Nano Omni about 9-15 correct, 1-4 wrong, with clearly fewer tokens; claim uncertain (a smaller model may misread digits on scans); 0-4 failures (Omni overload)."
+Prediction (before the run): "Before the run, by the coding agent: Super VL about 12-16 correct, 1-3 wrong on the 13 scans; Nano Omni about 9-15 correct, 1-4 wrong, with clearly fewer tokens; claim uncertain (a smaller model may misread digits on scans); 0-4 failures (Omni overload)."
 
 ## What it means, and what it does not
 

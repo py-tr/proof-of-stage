@@ -12,7 +12,7 @@ Pre-registration: `docs/preregistration/local-mode.md` + `local-mode.json` (froz
 | Records settled by the local first read (report only) | 10 of 20 |
 | **Claim** (every first read local, 0 disagreements) | **met** |
 
-Prediction (before the run): "Before the run, by the main session: 20 of 20 first reads local by the checklist; 0 disagreements with the census's cloud closings (as in the focus test, 0 of 57); the local first read settles about 7-11 of 20 (report only); 0-2 failures. Claim likely met."
+Prediction (before the run): "Before the run, by the coding agent: 20 of 20 first reads local by the checklist; 0 disagreements with the census's cloud closings (as in the focus test, 0 of 57); the local first read settles about 7-11 of 20 (report only); 0-2 failures. Claim likely met."
 
 ## What it means, and what it does not
 

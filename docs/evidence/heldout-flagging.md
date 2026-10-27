@@ -1,6 +1,6 @@
-# Staircase: held-out result (scored 2026-10-22 ~20:00 Prague; the devB step was stopped by the user's decision to free the NVIDIA key)
+# Held-out flagging result (a pre-window spike, declared in `metadata.json`; scored 2026-10-22 ~18:00 UTC; the devB step was stopped early to free the API key)
 
-Scored by `stair.py score_ho` from cached outputs (0 new calls; 351 held-out calls made earlier). Pre-registered rules: PREREG.md.
+Scored by `stair.py score_ho` from cached outputs (0 new calls; 351 held-out calls made earlier, in the spike). Pre-registered rules: PREREG.md.
 
 | Step | Flags | Correct | Precision (Wilson 95%) | Lift |
 |---|---|---|---|---|
@@ -13,4 +13,4 @@ Scored by `stair.py score_ho` from cached outputs (0 new calls; 351 held-out cal
 - Not measured: devB (stopped), dev-tier seeded recall at S5.
 - Scope: this is the OLD printed-vs-recorded flagging pipeline (Lightning facts → derive1 → gates), not the shipped N-vs-count `fault_field` product. README: an honesty row only.
 
-*Copied from the project's research notes (2026-10-22). Raw call logs and spike scripts stay in those notes and are not part of this repository.*
+*Written up on 2026-10-22 from the spike's notes (a pre-window spike, declared in `metadata.json`). The spike scripts and raw call logs are not committed.*

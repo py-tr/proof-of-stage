@@ -452,7 +452,7 @@ HERO = (
 )
 
 
-# A quote must show its category; that it exists in the report is not enough (judge review).
+# A quote must show its category; that it exists in the report is not enough (model review).
 @pytest.mark.parametrize(
     ("field", "value", "quote", "status"),
     [
@@ -482,7 +482,7 @@ def test_a_hyphenated_size_counts() -> None:
     assert fr.status == "accepted"
 
 
-# Round-2 judge review: wrong categories that passed the first category check.
+# Round-2 model review: wrong categories that passed the first category check.
 REAL_LIKE = (
     "Specimen measures 23 cm medial to lateral. SKIN IDENTIFIED. "
     "INVASIVE DUCTAL CARCINOMA, IN INVASIVE AND IN SITU TUMOR. "

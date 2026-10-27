@@ -12,7 +12,7 @@ Pre-registration: `docs/preregistration/critic-census.md` + `critic-census.json`
 
 **Claim** (contradiction on at least half of the fallen fields and on at most 2 standing): **not met**. Kill (objections on fallen not above standing): **not fired**.
 
-Prediction (before the run): "Before the run, by the main session: Ultra objects on 5-8 of the 12 fallen fields (likely on the bilateral and per-part ones where the report states the total elsewhere) and on 0-2 of the 12 standing fields; verified objections on fallen fewer (3-6) because a sum of parts sits in no single quote; claim likely met; 0-2 provider failures."
+Prediction (before the run): "Before the run, by the coding agent: Ultra objects on 5-8 of the 12 fallen fields (likely on the bilateral and per-part ones where the report states the total elsewhere) and on 0-2 of the 12 standing fields; verified objections on fallen fewer (3-6) because a sum of parts sits in no single quote; claim likely met; 0-2 provider failures."
 
 **Scoring note:** Rescored from logs/critic-census.jsonl with the frozen per-field verdicts in critic-census.json: the run's own summary row (logs/critic-census-runs.jsonl) is wrong because each row's 'verdict' key was overwritten by Ultra's own verdict before scoring (a bug in app/engine/critic_census.py found after the run). No call was re-run; the per-field log is unchanged.
 

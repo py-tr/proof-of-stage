@@ -12,7 +12,7 @@ Pre-registration: `docs/preregistration/parts-bench.md` + `parts-bench.json` (fr
 
 How each count was reached: no_verified_part 20, parts_sum 18, single_part 13, stated_total 32. A `parts_sum` is a value no single quote shows: the product would show the parts to a person.
 
-Prediction (before the run): "Before the run, by the main session: A: 8-10 of 11 fallen fixed (the 5 per-part and 2 bilateral mostly fixed; the per-level and N-from-count cases may not be) and 9-11 of 12 standing kept (claim likely met, weak evidence since designed on); B: 14-16 correct, 0-2 wrong (claim uncertain; the list format may lose a labelled total on some reports); C: 1-4 new disagreements (claim uncertain: summing parts can double-count restatements); 0-3 provider failures."
+Prediction (before the run): "Before the run, by the coding agent: A: 8-10 of 11 fallen fixed (the 5 per-part and 2 bilateral mostly fixed; the per-level and N-from-count cases may not be) and 9-11 of 12 standing kept (claim likely met, weak evidence since designed on); B: 14-16 correct, 0-2 wrong (claim uncertain; the list format may lose a labelled total on some reports); C: 1-4 new disagreements (claim uncertain: summing parts can double-count restatements); 0-3 provider failures."
 
 ## Set A field by field
 

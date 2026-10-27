@@ -22,7 +22,7 @@ The same floor against the registry's own counts (stage_check, 1,097 cases): 532
 
 ## Second round: what is a count inside the quote (2026-10-23)
 
-A second red-team review (Grok, reading the code) listed wrong counts the guard still accepted; we replayed each on synthetic text and all were accepted: a size ("Tumor size 14 mm" as 14), the examined count ("Total lymph nodes examined: 18"), a negative-node fraction ("Eight of eight … free of metastatic carcinoma" as 8), a grade score in the same quote as a node fraction ("Nottingham score 8/9" as 8), the wrong number word ("Two lymph nodes, one of which contains metastatic carcinoma" as 2), "No lymphovascular invasion" as zero, a stage code ("pN1a" as 1), a block name ("S14").
+A second red-team review (another AI model, Grok, reading the code) listed wrong counts the guard still accepted; we replayed each on synthetic text and all were accepted: a size ("Tumor size 14 mm" as 14), the examined count ("Total lymph nodes examined: 18"), a negative-node fraction ("Eight of eight … free of metastatic carcinoma" as 8), a grade score in the same quote as a node fraction ("Nottingham score 8/9" as 8), the wrong number word ("Two lymph nodes, one of which contains metastatic carcinoma" as 2), "No lymphovascular invasion" as zero, a stage code ("pN1a" as 1), a block name ("S14").
 
 Fix (`count_in_span`): a fraction in the quote counts only if it is not a score and not followed by a negative word (then only zero is stated); without a fraction, the count must be the number nearest a positive cue that is not negated, never a number with a unit after it or "examined"/"size" before it; "no" means zero only before "node(s)", "lymph node(s)" or metastasis.
 
@@ -35,7 +35,7 @@ Fix (`count_in_span`): a fraction in the quote counts only if it is not a score 
 
 ## Third round: the N and T quote must show the category (2026-10-23)
 
-A Fable review found that `judge_field` only checked that the quote exists in the report: on the hero case N3a with the quote "breast" was accepted, and through "Try to fool it" that reading would have named the N field. Fix (`supports_category`): the located quote must hold a stage token or label with the same main category ("pN1a", "pT2N1aMX", "N Stage: 1a"), or for N a node count the count guard reads in it that implies the category (2 positive -> N1), or for T a tumour size in its range (the largest of "4.1 x 3.5 x 1.5 cm"), or the words of a category a number cannot show (micrometastasis, isolated tumour cells, "cannot be assessed", "examined: 0", skin or chest wall, in situ).
+An AI code review (Fable) found that `judge_field` only checked that the quote exists in the report: on the demo case N3a with the quote "breast" was accepted, and through "Try to fool it" that reading would have named the N field. Fix (`supports_category`): the located quote must hold a stage token or label with the same main category ("pN1a", "pT2N1aMX", "N Stage: 1a"), or for N a node count the count guard reads in it that implies the category (2 positive -> N1), or for T a tumour size in its range (the largest of "4.1 x 3.5 x 1.5 cm"), or the words of a category a number cannot show (micrometastasis, isolated tumour cells, "cannot be assessed", "examined: 0", skin or chest wall, in situ).
 
 | Check | Result |
 |---|---|
@@ -57,14 +57,14 @@ The pre-registered chain (`docs/evidence/adversary-chain-results.md`) got 8 wron
 | Check | Result |
 |---|---|
 | The chain's 8 wrong accepts, re-judged | all 8 rejected (7 `count_not_report_total`, 1 `count_not_in_quote`); its 2 true counts still accepted |
-| The hero case's "PRESENT, 4" (found by the Fable review) | rejected |
+| The demo case's "PRESENT, 4" (found by the AI code review) | rejected |
 | Fresh reads of the 25 queue reports, previous vs current guard (`logs/guard-ab-total-2026-10-23.txt`) | 0 verdicts changed; 16 accepted counts still pass |
 | The 13 stored counts; the specimen attack | 13 accepted; still rejected |
 | Labelled totals vs the registry (stage_check, cases with a report and a count) | 105 reports state a labelled total; it equals the registry count in 94, differs in 11 (incl. queue cases BH-A0DD, AQ-A1H2, BH-A0BS) |
 
 These fixes were designed after seeing the chain's accepts, so the chain's 1-in-60 does not describe the new guard; a fresh pre-registered chain (new cases) is needed to measure it.
 
-## Fifth round: a second judge-panel review (Fable, 2026-10-23)
+## Fifth round: a second AI code review (Fable, 2026-10-23)
 
 Found on real report text, all replayed before fixing: on the hero case, N2a was accepted through "…EXTRANODAL EXTENSION: PRESENT, 4" (the N check read the count without the report around the quote, so "4 MM" did not count) and "Try to fool it" would then name the N field; T4b through "SKIN IDENTIFIED"; Tis through "IN INVASIVE AND IN SITU TUMOR"; T3 through "Specimen measures 23 cm"; N1mi through "is negative for micrometastases in" (TCGA-A2-A25F); NX through "Distant metastasis (pM) : Cannot be assessed" (TCGA-A7-A13G).
 
@@ -76,7 +76,7 @@ Fix (`supports_category`): an N read from a count must pass the whole count guar
 | The 37 stored T/N rows | 36 accepted; 1 rejected (the same "Stage: 1c", fail-closed) |
 | Fresh reads of the 25 queue reports, previous vs current guard (`logs/guard-ab-round2-2026-10-23.txt`) | 3 verdicts changed: 2 were model errors the previous guard accepted (N1a quoting "TOTAL: 4 of 13", which is N2; N1a quoting one specimen's "(1/1)" in a report whose labelled total is 4); 1 is a false rejection, T2 quoting "3.4 CM IN SIZE." whose tumour cue ("CARCINOMA … INVOLVING THE NIPPLE DERMIS") is outside the quote (fail-closed; T is not audited) |
 
-## Sixth round: a judge-panel review of the red-team v3 draft (Fable, 2026-10-23)
+## Sixth round: an AI code review of the red-team v3 draft (Fable, 2026-10-23)
 
 Offline probes on the draft's records found five holes, all replayed before fixing: "- AE 1/3" (a stain name) accepted as 1 positive node, because the negative word after it ("NEGATIVE") lies just outside the quote; "INVASIVE LOBULAR CARCINOMA, SBR 2" (a grading system) and "… measured on two contiguous sections" accepted through the cue rule; a list index ("3. Excisional biopsy margins: Positive") accepted as 3; and in `count_path` the loop variables shadowed the report context passed in, so after a score fraction the cue path lost the text before the quote.
 
