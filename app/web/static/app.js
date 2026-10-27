@@ -505,11 +505,11 @@ function renderTrace(trace) {
   const head = el("tr", {}, ...["Step", "Model", "Thinking", "Provider", "Tokens", "Seconds", "N", "Positive nodes"].map((h) => el("th", {}, h)));
   const rows = trace.rungs.map((r) => el("tr", {},
     el("td", {}, RUNG_NAME[r.rung] || r.rung),
-    el("td", { title: `${show(r.model)} · ${r.provider === "nightshift" ? "named in the signed Nightshift receipt" : "as NVIDIA's API reported serving"}` }, modelName(r.model)),
+    el("td", { title: `${show(r.model)} · ${r.provider === "nightshift" ? "named in the signed Nightshift receipt" : r.provider === "nightshift local" ? "named in Nightshift's local job record" : "as NVIDIA's API reported serving"}` }, modelName(r.model)),
     el("td", {}, r.thinking),
     el("td", {}, r.provider === "nightshift"
       ? el("span", {}, "Nightshift ", el("code", { title: `receipt ${show(r.receipt_id)} · signature ${show(r.signature)} · cached: ${r.from_cache ? "yes" : "no"}` }, `${show(r.signature)} receipt`))
-      : "NVIDIA direct"),
+      : r.provider === "nightshift local" ? "Nightshift local lane (unsigned job record)" : "NVIDIA direct"),
     el("td", { class: r.budget.ok === false ? "over" : "", title: r.budget.how }, show(r.completion_tokens), r.budget.ok === false ? " (over budget)" : ""),
     el("td", {}, show(r.seconds)),
     el("td", {}, fieldVerdict(r.fields.N)),

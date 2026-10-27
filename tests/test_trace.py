@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 
 from app.web.api import create_app
 from app.web.data import SampleData
-from app.web.trace import ANSWER_ALLOWANCE, budget_check, latest_trace
+from app.web.trace import ANSWER_ALLOWANCE, budget_check, latest_trace, provider_of
 
 
 def _row(run: str, step: int, rung: str, budget: int, completion: int, receipt: str | None):
@@ -50,6 +50,11 @@ def test_the_latest_run_is_shown_rung_by_rung(tmp_path: Path) -> None:
     assert trace["rungs"][0]["fields"]["N"]["reason"] == ""  # not the model's own sentence
     assert trace["rungs"][0]["fields"]["NPOS"]["reason"] == "count_not_in_quote"
     assert latest_trace("TCGA-OTHER", log) is None
+    assert trace["rungs"][0]["provider"] == "nightshift"
+    # an unreceipted rung is NVIDIA direct, unless it ran on Nightshift's local lane
+    assert provider_of({"model": "nvidia/nemotron-3.5-lightning-30b-a3b"}) == "nvidia direct"
+    local = {"model": "local-runtime/nemotron-3.5-lightning-30b-a3b"}
+    assert provider_of(local) == "nightshift local"
 
 
 def test_the_budget_check_uses_reasoning_tokens_when_reported() -> None:

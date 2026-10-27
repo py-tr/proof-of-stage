@@ -34,6 +34,15 @@ def budget_check(budget: int, usage: dict[str, Any]) -> dict[str, Any]:
     return {"ok": None, "how": "no token count"}
 
 
+def provider_of(row: dict[str, Any]) -> str:
+    """Where a rung ran: signed Nightshift cloud call, Nightshift's local lane, or NVIDIA direct."""
+    if row.get("receipt_id"):
+        return "nightshift"
+    if str(row.get("model") or "").startswith("local-runtime/"):
+        return "nightshift local"  # an unsigned job record, not a receipt
+    return "nvidia direct"
+
+
 def latest_trace(case_id: str, path: Path = CHUNKS_LOG) -> dict[str, Any] | None:
     """The latest ladder run of a case: one entry per rung, oldest rung first."""
     if not path.exists():
@@ -73,7 +82,7 @@ def latest_trace(case_id: str, path: Path = CHUNKS_LOG) -> dict[str, Any] | None
             {
                 "rung": row["rung"],
                 "thinking": "off" if budget <= 0 else f"{budget} budget",
-                "provider": "nightshift" if row.get("receipt_id") else "nvidia direct",
+                "provider": provider_of(row),
                 "model": row.get("model"),
                 "receipt_id": row.get("receipt_id"),
                 "signature": row.get("signature"),
