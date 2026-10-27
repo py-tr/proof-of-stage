@@ -38,14 +38,14 @@ Together, against always reading with Super at 4k on 30 records whose fields agr
 | A person decides; the record is never edited | no | yes |
 | Super as an agent over the layer returns the checked count | 0 of 35 with raw access (it counts the raw column) | 5 of 5 with an account that reads only a separate table of checked values |
 
-**Also measured** (losses in [Results](#results-live-2026-10-22-to-10-26-every-number-has-its-file)):
+**Also measured** (losses in [Results](#results-live-2026-10-22-to-10-26-except-the-rows-marked-as-spikes-every-number-has-its-file)):
 - **No signature, no answer:** the reader and the case notes keep a model answer only if Nightshift's receipt is signed by our pinned key, names the Nemotron we asked for and was not cached; otherwise it is retried, then refused (the local first read carries an unsigned Nightshift job record instead). All **811** committed receipts verify ([count](docs/evidence/receipt-count.md)); every stored value re-read once, **42 of 42** reproduced ([attestation](docs/evidence/attest-results.md)); changing any one of 10,945 signed values breaks the signature (a test, [tamper bench](docs/evidence/tamper-bench.md)).
 - **Where the fix lives:** told to correct a record, the agent wrote an overwrite of the registry 5 of 5 times; our query guard refused all 5 ([probes](docs/evidence/agent-probe-5-results.md)).
 - **What only reading finds:** in 358 records the rule calls consistent, **11** where the report gives a different value (Wilson 1.7 to 5.4%); lay-read, not expert-reviewed: 10 of the 11 reads were drafted by an assistant from excerpts and confirmed by the builder, 1 was the builder's own ([census](docs/evidence/hidden-2-results.md)).
 
 **Who checked what.** Code: `python scripts/check_numbers.py` recomputes the README's headline numbers from the committed logs, the quote check finds each accepted quote in the report, and `python -m app.verify` checks every committed signature offline. People: two lay labellers labelled the 25 queued records blind, the builder and an independent second labeller (pre-registered); they agree on 22 of 25 (kappa 0.82, [second labeller](docs/evidence/second-labeller-results.md)). The census readings are the builder's alone.
 
-[Run it, no keys](#run-it) · [How the readers work together](#how-the-readers-work-together) · [Results and losses](#results-live-2026-10-22-to-10-26-every-number-has-its-file) · [Limits](#limits-honest) · [Where to look, by judging criterion](#where-to-look-by-judging-criterion)
+[Run it, no keys](#run-it) · [How the readers work together](#how-the-readers-work-together) · [Results and losses](#results-live-2026-10-22-to-10-26-except-the-rows-marked-as-spikes-every-number-has-its-file) · [Limits](#limits-honest) · [Where to look, by judging criterion](#where-to-look-by-judging-criterion)
 
 **A judge's 15 minutes, no keys:** `pip install -e .`, then `python -m app.cli serve` and open http://127.0.0.1:8000. Pick **TCGA-E2-A572** and click "Example: the report's own line": the same quote check accepts the report's N and its count, and the layer names the count field. Then open `/how` (one record step by step, every model's seat, the agent probes) and `/receipts` (every committed signature checked in your browser; one changed byte turns it red). Sample mode bundles registry facts and report text only: model readings, traces and the second reader need live mode, and their logs are in `docs/evidence/`.
 
@@ -226,7 +226,7 @@ What Nightshift 1.2.1 could not do, what 1.2.3 fixed, what the 2026-10-26 releas
 
 | Criterion | Where |
 |---|---|
-| Impact | [first screen](#proof-of-stage) (who it is for, what a reviewer is spared), [Why it matters](#why-it-matters-agents-trust-the-semantic-layer), the census in [Results](#results-live-2026-10-22-to-10-26-every-number-has-its-file) |
+| Impact | [first screen](#proof-of-stage) (who it is for, what a reviewer is spared), [Why it matters](#why-it-matters-agents-trust-the-semantic-layer), the census in [Results](#results-live-2026-10-22-to-10-26-except-the-rows-marked-as-spikes-every-number-has-its-file) |
 | Technical execution | [How it works](#how-it-works), [Run it](#run-it) (CI, tests, offline signature check, numbers check), [`docs/preregistration/`](docs/preregistration/) |
 | Innovation | [How the readers work together](#how-the-readers-work-together), the agent probes in [Why it matters](#why-it-matters-agents-trust-the-semantic-layer) |
 | Demo | [Sample inputs and outputs](#sample-inputs-and-outputs), `input_examples/` and `output_examples/`, the case page and `/how` |
