@@ -1,6 +1,6 @@
 # Zetaris demo: the `stage_audit` Unified Semantic Layer
 
-Run 2026-10-23 21:48 UTC with `python -m app.cli usl demo --write` (live Zetaris). LOAD USL: 8 tables (0.59 s). Whole pack: 38.55 s wall-clock.
+Run 2026-10-27 13:43 UTC with `python -m app.cli usl demo --write` (live Zetaris). LOAD USL: 8 tables (0.53 s). Whole pack: 30.83 s wall-clock.
 
 ## What we built
 `lightning.metastore.registry_audit.stage_audit`: one Unified Semantic Layer that joins a public registry API, file-store CSVs and our own append-only Postgres results, and names which registry field the verified evidence points to. Data-quality rules run inside Zetaris (`RUN DQ`).
@@ -18,7 +18,7 @@ Run 2026-10-23 21:48 UTC with `python -m app.cli usl demo --write` (live Zetaris
 
 ## How to run it (the SQL in order, with output)
 
-### 1. Row count of every USL table (6.34 s)
+### 1. Row count of every USL table (5.73 s)
 Why: the layer is live over all three source types.
 ```sql
 SELECT 'tumour_case' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.tumour_case UNION ALL SELECT 'path_report' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.path_report UNION ALL SELECT 'recorded_stage' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.recorded_stage UNION ALL SELECT 'staging_rule' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.staging_rule UNION ALL SELECT 'derived_stage' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.derived_stage UNION ALL SELECT 'stage_check' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.stage_check UNION ALL SELECT 'parse_block' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.parse_block UNION ALL SELECT 'flag' AS usl_table, count(*) AS rows FROM lightning.metastore.registry_audit.stage_audit.flag
@@ -34,10 +34,10 @@ Output:
 | derived_stage | 902 |
 | stage_check | 1097 |
 | parse_block | 532 |
-| flag | 16 |
+| flag | 17 |
 
 
-### 2. Every rule registered on the layer (0.55 s)
+### 2. Every rule registered on the layer (0.51 s)
 Why: our custom rules and the key rules Zetaris generated from the DDL.
 ```sql
 LIST DQ USL lightning.metastore.registry_audit.stage_audit
@@ -74,7 +74,7 @@ O |
 | fault_unresolved | stage_check | Custom Data Quality | fault_field IS NULL OR fault_field <> 'review' |
 
 
-### 3. A plain question to the layer (3.67 s)
+### 3. A plain question to the layer (3.22 s)
 Why: how many records in each edition cannot be true as written, and which field the evidence names.
 ```sql
 SELECT edition_code, fault_field, count(*) AS cases FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE reason_class IN ('n_count_contradiction', 'n_missing_derivable') GROUP BY edition_code, fault_field ORDER BY edition_code, fault_field
@@ -91,7 +91,7 @@ Output:
 | 7 | review | 1 |
 
 
-### 4. The cross-source verdict (3.96 s)
+### 4. The cross-source verdict (2.62 s)
 Why: one USL table joins the REST registry record, the file-store rules and the Postgres reader output, and names the field the evidence points to.
 ```sql
 SELECT case_id, recorded_n, lymph_nodes_positive, derived_n, report_n, report_nodes_positive, fault_field FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE fault_field IS NOT NULL ORDER BY fault_field, case_id
@@ -107,7 +107,7 @@ Output (first 5 of 25):
 | TCGA-AQ-A1H2 | N2A | 13.0 | pN3a | N2A | 7 | node_count |
 
 
-### 5. The basic data-quality rule (source level) (1.56 s)
+### 5. The basic data-quality rule (source level) (1.15 s)
 Why: positive nodes cannot exceed the nodes examined, checked on the recorded values.
 ```sql
 RUN DQ nodes_within_tested TABLE lightning.metastore.registry_audit.stage_audit.recorded_stage
@@ -119,7 +119,7 @@ Output:
 | nodes_within_tested | recorded_stage | Custom Data Quality | 1097 | 1097 | 0 |
 
 
-### 6. The contradiction rule (6.17 s)
+### 6. The contradiction rule (4.33 s)
 Why: records whose recorded N and node count cannot both be true.
 ```sql
 RUN DQ nodes_consistent TABLE lightning.metastore.registry_audit.stage_audit.stage_check
@@ -131,7 +131,7 @@ Output:
 | nodes_consistent | stage_check | Custom Data Quality | 1097 | 1073 | 24 |
 
 
-### 7. The records the contradiction rule flags (3.73 s)
+### 7. The records the contradiction rule flags (2.66 s)
 Why: the review queue, straight from the rule.
 ```sql
 SHOW DQ INVALID RECORD nodes_consistent TABLE lightning.metastore.registry_audit.stage_audit.stage_check
@@ -147,7 +147,7 @@ Output (first 5 of 24):
 | TCGA-A2-A0EW | breast | 6 | T1B | N3A | Stage IIIC | N3 | 26.0 | None | pNX | NX | T1C | N2A | 2008 | in_window | n_count_contradiction | N2 | 4 | review | None |
 
 
-### 8. A key rule Zetaris generated from the DDL (1.78 s)
+### 8. A key rule Zetaris generated from the DDL (1.15 s)
 Why: every scanned-report block belongs to a known case.
 ```sql
 RUN DQ case_id TABLE lightning.metastore.registry_audit.stage_audit.parse_block
@@ -160,8 +160,8 @@ Output:
 | case_id | parse_block | Foreign Key Constraint | 532 | 532 | 0 |
 
 
-### 9. The composite keys hold (no output rows means no duplicates) (2.34 s)
-Why: a second, independent check beside Zetaris's key rules: the full keys of derived_stage (case_id, method, field) and parse_block (case_id, page_no, block_index), counted directly. (Correction 2026-10-24: this step used to say Zetaris runs a composite-key rule only through its first column. A retest shows the run under the first column's name checks the full key, 532 of 532 valid on parse_block with 7 case ids, and the listed name works backquoted, as Zetaris's reference shows; `logs/zetaris-retest-2026-10-24.jsonl`.)
+### 9. The composite keys hold (no output rows means no duplicates) (2.04 s)
+Why: a second, independent check beside Zetaris's key rules: the full keys of derived_stage (case_id, method, field) and parse_block (case_id, page_no, block_index), counted directly.
 ```sql
 SELECT 'derived_stage' AS usl_table, case_id, count(*) AS n FROM lightning.metastore.registry_audit.stage_audit.derived_stage GROUP BY case_id, method, field HAVING count(*) > 1 UNION ALL SELECT 'parse_block' AS usl_table, case_id, count(*) AS n FROM lightning.metastore.registry_audit.stage_audit.parse_block GROUP BY case_id, page_no, block_index HAVING count(*) > 1
 ```
@@ -171,7 +171,7 @@ Output:
 |---|---|---|
 
 
-### 10. Evidence on the original scan (0.69 s)
+### 10. Evidence on the original scan (0.57 s)
 Why: the block Nemotron Parse read, with its box, for the hero case.
 ```sql
 SELECT case_id, page_no, block_text, xmin, ymin, xmax, ymax FROM lightning.metastore.registry_audit.stage_audit.parse_block WHERE case_id = 'TCGA-A2-A0CV' AND block_text LIKE '%2/18%'
@@ -183,7 +183,7 @@ Output:
 | TCGA-A2-A0CV | 0 | LYMPH NODES: METASTASIS IN TWO OF EIGHTEEN (2/18) EXAMINED L | 0.133867 | 0.631200 | 0.864684 | 0.680000 |
 
 
-### 11. One question, three answers (3.87 s)
+### 11. One question, three answers (3.0 s)
 Why: 'is this patient node-positive?' asked of the N column and of the count column, on the records where both apply (6th/7th edition, N and count recorded, no micrometastasis or isolated tumour cells): the columns disagree on some records, and the contradictions that keep the same answer still change the N category.
 ```sql
 SELECT count(*) AS records, sum(CASE WHEN recorded_n_main <> 'N0' THEN 1 ELSE 0 END) AS node_positive_by_n_column, sum(CASE WHEN CAST(lymph_nodes_positive AS DOUBLE) > 0 THEN 1 ELSE 0 END) AS node_positive_by_count_column, sum(CASE WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) THEN 1 ELSE 0 END) AS columns_disagree, sum(CASE WHEN NOT ((recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0)) AND recorded_n_main <> 'N0' THEN 1 WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) AND fault_field = 'node_count' AND recorded_n_main <> 'N0' THEN 1 WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) AND fault_field = 'pathologic_n' AND CAST(lymph_nodes_positive AS DOUBLE) > 0 THEN 1 ELSE 0 END) AS node_positive_by_verdict, sum(CASE WHEN CAST(positive_nodes_checked AS INT) > 0 THEN 1 ELSE 0 END) AS node_positive_by_checked_count, sum(CASE WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) AND fault_field = 'review' THEN 1 ELSE 0 END) AS left_to_a_person, sum(CASE WHEN reason_class = 'n_count_contradiction' AND NOT ((recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0)) THEN 1 ELSE 0 END) AS same_answer_other_category, sum(CASE WHEN NOT ((recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0)) AND recorded_n_main <> 'N0' THEN 1 WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) AND coalesce(d.claim, fault_field) = 'node_count' AND recorded_n_main <> 'N0' THEN 1 WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) AND coalesce(d.claim, fault_field) = 'pathologic_n' AND CAST(lymph_nodes_positive AS DOUBLE) > 0 THEN 1 ELSE 0 END) AS node_positive_after_decisions, sum(CASE WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) AND coalesce(d.claim, fault_field) NOT IN ('node_count', 'pathologic_n') THEN 1 ELSE 0 END) AS left_after_decisions, sum(CASE WHEN (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) AND d.claim IS NOT NULL THEN 1 ELSE 0 END) AS decided_by_a_person FROM lightning.metastore.registry_audit.stage_audit.stage_check s LEFT JOIN (SELECT f.case_id AS case_id, f.severity AS claim FROM lightning.metastore.registry_audit.stage_audit.flag f JOIN (SELECT case_id, max(created_at) AS latest FROM lightning.metastore.registry_audit.stage_audit.flag WHERE rule_id = 'human_review' GROUP BY case_id) m ON f.case_id = m.case_id AND f.created_at = m.latest WHERE f.rule_id = 'human_review') d ON s.case_id = d.case_id WHERE coalesce(edition_code, '') IN ('6', '7') AND reason_class IN ('consistent', 'n_count_contradiction')
@@ -192,10 +192,10 @@ Output:
 
 | records | node_positive_by_n_column | node_positive_by_count_column | columns_disagree | node_positive_by_verdict | node_positive_by_checked_count | left_to_a_person | same_answer_other_category | node_positive_after_decisions | left_after_decisions | decided_by_a_person |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 663 | 336 | 328 | 10 | 333 | 331 | 2 | 14 | 333 | 2 | 0 |
+| 663 | 336 | 328 | 10 | 333 | 331 | 2 | 14 | 334 | 1 | 1 |
 
 
-### 12. Which answer the report supports (3.3 s)
+### 12. Which answer the report supports (2.58 s)
 Why: the records where the two columns disagree, with the quote-verified reading of the report and the field the layer names; node_positive_by_report is empty where the layer leaves the case to a person.
 ```sql
 SELECT case_id, recorded_n, lymph_nodes_positive, report_n, report_nodes_positive, fault_field, CASE WHEN fault_field = 'review' OR report_n_main IS NULL THEN NULL WHEN report_n_main <> 'N0' THEN 'yes' ELSE 'no' END AS node_positive_by_report FROM lightning.metastore.registry_audit.stage_audit.stage_check WHERE coalesce(edition_code, '') IN ('6', '7') AND reason_class IN ('consistent', 'n_count_contradiction') AND (recorded_n_main <> 'N0') <> (CAST(lymph_nodes_positive AS DOUBLE) > 0) ORDER BY fault_field, case_id
@@ -214,6 +214,19 @@ Output:
 | TCGA-EW-A424 | N1 | 0.0 | N0 | 0 | pathologic_n | no |
 | TCGA-AO-A03P | N1 | 0.0 | N1MI | None | review | None |
 | TCGA-AR-A1AT | N0 | 1.0 | N0(I+) | None | review | None |
+
+
+### 13. Every stored value re-read, with a signed receipt the layer checks (0.74 s)
+Why: the second USL attest_audit: each receipt signed by the pinned key, answered by a Nemotron, not cached; each attestation backed by a verified receipt and reproduced (the same checks as its 5 DQ rules, `python scripts/attest_usl.py dq`).
+```sql
+SELECT 'receipt' AS usl_table, count(*) AS rows, sum(CASE WHEN signature_state = 'verified' AND signer_fingerprint = '7a6d14e27e1a' THEN 1 ELSE 0 END) AS signed_or_attested, sum(CASE WHEN served_model LIKE 'nvidia/nemotron%' OR served_model LIKE 'local-runtime/nemotron%' THEN 1 ELSE 0 END) AS nemotron_or_reproduced, sum(CASE WHEN cache_status IS NULL OR cache_status IN ('miss', 'bypass') THEN 1 ELSE 0 END) AS not_cached FROM lightning.metastore.registry_audit.attest_audit.receipt UNION ALL SELECT 'attestation', count(*), sum(CASE WHEN receipt_signature_state = 'verified' AND receipt_signer_fingerprint = '7a6d14e27e1a' THEN 1 ELSE 0 END), sum(CASE WHEN outcome = 'reproduced' THEN 1 ELSE 0 END), NULL FROM lightning.metastore.registry_audit.attest_audit.attestation
+```
+Output:
+
+| usl_table | rows | signed_or_attested | nemotron_or_reproduced | not_cached |
+|---|---|---|---|---|
+| receipt | 57 | 57 | 57 | 57 |
+| attestation | 42 | 42 | 42 | None |
 
 
 ## What was checked
