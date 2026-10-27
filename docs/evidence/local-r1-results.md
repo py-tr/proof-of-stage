@@ -1,6 +1,6 @@
 # Local Nemotron as the first read (on this PC): results (pre-registered, run 2026-10-24)
 
-Pre-registration: `docs/preregistration/local-r1.md` + `local-r1.json` (commit 1169ba9, frozen before the first call). Run 20261024T160819, log `logs/local-r1.jsonl`, summary `logs/local-r1-runs.jsonl`. Nightshift 1.2.3 Jobs API, "privacy": "local-only", lane `nemotron-3-5-lightning-3-2`.
+Pre-registration: `docs/preregistration/local-r1.md` + `local-r1.json` (commit 8474512, frozen before the first call). Run 20261024T160819, log `logs/local-r1.jsonl`, summary `logs/local-r1-runs.jsonl`. Nightshift 1.2.3 Jobs API, "privacy": "local-only", lane `nemotron-3-5-lightning-3-2`.
 
 ## Result
 

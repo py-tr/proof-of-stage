@@ -1,6 +1,6 @@
 # FEC v2: Super VL reads the handwritten cash summary, the FEC database as second reader: results (pre-registered, run 2026-10-25)
 
-Pre-registration: `docs/preregistration/fec-read-vl.md` + `fec-read-vl.json` (commit 7d406dd, frozen before the first call; designed after FEC v1 and a 3-page spike, disclosed). Run 20261025T124853, log `logs/fec-read-vl.jsonl`, summary `logs/fec-read-vl-runs.jsonl`. 24 fresh 2018 Senate paper filings; Nemotron Parse found the summary page; Super VL (NVIDIA direct) read lines 23–27 from the page image; each of lines 23, 24, 26, 27 compared with the value the FEC typed into its database from the same paper.
+Pre-registration: `docs/preregistration/fec-read-vl.md` + `fec-read-vl.json` (commit b9310a9, frozen before the first call; designed after FEC v1 and a 3-page spike, disclosed). Run 20261025T124853, log `logs/fec-read-vl.jsonl`, summary `logs/fec-read-vl-runs.jsonl`. 24 fresh 2018 Senate paper filings; Nemotron Parse found the summary page; Super VL (NVIDIA direct) read lines 23–27 from the page image; each of lines 23, 24, 26, 27 compared with the value the FEC typed into its database from the same paper.
 
 ## Result (as pre-registered)
 

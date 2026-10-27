@@ -1,6 +1,6 @@
 # IRS Form 990-EZ paper returns at read level: results (pre-registered, run 2026-10-25)
 
-Pre-registration: `docs/preregistration/irs-read.md` + `irs-read.json` (commit 62aa9f7, re-frozen before any call in fa88be2: the line label became a requirement). Run 20261025T134720, log `logs/irs-read.jsonl`, summary `logs/irs-read-runs.jsonl`, envelopes `docs/evidence/attest/irs-read-envelopes.jsonl`. Population: 2016 SOI extract, 990-EZ paper returns whose line 9 − 17 ≠ 18 by $2 or more (1,523 after dedup; e-filed ~0); 16 drawn (seed 20261025); 11 returns found in Candid's public archive (5 not in the archive); page-1 text layer read by Super VL through Nightshift (signed); the code check requires the quote verbatim in the text, the line's label in the quote and the amount in the quote.
+Pre-registration: `docs/preregistration/irs-read.md` + `irs-read.json` (commit 4ad3516, re-frozen before any call in da3f42c: the line label became a requirement). Run 20261025T134720, log `logs/irs-read.jsonl`, summary `logs/irs-read-runs.jsonl`, envelopes `docs/evidence/attest/irs-read-envelopes.jsonl`. Population: 2016 SOI extract, 990-EZ paper returns whose line 9 − 17 ≠ 18 by $2 or more (1,523 after dedup; e-filed ~0); 16 drawn (seed 20261025); 11 returns found in Candid's public archive (5 not in the archive); page-1 text layer read by Super VL through Nightshift (signed); the code check requires the quote verbatim in the text, the line's label in the quote and the amount in the quote.
 
 ## Result (as pre-registered)
 

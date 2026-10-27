@@ -21,7 +21,7 @@ Pathology reports are the kind of text an owner may not want to send to a cloud 
 - **What 0 contradicted can mean:** the closing rule produces 0 whenever the model declines to close, so 0 alone is not evidence of quality; the threats to the claim are one referee disagreement, one non-local attempt, or settled under 15.
 - **Report-only:** unconfirmed closings (cloud Lightning: 5 of 38), seconds (wall clock including 2 s polling, and the attempt's `elapsed_ms`), estimated tokens, retries, the resolved model string. Honesty row, not a bar: cloud Lightning settled 18 of 28 in its test and 16, 17, 16 in the timing trials.
 - **Void:** more than 9 of 28 records fail. Never re-run, nothing tuned after the run.
-- **Differences from cloud R1, disclosed:** Jobs API instead of chat completions; an empty assistant think turn instead of `enable_thinking: false`; no max_tokens; a job record and attempt instead of a signed chat receipt; the quantisation of the local file is not known to us; the guard is the current one (unchanged since the cloud Lightning run's guard round 6; the R1 swap commit after that run, c7121dc, changed only which model rungs.py and the reader's call pin, not the guard or the closing rule).
+- **Differences from cloud R1, disclosed:** Jobs API instead of chat completions; an empty assistant think turn instead of `enable_thinking: false`; no max_tokens; a job record and attempt instead of a signed chat receipt; the quantisation of the local file is not known to us; the guard is the current one (unchanged since the cloud Lightning run's guard round 6; the R1 swap commit after that run, 2b7221b, changed only which model rungs.py and the reader's call pin, not the guard or the closing rule).
 
 ## Prediction (before the run)
 

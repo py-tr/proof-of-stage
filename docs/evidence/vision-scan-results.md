@@ -1,6 +1,6 @@
 # Super VL reads the scan itself: results (pre-registered, run 2026-10-24)
 
-Pre-registration: `docs/preregistration/vision-scan.md` + `vision-scan.json` (commit bf3eab6, frozen before the first model call; the run checked the hashes at start). Logs: `logs/vision-scan.jsonl` (per case: both paths' fields, quotes and reasons), `logs/vision-scan-runs.jsonl`, `logs/vision-scan-2026-10-24.txt`. Run 2026-10-23 23:05 UTC.
+Pre-registration: `docs/preregistration/vision-scan.md` + `vision-scan.json` (commit 7d7cacb, frozen before the first model call; the run checked the hashes at start). Logs: `logs/vision-scan.jsonl` (per case: both paths' fields, quotes and reasons), `logs/vision-scan-runs.jsonl`, `logs/vision-scan-2026-10-24.txt`. Run 2026-10-23 23:05 UTC.
 
 ## Validity
 

@@ -1,6 +1,6 @@
 # Nemotron Parse 2.0 vs Parse v1 in the shipped scan pipeline: results (pre-registered, run 2026-10-24)
 
-Pre-registration: `docs/preregistration/parse-bench.md` + `parse-bench.json` (commit ae0991b, frozen before the first call). Run 20261024T171040, log `logs/parse-bench.jsonl`, summary `logs/parse-bench-runs.jsonl`. The overlay packet (scan images) stays local in `data/scans/_parse_bench/` (not committed); the item map (`logs/parse-bench-map.json`, SHA-256 4ba88e59… logged before scoring and re-checked) and the builder's scores (`logs/parse-bench-scores-builder.json`) are committed.
+Pre-registration: `docs/preregistration/parse-bench.md` + `parse-bench.json` (commit add7cb5, frozen before the first call). Run 20261024T171040, log `logs/parse-bench.jsonl`, summary `logs/parse-bench-runs.jsonl`. The overlay packet (scan images) stays local in `data/scans/_parse_bench/` (not committed); the item map (`logs/parse-bench-map.json`, SHA-256 4ba88e59… logged before scoring and re-checked) and the builder's scores (`logs/parse-bench-scores-builder.json`) are committed.
 
 ## Result
 

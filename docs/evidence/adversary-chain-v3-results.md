@@ -1,6 +1,6 @@
 # Red-team chain v3: results (pre-registered, run 2026-10-23 through Nightshift)
 
-Pre-registration: `docs/preregistration/adversary-chain-v3.md` + `adversary-cases-v3.json` (commit b70255f, frozen before the first call; the run checked the hashes at start). Smoke call: `logs/adversary-v3-smoke-2026-10-23.txt` (BH-A0DD, not scored). Logs: `logs/adversary-steps.jsonl` (cases TCGA-E2-A10B, TCGA-OL-A5RU, TCGA-BH-A6R8), `logs/adversary-runs.jsonl` (the last three rows), `logs/adversary-v3-2026-10-23.txt`.
+Pre-registration: `docs/preregistration/adversary-chain-v3.md` + `adversary-cases-v3.json` (commit de27174, frozen before the first call; the run checked the hashes at start). Smoke call: `logs/adversary-v3-smoke-2026-10-23.txt` (BH-A0DD, not scored). Logs: `logs/adversary-steps.jsonl` (cases TCGA-E2-A10B, TCGA-OL-A5RU, TCGA-BH-A6R8), `logs/adversary-runs.jsonl` (the last three rows), `logs/adversary-v3-2026-10-23.txt`.
 
 ## Validity (the void conditions)
 

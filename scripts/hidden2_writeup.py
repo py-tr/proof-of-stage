@@ -53,7 +53,7 @@ def main() -> int:
     lines = [
         "# Hidden errors, second census: results (pre-registered, run 2026-10-25)",
         "",
-        "Pre-registration: `docs/preregistration/hidden-2.md` + `hidden-2.json` (commit 361f334, "
+        "Pre-registration: `docs/preregistration/hidden-2.md` + `hidden-2.json` (commit 2cb8c97, "
         "frozen before the first call). Log `logs/hidden-2.jsonl`, summary "
         "`logs/hidden-2-runs.jsonl`, envelopes `docs/evidence/attest/hidden-2-envelopes.jsonl` "
         "(every signature checkable on `/receipts`). Lay reads "

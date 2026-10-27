@@ -12,22 +12,22 @@ PREREG = ROOT / "docs" / "preregistration"
 SUPERSEDED = {
     "adversary-cases.json": (
         {"app/reader/reader.py", "app/engine/adversary.py"},
-        "0cc0325 (2026-10-23 03:22 +02:00)",
+        "5b77b9e (2026-10-23 03:22 +02:00)",
         "adv-20261023T004318..T005401 (02:43-02:54 +02:00)",
     ),
     "dial-cases.json": (
         {"app/engine/rungs.py", "app/reader/reader.py"},
-        "b70255f (2026-10-23 17:01 +02:00)",
+        "de27174 (2026-10-23 17:01 +02:00)",
         "20261023T123122 (14:31 +02:00)",
     ),
     "adversary-cases-v3.json": (
         {"app/reader/reader.py"},
-        "c7121dc (2026-10-23 19:32 +02:00)",
+        "2b7221b (2026-10-23 19:32 +02:00)",
         "adv-20261023T150141..T153459 (17:01-17:35 +02:00)",
     ),
     "lightning-cases.json": (
         {"app/engine/rungs.py", "app/reader/reader.py"},
-        "c7121dc (2026-10-23 19:32 +02:00)",
+        "2b7221b (2026-10-23 19:32 +02:00)",
         "20261023T172640 (19:26 +02:00)",
     ),
 }

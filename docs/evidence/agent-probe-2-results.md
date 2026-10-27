@@ -1,6 +1,6 @@
 # Does an agent use a value the layer has already checked? Results (pre-registered, run 2026-10-23)
 
-Pre-registration: `docs/preregistration/agent-probe-2.md` + `agent-probe-2.json`, `agent-schema-with.txt` (control), `agent-schema-checked.txt` (treatment: the same text plus one line) (commit f80f050, frozen before the first call; the run checked the hashes at start). The layer change it tests: `stage_check.positive_nodes_checked` (commit c04b10a). Logs: `logs/agent-probe-2.jsonl`, `logs/agent-probe-2-runs.jsonl`, `logs/agent-probe-2-2026-10-23.txt`. Run 2026-10-23 20:51 UTC.
+Pre-registration: `docs/preregistration/agent-probe-2.md` + `agent-probe-2.json`, `agent-schema-with.txt` (control), `agent-schema-checked.txt` (treatment: the same text plus one line) (commit 8b98892, frozen before the first call; the run checked the hashes at start). The layer change it tests: `stage_check.positive_nodes_checked` (commit 792090e). Logs: `logs/agent-probe-2.jsonl`, `logs/agent-probe-2-runs.jsonl`, `logs/agent-probe-2-2026-10-23.txt`. Run 2026-10-23 20:51 UTC.
 
 ## Validity
 

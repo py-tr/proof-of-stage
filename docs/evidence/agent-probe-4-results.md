@@ -1,6 +1,6 @@
 # Agent probe 4: two new questions (pre-registered, run 2026-10-25)
 
-Pre-registration: `docs/preregistration/agent-probe-4.md` + `agent-probe-4.json` (commit 47b191c, frozen before the first call). Run 20261025T130742, log `logs/agent-probe-4.jsonl`, summary `logs/agent-probe-4-runs.jsonl`, envelopes `docs/evidence/attest/agent-probe-4-envelopes.jsonl`. Agent: Super VL through Nightshift, pinned, signed, no cache, 4k thinking budget, today's schema text; 5 calls per arm, interleaved; 0 provider failures.
+Pre-registration: `docs/preregistration/agent-probe-4.md` + `agent-probe-4.json` (commit e89f10c, frozen before the first call). Run 20261025T130742, log `logs/agent-probe-4.jsonl`, summary `logs/agent-probe-4-runs.jsonl`, envelopes `docs/evidence/attest/agent-probe-4-envelopes.jsonl`. Agent: Super VL through Nightshift, pinned, signed, no cache, 4k thinking budget, today's schema text; 5 calls per arm, interleaved; 0 provider failures.
 
 ## Result
 

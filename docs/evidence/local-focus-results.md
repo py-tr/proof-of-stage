@@ -1,6 +1,6 @@
 # Local first read with an on-PC focus step: results (pre-registered, run 2026-10-24)
 
-Pre-registration: `docs/preregistration/local-focus.md` + `local-focus.json` (commit 92eb29c, frozen before the first call; designed after the local R1 test's diagnosis, on its 4 failed records, disclosed). Run 20261024T163042, log `logs/local-focus.jsonl`, summary `logs/local-focus-runs.jsonl`. 60 records of the hidden-errors set, none read locally before.
+Pre-registration: `docs/preregistration/local-focus.md` + `local-focus.json` (commit b4c21bd, frozen before the first call; designed after the local R1 test's diagnosis, on its 4 failed records, disclosed). Run 20261024T163042, log `logs/local-focus.jsonl`, summary `logs/local-focus-runs.jsonl`. 60 records of the hidden-errors set, none read locally before.
 
 ## Result
 

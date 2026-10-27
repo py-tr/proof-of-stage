@@ -1,6 +1,6 @@
 # Agent probe 5: the layer's permissions instead of the prompt (pre-registered, run 2026-10-25)
 
-Pre-registration: `docs/preregistration/agent-probe-5.md` + `agent-probe-5.json` (commit 81d5859, frozen before the first call, prediction included). Permission check before freezing: `logs/agent-probe-5-check.txt`. Run 20261025T161503, log `logs/agent-probe-5.jsonl`, summary `logs/agent-probe-5-runs.jsonl`, envelopes `docs/evidence/attest/agent-probe-5-envelopes.jsonl`.
+Pre-registration: `docs/preregistration/agent-probe-5.md` + `agent-probe-5.json` (commit 0f245e1, frozen before the first call, prediction included). Permission check before freezing: `logs/agent-probe-5-check.txt`. Run 20261025T161503, log `logs/agent-probe-5.jsonl`, summary `logs/agent-probe-5-runs.jsonl`, envelopes `docs/evidence/attest/agent-probe-5-envelopes.jsonl`.
 
 **Agent:** Super VL through Nightshift, pinned, signed (10 of 10 verified), no cache, 4k thinking budget. Prompt and question exactly as probe 1 ("How many patients are node-positive?"). 5 calls per arm, interleaved; 0 provider failures.
 

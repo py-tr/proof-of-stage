@@ -8,8 +8,8 @@ A new hypothesis, designed after the first probe's result (`docs/evidence/agent-
 
 ## What changed in the layer (before this pre-registration)
 
-- New column `stage_check.positive_nodes_checked` (commit c04b10a): the registry's positive-node count, except where the verdict (`fault_field`) is `node_count`, where the quote-verified report count replaces it; empty where the verdict is `review` or no count is recorded. Stored as a whole number. The raw `lymph_nodes_positive` stays in the layer and in the schema the agent sees. Named for what it holds, not for the question; its description says nothing about how to count patients. Limitation: its name and description, like the raw column's, share the word "positive" with the question.
-- The read guard now accepts a declared table alias (commit 54ff42e); in the first probe it refused one query that used one.
+- New column `stage_check.positive_nodes_checked` (commit 792090e): the registry's positive-node count, except where the verdict (`fault_field`) is `node_count`, where the quote-verified report count replaces it; empty where the verdict is `review` or no count is recorded. Stored as a whole number. The raw `lymph_nodes_positive` stays in the layer and in the schema the agent sees. Named for what it holds, not for the question; its description says nothing about how to count patients. Limitation: its name and description, like the raw column's, share the word "positive" with the question.
+- The read guard now accepts a declared table alias (commit 8f6a28a); in the first probe it refused one query that used one.
 
 ## Design
 

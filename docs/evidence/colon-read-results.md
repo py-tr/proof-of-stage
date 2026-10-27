@@ -1,6 +1,6 @@
 # A second cancer type: the impossible colorectal records, read once (pre-registered, run 2026-10-25)
 
-Pre-registration: `docs/preregistration/colon-read.md` + `colon-read.json` (commit d43453c, frozen before the first call). Run 20261025T134109, log `logs/colon-read.jsonl`, summary `logs/colon-read-runs.jsonl`, envelopes `docs/evidence/attest/colon-read-envelopes.jsonl`. Population: 592 TCGA-COAD/READ cases with a recorded N and count (GDC API); 10 impossible under the paraphrased colon count rule (N1c with 0 nodes not counted); 8 with a report, all read once by Super VL through Nightshift with a colorectal version of the reader's prompt and the reader's own guard.
+Pre-registration: `docs/preregistration/colon-read.md` + `colon-read.json` (commit 051e580, frozen before the first call). Run 20261025T134109, log `logs/colon-read.jsonl`, summary `logs/colon-read-runs.jsonl`, envelopes `docs/evidence/attest/colon-read-envelopes.jsonl`. Population: 592 TCGA-COAD/READ cases with a recorded N and count (GDC API); 10 impossible under the paraphrased colon count rule (N1c with 0 nodes not counted); 8 with a report, all read once by Super VL through Nightshift with a colorectal version of the reader's prompt and the reader's own guard.
 
 ## Result (as pre-registered)
 

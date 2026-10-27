@@ -1,6 +1,6 @@
 # Red-team chain: results (pre-registration v2, run 2026-10-23)
 
-Pre-registration: `docs/preregistration/adversary-chain.md` (v2, commit 6330b1a, frozen before the first call). Logs: `logs/adversary-steps.jsonl` (one row per step), `logs/adversary-runs.jsonl` (one row per chain), `logs/adversary-2026-10-23.txt`. The 3 rows of run `adv-20261023T002626` are the void v1 (Nightshift, 3 × 502).
+Pre-registration: `docs/preregistration/adversary-chain.md` (v2, commit 781904d, frozen before the first call). Logs: `logs/adversary-steps.jsonl` (one row per step), `logs/adversary-runs.jsonl` (one row per chain), `logs/adversary-2026-10-23.txt`. The 3 rows of run `adv-20261023T002626` are the void v1 (Nightshift, 3 × 502).
 
 ## Validity (the void conditions)
 

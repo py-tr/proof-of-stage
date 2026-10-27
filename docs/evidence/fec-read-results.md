@@ -1,6 +1,6 @@
 # FEC filings at read level: results (pre-registered, run 2026-10-25)
 
-Pre-registration: `docs/preregistration/fec-read.md` + `fec-read.json` (commit 9cf92dd, prediction b1f2b09, frozen before the first call). Run 20261025T123400, log `logs/fec-read.jsonl`, summary `logs/fec-read-runs.jsonl`. Sample: 12 of the 93 eligible impossible 2018 Senate paper filings (seed 20261025); all 12 PDFs downloaded; Nemotron Parse (v1, NVIDIA direct) on pages 3–6; amounts taken from the Parse text by frozen rules and checked by `app/fec/guard.py`; no other model.
+Pre-registration: `docs/preregistration/fec-read.md` + `fec-read.json` (commit d7ccba0, prediction 0872755, frozen before the first call). Run 20261025T123400, log `logs/fec-read.jsonl`, summary `logs/fec-read-runs.jsonl`. Sample: 12 of the 93 eligible impossible 2018 Senate paper filings (seed 20261025); all 12 PDFs downloaded; Nemotron Parse (v1, NVIDIA direct) on pages 3–6; amounts taken from the Parse text by frozen rules and checked by `app/fec/guard.py`; no other model.
 
 ## Result (as pre-registered)
 

@@ -1,6 +1,6 @@
 # Hidden errors in records that look consistent: results (pre-registered, run 2026-10-23)
 
-Pre-registration: `docs/preregistration/hidden-errors.md` + `hidden-cases.json` (commit 2973ac6, frozen before the first call; the run checked the code hashes at start). Logs: `logs/hidden-errors.jsonl` (one row per record), `logs/hidden-errors-runs.jsonl` (the summary), `logs/hidden-errors-2026-10-23.txt`, the rungs in `logs/markovian-chunks.jsonl` (run ids `hidden-…`). Run 2026-10-23 19:44 UTC.
+Pre-registration: `docs/preregistration/hidden-errors.md` + `hidden-cases.json` (commit 6a7cd30, frozen before the first call; the run checked the code hashes at start). Logs: `logs/hidden-errors.jsonl` (one row per record), `logs/hidden-errors-runs.jsonl` (the summary), `logs/hidden-errors-2026-10-23.txt`, the rungs in `logs/markovian-chunks.jsonl` (run ids `hidden-…`). Run 2026-10-23 19:44 UTC.
 
 ## Validity
 

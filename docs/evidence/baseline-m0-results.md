@@ -1,6 +1,6 @@
 # The product vs Nemotron alone vs the rule alone, against blind labels (pre-registered, scored 2026-10-24)
 
-Pre-registration: `docs/preregistration/baseline-m0.md` + `baseline-cases.json` (commit e48e295, frozen before the M0 run); the M0 log was committed unread (a542e8c) before the labels existed. Labels: `docs/preregistration/ground-truth-labels.json` (frozen bcb11ae, sha16 caef98991d916a90; how they were made: the dated note in baseline-m0.md). Scores: `logs/label-scores.json` (`python -m app.cli labels score`).
+Pre-registration: `docs/preregistration/baseline-m0.md` + `baseline-cases.json` (commit e6987eb, frozen before the M0 run); the M0 log was committed unread (ac5ec3b) before the labels existed. Labels: `docs/preregistration/ground-truth-labels.json` (frozen 16a2071, sha16 caef98991d916a90; how they were made: the dated note in baseline-m0.md). Scores: `logs/label-scores.json` (`python -m app.cli labels score`).
 
 ## Result (agreement with the blind label: which registry field the report contradicts, or "a person decides")
 

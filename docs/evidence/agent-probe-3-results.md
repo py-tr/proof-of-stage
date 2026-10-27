@@ -1,6 +1,6 @@
 # Agent probe 3: given the layer's own data-quality rules, does the agent use the verdict? Results (pre-registered, run 2026-10-24)
 
-Pre-registration: `docs/preregistration/agent-probe-3.md` + `agent-probe-3.json` (commit 536094f, re-frozen before any call in a1c0bfd for a lint-only change). Run 20261024T160521, log `logs/agent-probe-3.jsonl`, summary `logs/agent-probe-3-runs.jsonl`.
+Pre-registration: `docs/preregistration/agent-probe-3.md` + `agent-probe-3.json` (commit 582c664, re-frozen before any call in 2dd38ec for a lint-only change). Run 20261024T160521, log `logs/agent-probe-3.jsonl`, summary `logs/agent-probe-3-runs.jsonl`.
 
 ## Result
 

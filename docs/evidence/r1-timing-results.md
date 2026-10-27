@@ -1,6 +1,6 @@
 # R1 timing, controlled: results (pre-registered, run 2026-10-23)
 
-Pre-registration: `docs/preregistration/r1-timing.md` + `r1-timing.json` (commit e8cd74b, frozen before the first call; the run checked the code hashes at start). Logs: `logs/r1-timing.jsonl` (every read), `logs/r1-timing-runs.jsonl`, `logs/r1-timing-2026-10-23.txt`. Run 2026-10-23 21:43 UTC, one session.
+Pre-registration: `docs/preregistration/r1-timing.md` + `r1-timing.json` (commit 6eace71, frozen before the first call; the run checked the code hashes at start). Logs: `logs/r1-timing.jsonl` (every read), `logs/r1-timing-runs.jsonl`, `logs/r1-timing-2026-10-23.txt`. Run 2026-10-23 21:43 UTC, one session.
 
 ## Validity
 

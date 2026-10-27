@@ -1,6 +1,6 @@
 # Ultra as a second reader that can only object: results (pre-registered, scored 2026-10-24)
 
-Pre-registration: `docs/preregistration/ultra-critic.md` + `ultra-critic.json` (commit 92e0d51, frozen before the first call and before the labels). Run log committed unread (24ecfe6): run 20261024T123625, 46 calls (41 stored values + 5 planted controls). Labels frozen bcb11ae. Scores: `logs/label-scores.json` (`ultra_critic`).
+Pre-registration: `docs/preregistration/ultra-critic.md` + `ultra-critic.json` (commit 9562012, frozen before the first call and before the labels). Run log committed unread (ef28008): run 20261024T123625, 46 calls (41 stored values + 5 planted controls). Labels frozen 16a2071. Scores: `logs/label-scores.json` (`ultra_critic`).
 
 ## Validity
 
@@ -28,7 +28,7 @@ Prediction (before the run): "at most 3 verified objections on real values; plan
 
 ## v2: one Nightshift scope per call (pre-registered, run 2026-10-24 13:34 UTC)
 
-Pre-registration: `docs/preregistration/ultra-critic-v2.md` + `ultra-critic-v2.json` (commit 63a6cdd, frozen before the first call; designed after the labels were scored, disclosed; v1 byte-identical except one item id per call). Log: `logs/ultra-critic-v2.jsonl`, summary `logs/ultra-critic-v2-runs.jsonl`, score `logs/ultra-critic-v2-score.json` (scored with v1's `critic.score` against the frozen labels).
+Pre-registration: `docs/preregistration/ultra-critic-v2.md` + `ultra-critic-v2.json` (commit 182ec65, frozen before the first call; designed after the labels were scored, disclosed; v1 byte-identical except one item id per call). Log: `logs/ultra-critic-v2.jsonl`, summary `logs/ultra-critic-v2-runs.jsonl`, score `logs/ultra-critic-v2-score.json` (scored with v1's `critic.score` against the frozen labels).
 
 | Measure | v2 |
 |---|---|

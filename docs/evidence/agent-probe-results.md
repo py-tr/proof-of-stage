@@ -1,6 +1,6 @@
 # Does an agent reading the layer's descriptions use the verdict? Results (pre-registered, run 2026-10-23)
 
-Pre-registration: `docs/preregistration/agent-probe.md` + `agent-probe.json`, `agent-schema-with.txt`, `agent-schema-without.txt` (commit e06b501, frozen before the first call; the run checked the hashes at start). Logs: `logs/agent-probe.jsonl` (every call: the SQL, the reason, the receipt, the result), `logs/agent-probe-runs.jsonl`, `logs/agent-probe-2026-10-23.txt`. Run 2026-10-23 20:21 UTC.
+Pre-registration: `docs/preregistration/agent-probe.md` + `agent-probe.json`, `agent-schema-with.txt`, `agent-schema-without.txt` (commit 399b0dd, frozen before the first call; the run checked the hashes at start). Logs: `logs/agent-probe.jsonl` (every call: the SQL, the reason, the receipt, the result), `logs/agent-probe-runs.jsonl`, `logs/agent-probe-2026-10-23.txt`. Run 2026-10-23 20:21 UTC.
 
 ## Validity
 

@@ -1,6 +1,6 @@
 # Which Nemotron should do the deep read? Results (pre-registered, scored 2026-10-24)
 
-Pre-registration: `docs/preregistration/reader-bench.md` + `reader-bench.json` (commit 1f9b63f, frozen before the first call and before the labels), with its dated addendum (the second-reader measure, committed 92e0d51 before the labels). Run log committed unread (4645685): 74 of 75 reads answered (Super 1 Nightshift 502, TCGA-AR-A1AT), every answer signed by the pinned key. Labels frozen bcb11ae. Scores: `logs/label-scores.json`.
+Pre-registration: `docs/preregistration/reader-bench.md` + `reader-bench.json` (commit 0ff703f, frozen before the first call and before the labels), with its dated addendum (the second-reader measure, committed 9562012 before the labels). Run log committed unread (fc30eaa): 74 of 75 reads answered (Super 1 Nightshift 502, TCGA-AR-A1AT), every answer signed by the pinned key. Labels frozen 16a2071. Scores: `logs/label-scores.json`.
 
 ## Result: accepted values against the blind labels (N by main category; the count as an integer)
 

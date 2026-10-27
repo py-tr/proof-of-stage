@@ -1,6 +1,6 @@
 # Where the reasoning dial pays: results (pre-registered, run 2026-10-23)
 
-Pre-registration: `docs/preregistration/dial-sample.md` and `dial-cases.json` (commit 8844b04, frozen before the first call; the run checked the code hashes at start). Logs: `logs/dial-sample.jsonl` (one row per record), `logs/dial-runs.jsonl` (the summary), `logs/dial-2026-10-23.txt`, the rungs in `logs/markovian-chunks.jsonl` (run ids `dial-…`).
+Pre-registration: `docs/preregistration/dial-sample.md` and `dial-cases.json` (commit eb793d3, frozen before the first call; the run checked the code hashes at start). Logs: `logs/dial-sample.jsonl` (one row per record), `logs/dial-runs.jsonl` (the summary), `logs/dial-2026-10-23.txt`, the rungs in `logs/markovian-chunks.jsonl` (run ids `dial-…`).
 
 ## Validity
 

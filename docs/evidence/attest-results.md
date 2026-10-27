@@ -1,6 +1,6 @@
 # Attestation census: every stored report value re-read once with a signed receipt (pre-registered, run 2026-10-25)
 
-Pre-registration: `docs/preregistration/attest.md` + `attest.json` (commit e1bc7ee, frozen before the first call). Run 20261025T123148, log `logs/attest.jsonl`, summary `logs/attest-runs.jsonl`. Bundle: `docs/evidence/attest/envelopes.jsonl` (57 signed Nightshift envelopes as received, with our sha256 of the request messages and of the raw answer) and `docs/evidence/attest/pubkey.json` (the public key, fingerprint 7a6d14e27e1a).
+Pre-registration: `docs/preregistration/attest.md` + `attest.json` (commit d34015e, frozen before the first call). Run 20261025T123148, log `logs/attest.jsonl`, summary `logs/attest-runs.jsonl`. Bundle: `docs/evidence/attest/envelopes.jsonl` (57 signed Nightshift envelopes as received, with our sha256 of the request messages and of the raw answer) and `docs/evidence/attest/pubkey.json` (the public key, fingerprint 7a6d14e27e1a).
 
 ## Result
 
