@@ -51,7 +51,7 @@
         "app/usl/"
       ]
     },
-    "cursor": "the first commits were written by Cursor's agent; later code by Claude Code (see README, How this was built)"
+    "cursor": "a build tool, not a sponsor: the first commits were written by Cursor's agent; later code by Claude Code; Grok in Cursor (Ask mode, repo open) did read-only judge and red-team reviews (see README, How this was built)"
   },
   "run": {
     "sample_mode": "python -m app.cli serve  (no keys, no network; open http://127.0.0.1:8000)",
