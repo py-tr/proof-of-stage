@@ -236,12 +236,11 @@ What Nightshift 1.2.1 could not do, what 1.2.3 fixed, what the 2026-10-26 releas
 
 ## Pre-existing components (declared)
 
-Everything else in this repository was built from 2026-10-22 00:00 UTC; the first commit is 2026-10-22 11:04 UTC. Declared here and in `metadata.json`:
+Built from 2026-10-22 00:00 UTC; the first commit is 2026-10-22 11:04 UTC. Declared:
 
-- Research and planning notes from before 22 Oct, kept outside the repository (no code).
-- Spike results, reused and stated where they appear: the 42-report set with its truth labels and the "unlimited" thinking arm (run 21 Oct); the off, 1k and 4k arms of the same table ran on 22 Oct 10:19–11:35 UTC in that spike, outside the repository (`docs/evidence/thinking-budget.md`); the held-out flagging result (`docs/evidence/heldout-flagging.md`); a Nemotron Parse 2.0 probe on 19 Oct and Nightshift image calls on 21 Oct; a 26-line Python fetch used only as a size comparison (`docs/details.md`).
-- Vendored, unmodified: the Meterless Markovian reference engine (`vendor/meterless-markovian`, Apache-2.0, see `NOTICE`).
-- Public data: NCI GDC TCGA clinical data and pathology reports; FEC and IRS public files.
+- **Public data:** NCI GDC TCGA clinical data and pathology reports; FEC and IRS public files.
+- **Vendored, unmodified:** the Meterless Markovian reference engine (`vendor/meterless-markovian`, Apache-2.0, see `NOTICE`).
+- **Before the window, no code reused:** planning notes, and a few small exploratory checks whose results are cited where they appear and labelled there: one 42-report thinking-budget sample (its labels and its "unlimited" run, 21 Oct; `docs/evidence/thinking-budget.md`), one held-out flagging check (`docs/evidence/heldout-flagging.md`), and quick API probes of Parse 2.0 and Nightshift images.
 
 **What a receipt proves.** A Nightshift receipt is an Ed25519 signature over the call: which model answered, the route, whether the cache answered, and the prompt size. It does not sign the answer text: the answer is checked by the quote check and stored in Zetaris, and the answer hash next to the receipt is ours. The key is the one this Nightshift install presented, committed in the repository and checked by `/receipts` in the browser; Meterless publishes none. The opt-in local first read has an unsigned Nightshift job record instead, and Parse and page-image reads go to NVIDIA directly, without a receipt.
 

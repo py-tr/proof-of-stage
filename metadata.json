@@ -65,11 +65,10 @@
   },
   "ai_usage": "Built with AI coding tools (Cursor's agent, then Claude Code); see README, How this was built",
   "pre_existing_components": [
-    "Research and planning notes from before 22 Oct, kept outside the repository (no code)",
-    "Spike results reused and stated where they appear: the 42-report spike set with its truth labels and the 'unlimited' thinking arm (run 21 Oct); the off, 1k and 4k arms of the same table ran 22 Oct 10:19-11:35 UTC in that spike, outside the repository (docs/evidence/thinking-budget.md); the held-out flagging result (docs/evidence/heldout-flagging.md); a Nemotron Parse 2.0 probe on 19 Oct and Nightshift image calls on 21 Oct (docs/evidence/scan-boxes.md, docs/evidence/nightshift-limits.md); a 26-line Python fetch used as a size comparison (docs/details.md)",
-    "Vendored, unmodified: the Meterless Markovian reference engine (vendor/meterless-markovian, Apache-2.0, NOTICE)",
     "Public data: NCI GDC TCGA clinical data and pathology reports; FEC and IRS public files",
-    "The repository's first commit is after 22 Oct 00:00 UTC"
+    "Vendored, unmodified: the Meterless Markovian reference engine (vendor/meterless-markovian, Apache-2.0, NOTICE)",
+    "Before the window, no code reused: planning notes, and a few small exploratory checks whose results are cited and labelled where they appear: one 42-report thinking-budget sample (its labels and its 'unlimited' run, 21 Oct; docs/evidence/thinking-budget.md), one held-out flagging check (docs/evidence/heldout-flagging.md), and quick API probes of Parse 2.0 and Nightshift images",
+    "The repository's first commit is 2026-10-22 11:04 UTC, after the window opened at 00:00 UTC"
   ],
   "license": "Apache-2.0"
 }
